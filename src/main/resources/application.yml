@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: x-scraper
+  main:
+    web-application-type: none
+  profiles:
+    active:
+      - local

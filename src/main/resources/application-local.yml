@@ -1,0 +1,31 @@
+x-scraper:
+  scraping:
+    - url:
+        urls:
+          - https://www.jumbo.com/producten/?offSet=0
+          - https://www.jumbo.com/producten/?offSet=24
+          - https://www.jumbo.com/producten/?offSet=48
+          - https://www.jumbo.com/producten/?offSet=72
+          - https://www.jumbo.com/producten/?offSet=96
+          - https://www.jumbo.com/producten/?offSet=120
+          - https://www.jumbo.com/producten/?offSet=144
+          - https://www.jumbo.com/producten/?offSet=168
+          - https://www.jumbo.com/producten/?offSet=192
+          - https://www.jumbo.com/producten/?offSet=216
+          - https://www.jumbo.com/producten/?offSet=240
+      storage:
+        format: JSON
+        folder: "F:/scraping/results/"
+        file: results.json
+      data-scraping:
+        element-selector: "article.product-container"
+        data-points:
+          - selector: "div.current-price span.whole"
+            propertyName: "price.whole"
+          - selector: "div.current-price span.fractional"
+            propertyName: "price.fraction"
+          - selector: "a.title-link"
+            propertyName: "name"
+          - selector: "a.title-link"
+            propertyName: "productUrl"
+            value-selector: HREF
