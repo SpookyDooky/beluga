@@ -1,7 +1,7 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.properties.scraping.DataPointProperties;
-import com.x.scrape.properties.scraping.DataScrapingProperties;
+import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -19,7 +19,7 @@ public class DocumentScrapingService {
 	private final Logger logger = LogManager.getLogger();
 	
 	public List<Map<String, Object>> scrapeDocument(final Document document,
-	                                                final DataScrapingProperties scrapingProperties) {
+	                                                final ScrapingProperties scrapingProperties) {
 		final List<Element> elements = selectElements(document, scrapingProperties.getElementSelector());
 		logger.info("Found " + elements.size() + " in document");
 		

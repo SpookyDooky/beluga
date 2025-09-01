@@ -6,7 +6,7 @@ import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job.storage.StorageConfiguration;
-import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.x.scrape.properties.scraping.JobProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,18 +33,18 @@ class JobMapperTest {
 	
 	@Test
 	void shouldMap() {
-		final ScrapingProperties scrapingProperties = Instancio.create(ScrapingProperties.class);
+		final JobProperties jobProperties = Instancio.create(JobProperties.class);
 		
 		final UrlConfiguration urlConfiguration = mock();
-		when(urlConfigurationMapper.map(scrapingProperties.getUrl())).thenReturn(urlConfiguration);
+		when(urlConfigurationMapper.map(jobProperties.getUrl())).thenReturn(urlConfiguration);
 		
 		final ScrapingConfiguration scrapingConfiguration = mock();
-		when(scrapingConfigurationMapper.map(scrapingProperties.getDataScraping())).thenReturn(scrapingConfiguration);
+		when(scrapingConfigurationMapper.map(jobProperties.getScraping())).thenReturn(scrapingConfiguration);
 		
 		final StorageConfiguration storageConfiguration = mock();
-		when(storageConfigurationMapper.map(scrapingProperties.getStorage())).thenReturn(storageConfiguration);
+		when(storageConfigurationMapper.map(jobProperties.getStorage())).thenReturn(storageConfiguration);
 		
-		final Job job = mapper.map(scrapingProperties);
+		final Job job = mapper.map(jobProperties);
 		
 		assertSame(urlConfiguration, job.getUrlConfiguration());
 		assertSame(scrapingConfiguration, job.getScrapingConfiguration());

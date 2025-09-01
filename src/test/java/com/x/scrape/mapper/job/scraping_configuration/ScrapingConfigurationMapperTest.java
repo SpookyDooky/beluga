@@ -3,7 +3,7 @@ package com.x.scrape.mapper.job.scraping_configuration;
 import com.x.scrape.model.job.scraping_configuration.DataPointConfiguration;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.scraping.DataPointProperties;
-import com.x.scrape.properties.scraping.DataScrapingProperties;
+import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +30,8 @@ class ScrapingConfigurationMapperTest {
 	
 	@Test
 	void shouldMap() {
-		final DataScrapingProperties dataScrapingProperties = Instancio.of(DataScrapingProperties.class)
-				.set(field(DataScrapingProperties::getDataPoints), List.of(mock(DataPointProperties.class)))
+		final ScrapingProperties dataScrapingProperties = Instancio.of(ScrapingProperties.class)
+				.set(field(ScrapingProperties::getDataPoints), List.of(mock(DataPointProperties.class)))
 				.create();
 		
 		final DataPointConfiguration dataPointConfiguration = mock();

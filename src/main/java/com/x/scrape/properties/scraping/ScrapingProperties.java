@@ -1,36 +1,25 @@
 package com.x.scrape.properties.scraping;
 
-import com.x.scrape.properties.scraping.storage.FileProperties;
-import com.x.scrape.properties.scraping.url.UrlProperties;
+import java.util.List;
 
 public class ScrapingProperties {
 	
-	private UrlProperties url;
+	private String elementSelector;
+	private List<DataPointProperties> dataPoints;
 	
-	private DataScrapingProperties dataScraping;
-	private FileProperties storage;
-	
-	public UrlProperties getUrl() {
-		return url;
+	public String getElementSelector() {
+		return elementSelector;
 	}
 	
-	public void setUrl(final UrlProperties url) {
-		this.url = url;
+	public void setElementSelector(final String elementSelector) {
+		this.elementSelector = elementSelector;
 	}
 	
-	public DataScrapingProperties getDataScraping() {
-		return dataScraping;
+	public List<DataPointProperties> getDataPoints() {
+		return dataPoints;
 	}
 	
-	public void setDataScraping(final DataScrapingProperties dataScraping) {
-		this.dataScraping = dataScraping;
-	}
-	
-	public FileProperties getStorage() {
-		return storage;
-	}
-	
-	public void setStorage(final FileProperties storage) {
-		this.storage = storage;
+	public void setDataPoints(final List<DataPointProperties> dataPoints) {
+		this.dataPoints = dataPoints;
 	}
 }

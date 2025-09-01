@@ -3,7 +3,7 @@ package com.x.scrape.mapper.job;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
 import com.x.scrape.model.job.Job;
-import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.x.scrape.properties.scraping.JobProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -22,7 +22,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface JobMapper {
 	
 	@Mapping(target = "urlConfiguration", source = "url")
-	@Mapping(target = "scrapingConfiguration", source = "dataScraping")
+	@Mapping(target = "scrapingConfiguration", source = "scraping")
 	@Mapping(target = "storageConfiguration", source = "storage")
-	Job map(ScrapingProperties scrapingProperties);
+	Job map(JobProperties jobProperties);
 }
