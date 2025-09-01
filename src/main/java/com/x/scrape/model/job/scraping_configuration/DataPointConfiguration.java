@@ -1,14 +1,13 @@
-package com.x.scrape.properties.scraping;
+package com.x.scrape.model.job.scraping_configuration;
 
 import com.x.scrape.model.types.ValueSelector;
 
-import static com.x.scrape.model.types.ValueSelector.TEXT;
-
-public class DataPointProperties {
+public class DataPointConfiguration {
 	
 	private String selector;
 	private String propertyName;
-	private ValueSelector valueSelector = TEXT;
+	
+	private ValueSelector valueSelector;
 	
 	public String getSelector() {
 		return selector;
