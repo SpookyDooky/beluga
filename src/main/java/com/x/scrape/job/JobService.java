@@ -5,7 +5,6 @@ import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.XScraperProperties;
-import com.x.scrape.properties.scraping.ScrapingProperties;
 import com.x.scrape.scraping.DocumentScrapingService;
 import com.x.scrape.storage.StorageService;
 import org.apache.logging.log4j.LogManager;
