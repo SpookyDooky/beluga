@@ -1,7 +1,7 @@
 package com.x.scrape.scraping;
 
-import com.x.scrape.properties.scraping.DataPointProperties;
-import com.x.scrape.properties.scraping.DataScrapingProperties;
+import com.x.scrape.model.job.scraping_configuration.DataPointConfiguration;
+import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -19,12 +19,12 @@ public class DocumentScrapingService {
 	private final Logger logger = LogManager.getLogger();
 	
 	public List<Map<String, Object>> scrapeDocument(final Document document,
-	                                                final DataScrapingProperties scrapingProperties) {
+	                                                final ScrapingConfiguration scrapingProperties) {
 		final List<Element> elements = selectElements(document, scrapingProperties.getElementSelector());
 		logger.info("Found " + elements.size() + " in document");
 		
 		return elements.stream()
-				.map(element -> extractData(element, scrapingProperties.getDataPoints()))
+				.map(element -> extractData(element, scrapingProperties.getDataPointConfigurations()))
 				.toList();
 	}
 	
@@ -35,21 +35,22 @@ public class DocumentScrapingService {
 	}
 	
 	private Map<String, Object> extractData(final Element element,
-	                                        final List<DataPointProperties> dataPointPropertiesList) {
-		return dataPointPropertiesList.stream()
+	                                        final List<DataPointConfiguration> dataPointConfigurations) {
+		return dataPointConfigurations.stream()
 				.collect(Collectors.toMap(
-						DataPointProperties::getPropertyName,
-						dataPointProperties -> extractData(element, dataPointProperties)
+						DataPointConfiguration::getPropertyName,
+						dataPointConfiguration -> extractData(element, dataPointConfiguration)
 				));
 	}
 	
 	private Object extractData(final Element element,
-	                           final DataPointProperties dataPointProperties) {
-		final Elements selectedElement = element.select(dataPointProperties.getSelector());
+	                           final DataPointConfiguration dataPointConfiguration) {
+		final Elements selectedElement = element.select(dataPointConfiguration.getSelector());
 
-		return switch(dataPointProperties.getValueSelector()) {
-			case TEXT -> selectedElement.text();
-			case HREF -> selectedElement.attr("href");
-		};
+		if (dataPointConfiguration.getAttribute() != null) {
+			return selectedElement.attr(dataPointConfiguration.getAttribute());
+		}
+		
+		return selectedElement.text();
 	}
 }

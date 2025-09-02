@@ -1,15 +1,16 @@
-package com.x.scrape.scraping;
+package com.x.scrape.job;
 
 import com.x.scrape.http.HttpService;
+import com.x.scrape.mapper.job.JobMapper;
+import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.XScraperProperties;
-import com.x.scrape.properties.scraping.DataScrapingProperties;
 import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.x.scrape.scraping.DocumentScrapingService;
 import com.x.scrape.storage.StorageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -19,60 +20,62 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ScrapingService {
+public class JobService {
 	
 	private final Logger logger = LogManager.getLogger();
 	
-	private final List<ScrapingProperties> scrapingProperties;
+	private final XScraperProperties xScraperProperties;
+	private final JobMapper jobMapper;
 	
 	private final HttpService httpService;
 	private final DocumentScrapingService documentScrapingService;
 	private final StorageService storageService;
 	
-	public ScrapingService(final XScraperProperties xScraperProperties,
-						   final HttpService httpService,
-	                       final DocumentScrapingService documentScrapingService,
-	                       final StorageService storageService) {
-		this.scrapingProperties = xScraperProperties.getScraping();
+	public JobService(final XScraperProperties xScraperProperties,
+	                  final JobMapper jobMapper,
+	                  final HttpService httpService,
+	                  final DocumentScrapingService documentScrapingService,
+	                  final StorageService storageService) {
+		this.xScraperProperties = xScraperProperties;
+		this.jobMapper = jobMapper;
 		this.httpService = httpService;
 		this.documentScrapingService = documentScrapingService;
 		this.storageService = storageService;
 	}
 	
-	/**
-	 * Should not be an event-listener, due to the fact that spring does not like unhandled exceptions in event listeners that deal
-	 * with application state events.
-	 */
-	@Scheduled(initialDelay = 1L)
-	public void startScraping() {
-		scrapingProperties.forEach(this::scrape);
+	@Scheduled(initialDelay = 0L)
+	public void startJobs() {
+		logger.info("Starting scrape jobs");
+		
+		xScraperProperties.getJobs()
+				.stream()
+				.map(jobMapper::map)
+				.forEach(this::executeJob);
 	}
 	
-	private void scrape(final ScrapingProperties scrapingProperties) {
-		logger.info("Start scraping.");
-		
+	public void executeJob(final Job job) {
 		final List<Map<String, Object>> results = new ArrayList<>();
 		
-		for (final URL url : scrapingProperties.getUrl().getUrls()) {
-			final List<Map<String, Object>> scrapedPage = scrapePage(url, scrapingProperties.getDataScraping());
+		for (final URL url : job.getUrlConfiguration().getUrls()) {
+			final List<Map<String, Object>> scrapedPage = scrapePage(url, job.getScrapingConfiguration());
 			logger.info("Finished " + url.toString() + " found " + scrapedPage.size() + " results");
 			
 			results.addAll(scrapedPage);
 			storageService.saveContent(
-					scrapingProperties.getStorage(),
+					job.getStorageConfiguration(),
 					results
 			);
 		}
 	}
 	
 	private List<Map<String, Object>> scrapePage(final URL url,
-	                                             final DataScrapingProperties dataScrapingProperties) {
+	                                             final ScrapingConfiguration scrapingConfiguration) {
 		final Document document = httpService.retrievePage(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
 		return documentScrapingService.scrapeDocument(
 				document,
-				dataScrapingProperties
+				scrapingConfiguration
 		);
 	}
 }

@@ -1,6 +1,6 @@
-package com.x.scrape.properties.scraping;
+package com.x.scrape.model.job.scraping_configuration;
 
-public class DataPointProperties {
+public class DataPointConfiguration {
 	
 	private String selector;
 	private String propertyName;

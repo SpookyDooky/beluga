@@ -1,4 +1,4 @@
-package com.x.scrape.model;
+package com.x.scrape.model.types;
 
 public enum ValueSelector {
 	TEXT,

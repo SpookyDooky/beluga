@@ -1,19 +1,14 @@
-package com.x.scrape.properties.scraping.url;
+package com.x.scrape.model.job;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrlProperties {
+public class UrlConfiguration {
 	
 	private final List<URL> urls = new ArrayList<>();
 	
 	public List<URL> getUrls() {
 		return urls;
-	}
-	
-	public void setUrls(final List<URL> urls) {
-		this.urls.clear();
-		this.urls.addAll(urls);
 	}
 }

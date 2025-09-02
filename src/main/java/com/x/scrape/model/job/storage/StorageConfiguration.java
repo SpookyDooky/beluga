@@ -1,8 +1,8 @@
-package com.x.scrape.properties.scraping.storage;
+package com.x.scrape.model.job.storage;
 
 import com.x.scrape.model.types.StorageFormat;
 
-public class FileProperties {
+public class StorageConfiguration {
 	
 	private StorageFormat format;
 	

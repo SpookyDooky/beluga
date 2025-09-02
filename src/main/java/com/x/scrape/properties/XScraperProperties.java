@@ -1,6 +1,6 @@
 package com.x.scrape.properties;
 
-import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.x.scrape.properties.scraping.JobProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.List;
 @ConfigurationProperties("x-scraper")
 public class XScraperProperties {
 	
-	private List<ScrapingProperties> scraping;
+	private List<JobProperties> jobs;
 	
-	public List<ScrapingProperties> getScraping() {
-		return scraping;
+	public List<JobProperties> getJobs() {
+		return jobs;
 	}
 	
-	public void setScraping(final List<ScrapingProperties> scraping) {
-		this.scraping = scraping;
+	public void setJobs(final List<JobProperties> jobs) {
+		this.jobs = jobs;
 	}
 }

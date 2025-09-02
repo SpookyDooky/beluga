@@ -1,6 +1,6 @@
 package com.x.scrape.storage;
 
-import com.x.scrape.properties.scraping.storage.FileProperties;
+import com.x.scrape.model.job.storage.StorageConfiguration;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ public class StorageService {
 		this.fileWritingService = fileWritingService;
 	}
 	
-	public void saveContent(final FileProperties storageProperties,
+	public void saveContent(final StorageConfiguration storageConfiguration,
 	                        final List<Map<String, Object>> content) {
 		final String jsonContent = jsonService.toJson(content);
 		
 		fileWritingService.write(
-				storageProperties.getFolder(),
-				storageProperties.getFile(),
+				storageConfiguration.getFolder(),
+				storageConfiguration.getFile(),
 				jsonContent
 		);
 	}
