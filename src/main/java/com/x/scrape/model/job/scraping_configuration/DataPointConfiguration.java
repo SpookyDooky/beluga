@@ -1,13 +1,11 @@
 package com.x.scrape.model.job.scraping_configuration;
 
-import com.x.scrape.model.types.ValueSelector;
-
 public class DataPointConfiguration {
 	
 	private String selector;
 	private String propertyName;
 	
-	private ValueSelector valueSelector;
+	private String attribute;
 	
 	public String getSelector() {
 		return selector;
@@ -25,11 +23,11 @@ public class DataPointConfiguration {
 		this.propertyName = propertyName;
 	}
 	
-	public ValueSelector getValueSelector() {
-		return valueSelector;
+	public String getAttribute() {
+		return attribute;
 	}
 	
-	public void setValueSelector(final ValueSelector valueSelector) {
-		this.valueSelector = valueSelector;
+	public void setAttribute(final String attribute) {
+		this.attribute = attribute;
 	}
 }

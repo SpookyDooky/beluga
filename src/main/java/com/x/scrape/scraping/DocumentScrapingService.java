@@ -47,9 +47,10 @@ public class DocumentScrapingService {
 	                           final DataPointConfiguration dataPointConfiguration) {
 		final Elements selectedElement = element.select(dataPointConfiguration.getSelector());
 
-		return switch(dataPointConfiguration.getValueSelector()) {
-			case TEXT -> selectedElement.text();
-			case HREF -> selectedElement.attr("href");
-		};
+		if (dataPointConfiguration.getAttribute() != null) {
+			return selectedElement.attr(dataPointConfiguration.getAttribute());
+		}
+		
+		return selectedElement.text();
 	}
 }

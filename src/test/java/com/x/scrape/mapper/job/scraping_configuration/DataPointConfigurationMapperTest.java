@@ -19,6 +19,6 @@ class DataPointConfigurationMapperTest {
 		
 		assertEquals(dataPointProperties.getSelector(), dataPointConfiguration.getSelector());
 		assertEquals(dataPointProperties.getPropertyName(), dataPointConfiguration.getPropertyName());
-		assertEquals(dataPointProperties.getValueSelector(), dataPointConfiguration.getValueSelector());
+		assertEquals(dataPointProperties.getAttribute(), dataPointConfiguration.getAttribute());
 	}
 }
