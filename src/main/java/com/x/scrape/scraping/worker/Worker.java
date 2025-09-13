@@ -4,6 +4,7 @@ import com.x.scrape.http.HttpService;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskCompletedEvent;
+import com.x.scrape.model.task.event.TaskFailedEvent;
 import com.x.scrape.scraping.DocumentScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
@@ -23,12 +24,12 @@ public class Worker {
 	
 	private final Logger logger = LogManager.getLogger();
 	
+	private final UUID jobId;
 	private final JobTaskQueue jobTaskQueue;
 	private final DocumentScrapingService documentScrapingService;
 	private final HttpService httpService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
-	private final UUID jobId;
 	
 	private Instant startTime;
 	
@@ -58,9 +59,14 @@ public class Worker {
 	
 	private void executeTask(final Task task) {
 		logger.info("Executing task.");
-		final List<Map<String, Object>> scrapingResult = scrapePage(task.getUrl(), task.getScrapingConfiguration());
-		logger.info("Finished " + task.getUrl().toString() + " found " + scrapingResult.size() + " results");
-		applicationEventPublisher.publishEvent(new TaskCompletedEvent(jobId, task.getId(), scrapingResult));
+		try {
+			final List<Map<String, Object>> scrapingResult = scrapePage(task.getUrl(), task.getScrapingConfiguration());
+			logger.info("Finished " + task.getUrl().toString() + " found " + scrapingResult.size() + " results");
+			applicationEventPublisher.publishEvent(new TaskCompletedEvent(jobId, task.getId(), scrapingResult));
+		} catch (final Exception e) {
+			logger.error("Task execution failed.");
+			applicationEventPublisher.publishEvent(new TaskFailedEvent(jobId, task.getId()));
+		}
 	}
 	
 	private List<Map<String, Object>> scrapePage(final URL url,
