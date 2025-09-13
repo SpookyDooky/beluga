@@ -1,11 +1,15 @@
-package com.x.scrape.job;
+package com.x.scrape.scraping.job;
 
+import com.x.scrape.scraping.task.JobTaskQueue;
+import com.x.scrape.scraping.task.TaskFactory;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.task.Task;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.scraping.DocumentScrapingService;
+import com.x.scrape.scraping.worker.Worker;
 import com.x.scrape.storage.StorageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,17 +33,23 @@ public class JobService {
 	private final HttpService httpService;
 	private final DocumentScrapingService documentScrapingService;
 	private final StorageService storageService;
+	private final TaskFactory taskFactory;
+	private final JobTaskQueue jobTaskQueue;
 	
 	public JobService(final XScraperProperties xScraperProperties,
 	                  final JobMapper jobMapper,
 	                  final HttpService httpService,
 	                  final DocumentScrapingService documentScrapingService,
-	                  final StorageService storageService) {
+	                  final StorageService storageService,
+					  final TaskFactory taskFactory,
+	                  final JobTaskQueue jobTaskQueue) {
 		this.xScraperProperties = xScraperProperties;
 		this.jobMapper = jobMapper;
 		this.httpService = httpService;
 		this.documentScrapingService = documentScrapingService;
 		this.storageService = storageService;
+		this.taskFactory = taskFactory;
+		this.jobTaskQueue = jobTaskQueue;
 	}
 	
 	@Scheduled(initialDelay = 0L)
@@ -49,7 +59,29 @@ public class JobService {
 		xScraperProperties.getJobs()
 				.stream()
 				.map(jobMapper::map)
-				.forEach(this::executeJob);
+				.forEach(this::executeJobV2);
+	}
+	
+	// Task creation should ideally not happen hear, job creation from properties should happen in the JobSchedulingService in the future,
+	public void executeJobV2(final Job job) {
+		final List<Task> tasks = job.getUrlConfiguration()
+				.getUrls()
+				.stream()
+				.map(url -> taskFactory.create(url, job))
+				.toList();
+		
+		tasks.forEach(jobTaskQueue::offerTask);
+		
+		for (int i = 0; i < 2; i++) {
+			final Worker worker = new Worker(
+					job.getId(),
+					jobTaskQueue,
+					documentScrapingService,
+					httpService
+			);
+			
+			new Thread(worker::start).start();;
+		}
 	}
 	
 	public void executeJob(final Job job) {
