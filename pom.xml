@@ -17,12 +17,13 @@
         <spring.version>3.4.3</spring.version>
         <jackson.version>2.18.2</jackson.version>
         <jsoup.version>1.17.2</jsoup.version>
-        <log4j.version>2.23.1</log4j.version>
         <junit.version>5.13.0</junit.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <instancio-junit.version>5.5.1</instancio-junit.version>
         <mockito.version>5.19.0</mockito.version>
         <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
+        <slf4j2-impl.version>2.24.3</slf4j2-impl.version>
+        <jansi.version>2.4.0</jansi.version>
     </properties>
 
     <dependencyManagement>
@@ -33,12 +34,38 @@
                 <artifactId>logging</artifactId>
                 <version>${x-scrape.version}</version>
             </dependency>
-            <!-- Other dependencies -->
+
+            <!-- Spring dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-log4j2</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j2-impl</artifactId>
+                <version>${slf4j2-impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${jansi.version}</version>
+            </dependency>
+
+            <!-- Other dependencies -->
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
@@ -58,11 +85,6 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
