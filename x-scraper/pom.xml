@@ -52,6 +52,7 @@
             <groupId>org.x-scraper</groupId>
             <artifactId>logging</artifactId>
         </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
