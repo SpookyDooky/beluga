@@ -1,11 +1,10 @@
 package com.x.scrape.storage.json;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonNestingServiceTest {
 	
@@ -18,7 +17,9 @@ class JsonNestingServiceTest {
 				"property.test2", "b",
 				"thisIsFine", "c",
 				"product.price.whole", "d",
-				"product.price.fractional", "e"
+				"product.price.fractional", "e",
+				"product.origin.country.code", "f",
+				"product.origin.country.name", "g"
 		);
 		
 		final Map<String, Object> result = jsonNestingService.createJsonNesting(mapWithNesting);
@@ -32,5 +33,10 @@ class JsonNestingServiceTest {
 		final Map<String, Object> priceMap = (Map<String, Object>) productMap.get("price");
 		assertEquals("d", priceMap.get("whole"));
 		assertEquals("e", priceMap.get("fractional"));
+		
+		final Map<String, Object> originMap = (Map<String, Object>) productMap.get("origin");
+		final Map<String, Object> countryMap = (Map<String, Object>) originMap.get("country");
+		assertEquals("f", countryMap.get("code"));
+		assertEquals("g", countryMap.get("name"));
 	}
 }

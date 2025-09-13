@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JobRegistry {
-	
+
 	private final Logger logger = LogManager.getLogger();
 	private final Map<UUID, Job> jobRegistry = new ConcurrentHashMap<>();
 	
