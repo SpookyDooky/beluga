@@ -32,7 +32,7 @@ public class JobRegistry {
 	}
 	
 	@Scheduled(initialDelay = 0L)
-	public void startJobs() {
+	public void registerJobs() {
 		xScraperProperties.getJobs()
 				.forEach(this::registerConfigurationJob);
 		
