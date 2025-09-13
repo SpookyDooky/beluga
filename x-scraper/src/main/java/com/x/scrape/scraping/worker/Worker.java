@@ -64,7 +64,7 @@ public class Worker {
 			logger.info("Finished " + task.getUrl().toString() + " found " + scrapingResult.size() + " results");
 			applicationEventPublisher.publishEvent(new TaskCompletedEvent(jobId, task.getId(), scrapingResult));
 		} catch (final Exception e) {
-			logger.error("Task execution failed.");
+			logger.error("Task execution failed.", e);
 			applicationEventPublisher.publishEvent(new TaskFailedEvent(jobId, task.getId()));
 		}
 	}

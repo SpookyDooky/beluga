@@ -18,5 +18,6 @@ class UrlConfigurationMapperTest {
 		final UrlConfiguration urlConfiguration = mapper.map(urlProperties);
 		
 		assertEquals(urlProperties.getUrls(), urlConfiguration.getUrls());
+		assertEquals(urlProperties.getUrlFile(), urlConfiguration.getUrlFile());
 	}
 }

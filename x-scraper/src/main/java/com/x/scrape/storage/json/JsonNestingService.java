@@ -51,19 +51,42 @@ public class JsonNestingService {
 		for (final String nestedPropertyPrefix : nestedPrefixes) {
 			final List<String> nestedObjects = getNestedObjects(nestedPropertyPrefix);
 			
-			Map<String, Object> lastObject = null;
+			Map<String, Object> nestedObject = null;
 			for (int i = 0; i < nestedObjects.size(); i++) {
 				final String objectName = nestedObjects.get(i);
-				final Map<String, Object> nestedObject = new HashMap<>();
 				
-				if (i >= 1) {
-					lastObject.put(objectName, nestedObject);
-					lastObject = nestedObject;
+				// Some part is already defined
+				if (nestedMap.containsKey(objectName)) {
+					nestedObject = (Map<String, Object>) nestedMap.get(objectName);
+					continue;
+				} else if (nestedObject != null && nestedObject.containsKey(objectName)) {
+					nestedObject = (Map<String, Object>) nestedObject.get(objectName);
+					continue;
+				}
+				
+				final Map<String, Object> newObject = new HashMap<>();
+				if (nestedObject == null) {
+					nestedMap.put(objectName, newObject);
+					nestedObject = newObject;
 				} else {
-					nestedMap.put(objectName, nestedObject);
-					lastObject = nestedObject;
+					nestedObject.put(objectName, newObject);
+					nestedObject = newObject;
 				}
 			}
+			
+//			Map<String, Object> lastObject = null;
+//			for (int i = 0; i < nestedObjects.size(); i++) {
+//				final String objectName = nestedObjects.get(i);
+//				final Map<String, Object> nestedObject = new HashMap<>();
+//
+//				if (i >= 1) {
+//					lastObject.put(objectName, nestedObject);
+//					lastObject = nestedObject;
+//				} else {
+//					nestedMap.put(objectName, nestedObject);
+//					lastObject = nestedObject;
+//				}
+//			}
 		}
 		
 		return nestedMap;
