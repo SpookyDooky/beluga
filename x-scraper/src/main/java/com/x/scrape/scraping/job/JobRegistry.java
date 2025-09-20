@@ -1,11 +1,10 @@
 package com.x.scrape.scraping.job;
 
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JobRegistry {
 
-	private final Logger logger = LogManager.getLogger();
 	private final Map<UUID, Job> jobRegistry = new ConcurrentHashMap<>();
 	
+	private final ContextLogger logger;
 	private final XScraperProperties xScraperProperties;
 	private final JobMapper jobMapper;
 	private final JobExecutionService jobExecutionService;
 	
-	public JobRegistry(final XScraperProperties xScraperProperties,
+	public JobRegistry(final ContextLogger logger,
+	                   final XScraperProperties xScraperProperties,
 	                   final JobMapper jobMapper,
 	                   final JobExecutionService jobExecutionService) {
+		this.logger = logger;
 		this.xScraperProperties = xScraperProperties;
 		this.jobMapper = jobMapper;
 		this.jobExecutionService = jobExecutionService;

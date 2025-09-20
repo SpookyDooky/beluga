@@ -2,10 +2,14 @@
 <Configuration>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %highlight{%-5level} %logger{short} - %msg\n{%X{context}}%n"/>
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %highlight{%-5level} %logger{short} - %msg\n%X%n"
+                    disableAnsi="false"
+                    noConsoleNoAnsi="false"
+            />
         </Console>
     </Appenders>
-
+d
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="console"/>

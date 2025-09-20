@@ -1,6 +1,7 @@
 package com.x.scrape.scraping.job;
 
 import com.x.scrape.http.HttpService;
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.task.Task;
@@ -8,7 +9,6 @@ import com.x.scrape.scraping.DocumentScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;
 import com.x.scrape.scraping.worker.Worker;
-import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +22,14 @@ import java.util.List;
 @Service
 public class JobExecutionService {
 	
-	private final Logger logger;
+	private final ContextLogger logger;
 	private final HttpService httpService;
 	private final DocumentScrapingService documentScrapingService;
 	private final TaskFactory taskFactory;
 	private final JobTaskQueue jobTaskQueue;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
-	public JobExecutionService(final Logger logger,
+	public JobExecutionService(final ContextLogger logger,
 	                           final HttpService httpService,
 	                           final DocumentScrapingService documentScrapingService,
 	                           final TaskFactory taskFactory,
