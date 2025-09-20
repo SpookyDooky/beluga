@@ -10,6 +10,8 @@ public class JobProperties {
 	private ScrapingProperties scraping;
 	private FileProperties storage;
 	
+	private int workers = 1;
+	
 	public UrlProperties getUrl() {
 		return url;
 	}
@@ -32,5 +34,13 @@ public class JobProperties {
 	
 	public void setStorage(final FileProperties storage) {
 		this.storage = storage;
+	}
+	
+	public int getWorkers() {
+		return workers;
+	}
+	
+	public void setWorkers(final int workers) {
+		this.workers = workers;
 	}
 }
