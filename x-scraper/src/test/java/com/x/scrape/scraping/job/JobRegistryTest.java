@@ -1,5 +1,6 @@
 package com.x.scrape.scraping.job;
 
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.properties.XScraperProperties;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JobRegistryTest {
 	
+	@Mock
+	private ContextLogger contextLogger;
 	@Mock
 	private XScraperProperties xScraperProperties;
 	@Mock

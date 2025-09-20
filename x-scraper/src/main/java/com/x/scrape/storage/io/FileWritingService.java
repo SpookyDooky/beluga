@@ -1,9 +1,8 @@
 package com.x.scrape.storage.io;
 
-import com.x.scrape.storage.io.exception.FileCreationException;
+import com.x.scrape.logging.CloseableContext;
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.storage.io.exception.FileWritingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -14,29 +13,30 @@ import java.io.IOException;
 @Service
 public class FileWritingService {
 	
-	private final Logger logger = LogManager.getLogger();
+	private final ContextLogger logger;
+	
+	public FileWritingService(final ContextLogger logger) {
+		this.logger = logger;
+	}
 	
 	public void write(final String folder,
 	                  final String fileName,
 	                  final String content) {
-		final File file = new File(folder + fileName);
-		
-		if (!file.exists()) {
-			createFile(file);
+		try (final CloseableContext ignored = logger.with("fileName", fileName)) {
+			
+			final File file = new File(folder + fileName);
+			if (!file.getParentFile().exists()) {
+				createFolder(file.getParentFile());
+			}
+			
+			write(file, content);
 		}
-		
-		write(file, content);
 	}
 	
-	private void createFile(final File file) {
-		try {
-			logger.info("Creating file " + file.getAbsolutePath());
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-		} catch (final IOException e) {
-			logger.error("Failed to create file " + file.getAbsolutePath());
-			throw new FileCreationException("Failed to create file " + file.getAbsolutePath(), e);
-		}
+	private void createFolder(final File file) {
+			logger.info("Creating folder " + file.getAbsolutePath());
+			file.mkdirs();
+//			file.createNewFile();
 	}
 	
 	private void write(final File file,
