@@ -36,13 +36,10 @@ public class FileWritingService {
 	private void createFolder(final File file) {
 			logger.info("Creating folder " + file.getAbsolutePath());
 			file.mkdirs();
-//			file.createNewFile();
 	}
 	
 	private void write(final File file,
 	                   final String content) {
-		logger.info("Writing to " + file.getAbsolutePath());
-		
 		try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			writer.write(content);
 		} catch (final IOException e) {

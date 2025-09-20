@@ -13,6 +13,8 @@ public class Job {
 	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;
 	
+	private int workers;
+	
 	public Job() {
 		id = UUID.randomUUID();
 	}
@@ -43,5 +45,13 @@ public class Job {
 	
 	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
 		this.storageConfiguration = storageConfiguration;
+	}
+	
+	public int getWorkers() {
+		return workers;
+	}
+	
+	public void setWorkers(final int workers) {
+		this.workers = workers;
 	}
 }

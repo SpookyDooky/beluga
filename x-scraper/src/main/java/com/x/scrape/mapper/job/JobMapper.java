@@ -24,5 +24,6 @@ public interface JobMapper {
 	@Mapping(target = "urlConfiguration", source = "url")
 	@Mapping(target = "scrapingConfiguration", source = "scraping")
 	@Mapping(target = "storageConfiguration", source = "storage")
+	@Mapping(target = "workers", source = "workers")
 	Job map(JobProperties jobProperties);
 }

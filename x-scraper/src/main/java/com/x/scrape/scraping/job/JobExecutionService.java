@@ -49,7 +49,7 @@ public class JobExecutionService {
 		final List<Task> tasks = createTasks(job);
 		tasks.forEach(jobTaskQueue::offerTask);
 		
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < job.getWorkers(); i++) {
 			final Worker worker = new Worker(
 					job.getId(),
 					jobTaskQueue,
