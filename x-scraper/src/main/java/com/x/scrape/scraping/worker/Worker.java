@@ -38,7 +38,6 @@ public class Worker {
 	private final HttpService httpService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
-	
 	private Instant startTime;
 	
 	public Worker(final UUID jobId,
