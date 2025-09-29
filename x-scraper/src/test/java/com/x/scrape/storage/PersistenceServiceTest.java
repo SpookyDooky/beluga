@@ -6,13 +6,13 @@ import com.x.scrape.scraping.job.JobRegistry;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,12 +39,10 @@ class PersistenceServiceTest {
 		
 		persistenceService.onTaskCompleted(taskCompletedEvent);
 		
-//		verify(fileWritingService).write(
-//				job.getStorageConfiguration().getFolder(),
-//				taskCompletedEvent.getTaskId() + ".json",
-//				jsonContent
-//		);
-		
-		Assertions.fail();
+		verify(fileWritingService).write(
+				job.getJobTaskResultsFolder() + "/" + taskCompletedEvent.getTaskId() + "/",
+				taskCompletedEvent.getTaskId() + ".json",
+				jsonContent
+		);
 	}
 }
