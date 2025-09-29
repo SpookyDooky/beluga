@@ -1,14 +1,14 @@
 package com.x.scrape.scraping.task;
 
-import com.x.scrape.scraping.task.TaskFactory;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 class TaskFactoryTest {
@@ -22,8 +22,10 @@ class TaskFactoryTest {
 		
 		final Task task = taskFactory.create(url, job);
 		
-		assertEquals(job.getId(), task.getJobId());
+		assertSame(job, task.getJob());
 		assertSame(url, task.getUrl());
-		assertEquals(job.getScrapingConfiguration(), task.getScrapingConfiguration());
+//		assertEquals(job.getScrapingConfiguration(), task.getScrapingConfiguration());
+//		assertEquals(job.getStorageConfiguration(), task.getStorageConfiguration());
+		Assertions.fail();
 	}
 }

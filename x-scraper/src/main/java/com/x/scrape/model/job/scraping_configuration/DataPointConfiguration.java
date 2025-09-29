@@ -1,11 +1,14 @@
 package com.x.scrape.model.job.scraping_configuration;
 
+import static com.x.scrape.model.job.scraping_configuration.DataPointType.TEXT;
+
 public class DataPointConfiguration {
 	
 	private String selector;
 	private String propertyName;
 	
 	private String attribute;
+	private DataPointType type = TEXT;
 	
 	public String getSelector() {
 		return selector;
@@ -29,5 +32,13 @@ public class DataPointConfiguration {
 	
 	public void setAttribute(final String attribute) {
 		this.attribute = attribute;
+	}
+	
+	public DataPointType getType() {
+		return type;
+	}
+	
+	public void setType(final DataPointType type) {
+		this.type = type;
 	}
 }

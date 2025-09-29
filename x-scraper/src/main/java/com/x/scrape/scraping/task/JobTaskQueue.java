@@ -37,7 +37,7 @@ public class JobTaskQueue {
 	 */
 	public void offerTask(final Task task) {
 		jobTaskQueueMap.compute(
-				task.getJobId(),
+				task.getJob().getId(),
 				(key, jobTaskQueue) -> {
 					if (jobTaskQueue == null) {
 						jobTaskQueue = new ConcurrentLinkedQueue<>();

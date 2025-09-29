@@ -5,10 +5,7 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.storage.io.exception.FileWritingException;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 @Service
 public class FileWritingService {
@@ -30,6 +27,34 @@ public class FileWritingService {
 			}
 			
 			write(file, content);
+		}
+	}
+	
+	public void write(final String folder,
+	                  final String fileName,
+	                  final InputStream inputStream) {
+		try (final CloseableContext ignored = logger.with("fileName", fileName)) {
+			final File file = new File(folder + fileName);
+			if (!file.getParentFile().exists()) {
+				createFolder(file.getParentFile());
+			}
+			
+			final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			final byte[] buffer = new byte[8192];
+			
+			int n = 0;
+			while (-1 != (n = inputStream.read(buffer))) {
+				outputStream.write(buffer, 0, n);
+			}
+			
+			final FileOutputStream fileOutputStream = new FileOutputStream(file);
+			fileOutputStream.write(outputStream.toByteArray());
+			fileOutputStream.close();
+			
+			outputStream.close();
+			inputStream.close();
+		} catch (final IOException e) {
+			throw new IllegalStateException("Could not read input-stream", e);
 		}
 	}
 	

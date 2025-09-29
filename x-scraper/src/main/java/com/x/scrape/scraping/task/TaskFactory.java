@@ -13,9 +13,10 @@ public class TaskFactory {
 	                   final Job job) {
 		final Task task = new Task();
 
-		task.setJobId(job.getId());
+		task.setJob(job);
 		task.setUrl(url);
-		task.setScrapingConfiguration(job.getScrapingConfiguration());
+		task.setScrapingConfiguration(job.getJobConfiguration().getScrapingConfiguration());
+		task.setStorageConfiguration(job.getJobConfiguration().getStorageConfiguration());
 		
 		return task;
 	}

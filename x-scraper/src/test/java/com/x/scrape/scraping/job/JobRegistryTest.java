@@ -1,7 +1,8 @@
 package com.x.scrape.scraping.job;
 
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobMapper;
+import com.x.scrape.mapper.job.JobConfigurationMapper;
+import com.x.scrape.model.JobConfiguration;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
@@ -15,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobRegistryTest {
@@ -26,7 +26,7 @@ class JobRegistryTest {
 	@Mock
 	private XScraperProperties xScraperProperties;
 	@Mock
-	private JobMapper jobMapper;
+	private JobConfigurationMapper jobConfigurationMapper;
 	@Mock
 	private JobExecutionService jobExecutionService;
 	
@@ -38,8 +38,11 @@ class JobRegistryTest {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
 		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
+		final JobConfiguration jobConfiguration = mock();
+		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
+		
 		final Job job = Instancio.create(Job.class);
-		when(jobMapper.map(jobPropertiesList.getFirst())).thenReturn(job);
+		when(jobConfiguration.getJob()).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		
@@ -51,12 +54,15 @@ class JobRegistryTest {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
 		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
+		final JobConfiguration jobConfiguration = mock();
+		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
+		
 		final Job job = Instancio.create(Job.class);
-		when(jobMapper.map(jobPropertiesList.getFirst())).thenReturn(job);
+		when(jobConfiguration.getJob()).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		final Job result = jobRegistry.get(job.getId());
-		
+
 		assertSame(job, result);
 	}
 }

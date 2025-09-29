@@ -1,7 +1,7 @@
 package com.x.scrape.scraping.job;
 
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobMapper;
+import com.x.scrape.mapper.job.JobConfigurationMapper;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
@@ -19,16 +19,16 @@ public class JobRegistry {
 	
 	private final ContextLogger logger;
 	private final XScraperProperties xScraperProperties;
-	private final JobMapper jobMapper;
+	private final JobConfigurationMapper jobConfigurationMapper;
 	private final JobExecutionService jobExecutionService;
 	
 	public JobRegistry(final ContextLogger logger,
 	                   final XScraperProperties xScraperProperties,
-	                   final JobMapper jobMapper,
+	                   final JobConfigurationMapper jobConfigurationMapper,
 	                   final JobExecutionService jobExecutionService) {
 		this.logger = logger;
 		this.xScraperProperties = xScraperProperties;
-		this.jobMapper = jobMapper;
+		this.jobConfigurationMapper = jobConfigurationMapper;
 		this.jobExecutionService = jobExecutionService;
 	}
 	
@@ -44,7 +44,8 @@ public class JobRegistry {
 	private void registerConfigurationJob(final JobProperties jobProperties) {
 		logger.info("Registering job");
 		
-		final Job job = jobMapper.map(jobProperties);
+		final Job job = jobConfigurationMapper.map(jobProperties)
+						.getJob();
 		jobRegistry.put(job.getId(), job);
 	}
 	
