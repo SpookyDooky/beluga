@@ -1,57 +1,36 @@
 package com.x.scrape.model.job;
 
-import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
-import com.x.scrape.model.job.storage.StorageConfiguration;
+import com.x.scrape.model.JobConfiguration;
 
+import java.io.File;
 import java.util.UUID;
 
 public class Job {
 	
 	private final UUID id;
+	private final JobConfiguration jobConfiguration;
 	
-	private UrlConfiguration urlConfiguration;
-	private ScrapingConfiguration scrapingConfiguration;
-	private StorageConfiguration storageConfiguration;
-	
-	private int workers;
-	
-	public Job() {
+	public Job(final JobConfiguration jobConfiguration) {
 		id = UUID.randomUUID();
+		this.jobConfiguration = jobConfiguration;
 	}
 	
 	public UUID getId() {
 		return id;
 	}
 	
-	public UrlConfiguration getUrlConfiguration() {
-		return urlConfiguration;
+	public JobConfiguration getJobConfiguration() {
+		return jobConfiguration;
 	}
 	
-	public void setUrlConfiguration(final UrlConfiguration urlConfiguration) {
-		this.urlConfiguration = urlConfiguration;
+	public void createJobFolders() {
+		final File file = new File(getJobTaskResultsFolder());
+		file.mkdirs();
 	}
 	
-	public ScrapingConfiguration getScrapingConfiguration() {
-		return scrapingConfiguration;
-	}
-	
-	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
-		this.scrapingConfiguration = scrapingConfiguration;
-	}
-	
-	public StorageConfiguration getStorageConfiguration() {
-		return storageConfiguration;
-	}
-	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
-		this.storageConfiguration = storageConfiguration;
-	}
-	
-	public int getWorkers() {
-		return workers;
-	}
-	
-	public void setWorkers(final int workers) {
-		this.workers = workers;
+	public String getJobTaskResultsFolder() {
+		return jobConfiguration.getStorageConfiguration().getFolder() +
+				jobConfiguration.getName() +
+				"/job-executions/" + id + "/results/tasks";
 	}
 }

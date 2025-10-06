@@ -1,17 +1,26 @@
 package com.x.scrape.model.task;
 
+import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job.storage.StorageConfiguration;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static com.x.scrape.model.job.scraping_configuration.DataPointType.IMAGE;
 
 public class Task {
 	
 	private final UUID id;
-	private UUID jobId;
+	private Job job;
 	
 	private URL url;
+	
 	private ScrapingConfiguration scrapingConfiguration;
+	private StorageConfiguration storageConfiguration;
 	
 	public Task() {
 		id = UUID.randomUUID();
@@ -21,12 +30,12 @@ public class Task {
 		return id;
 	}
 	
-	public UUID getJobId() {
-		return jobId;
+	public Job getJob() {
+		return job;
 	}
 	
-	public void setJobId(final UUID jobId) {
-		this.jobId = jobId;
+	public void setJob(final Job job) {
+		this.job = job;
 	}
 	
 	public URL getUrl() {
@@ -43,5 +52,43 @@ public class Task {
 	
 	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
 		this.scrapingConfiguration = scrapingConfiguration;
+	}
+	
+	public StorageConfiguration getStorageConfiguration() {
+		return storageConfiguration;
+	}
+	
+	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
+		this.storageConfiguration = storageConfiguration;
+	}
+	
+	public List<ImageDownloadTask> getImageDownloadsTask(final Map<String, Object> scrapedData) {
+		return scrapingConfiguration.getDataPointConfigurations()
+				.stream()
+				.filter(dataPointConfiguration -> IMAGE.equals(dataPointConfiguration.getType()))
+				.map(imageConfiguration -> createImageDownloadTask(scrapedData, imageConfiguration.getPropertyName()))
+				.toList();
+	}
+	
+	private ImageDownloadTask createImageDownloadTask(final Map<String, Object> scrapedData,
+	                                                  final String propertyName) {
+		
+		final String rawUrl = (String) scrapedData.get(propertyName);
+		try {
+			final URL url = new URL(rawUrl);
+			return createImageDownloadTask(url, propertyName);
+		} catch (final MalformedURLException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
+	private ImageDownloadTask createImageDownloadTask(final URL url,
+	                                                  final String propertyName) {
+		final ImageDownloadTask task = new ImageDownloadTask();
+		
+		task.setUrl(url);
+		task.setPropertyName(propertyName);
+		
+		return task;
 	}
 }

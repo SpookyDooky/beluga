@@ -4,12 +4,11 @@ import com.x.scrape.http.HttpService;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
-import com.x.scrape.scraping.DocumentScrapingService;
+import com.x.scrape.scraping.DomScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
 import org.instancio.Instancio;
-import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +34,7 @@ class WorkerTest {
 	@Mock
 	private JobTaskQueue jobTaskQueue;
 	@Mock
-	private DocumentScrapingService documentScrapingService;
+	private DomScrapingService domScrapingService;
 	@Mock
 	private HttpService httpService;
 	@Mock
@@ -70,11 +69,8 @@ class WorkerTest {
 		final Task task = Instancio.create(Task.class);
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
 		
-		final Document document = mock();
-		when(httpService.retrievePage(task.getUrl())).thenReturn(Optional.of(document));
-		
 		final List<Map<String, Object>> scrapeResult = mock();
-		when(documentScrapingService.scrapeDocument(document, task.getScrapingConfiguration()))
+		when(domScrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
 				.thenReturn(scrapeResult);
 		
 		worker.start();
@@ -96,7 +92,7 @@ class WorkerTest {
 		
 		final Task task = Instancio.create(Task.class);
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
-		when(httpService.retrievePage(task.getUrl())).thenThrow(IllegalArgumentException.class);
+		when(domScrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
 		
 		assertDoesNotThrow((() -> worker.start()));
 		

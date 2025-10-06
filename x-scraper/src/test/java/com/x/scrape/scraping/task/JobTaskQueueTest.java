@@ -1,6 +1,6 @@
 package com.x.scrape.scraping.task;
 
-import com.x.scrape.scraping.task.JobTaskQueue;
+import com.x.scrape.model.job.Job;
 import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -22,39 +22,36 @@ class JobTaskQueueTest {
 	
 	@Test
 	void shouldNotBeEmpty() {
-		final UUID jobId = UUID.randomUUID();
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJobId), jobId)
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
 		
-		assertFalse(jobTaskQueue.isQueueEmpty(jobId));
+		assertFalse(jobTaskQueue.isQueueEmpty(task.getJob().getId()));
 	}
 	
 	@Test
 	void shouldBeEmptyAfterRemovingLastTask() {
-		final UUID jobId = UUID.randomUUID();
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJobId), jobId)
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
-		jobTaskQueue.pollTask(jobId);
+		jobTaskQueue.pollTask(task.getJob().getId());
 		
-		assertTrue(jobTaskQueue.isQueueEmpty(jobId));
+		assertTrue(jobTaskQueue.isQueueEmpty(task.getJob().getId()));
 	}
 	
 	@Test
 	void shouldReturnTask() {
-		final UUID jobId = UUID.randomUUID();
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJobId), jobId)
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
 		
-		final Task result = jobTaskQueue.pollTask(jobId)
+		final Task result = jobTaskQueue.pollTask(task.getJob().getId())
 				.get();
 		
 		assertSame(task, result);
@@ -62,15 +59,14 @@ class JobTaskQueueTest {
 	
 	@Test
 	void shouldReturnOptionalEmpty() {
-		final UUID jobId = UUID.randomUUID();
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJobId), jobId)
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
-		jobTaskQueue.pollTask(jobId);
+		jobTaskQueue.pollTask(task.getJob().getId());
 		
-		final Optional<Task> taskOptional = jobTaskQueue.pollTask(jobId);
+		final Optional<Task> taskOptional = jobTaskQueue.pollTask(task.getJob().getId());
 		
 		assertTrue(taskOptional.isEmpty());
 	}

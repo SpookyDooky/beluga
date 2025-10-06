@@ -5,7 +5,7 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.scraping.DocumentScrapingService;
+import com.x.scrape.scraping.DomScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;
 import com.x.scrape.scraping.worker.Worker;
@@ -24,20 +24,20 @@ public class JobExecutionService {
 	
 	private final ContextLogger logger;
 	private final HttpService httpService;
-	private final DocumentScrapingService documentScrapingService;
+	private final DomScrapingService domScrapingService;
 	private final TaskFactory taskFactory;
 	private final JobTaskQueue jobTaskQueue;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
 	public JobExecutionService(final ContextLogger logger,
 	                           final HttpService httpService,
-	                           final DocumentScrapingService documentScrapingService,
+	                           final DomScrapingService domScrapingService,
 	                           final TaskFactory taskFactory,
 	                           final JobTaskQueue jobTaskQueue,
 	                           final ApplicationEventPublisher applicationEventPublisher) {
 		this.logger = logger;
 		this.httpService = httpService;
-		this.documentScrapingService = documentScrapingService;
+		this.domScrapingService = domScrapingService;
 		this.taskFactory = taskFactory;
 		this.jobTaskQueue = jobTaskQueue;
 		this.applicationEventPublisher = applicationEventPublisher;
@@ -49,11 +49,13 @@ public class JobExecutionService {
 		final List<Task> tasks = createTasks(job);
 		tasks.forEach(jobTaskQueue::offerTask);
 		
-		for (int i = 0; i < job.getWorkers(); i++) {
+		job.createJobFolders();
+		
+		for (int i = 0; i < job.getJobConfiguration().getWorkers(); i++) {
 			final Worker worker = new Worker(
 					job.getId(),
 					jobTaskQueue,
-					documentScrapingService,
+					domScrapingService,
 					httpService,
 					applicationEventPublisher
 			);
@@ -64,7 +66,8 @@ public class JobExecutionService {
 	}
 	
 	private List<Task> createTasks(final Job job) {
-		final UrlConfiguration urlConfiguration = job.getUrlConfiguration();
+		final UrlConfiguration urlConfiguration = job.getJobConfiguration()
+				.getUrlConfiguration();
 		
 		if (urlConfiguration.getUrlFile() == null) {
 			return createTasksFromUrlList(job, urlConfiguration.getUrls());

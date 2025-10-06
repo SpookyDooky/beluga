@@ -5,12 +5,21 @@ import com.x.scrape.properties.scraping.url.UrlProperties;
 
 public class JobProperties {
 	
+	private String name;
 	private UrlProperties url;
 	
 	private ScrapingProperties scraping;
 	private FileProperties storage;
 	
 	private int workers = 1;
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(final String name) {
+		this.name = name;
+	}
 	
 	public UrlProperties getUrl() {
 		return url;

@@ -3,6 +3,13 @@ package com.x.scrape.model.job.storage;
 import com.x.scrape.model.types.StorageFormat;
 
 public class StorageConfiguration {
+	// job name
+		// results
+			// job executions
+				// tasks
+					// json
+					// images/pngs
+		// configurations
 	
 	private StorageFormat format;
 	
