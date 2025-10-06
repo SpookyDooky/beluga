@@ -1,30 +1,28 @@
 package com.x.scrape.model.task.event;
 
+import com.x.scrape.model.task.event.data_result.TaskDataResultEvent;
+import com.x.scrape.model.task.event.data_result.data.DataPayload;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class TaskDataResultEventTest {
 
 	@Test
-	void shouldTurnObjectIntoInputStream() throws Exception {
-		final String data = "data";
+	void shouldReturnPayload() throws Exception {
+		final DataPayload<?> dataPayload = mock();
 		
 		final TaskDataResultEvent event = new TaskDataResultEvent(
 				UUID.randomUUID(),
 				UUID.randomUUID(),
-				data
+				null,
+				dataPayload
 		);
 		
-		final InputStream dataInputStream = event.getData();
-		final ObjectInputStream objectInputStream = new ObjectInputStream(dataInputStream);
-		final String reconstructedData = (String) objectInputStream.readObject();
-		
-		assertEquals(data, reconstructedData);
+		assertSame(dataPayload, event.getPayload());
 	}
 	
 	@Test
@@ -32,6 +30,7 @@ class TaskDataResultEventTest {
 		assertThrows(NullPointerException.class, () -> new TaskDataResultEvent(
 				UUID.randomUUID(),
 				UUID.randomUUID(),
+				null,
 				null
 		));
 	}
@@ -44,7 +43,7 @@ class TaskDataResultEventTest {
 				UUID.randomUUID(),
 				UUID.randomUUID(),
 				fileName,
-				"data"
+				mock()
 		);
 		
 		assertEquals(fileName, event.getFileName().get());
@@ -55,7 +54,8 @@ class TaskDataResultEventTest {
 		final TaskDataResultEvent event = new TaskDataResultEvent(
 				UUID.randomUUID(),
 				UUID.randomUUID(),
-				"data"
+				null,
+				mock()
 		);
 		
 		assertTrue(event.getFileName().isEmpty());
