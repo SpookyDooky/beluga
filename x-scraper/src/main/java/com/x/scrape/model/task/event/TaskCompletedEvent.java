@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public class TaskCompletedEvent extends TaskEvent {
 	
+	// TODO - Should be OBJECT
+	// TODO - There should be one task (partial) result event
 	private final List<Map<String, Object>> result;
 	
 	public TaskCompletedEvent(final UUID jobId,
