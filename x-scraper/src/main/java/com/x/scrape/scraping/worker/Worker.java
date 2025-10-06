@@ -16,6 +16,8 @@ import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
@@ -27,12 +29,15 @@ import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.RESULTS;
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
+@Component
+@Scope(SCOPE_PROTOTYPE)
 public class Worker {
 	
 	private final ContextLogger logger = new ContextLogger(LogManager.getLogger());
 	
-	private final UUID jobId;
+	private UUID jobId;
 	private final JobTaskQueue jobTaskQueue;
 	private final DomScrapingService domScrapingService;
 	private final HttpService httpService;
@@ -40,16 +45,18 @@ public class Worker {
 	
 	private Instant startTime;
 	
-	public Worker(final UUID jobId,
-	              final JobTaskQueue jobTaskQueue,
+	public Worker(final JobTaskQueue jobTaskQueue,
 	              final DomScrapingService domScrapingService,
 	              final HttpService httpService,
 	              final ApplicationEventPublisher applicationEventPublisher) {
-		this.jobId = jobId;
 		this.jobTaskQueue = jobTaskQueue;
 		this.domScrapingService = domScrapingService;
 		this.httpService = httpService;
 		this.applicationEventPublisher = applicationEventPublisher;
+	}
+	
+	public void init(final UUID jobId) {
+		this.jobId = jobId;
 	}
 	
 	public void start() {
