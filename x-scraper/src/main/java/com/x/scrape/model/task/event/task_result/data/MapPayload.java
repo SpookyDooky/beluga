@@ -1,4 +1,4 @@
-package com.x.scrape.model.task.event.data_result.data;
+package com.x.scrape.model.task.event.task_result.data;
 
 import java.util.Map;
 

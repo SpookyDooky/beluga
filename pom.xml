@@ -24,6 +24,7 @@
         <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
         <slf4j2-impl.version>2.24.3</slf4j2-impl.version>
         <jansi.version>2.4.0</jansi.version>
+        <jetbrains-annotations.version>13.0</jetbrains-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -109,6 +110,11 @@
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${jetbrains-annotations.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
