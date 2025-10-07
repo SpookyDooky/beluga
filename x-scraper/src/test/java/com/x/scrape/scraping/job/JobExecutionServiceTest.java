@@ -73,7 +73,7 @@ class JobExecutionServiceTest {
 		
 		verify(jobTaskQueue).offerTask(task);
 		verify(worker).init(job.getId());
-		verify(worker).start();
+		verify(worker, after(250)).start();
 	}
 	
 	@Test
@@ -105,6 +105,6 @@ class JobExecutionServiceTest {
 		
 		verify(jobTaskQueue).offerTask(task);
 		verify(worker).init(job.getId());
-		verify(worker).start();
+		verify(worker, after(250)).start();
 	}
 }

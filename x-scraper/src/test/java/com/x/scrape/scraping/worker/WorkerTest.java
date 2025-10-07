@@ -47,6 +47,7 @@ class WorkerTest {
 	void shouldSendWorkerEvents() {
 		when(jobTaskQueue.isQueueEmpty(jobId)).thenReturn(true);
 		
+		worker.init(jobId);
 		worker.start();
 		
 		final ArgumentCaptor<WorkerStartedEvent> workerStartedEventArgumentCaptor = ArgumentCaptor.forClass(WorkerStartedEvent.class);
@@ -73,6 +74,7 @@ class WorkerTest {
 		when(domScrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
 				.thenReturn(scrapeResult);
 		
+		worker.init(jobId);
 		worker.start();
 		
 		final ArgumentCaptor<TaskCompletedEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskCompletedEvent.class);
@@ -94,6 +96,7 @@ class WorkerTest {
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
 		when(domScrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
 		
+		worker.init(jobId);
 		assertDoesNotThrow((() -> worker.start()));
 		
 		final ArgumentCaptor<TaskFailedEvent> taskFailedEventArgumentCaptor = ArgumentCaptor.forClass(TaskFailedEvent.class);
