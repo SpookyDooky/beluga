@@ -26,8 +26,10 @@ public class HttpService {
 	
 	public Optional<Document> retrievePageAsDocument(final URL url) {
 		logger.info("Retrieving document for: " + url);
+//		applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
 		
 		try {
+			
 			return Optional.of(
 					Jsoup.connect(url.toString())
 							.timeout(10_000)

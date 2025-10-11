@@ -2,12 +2,12 @@ package com.x.scrape.storage;
 
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.task.event.task_result.StorageHint;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.event.storable.payload.Payload;
+import com.x.scrape.model.event.storable.Storable;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
+import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.springframework.context.event.EventListener;
@@ -37,7 +37,7 @@ public class StorageService {
 	 */
 	@EventListener
 	@Async
-	public void onTaskResultEvent(final TaskResultEvent event) {
+	public void onTaskResultEvent(final Storable event) {
 		try (final CloseableContext ignored = logger.with(event)) {
 			logger.info("Saving task result.");
 			saveResult(event.getStorageHint(), event.getPayload());

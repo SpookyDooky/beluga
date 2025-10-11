@@ -3,7 +3,6 @@ package com.x.scrape.activity_logging.model;
 import org.slf4j.MDC;
 
 import java.time.Instant;
-import java.util.Map;
 
 public abstract class Activity {
 	
@@ -33,7 +32,7 @@ public abstract class Activity {
 		return type;
 	}
 	
-	public Map<String, String> getContext() {
+	public ActivityContext getContext() {
 		return context;
 	}
 }

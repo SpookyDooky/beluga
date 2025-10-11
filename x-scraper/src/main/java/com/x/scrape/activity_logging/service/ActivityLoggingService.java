@@ -9,7 +9,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,11 +36,26 @@ public class ActivityLoggingService {
 	
 	@Async
 	@EventListener
-	public void onActivityEvent(final ActivityEvent activityEvent) {
+	public void onActivityEvent(final ActivityEvent event) {
 		logger.info("Received new activity.");
+		
+		jobExecutionActivities.compute(
+				event.getActivity().getContext().getJobId(),
+				(key, value) -> {
+					if (value == null) {
+						value = new AtomicReference<>();
+						value.set(new ConcurrentLinkedQueue<>());
+					}
+					
+					final ConcurrentLinkedQueue<Activity> activityQueue = value.get();
+					activityQueue.offer(event.getActivity());
+					
+					return value;
+				}
+		);
 	}
 	
-	@Scheduled(fixedRate = FLUSH_INTERVAL_MS)
+	@Scheduled(fixedRate = 5_000)
 	public void flushActivityLogs() {
 		logger.info("Flushing activity logs");
 		jobExecutionActivities.forEach(this::flushActivityLog);
