@@ -33,7 +33,7 @@ public class TaskResultEvent extends TaskEvent
 	 * @param payload  the payload.
 	 * @throws NullPointerException thrown when the payload is null.
 	 */
-	public TaskResultEvent(final UUID jobId,
+	private TaskResultEvent(final UUID jobId,
 	                       final UUID taskId,
 	                       final StorageHint storageHint,
 	                       final Payload<?> payload) {

@@ -9,7 +9,7 @@ import static com.x.scrape.activity_logging.model.ActivityType.REQUEST;
  */
 public class RequestActivity extends Activity {
 	
-	private URL url;
+	private final URL url;
 	
 	public RequestActivity(final URL url) {
 		super(REQUEST);

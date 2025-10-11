@@ -4,15 +4,15 @@ import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextKeys;
 import com.x.scrape.logging.ContextLogger;
+import com.x.scrape.model.event.storable.payload.ImagePayload;
+import com.x.scrape.model.event.storable.payload.JsonPayload;
+import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.task.ImageDownloadTask;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskFailedEvent;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.event.storable.payload.ImagePayload;
-import com.x.scrape.model.event.storable.payload.MapPayload;
-import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.x.scrape.logging.ContextKeys.JOB_ID;
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
-import static com.x.scrape.model.task.event.task_result.StorageType.*;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -68,7 +68,7 @@ public class Worker {
 	}
 	
 	public void start() {
-		try (final CloseableContext ignored = logger.with("jobId", jobId.toString())) {
+		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
 			logger.info("Worker starting.");
 			Thread.sleep(1_000);
 			
@@ -120,10 +120,9 @@ public class Worker {
 						task,
 						StorageHint.of(
 								UUID.randomUUID() + ".json",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
-								JSON
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
 						),
-						new MapPayload(scrapingResult.getResult())
+						new JsonPayload(scrapingResult.getResult())
 				)
 		);
 		
@@ -132,8 +131,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								"source.html",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
-								RAW
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
 						),
 						new StringPayload(scrapingResult.getRawPage())
 				)
@@ -141,6 +139,7 @@ public class Worker {
 	}
 	
 	// TODO offer this as a task too so that rate limiting can be applied properly in the future
+	// Or make this use the same rate limiter in the code, Resilience4J will be used for this.
 	private void downloadImages(final Task task,
 	                            final List<Map<String, Object>> scrapedData) {
 		scrapedData.forEach(elementScrapedData -> {
@@ -174,8 +173,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								fileName,
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/",
-								IMAGE
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/"
 						),
 						new ImagePayload(imageInputStream)
 				)

@@ -1,12 +1,11 @@
 package com.x.scrape.storage;
 
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.task.event.task_result.StorageHint;
-import com.x.scrape.model.task.event.task_result.StorageType;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.Payload;
+import com.x.scrape.model.task.event.task_result.StorageType;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.instancio.Instancio;
@@ -55,12 +54,7 @@ class StorageServiceTest {
 	TaskResultEvent createTaskResultEvent(final StorageType storageType,
 	                                      final Class<? extends Payload> payloadClass) {
 		return Instancio.of(TaskResultEvent.class)
-				.set(
-						field(TaskResultEvent::getStorageHint),
-						Instancio.of(StorageHint.class)
-								.set(field(StorageHint::getType), storageType)
-								.create()
-				).set(field(TaskResultEvent::getPayload), Instancio.create(payloadClass))
+				.set(field(TaskResultEvent::getPayload), Instancio.create(payloadClass))
 				.create();
 	}
 	

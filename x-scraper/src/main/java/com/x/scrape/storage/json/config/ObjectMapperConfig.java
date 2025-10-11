@@ -15,6 +15,7 @@ public class ObjectMapperConfig {
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper()
+				.findAndRegisterModules()
 				.enable(INDENT_OUTPUT);
 	}
 }

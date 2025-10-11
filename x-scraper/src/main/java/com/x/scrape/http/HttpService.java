@@ -1,5 +1,7 @@
 package com.x.scrape.http;
 
+import com.x.scrape.activity_logging.event.ActivityEvent;
+import com.x.scrape.activity_logging.model.RequestActivity;
 import com.x.scrape.logging.ContextLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +28,7 @@ public class HttpService {
 	
 	public Optional<Document> retrievePageAsDocument(final URL url) {
 		logger.info("Retrieving document for: " + url);
-//		applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
+		applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
 		
 		try {
 			
@@ -43,6 +45,7 @@ public class HttpService {
 	
 	public InputStream get(final URL url) {
 		try {
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
 			return new BufferedInputStream(url.openStream());
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not get URL", e);

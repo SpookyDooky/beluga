@@ -4,7 +4,7 @@ import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.event.storable.Storable;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
-import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.model.task.event.task_result.StorageHint;
@@ -13,8 +13,6 @@ import com.x.scrape.storage.json.JsonService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import static com.x.scrape.model.task.event.task_result.StorageType.*;
 
 @Service
 public class StorageService {
@@ -33,6 +31,7 @@ public class StorageService {
 	
 	/**
 	 * Asynchronously stores the result from a task in the correct location.
+	 *
 	 * @param event the event holding the result and {@link StorageHint} that says where the result should be stored.
 	 */
 	@EventListener
@@ -46,51 +45,39 @@ public class StorageService {
 	
 	private void saveResult(final StorageHint storageHint,
 	                        final Payload<?> payload) {
-		if (storageHint.getType() == JSON) {
-			saveJsonResult(storageHint, payload);
-		} else if (storageHint.getType() == IMAGE) {
-			saveImageResult(storageHint, payload);
-		} else if (storageHint.getType() == RAW) {
-			saveRawResult(storageHint, payload);
+		switch (payload) {
+			case JsonPayload jsonPayload -> saveJsonResult(storageHint, jsonPayload);
+			case ImagePayload imagePayload -> saveImageResult(storageHint, imagePayload);
+			case StringPayload stringPayload -> saveRawResult(storageHint, stringPayload);
+			default -> throw new IllegalStateException("Unsupported payload type: " + payload.getClass().getSimpleName());
 		}
 	}
 	
 	private void saveJsonResult(final StorageHint storageHint,
-	                            final Payload<?> payload) {
-		if (payload instanceof MapPayload mapPayload) {
-			fileWritingService.write(
-					storageHint.getFolder(),
-					storageHint.getFileName(),
-					jsonService.toJson(mapPayload.getData())
-			);
-		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
-		}
+	                            final JsonPayload payload) {
+		fileWritingService.write(
+				storageHint.getFolder(),
+				storageHint.getFileName(),
+				jsonService.toJson(payload.getData())
+		);
+		
 	}
 	
 	private void saveImageResult(final StorageHint storageHint,
-	                             final Payload<?> payload) {
-		if (payload instanceof ImagePayload imagePayload) {
-			fileWritingService.write(
-					storageHint.getFolder(),
-					storageHint.getFileName(),
-					imagePayload.getData()
-			);
-		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
-		}
+	                             final ImagePayload imagePayload) {
+		fileWritingService.write(
+				storageHint.getFolder(),
+				storageHint.getFileName(),
+				imagePayload.getData()
+		);
 	}
 	
 	private void saveRawResult(final StorageHint storageHint,
-	                           final Payload<?> payload) {
-		if (payload instanceof StringPayload stringPayload) {
-			fileWritingService.write(
-					storageHint.getFolder(),
-					storageHint.getFileName(),
-					stringPayload.getData()
-			);
-		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
-		}
+	                           final StringPayload stringPayload) {
+		fileWritingService.write(
+				storageHint.getFolder(),
+				storageHint.getFileName(),
+				stringPayload.getData()
+		);
 	}
 }
