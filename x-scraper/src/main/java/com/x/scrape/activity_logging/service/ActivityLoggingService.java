@@ -74,7 +74,7 @@ public class ActivityLoggingService {
 	 * at least by a service that handles saving data to the file system.
 	 */
 	// TODO - Should be configurable through properties but should also have a "good" default value.
-	@Scheduled(fixedRate = 1_000)
+	@Scheduled(fixedRate = 15_000)
 	public void flushActivityLogs() {
 		logger.info("Flushing activity logs");
 		jobExecutionActivities.forEach(this::flushActivityLog);

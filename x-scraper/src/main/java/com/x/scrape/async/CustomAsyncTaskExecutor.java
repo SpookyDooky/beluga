@@ -7,6 +7,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+/**
+ * This class wraps all {@link Callable}'s and {@link Runnable}'s to clear the context of
+ * the {@link MDC} to make sure no MDC values are leaked into async threads.
+ */
 public class CustomAsyncTaskExecutor implements AsyncTaskExecutor {
 	
 	private final AsyncTaskExecutor delegate;
