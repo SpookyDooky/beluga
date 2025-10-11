@@ -4,7 +4,7 @@ import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextKeys;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job.Job;
 import com.x.scrape.model.task.ImageDownloadTask;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskFailedEvent;
@@ -12,7 +12,8 @@ import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
 import com.x.scrape.model.task.event.task_result.data.MapPayload;
-import com.x.scrape.scraping.DomScrapingService;
+import com.x.scrape.scraping.ScrapingService;
+import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
@@ -23,13 +24,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.RESULTS;
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
 import static com.x.scrape.model.task.event.task_result.StorageType.IMAGE;
 import static com.x.scrape.model.task.event.task_result.StorageType.JSON;
@@ -41,24 +40,29 @@ public class Worker {
 	
 	private final ContextLogger logger = new ContextLogger(LogManager.getLogger());
 	
-	private UUID jobId;
 	private final JobTaskQueue jobTaskQueue;
-	private final DomScrapingService domScrapingService;
+	private final ScrapingService scrapingService;
 	private final HttpService httpService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
+	private UUID jobId;
 	private Instant startTime;
 	
 	public Worker(final JobTaskQueue jobTaskQueue,
-	              final DomScrapingService domScrapingService,
+	              final ScrapingService scrapingService,
 	              final HttpService httpService,
 	              final ApplicationEventPublisher applicationEventPublisher) {
 		this.jobTaskQueue = jobTaskQueue;
-		this.domScrapingService = domScrapingService;
+		this.scrapingService = scrapingService;
 		this.httpService = httpService;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 	
+	/**
+	 * Initializes the worker and configures it as a worker for a specific {@link Job}.
+	 *
+	 * @param jobId the id of the {@link Job}.
+	 */
 	public void init(final UUID jobId) {
 		this.jobId = jobId;
 	}
@@ -90,21 +94,13 @@ public class Worker {
 			
 			createTaskResultFolder(task);
 			
-			final List<Map<String, Object>> scrapingResult = scrapePage(task.getUrl(), task.getScrapingConfiguration());
-			applicationEventPublisher.publishEvent(
-					TaskResultEvent.of(
-							task,
-							StorageHint.of(
-									UUID.randomUUID() + ".json",
-									task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
-									JSON
-							),
-							new MapPayload(scrapingResult)
-					)
+			final ScrapingResult scrapingResult = scrapingService.scrape(
+					task.getUrl(),
+					task.getScrapingConfiguration()
 			);
-			context.put(RESULTS, scrapingResult.size() + "");
+			publishScrapingResultEvents(task, scrapingResult);
 			
-			downloadImages(task, scrapingResult);
+			downloadImages(task, scrapingResult.getResult());
 			
 			logger.info("Task completed");
 		} catch (final Exception e) {
@@ -118,11 +114,18 @@ public class Worker {
 		file.mkdirs();
 	}
 	
-	private List<Map<String, Object>> scrapePage(final URL url,
-	                                             final ScrapingConfiguration scrapingConfiguration) {
-		return domScrapingService.scrape(
-				url,
-				scrapingConfiguration
+	private void publishScrapingResultEvents(final Task task,
+	                                         final ScrapingResult scrapingResult) {
+		applicationEventPublisher.publishEvent(
+				TaskResultEvent.of(
+						task,
+						StorageHint.of(
+								UUID.randomUUID() + ".json",
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
+								JSON
+						),
+						new MapPayload(scrapingResult.getResult())
+				)
 		);
 	}
 	
@@ -159,7 +162,7 @@ public class Worker {
 				TaskResultEvent.of(
 						task,
 						StorageHint.of(
-								UUID.randomUUID() + ".png",
+								fileName,
 								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/",
 								IMAGE
 						),

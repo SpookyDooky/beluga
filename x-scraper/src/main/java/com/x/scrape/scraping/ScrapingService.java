@@ -3,6 +3,7 @@ package com.x.scrape.scraping;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.model.job.scraping_configuration.DataPointConfiguration;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -16,27 +17,32 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DomScrapingService {
+public class ScrapingService {
 	
 	private final Logger logger = LogManager.getLogger();
 	
 	private final HttpService httpService;
 	
-	public DomScrapingService(final HttpService httpService) {
+	public ScrapingService(final HttpService httpService) {
 		this.httpService = httpService;
 	}
 	
-	public List<Map<String, Object>> scrape(final URL url,
-	                                        final ScrapingConfiguration scrapingProperties) {
+	public ScrapingResult scrape(final URL url,
+	                             final ScrapingConfiguration scrapingProperties) {
 		final Document document = httpService.retrievePageAsDocument(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
 		final List<Element> elements = selectElements(document, scrapingProperties.getElementSelector());
 		logger.info("Found " + elements.size() + " in document");
 		
-		return elements.stream()
+		final List<Map<String, Object>> result =  elements.stream()
 				.map(element -> extractData(element, scrapingProperties.getDataPointConfigurations()))
 				.toList();
+		
+		return new ScrapingResult(
+				document.toString(),
+				result
+		);
 	}
 	
 	private List<Element> selectElements(final Document document,

@@ -2,9 +2,11 @@ package com.x.scrape.scraping.worker;
 
 import com.x.scrape.http.HttpService;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
-import com.x.scrape.scraping.DomScrapingService;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.scraping.ScrapingService;
+import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
@@ -35,7 +37,7 @@ class WorkerTest {
 	@Mock
 	private JobTaskQueue jobTaskQueue;
 	@Mock
-	private DomScrapingService domScrapingService;
+	private ScrapingService scrapingService;
 	@Mock
 	private HttpService httpService;
 	@Mock
@@ -74,19 +76,19 @@ class WorkerTest {
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
 		
 		final List<Map<String, Object>> scrapeResult = mock();
-		when(domScrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
-				.thenReturn(scrapeResult);
+		final ScrapingResult scrapingResult = new ScrapingResult("raw", scrapeResult);
+		when(scrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
+				.thenReturn(scrapingResult);
 		
 		worker.init(jobId);
 		worker.start();
 		
-		final ArgumentCaptor<TaskCompletedEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskCompletedEvent.class);
+		final ArgumentCaptor<TaskResultEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskResultEvent.class);
 		verify(applicationEventPublisher).publishEvent(taskCompletedEventArgumentCaptor.capture());
 		
-		final TaskCompletedEvent taskCompletedEvent = taskCompletedEventArgumentCaptor.getValue();
-		assertSame(jobId, taskCompletedEvent.getJobId());
-		assertSame(task.getId(), taskCompletedEvent.getTaskId());
-		assertSame(scrapeResult, taskCompletedEvent.getResult());
+		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getValue();
+		final MapPayload mapPayload = (MapPayload) taskResultEvent.getPayload();
+		assertSame(scrapeResult, mapPayload.getData());
 		
 		removeResultFolder(task);
 	}
@@ -104,7 +106,7 @@ class WorkerTest {
 		
 		final Task task = Instancio.create(Task.class);
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
-		when(domScrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
+		when(scrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
 		
 		worker.init(jobId);
 		assertDoesNotThrow((() -> worker.start()));
