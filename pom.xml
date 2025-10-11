@@ -14,6 +14,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
+
+        <!-- Dependency versions -->
         <spring.version>3.4.3</spring.version>
         <jackson.version>2.18.2</jackson.version>
         <jsoup.version>1.17.2</jsoup.version>
@@ -21,10 +24,10 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <instancio-junit.version>5.5.1</instancio-junit.version>
         <mockito.version>5.19.0</mockito.version>
-        <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
         <slf4j2-impl.version>2.24.3</slf4j2-impl.version>
         <jansi.version>2.4.0</jansi.version>
         <jetbrains-annotations.version>13.0</jetbrains-annotations.version>
+        <pmd.version>3.27.0</pmd.version>
     </properties>
 
     <dependencyManagement>
@@ -118,6 +121,35 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${pmd.version}</version>
+                    <configuration>
+                        <failOnViolation>true</failOnViolation>
+                        <rulesets>
+                            <ruleset>pmd-ruleset.xml</ruleset>
+                        </rulesets>
+                        <excludeRoots>
+                            <excludeRoot>target</excludeRoot>
+                        </excludeRoots>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <modules>
         <module>x-scraper</module>

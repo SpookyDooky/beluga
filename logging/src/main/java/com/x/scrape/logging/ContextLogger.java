@@ -35,7 +35,7 @@ public class ContextLogger {
 	 */
 	public CloseableContext with(final ContextLoggable contextLoggable) {
 		contextLoggable.loggingContext()
-				.forEach((key, value) -> putContext(key, value));
+				.forEach(this::putContext);
 		
 		return new CloseableContext();
 	}
