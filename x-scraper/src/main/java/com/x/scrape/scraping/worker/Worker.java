@@ -12,6 +12,7 @@ import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
 import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.model.task.event.task_result.data.StringPayload;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
@@ -30,8 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
-import static com.x.scrape.model.task.event.task_result.StorageType.IMAGE;
-import static com.x.scrape.model.task.event.task_result.StorageType.JSON;
+import static com.x.scrape.model.task.event.task_result.StorageType.*;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -98,9 +98,8 @@ public class Worker {
 					task.getUrl(),
 					task.getScrapingConfiguration()
 			);
-			publishScrapingResultEvents(task, scrapingResult);
-			
 			downloadImages(task, scrapingResult.getResult());
+			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
 		} catch (final Exception e) {
@@ -125,6 +124,18 @@ public class Worker {
 								JSON
 						),
 						new MapPayload(scrapingResult.getResult())
+				)
+		);
+		
+		applicationEventPublisher.publishEvent(
+				TaskResultEvent.of(
+						task,
+						StorageHint.of(
+								"source.html",
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
+								RAW
+						),
+						new StringPayload(scrapingResult.getRawPage())
 				)
 		);
 	}

@@ -62,8 +62,6 @@ class WorkerTest {
 		verify(applicationEventPublisher).publishEvent(workerFinishedEventArgumentCaptor.capture());
 		final WorkerFinishedEvent workerFinishedEvent = workerFinishedEventArgumentCaptor.getValue();
 		assertSame(jobId, workerFinishedEvent.getJobId());
-		
-		
 	}
 	
 	@Test

@@ -7,14 +7,14 @@ import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.model.task.event.task_result.data.DataPayload;
 import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
 import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.model.task.event.task_result.data.StringPayload;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import static com.x.scrape.model.task.event.task_result.StorageType.IMAGE;
-import static com.x.scrape.model.task.event.task_result.StorageType.JSON;
+import static com.x.scrape.model.task.event.task_result.StorageType.*;
 
 @Service
 public class StorageService {
@@ -50,6 +50,8 @@ public class StorageService {
 			saveJsonResult(storageHint, dataPayload);
 		} else if (storageHint.getType() == IMAGE) {
 			saveImageResult(storageHint, dataPayload);
+		} else if (storageHint.getType() == RAW) {
+			saveRawResult(storageHint, dataPayload);
 		}
 	}
 	
@@ -73,6 +75,19 @@ public class StorageService {
 					storageHint.getFolder(),
 					storageHint.getFileName(),
 					inputStreamPayload.getData()
+			);
+		} else {
+			throw new IllegalArgumentException("Unsupported payload type " + dataPayload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
+		}
+	}
+	
+	private void saveRawResult(final StorageHint storageHint,
+	                           final DataPayload<?> dataPayload) {
+		if (dataPayload instanceof StringPayload stringPayload) {
+			fileWritingService.write(
+					storageHint.getFolder(),
+					storageHint.getFileName(),
+					stringPayload.getData()
 			);
 		} else {
 			throw new IllegalArgumentException("Unsupported payload type " + dataPayload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
