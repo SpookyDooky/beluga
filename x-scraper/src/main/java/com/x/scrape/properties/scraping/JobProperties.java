@@ -1,6 +1,6 @@
 package com.x.scrape.properties.scraping;
 
-import com.x.scrape.properties.scraping.storage.FileProperties;
+import com.x.scrape.properties.scraping.storage.StorageProperties;
 import com.x.scrape.properties.scraping.url.UrlProperties;
 
 public class JobProperties {
@@ -9,7 +9,7 @@ public class JobProperties {
 	private UrlProperties url;
 	
 	private ScrapingProperties scraping;
-	private FileProperties storage;
+	private StorageProperties storage;
 	
 	private int workers = 1;
 	
@@ -37,11 +37,11 @@ public class JobProperties {
 		this.scraping = scraping;
 	}
 	
-	public FileProperties getStorage() {
+	public StorageProperties getStorage() {
 		return storage;
 	}
 	
-	public void setStorage(final FileProperties storage) {
+	public void setStorage(final StorageProperties storage) {
 		this.storage = storage;
 	}
 	

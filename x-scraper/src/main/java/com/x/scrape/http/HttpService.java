@@ -1,9 +1,9 @@
 package com.x.scrape.http;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.x.scrape.logging.ContextLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
@@ -15,7 +15,14 @@ import java.util.Optional;
 @Service
 public class HttpService {
 	
-	private final Logger logger = LogManager.getLogger();
+	private final ContextLogger logger;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	
+	public HttpService(final ContextLogger logger,
+	                   final ApplicationEventPublisher applicationEventPublisher) {
+		this.logger = logger;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 	
 	public Optional<Document> retrievePageAsDocument(final URL url) {
 		logger.info("Retrieving document for: " + url);
