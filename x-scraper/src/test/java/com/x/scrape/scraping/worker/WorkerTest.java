@@ -4,7 +4,7 @@ import com.x.scrape.http.HttpService;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskFailedEvent;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.model.event.storable.payload.MapPayload;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;

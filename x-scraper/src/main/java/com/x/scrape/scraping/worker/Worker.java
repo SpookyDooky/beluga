@@ -10,9 +10,9 @@ import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskFailedEvent;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
-import com.x.scrape.model.task.event.task_result.data.MapPayload;
-import com.x.scrape.model.task.event.task_result.data.StringPayload;
+import com.x.scrape.model.event.storable.payload.ImagePayload;
+import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
@@ -177,7 +177,7 @@ public class Worker {
 								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/",
 								IMAGE
 						),
-						new InputStreamPayload(imageInputStream)
+						new ImagePayload(imageInputStream)
 				)
 		);
 	}

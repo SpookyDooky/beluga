@@ -4,10 +4,10 @@ import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.task.event.task_result.data.DataPayload;
-import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
-import com.x.scrape.model.task.event.task_result.data.MapPayload;
-import com.x.scrape.model.task.event.task_result.data.StringPayload;
+import com.x.scrape.model.event.storable.payload.Payload;
+import com.x.scrape.model.event.storable.payload.ImagePayload;
+import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.springframework.context.event.EventListener;
@@ -45,52 +45,52 @@ public class StorageService {
 	}
 	
 	private void saveResult(final StorageHint storageHint,
-	                        final DataPayload<?> dataPayload) {
+	                        final Payload<?> payload) {
 		if (storageHint.getType() == JSON) {
-			saveJsonResult(storageHint, dataPayload);
+			saveJsonResult(storageHint, payload);
 		} else if (storageHint.getType() == IMAGE) {
-			saveImageResult(storageHint, dataPayload);
+			saveImageResult(storageHint, payload);
 		} else if (storageHint.getType() == RAW) {
-			saveRawResult(storageHint, dataPayload);
+			saveRawResult(storageHint, payload);
 		}
 	}
 	
 	private void saveJsonResult(final StorageHint storageHint,
-	                            final DataPayload<?> dataPayload) {
-		if (dataPayload instanceof MapPayload mapPayload) {
+	                            final Payload<?> payload) {
+		if (payload instanceof MapPayload mapPayload) {
 			fileWritingService.write(
 					storageHint.getFolder(),
 					storageHint.getFileName(),
 					jsonService.toJson(mapPayload.getData())
 			);
 		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + dataPayload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
+			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
 		}
 	}
 	
 	private void saveImageResult(final StorageHint storageHint,
-	                             final DataPayload<?> dataPayload) {
-		if (dataPayload instanceof InputStreamPayload inputStreamPayload) {
+	                             final Payload<?> payload) {
+		if (payload instanceof ImagePayload imagePayload) {
 			fileWritingService.write(
 					storageHint.getFolder(),
 					storageHint.getFileName(),
-					inputStreamPayload.getData()
+					imagePayload.getData()
 			);
 		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + dataPayload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
+			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
 		}
 	}
 	
 	private void saveRawResult(final StorageHint storageHint,
-	                           final DataPayload<?> dataPayload) {
-		if (dataPayload instanceof StringPayload stringPayload) {
+	                           final Payload<?> payload) {
+		if (payload instanceof StringPayload stringPayload) {
 			fileWritingService.write(
 					storageHint.getFolder(),
 					storageHint.getFileName(),
 					stringPayload.getData()
 			);
 		} else {
-			throw new IllegalArgumentException("Unsupported payload type " + dataPayload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
+			throw new IllegalArgumentException("Unsupported payload type " + payload.getClass().getSimpleName() + " for storage type " + storageHint.getType().name());
 		}
 	}
 }

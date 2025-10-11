@@ -4,9 +4,9 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.StorageType;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.task.event.task_result.data.DataPayload;
-import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
-import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.model.event.storable.payload.Payload;
+import com.x.scrape.model.event.storable.payload.ImagePayload;
+import com.x.scrape.model.event.storable.payload.MapPayload;
 import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.instancio.Instancio;
@@ -53,7 +53,7 @@ class StorageServiceTest {
 	}
 	
 	TaskResultEvent createTaskResultEvent(final StorageType storageType,
-	                                      final Class<? extends DataPayload> payloadClass) {
+	                                      final Class<? extends Payload> payloadClass) {
 		return Instancio.of(TaskResultEvent.class)
 				.set(
 						field(TaskResultEvent::getStorageHint),
@@ -66,15 +66,15 @@ class StorageServiceTest {
 	
 	@Test
 	void shouldSaveInputStreamResult() {
-		final TaskResultEvent imageTaskResultEvent = createTaskResultEvent(IMAGE, InputStreamPayload.class);
-		final InputStreamPayload inputStreamPayload = (InputStreamPayload) imageTaskResultEvent.getPayload();
+		final TaskResultEvent imageTaskResultEvent = createTaskResultEvent(IMAGE, ImagePayload.class);
+		final ImagePayload imagePayload = (ImagePayload) imageTaskResultEvent.getPayload();
 		
 		storageService.onTaskResultEvent(imageTaskResultEvent);
 		
 		verify(fileWritingService).write(
 				imageTaskResultEvent.getStorageHint().getFolder(),
 				imageTaskResultEvent.getStorageHint().getFileName(),
-				inputStreamPayload.getData()
+				imagePayload.getData()
 		);
 	}
 }
