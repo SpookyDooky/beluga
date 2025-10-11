@@ -82,9 +82,9 @@ class WorkerTest {
 		worker.start();
 		
 		final ArgumentCaptor<TaskResultEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskResultEvent.class);
-		verify(applicationEventPublisher).publishEvent(taskCompletedEventArgumentCaptor.capture());
+		verify(applicationEventPublisher, times(2)).publishEvent(taskCompletedEventArgumentCaptor.capture());
 		
-		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getValue();
+		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getAllValues().getFirst();
 		final MapPayload mapPayload = (MapPayload) taskResultEvent.getPayload();
 		assertSame(scrapeResult, mapPayload.getData());
 		
