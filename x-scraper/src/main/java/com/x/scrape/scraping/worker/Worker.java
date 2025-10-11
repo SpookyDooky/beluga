@@ -7,9 +7,11 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.task.ImageDownloadTask;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
-import com.x.scrape.model.task.event.TaskImageDownloadCompletedEvent;
+import com.x.scrape.model.task.event.task_result.StorageHint;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.model.task.event.task_result.data.InputStreamPayload;
+import com.x.scrape.model.task.event.task_result.data.MapPayload;
 import com.x.scrape.scraping.DomScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
@@ -29,6 +31,8 @@ import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.RESULTS;
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.model.task.event.task_result.StorageType.IMAGE;
+import static com.x.scrape.model.task.event.task_result.StorageType.JSON;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -87,13 +91,22 @@ public class Worker {
 			createTaskResultFolder(task);
 			
 			final List<Map<String, Object>> scrapingResult = scrapePage(task.getUrl(), task.getScrapingConfiguration());
+			applicationEventPublisher.publishEvent(
+					TaskResultEvent.of(
+							task,
+							StorageHint.of(
+									UUID.randomUUID() + ".json",
+									task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/",
+									JSON
+							),
+							new MapPayload(scrapingResult)
+					)
+			);
 			context.put(RESULTS, scrapingResult.size() + "");
 			
 			downloadImages(task, scrapingResult);
 			
-			logger.info("Finished task.");
-			
-			applicationEventPublisher.publishEvent(new TaskCompletedEvent(jobId, task.getId(), scrapingResult));
+			logger.info("Task completed");
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
 			applicationEventPublisher.publishEvent(new TaskFailedEvent(jobId, task.getId()));
@@ -114,8 +127,6 @@ public class Worker {
 	}
 	
 	// TODO offer this as a task too so that rate limiting can be applied properly in the future
-	// All though i have to wonder if the rate limit would ever be reached
-	// So for now maybe the current way is fine
 	private void downloadImages(final Task task,
 	                            final List<Map<String, Object>> scrapedData) {
 		scrapedData.forEach(elementScrapedData -> {
@@ -134,20 +145,27 @@ public class Worker {
 	/**
 	 * Downloads an image and publishes an event to save the image.
 	 *
-	 * @param task task.
+	 * @param task              task.
 	 * @param imageDownloadTask image download sub-task.
-	 * @param fileName name to save the image under.
+	 * @param fileName          name to save the image under.
 	 */
 	private void downloadImage(final Task task,
-	                             final ImageDownloadTask imageDownloadTask,
-	                             final String fileName) {
+	                           final ImageDownloadTask imageDownloadTask,
+	                           final String fileName) {
 		logger.info("Downloading image");
 		final InputStream imageInputStream = httpService.get(imageDownloadTask.getUrl());
 		
-		final TaskImageDownloadCompletedEvent event = new TaskImageDownloadCompletedEvent(jobId, task.getId(), fileName);
-		event.setFileStream(imageInputStream);
-		
-		applicationEventPublisher.publishEvent(event);
+		applicationEventPublisher.publishEvent(
+				TaskResultEvent.of(
+						task,
+						StorageHint.of(
+								UUID.randomUUID() + ".png",
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/",
+								IMAGE
+						),
+						new InputStreamPayload(imageInputStream)
+				)
+		);
 	}
 	
 	private void addImagePathToResult(final Map<String, Object> scrapedData,

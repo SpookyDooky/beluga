@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,6 +60,8 @@ class WorkerTest {
 		verify(applicationEventPublisher).publishEvent(workerFinishedEventArgumentCaptor.capture());
 		final WorkerFinishedEvent workerFinishedEvent = workerFinishedEventArgumentCaptor.getValue();
 		assertSame(jobId, workerFinishedEvent.getJobId());
+		
+		
 	}
 	
 	@Test
@@ -84,6 +87,13 @@ class WorkerTest {
 		assertSame(jobId, taskCompletedEvent.getJobId());
 		assertSame(task.getId(), taskCompletedEvent.getTaskId());
 		assertSame(scrapeResult, taskCompletedEvent.getResult());
+		
+		removeResultFolder(task);
+	}
+	
+	void removeResultFolder(final Task task) {
+		final File file = new File(task.getJob().getJobTaskResultsFolder());
+		file.delete();
 	}
 	
 	@Test
