@@ -28,6 +28,7 @@
         <jansi.version>2.4.0</jansi.version>
         <jetbrains-annotations.version>13.0</jetbrains-annotations.version>
         <pmd.version>3.27.0</pmd.version>
+        <checkstyle.version>3.6.0</checkstyle.version>
     </properties>
 
     <dependencyManagement>
@@ -146,6 +147,25 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <configLocation>checkstyle.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <failOnViolation>true</failOnViolation>
+                        <consoleOutput>true</consoleOutput>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
