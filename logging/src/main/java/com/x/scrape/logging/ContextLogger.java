@@ -4,7 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.slf4j.MDC;
 
 public class ContextLogger {
-
+	
 	private final Logger logger;
 	
 	public ContextLogger(final Logger logger) {
@@ -18,8 +18,26 @@ public class ContextLogger {
 	
 	private void configureContext(final String... context) {
 		for (int i = 0; (i + 1) < context.length; i += 2) {
-			MDC.put(context[i], context[i + 1]);
+			putContext(context[i], context[i + 1]);
 		}
+	}
+	
+	private void putContext(final String key,
+	                        final String value) {
+		MDC.put(key, value);
+	}
+	
+	/**
+	 * Add the context of a {@link ContextLoggable} object to the {@link MDC}.
+	 *
+	 * @param contextLoggable the {@link ContextLoggable} object.
+	 * @return a closable context to automatically remove values from the {@link MDC} when it gets closed.
+	 */
+	public CloseableContext with(final ContextLoggable contextLoggable) {
+		contextLoggable.loggingContext()
+				.forEach((key, value) -> putContext(key, value));
+		
+		return new CloseableContext();
 	}
 	
 	public void info(final String message,

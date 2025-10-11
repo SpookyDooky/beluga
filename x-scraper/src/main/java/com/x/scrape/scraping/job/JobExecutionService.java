@@ -1,15 +1,13 @@
 package com.x.scrape.scraping.job;
 
-import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.scraping.DomScrapingService;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;
 import com.x.scrape.scraping.worker.Worker;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,28 +17,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * This service takes care of starting the correct amount of {@link Worker}'s for each {@link Job}.
+ * Furthermore, for each {@link Job} it also places all tasks in the {@link JobTaskQueue}.
+ */
 @Service
 public class JobExecutionService {
 	
 	private final ContextLogger logger;
-	private final HttpService httpService;
-	private final DomScrapingService domScrapingService;
+	private final ApplicationContext applicationContext;
 	private final TaskFactory taskFactory;
 	private final JobTaskQueue jobTaskQueue;
-	private final ApplicationEventPublisher applicationEventPublisher;
 	
 	public JobExecutionService(final ContextLogger logger,
-	                           final HttpService httpService,
-	                           final DomScrapingService domScrapingService,
+							   final ApplicationContext applicationContext,
 	                           final TaskFactory taskFactory,
-	                           final JobTaskQueue jobTaskQueue,
-	                           final ApplicationEventPublisher applicationEventPublisher) {
+	                           final JobTaskQueue jobTaskQueue) {
 		this.logger = logger;
-		this.httpService = httpService;
-		this.domScrapingService = domScrapingService;
+		this.applicationContext = applicationContext;
 		this.taskFactory = taskFactory;
 		this.jobTaskQueue = jobTaskQueue;
-		this.applicationEventPublisher = applicationEventPublisher;
 	}
 	
 	public void executeJob(final Job job) {
@@ -52,16 +48,11 @@ public class JobExecutionService {
 		job.createJobFolders();
 		
 		for (int i = 0; i < job.getJobConfiguration().getWorkers(); i++) {
-			final Worker worker = new Worker(
-					job.getId(),
-					jobTaskQueue,
-					domScrapingService,
-					httpService,
-					applicationEventPublisher
-			);
+			final Worker worker = applicationContext.getBean(Worker.class);
+			worker.init(job.getId());
 			
-			new Thread(worker::start).start();
-			;
+			new Thread(worker::start)
+					.start();
 		}
 	}
 	

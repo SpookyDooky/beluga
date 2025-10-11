@@ -2,9 +2,11 @@ package com.x.scrape.scraping.worker;
 
 import com.x.scrape.http.HttpService;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
-import com.x.scrape.scraping.DomScrapingService;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.model.task.event.task_result.data.MapPayload;
+import com.x.scrape.scraping.ScrapingService;
+import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +37,7 @@ class WorkerTest {
 	@Mock
 	private JobTaskQueue jobTaskQueue;
 	@Mock
-	private DomScrapingService domScrapingService;
+	private ScrapingService scrapingService;
 	@Mock
 	private HttpService httpService;
 	@Mock
@@ -47,6 +50,7 @@ class WorkerTest {
 	void shouldSendWorkerEvents() {
 		when(jobTaskQueue.isQueueEmpty(jobId)).thenReturn(true);
 		
+		worker.init(jobId);
 		worker.start();
 		
 		final ArgumentCaptor<WorkerStartedEvent> workerStartedEventArgumentCaptor = ArgumentCaptor.forClass(WorkerStartedEvent.class);
@@ -70,18 +74,26 @@ class WorkerTest {
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
 		
 		final List<Map<String, Object>> scrapeResult = mock();
-		when(domScrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
-				.thenReturn(scrapeResult);
+		final ScrapingResult scrapingResult = new ScrapingResult("raw", scrapeResult);
+		when(scrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
+				.thenReturn(scrapingResult);
 		
+		worker.init(jobId);
 		worker.start();
 		
-		final ArgumentCaptor<TaskCompletedEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskCompletedEvent.class);
+		final ArgumentCaptor<TaskResultEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskResultEvent.class);
 		verify(applicationEventPublisher).publishEvent(taskCompletedEventArgumentCaptor.capture());
 		
-		final TaskCompletedEvent taskCompletedEvent = taskCompletedEventArgumentCaptor.getValue();
-		assertSame(jobId, taskCompletedEvent.getJobId());
-		assertSame(task.getId(), taskCompletedEvent.getTaskId());
-		assertSame(scrapeResult, taskCompletedEvent.getResult());
+		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getValue();
+		final MapPayload mapPayload = (MapPayload) taskResultEvent.getPayload();
+		assertSame(scrapeResult, mapPayload.getData());
+		
+		removeResultFolder(task);
+	}
+	
+	void removeResultFolder(final Task task) {
+		final File file = new File(task.getJob().getJobTaskResultsFolder());
+		file.delete();
 	}
 	
 	@Test
@@ -92,8 +104,9 @@ class WorkerTest {
 		
 		final Task task = Instancio.create(Task.class);
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
-		when(domScrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
+		when(scrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
 		
+		worker.init(jobId);
 		assertDoesNotThrow((() -> worker.start()));
 		
 		final ArgumentCaptor<TaskFailedEvent> taskFailedEventArgumentCaptor = ArgumentCaptor.forClass(TaskFailedEvent.class);
