@@ -58,9 +58,9 @@ public class FileWritingService {
 		}
 	}
 	
-	private void createFolder(final File file) {
-			logger.info("Creating folder " + file.getAbsolutePath());
-			file.mkdirs();
+	private void createFolder(final File file){
+		logger.info("Creating folder " + file.getAbsolutePath());
+		file.mkdirs();
 	}
 	
 	private void write(final File file,

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <module name="TreeWalker">
+
+        <!-- Enforce 4-space indentation -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="tabWidth" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="lineWrappingIndentation" value="4"/>
+        </module>
+
+        <!-- Space after method parameters and commas -->
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA, TYPECAST, SEMI, LITERAL_IF, LITERAL_WHILE, LITERAL_FOR"/>
+        </module>
+
+        <!-- Require space before and after curly braces (where applicable) -->
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                      value="LCURLY, RCURLY, ASSIGN, BAND, BOR, BXOR, COLON, DIV, EQUAL, GE, GT, LAND, LE, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, TYPE_EXTENSION_AND"/>
+        </module>
+
+        <!-- Avoid empty catch blocks -->
+        <module name="EmptyCatchBlock"/>
+    </module>
+</module>
