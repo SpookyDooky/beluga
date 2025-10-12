@@ -2,7 +2,7 @@ package com.x.scrape.storage;
 
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
-import com.x.scrape.model.event.storable.payload.MapPayload;
+import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.task.event.task_result.StorageType;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
@@ -36,10 +36,10 @@ class StorageServiceTest {
 	
 	@Test
 	void shouldSaveJsonResult() {
-		final TaskResultEvent jsonTaskResultEvent = createTaskResultEvent(JSON, MapPayload.class);
+		final TaskResultEvent jsonTaskResultEvent = createTaskResultEvent(JSON, JsonPayload.class);
 		
 		final String json = "json";
-		final MapPayload mapPayload = (MapPayload) jsonTaskResultEvent.getPayload();
+		final JsonPayload mapPayload = (JsonPayload) jsonTaskResultEvent.getPayload();
 		when(jsonService.toJson(mapPayload.getData())).thenReturn(json);
 		
 		storageService.onTaskResultEvent(jsonTaskResultEvent);
