@@ -2,7 +2,7 @@ package com.x.scrape.storage;
 
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.event.storable.Storable;
+import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
@@ -36,7 +36,7 @@ public class StorageService {
 	 */
 	@EventListener
 	@Async
-	public void onTaskResultEvent(final Storable event) {
+	public void onTaskResultEvent(final StorableEvent event) {
 		try (final CloseableContext ignored = logger.with(event)) {
 			logger.info("Saving task result.");
 			saveResult(event.getStorageHint(), event.getPayload());

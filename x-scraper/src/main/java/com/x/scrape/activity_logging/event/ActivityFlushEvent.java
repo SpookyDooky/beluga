@@ -1,14 +1,14 @@
 package com.x.scrape.activity_logging.event;
 
 import com.x.scrape.activity_logging.model.Activity;
-import com.x.scrape.model.event.storable.Storable;
+import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class ActivityFlushEvent implements Storable {
+public class ActivityFlushEvent implements StorableEvent {
 	
 	/**
 	 * Provides a hint on how this data should be stored.

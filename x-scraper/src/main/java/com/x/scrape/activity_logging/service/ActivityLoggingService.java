@@ -3,6 +3,7 @@ package com.x.scrape.activity_logging.service;
 import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.event.ActivityFlushEvent;
 import com.x.scrape.activity_logging.model.Activity;
+import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.scraping.job.JobRegistry;
@@ -21,6 +22,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.x.scrape.logging.ContextKeys.JOB_ID;
 
 /**
  * This service takes care of collecting all the {@link ActivityEvent}'s. It temporarily stores the {@link Activity}'s
@@ -73,7 +76,6 @@ public class ActivityLoggingService {
 	 * Flushes all the stored activities by sending an event. This event should be picked up
 	 * at least by a service that handles saving data to the file system.
 	 */
-	// TODO - Should be configurable through properties but should also have a "good" default value.
 	@Scheduled(fixedRate = 15_000)
 	public void flushActivityLogs() {
 		logger.info("Flushing activity logs");
@@ -82,18 +84,20 @@ public class ActivityLoggingService {
 	
 	private void flushActivityLog(final UUID jobId,
 	                              final AtomicReference<ConcurrentLinkedQueue<Activity>> jobActivities) {
-		final ConcurrentLinkedQueue<Activity> activities = jobActivities.getAndSet(new ConcurrentLinkedQueue<>());
-		
-		if (!activities.isEmpty()) {
-			applicationEventPublisher.publishEvent(
-					ActivityFlushEvent.of(
-							StorageHint.of(
-									getFileName(),
-									getFolder(activities.peek())
-							),
-							activities
-					)
-			);
+		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+			final ConcurrentLinkedQueue<Activity> activities = jobActivities.getAndSet(new ConcurrentLinkedQueue<>());
+			
+			if (!activities.isEmpty()) {
+				applicationEventPublisher.publishEvent(
+						ActivityFlushEvent.of(
+								StorageHint.of(
+										getFileName(),
+										getFolder(activities.peek())
+								),
+								activities
+						)
+				);
+			}
 		}
 	}
 	

@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -28,15 +29,21 @@ public class HttpService {
 	
 	public Optional<Document> retrievePageAsDocument(final URL url) {
 		logger.info("Retrieving document for: " + url);
-		applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
+		
+		final StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		
 		try {
-			
-			return Optional.of(
+			final Optional<Document> document =  Optional.of(
 					Jsoup.connect(url.toString())
 							.timeout(10_000)
 							.get()
 			);
+			
+			stopWatch.stop();
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, stopWatch.getTotalTimeMillis())));
+			
+			return document;
 		} catch (final Exception e) {
 			logger.error("Failed to retrieve document for: " + url, e);
 			return Optional.empty();
@@ -44,9 +51,16 @@ public class HttpService {
 	}
 	
 	public InputStream get(final URL url) {
+		final StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
 		try {
-			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url)));
-			return new BufferedInputStream(url.openStream());
+			final InputStream inputStream =  new BufferedInputStream(url.openStream());
+			
+			stopWatch.stop();
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, stopWatch.getTotalTimeMillis())));
+			
+			return inputStream;
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not get URL", e);
 		}

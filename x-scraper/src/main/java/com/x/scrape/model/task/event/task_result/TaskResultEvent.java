@@ -1,6 +1,6 @@
 package com.x.scrape.model.task.event.task_result;
 
-import com.x.scrape.model.event.storable.Storable;
+import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskEvent;
 import com.x.scrape.model.event.storable.payload.Payload;
@@ -12,7 +12,7 @@ import java.util.UUID;
  * This might not include all data, as not all data can always be retrieved at once.
  */
 public class TaskResultEvent extends TaskEvent
-		implements Storable {
+		implements StorableEvent {
 	
 	/**
 	 * Provides a hint on how this data should be stored.
