@@ -3,6 +3,7 @@ package com.x.scrape.activity_logging.model;
 import org.slf4j.MDC;
 
 import java.time.Instant;
+import java.util.HashMap;
 
 public abstract class Activity {
 	
