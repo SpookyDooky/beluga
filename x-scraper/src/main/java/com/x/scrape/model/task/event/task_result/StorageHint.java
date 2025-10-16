@@ -8,29 +8,24 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class StorageHint {
 	
-	private final StorageType type;
 	private final String fileName;
 	private final String folder;
 	
 	private StorageHint(final String fileName,
-	                    final String folder,
-	                    final StorageType type) {
+	                    final String folder) {
 		this.fileName = fileName;
 		this.folder = folder;
-		this.type = type;
 	}
 	
 	/**
 	 * Creates a {@link StorageHint} for a file that should be stored at the root of the task result folder.
 	 *
 	 * @param fileName the name of the file to store the data in.
-	 * @param type     the type of data that is being stored, this should not dictate the file extension.
 	 * @return the constructed {@link StorageHint}.
 	 * @throws IllegalArgumentException when any of the parameters are null.
 	 */
-	public static StorageHint of(@NotNull final String fileName,
-	                             @NotNull final StorageType type) {
-		return of(fileName, "/", type);
+	public static StorageHint of(@NotNull final String fileName) {
+		return of(fileName, "/");
 	}
 	
 	/**
@@ -38,18 +33,15 @@ public final class StorageHint {
 	 *
 	 * @param fileName the name of the file to store the data in.
 	 * @param folder   that the file should be stored in.
-	 * @param type     the type of data that is being stored, this should not dictate the file extension.
 	 * @return the constructed {@link StorageHint}.
 	 * @throws IllegalArgumentException when any of the parameters are null.
 	 */
 	public static StorageHint of(@NotNull final String fileName,
-	                             @NotNull final String folder,
-	                             @NotNull final StorageType type) {
+	                             @NotNull final String folder) {
 		validateNotNull("fileName", fileName);
 		validateNotNull("folder", folder);
-		validateNotNull("type", type);
 		
-		return new StorageHint(fileName, folder, type);
+		return new StorageHint(fileName, folder);
 	}
 	
 	private static void validateNotNull(final String propertyName,
@@ -57,10 +49,6 @@ public final class StorageHint {
 		if (value == null) {
 			throw new IllegalArgumentException(propertyName + " must not be null.");
 		}
-	}
-	
-	public StorageType getType() {
-		return type;
 	}
 	
 	public String getFileName() {

@@ -3,7 +3,7 @@ package com.x.scrape.model.task.event;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.task.event.task_result.data.DataPayload;
+import com.x.scrape.model.event.storable.payload.Payload;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ class TaskResultEventTest {
 	void shouldCreateTaskResultEvent() {
 		final Task task = Instancio.create(Task.class);
 		final StorageHint storageHint = mock();
-		final DataPayload<?> payload = mock();
+		final Payload<?> payload = mock();
 		
 		final TaskResultEvent event = TaskResultEvent.of(task, storageHint, payload);
 		

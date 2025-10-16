@@ -1,10 +1,13 @@
 package com.x.scrape.http;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.x.scrape.activity_logging.event.ActivityEvent;
+import com.x.scrape.activity_logging.model.RequestActivity;
+import com.x.scrape.logging.ContextLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -15,17 +18,32 @@ import java.util.Optional;
 @Service
 public class HttpService {
 	
-	private final Logger logger = LogManager.getLogger();
+	private final ContextLogger logger;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	
+	public HttpService(final ContextLogger logger,
+	                   final ApplicationEventPublisher applicationEventPublisher) {
+		this.logger = logger;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 	
 	public Optional<Document> retrievePageAsDocument(final URL url) {
 		logger.info("Retrieving document for: " + url);
 		
+		final StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
 		try {
-			return Optional.of(
+			final Optional<Document> document =  Optional.of(
 					Jsoup.connect(url.toString())
 							.timeout(10_000)
 							.get()
 			);
+			
+			stopWatch.stop();
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, stopWatch.getTotalTimeMillis())));
+			
+			return document;
 		} catch (final Exception e) {
 			logger.error("Failed to retrieve document for: " + url, e);
 			return Optional.empty();
@@ -33,8 +51,16 @@ public class HttpService {
 	}
 	
 	public InputStream get(final URL url) {
+		final StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
 		try {
-			return new BufferedInputStream(url.openStream());
+			final InputStream inputStream =  new BufferedInputStream(url.openStream());
+			
+			stopWatch.stop();
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, stopWatch.getTotalTimeMillis())));
+			
+			return inputStream;
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not get URL", e);
 		}

@@ -28,9 +28,12 @@ public class Job {
 		file.mkdirs();
 	}
 	
+	public String getJobFolder() {
+		return jobConfiguration.getStorageConfiguration().getFolder()
+				+ jobConfiguration.getName();
+	}
+	
 	public String getJobTaskResultsFolder() {
-		return jobConfiguration.getStorageConfiguration().getFolder() +
-				jobConfiguration.getName() +
-				"/job-executions/" + id + "/results/tasks";
+		return getJobFolder() + "/job-executions/" + id + "/results/tasks";
 	}
 }

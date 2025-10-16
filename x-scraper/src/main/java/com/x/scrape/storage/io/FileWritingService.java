@@ -21,7 +21,7 @@ public class FileWritingService {
 	                  final String content) {
 		try (final CloseableContext ignored = logger.with("fileName", fileName)) {
 			
-			final File file = new File(folder + fileName);
+			final File file = new File(folder + "/" + fileName);
 			if (!file.getParentFile().exists()) {
 				createFolder(file.getParentFile());
 			}
@@ -34,7 +34,7 @@ public class FileWritingService {
 	                  final String fileName,
 	                  final InputStream inputStream) {
 		try (final CloseableContext ignored = logger.with("fileName", fileName)) {
-			final File file = new File(folder + fileName);
+			final File file = new File(folder + "/" +  fileName);
 			if (!file.getParentFile().exists()) {
 				createFolder(file.getParentFile());
 			}

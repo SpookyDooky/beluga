@@ -1,7 +1,7 @@
 package com.x.scrape.mapper.job.storage;
 
 import com.x.scrape.model.job.storage.StorageConfiguration;
-import com.x.scrape.properties.scraping.storage.FileProperties;
+import com.x.scrape.properties.scraping.storage.StorageProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +13,12 @@ class StorageConfigurationMapperTest {
 	
 	@Test
 	void shouldMap() {
-		final FileProperties fileProperties = Instancio.create(FileProperties.class);
+		final StorageProperties storageProperties = Instancio.create(StorageProperties.class);
 		
-		final StorageConfiguration storageConfiguration = mapper.map(fileProperties);
+		final StorageConfiguration storageConfiguration = mapper.map(storageProperties);
 		
-		assertEquals(fileProperties.getFormat(), storageConfiguration.getFormat());
-		assertEquals(fileProperties.getFile(), storageConfiguration.getFile());
-		assertEquals(fileProperties.getFolder(), storageConfiguration.getFolder());
+		assertEquals(storageProperties.getFormat(), storageConfiguration.getFormat());
+		assertEquals(storageProperties.getFile(), storageConfiguration.getFile());
+		assertEquals(storageProperties.getFolder(), storageConfiguration.getFolder());
 	}
 }
