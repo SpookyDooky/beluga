@@ -8,14 +8,12 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.scraping.job.JobRegistry;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,8 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.JOB_ID;
-import static com.x.scrape.logging.ContextKeys.URL;
-import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -81,7 +77,7 @@ class ActivityLoggingServiceTest {
 	}
 	
 	RequestActivity createActivity(final UUID jobId) {
-		final RequestActivity activity =  new RequestActivity(mock());
+		final RequestActivity activity =  new RequestActivity(mock(), 1L);
 		
 		activity.getContext()
 				.put(JOB_ID, jobId.toString());

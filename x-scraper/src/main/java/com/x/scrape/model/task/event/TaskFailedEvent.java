@@ -1,11 +1,10 @@
 package com.x.scrape.model.task.event;
 
-import java.util.UUID;
+import com.x.scrape.model.task.Task;
 
 public class TaskFailedEvent extends TaskEvent {
 	
-	public TaskFailedEvent(final UUID jobId,
-	                       final UUID taskId) {
-		super(jobId, taskId);
+	public TaskFailedEvent(final Task task) {
+		super(task);
 	}
 }

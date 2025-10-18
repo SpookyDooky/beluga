@@ -1,6 +1,7 @@
 package com.x.scrape.model.task.event;
 
 import com.x.scrape.logging.ContextLoggable;
+import com.x.scrape.model.task.Task;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Map;
@@ -14,12 +15,11 @@ public abstract class TaskEvent extends ApplicationEvent implements ContextLogga
 	private final UUID jobId;
 	private final UUID taskId;
 	
-	public TaskEvent(final UUID jobId,
-	                 final UUID taskId) {
-		super(taskId);
+	public TaskEvent(final Task task) {
+		super(task.getId());
 		
-		this.jobId = jobId;
-		this.taskId = taskId;
+		this.jobId = task.getJob().getId();
+		this.taskId = task.getId();
 	}
 	
 	public UUID getJobId() {

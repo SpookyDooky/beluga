@@ -1,5 +1,7 @@
 package com.x.scrape.activity_logging.model;
 
 public enum ActivityType {
-	REQUEST
+	REQUEST,
+	TASK_COMPLETED,
+	TASK_FAILED
 }

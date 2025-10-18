@@ -1,11 +1,9 @@
 package com.x.scrape.model.task.event.task_result;
 
 import com.x.scrape.model.event.storable.StorableEvent;
+import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskEvent;
-import com.x.scrape.model.event.storable.payload.Payload;
-
-import java.util.UUID;
 
 /**
  * Event that represents some piece of data coming from task execution.
@@ -27,31 +25,28 @@ public class TaskResultEvent extends TaskEvent
 	/**
 	 * Creates a {@link TaskResultEvent}.
 	 *
-	 * @param jobId    the {@link UUID} of the job this task result belongs to.
-	 * @param taskId   the {@link UUID} of the task this result belongs to.
+	 * @param task        the task this result is for.
 	 * @param storageHint a hint on how the data should be stored.
-	 * @param payload  the payload.
+	 * @param payload     the payload.
 	 * @throws NullPointerException thrown when the payload is null.
 	 */
-	private TaskResultEvent(final UUID jobId,
-	                       final UUID taskId,
-	                       final StorageHint storageHint,
-	                       final Payload<?> payload) {
-		super(jobId, taskId);
+	private TaskResultEvent(final Task task,
+	                        final StorageHint storageHint,
+	                        final Payload<?> payload) {
+		super(task);
 		this.storageHint = storageHint;
 		this.payload = payload;
 	}
 	
 	public static TaskResultEvent of(final Task task,
-									 final StorageHint storageHint,
+	                                 final StorageHint storageHint,
 	                                 final Payload<?> payload) {
 		validateNotNull("task", task);
 		validateNotNull("storageHint", storageHint);
 		validateNotNull("payload", payload);
 		
 		return new TaskResultEvent(
-				task.getJob().getId(),
-				task.getId(),
+				task,
 				storageHint,
 				payload
 		);

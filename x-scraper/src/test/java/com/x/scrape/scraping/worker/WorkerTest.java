@@ -1,15 +1,17 @@
 package com.x.scrape.scraping.worker;
 
 import com.x.scrape.http.HttpService;
+import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskFailedEvent;
+import com.x.scrape.model.task.event.TaskStartedEvent;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
-import com.x.scrape.model.event.storable.payload.MapPayload;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
+import com.x.scrape.util.TimingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +44,8 @@ class WorkerTest {
 	private HttpService httpService;
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
+	@Mock
+	private TimingService timingService;
 	
 	@InjectMocks
 	private Worker worker;
@@ -81,11 +85,14 @@ class WorkerTest {
 		worker.init(jobId);
 		worker.start();
 		
+		verify(applicationEventPublisher).publishEvent(any(WorkerStartedEvent.class));
+		verify(applicationEventPublisher).publishEvent(any(TaskStartedEvent.class));
 		final ArgumentCaptor<TaskResultEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskResultEvent.class);
 		verify(applicationEventPublisher, times(2)).publishEvent(taskCompletedEventArgumentCaptor.capture());
+		verify(applicationEventPublisher).publishEvent(any(WorkerFinishedEvent.class));
 		
 		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getAllValues().getFirst();
-		final MapPayload mapPayload = (MapPayload) taskResultEvent.getPayload();
+		final JsonPayload mapPayload = (JsonPayload) taskResultEvent.getPayload();
 		assertSame(scrapeResult, mapPayload.getData());
 		
 		removeResultFolder(task);
@@ -113,7 +120,7 @@ class WorkerTest {
 		verify(applicationEventPublisher).publishEvent(taskFailedEventArgumentCaptor.capture());
 		
 		final TaskFailedEvent taskFailedEvent = taskFailedEventArgumentCaptor.getValue();
-		assertSame(jobId, taskFailedEvent.getJobId());
+		assertSame(task.getJob().getId(), taskFailedEvent.getJobId());
 		assertSame(task.getId(), taskFailedEvent.getTaskId());
 	}
 }
