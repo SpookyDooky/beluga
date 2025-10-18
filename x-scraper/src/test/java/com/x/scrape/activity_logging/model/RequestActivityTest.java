@@ -13,7 +13,7 @@ class RequestActivityTest {
 	@Test
 	void shouldHaveCorrectActivityType() {
 		final URL url = mock();
-		final RequestActivity requestActivity = new RequestActivity(url);
+		final RequestActivity requestActivity = new RequestActivity(url, 1L);
 		
 		assertEquals(REQUEST, requestActivity.getType());
 	}

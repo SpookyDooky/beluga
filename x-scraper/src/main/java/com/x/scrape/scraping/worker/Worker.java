@@ -1,5 +1,7 @@
 package com.x.scrape.scraping.worker;
 
+import com.x.scrape.activity_logging.event.ActivityEvent;
+import com.x.scrape.activity_logging.model.TaskCompletedActivity;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextKeys;
@@ -18,6 +20,7 @@ import com.x.scrape.scraping.model.ScrapingResult;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.worker.event.WorkerFinishedEvent;
 import com.x.scrape.scraping.worker.event.WorkerStartedEvent;
+import com.x.scrape.util.TimingService;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
@@ -30,8 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.logging.ContextKeys.*;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -44,18 +46,22 @@ public class Worker {
 	private final ScrapingService scrapingService;
 	private final HttpService httpService;
 	private final ApplicationEventPublisher applicationEventPublisher;
+	private final TimingService timingService;
 	
 	private UUID jobId;
 	private Instant startTime;
+	private final UUID workerId = UUID.randomUUID();
 	
 	public Worker(final JobTaskQueue jobTaskQueue,
 	              final ScrapingService scrapingService,
 	              final HttpService httpService,
-	              final ApplicationEventPublisher applicationEventPublisher) {
+	              final ApplicationEventPublisher applicationEventPublisher,
+	              final TimingService timingService) {
 		this.jobTaskQueue = jobTaskQueue;
 		this.scrapingService = scrapingService;
 		this.httpService = httpService;
 		this.applicationEventPublisher = applicationEventPublisher;
+		this.timingService = timingService;
 	}
 	
 	/**
@@ -68,7 +74,9 @@ public class Worker {
 	}
 	
 	public void start() {
-		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+		try (final CloseableContext context = logger.with(JOB_ID, jobId.toString())) {
+			context.put(WORKER_ID, workerId.toString());
+			
 			logger.info("Worker starting.");
 			Thread.sleep(1_000);
 			
@@ -90,8 +98,11 @@ public class Worker {
 	private void executeTask(final Task task) {
 		try (final CloseableContext context = logger.with(TASK_ID, task.getId().toString())) {
 			context.put(ContextKeys.URL, task.getUrl().toString());
+			
+			timingService.start(task.getId());
 			logger.info("Executing task.");
 			
+			// Should not be the responsibility of the worker
 			createTaskResultFolder(task);
 			
 			final ScrapingResult scrapingResult = scrapingService.scrape(
@@ -102,6 +113,9 @@ public class Worker {
 			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
+			applicationEventPublisher.publishEvent(new ActivityEvent(
+					new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getId()))
+			));
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
 			applicationEventPublisher.publishEvent(new TaskFailedEvent(jobId, task.getId()));
