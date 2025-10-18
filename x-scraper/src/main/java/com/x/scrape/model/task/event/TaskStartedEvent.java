@@ -1,10 +1,9 @@
 package com.x.scrape.model.task.event;
 
-import java.util.UUID;
+import com.x.scrape.model.task.Task;
 
 public class TaskStartedEvent extends TaskEvent {
-	public TaskStartedEvent(final UUID jobId,
-	                        final UUID taskId) {
-		super(jobId, taskId);
+	public TaskStartedEvent(final Task task) {
+		super(task);
 	}
 }

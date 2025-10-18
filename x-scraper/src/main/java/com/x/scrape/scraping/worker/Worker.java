@@ -4,7 +4,6 @@ import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.model.TaskCompletedActivity;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextKeys;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
@@ -12,7 +11,9 @@ import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.task.ImageDownloadTask;
 import com.x.scrape.model.task.Task;
+import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
+import com.x.scrape.model.task.event.TaskStartedEvent;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.scraping.ScrapingService;
@@ -33,7 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.*;
+import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.WORKER_ID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -76,9 +78,7 @@ public class Worker {
 	public void start() {
 		try (final CloseableContext context = logger.with(JOB_ID, jobId.toString())) {
 			context.put(WORKER_ID, workerId.toString());
-			
 			logger.info("Worker starting.");
-			Thread.sleep(1_000);
 			
 			applicationEventPublisher.publishEvent(new WorkerStartedEvent(jobId));
 			startTime = Instant.now();
@@ -89,17 +89,14 @@ public class Worker {
 			}
 			
 			finish();
-		} catch (final InterruptedException e) {
-			logger.error("Unexpected exception occurred in worker.", e);
-			throw new IllegalStateException(e);
 		}
 	}
 	
 	private void executeTask(final Task task) {
-		try (final CloseableContext context = logger.with(TASK_ID, task.getId().toString())) {
-			context.put(ContextKeys.URL, task.getUrl().toString());
-			
+		try (final CloseableContext ignored = logger.with(task)) {
+			applicationEventPublisher.publishEvent(new TaskStartedEvent(task));
 			timingService.start(task.getId());
+			
 			logger.info("Executing task.");
 			
 			// Should not be the responsibility of the worker
@@ -109,22 +106,39 @@ public class Worker {
 					task.getUrl(),
 					task.getScrapingConfiguration()
 			);
+			
 			downloadImages(task, scrapingResult.getResult());
 			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
-			applicationEventPublisher.publishEvent(new ActivityEvent(
-					new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getId()))
-			));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getId()))));
+			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task));
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
-			applicationEventPublisher.publishEvent(new TaskFailedEvent(jobId, task.getId()));
+			applicationEventPublisher.publishEvent(new TaskFailedEvent(task));
 		}
 	}
 	
 	private void createTaskResultFolder(final Task task) {
 		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getId());
 		file.mkdirs();
+	}
+	
+	// TODO offer this as a task too so that rate limiting can be applied properly in the future
+	// Or make this use the same rate limiter in the code, Resilience4J will be used for this.
+	private void downloadImages(final Task task,
+	                            final List<Map<String, Object>> scrapedData) {
+		scrapedData.forEach(elementScrapedData -> {
+			final List<ImageDownloadTask> imageDownloadTasks = task.getImageDownloadsTask(elementScrapedData);
+			
+			for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
+				final String fileName = UUID.randomUUID() + ".png";
+				downloadImage(task, imageDownloadTask, fileName);
+				final String filePath = task.getId() + "/images/" + fileName;
+				
+				addImagePathToResult(elementScrapedData, filePath, imageDownloadTask.getPropertyName());
+			}
+		});
 	}
 	
 	private void publishScrapingResultEvents(final Task task,
@@ -150,23 +164,6 @@ public class Worker {
 						new StringPayload(scrapingResult.getRawPage())
 				)
 		);
-	}
-	
-	// TODO offer this as a task too so that rate limiting can be applied properly in the future
-	// Or make this use the same rate limiter in the code, Resilience4J will be used for this.
-	private void downloadImages(final Task task,
-	                            final List<Map<String, Object>> scrapedData) {
-		scrapedData.forEach(elementScrapedData -> {
-			final List<ImageDownloadTask> imageDownloadTasks = task.getImageDownloadsTask(elementScrapedData);
-			
-			for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
-				final String fileName = UUID.randomUUID() + ".png";
-				downloadImage(task, imageDownloadTask, fileName);
-				final String filePath = task.getId() + "/images/" + fileName;
-				
-				addImagePathToResult(elementScrapedData, filePath, imageDownloadTask.getPropertyName());
-			}
-		});
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package com.x.scrape.model.task;
 
+import com.x.scrape.logging.ContextLoggable;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job.storage.StorageConfiguration;
@@ -10,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.logging.ContextKeys.URL;
 import static com.x.scrape.model.job.scraping_configuration.DataPointType.IMAGE;
 
-public class Task {
+public class Task implements ContextLoggable {
 	
 	private final UUID id;
 	private Job job;
@@ -90,5 +93,13 @@ public class Task {
 		task.setPropertyName(propertyName);
 		
 		return task;
+	}
+	
+	@Override
+	public Map<String, String> loggingContext() {
+		return Map.of(
+				TASK_ID, id.toString(),
+				URL, url.toString()
+		);
 	}
 }
