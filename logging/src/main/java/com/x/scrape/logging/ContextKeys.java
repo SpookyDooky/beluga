@@ -8,4 +8,5 @@ public class ContextKeys {
 	
 	public static final String URL = "url";
 	public static final String RESULTS = "results";
+	public static final String FILE_NAME = "fileName";
 }

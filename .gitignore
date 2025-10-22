@@ -36,3 +36,5 @@ build/
 
 **/application-local.yml
 compose/start-compose.sh
+compose/data
+compose/config

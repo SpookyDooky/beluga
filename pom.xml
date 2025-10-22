@@ -17,7 +17,7 @@
         <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
 
         <!-- Dependency versions -->
-        <spring.version>3.4.3</spring.version>
+        <spring.version>3.5.6</spring.version>
         <jackson.version>2.18.2</jackson.version>
         <jsoup.version>1.17.2</jsoup.version>
         <junit.version>5.13.0</junit.version>
@@ -29,6 +29,7 @@
         <jetbrains-annotations.version>13.0</jetbrains-annotations.version>
         <pmd.version>3.27.0</pmd.version>
         <checkstyle.version>3.6.0</checkstyle.version>
+        <s3.version>2.35.10</s3.version>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +56,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-log4j2</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
                 <version>${spring.version}</version>
             </dependency>
 
@@ -87,6 +93,13 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- S3 -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${s3.version}</version>
             </dependency>
 
             <!-- Other dependencies -->
@@ -173,7 +186,6 @@
                     </executions>
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
-                        <encoding>UTF-8</encoding>
                         <failOnViolation>true</failOnViolation>
                         <consoleOutput>true</consoleOutput>
                     </configuration>

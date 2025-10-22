@@ -2,6 +2,8 @@ package com.x.scrape.model.task.event.task_result;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
+
 /**
  * This class is meant to be added to events that contain data to give a hint about how to store the data
  * this is useful in cases where the handler might be responsible for storing the data.
@@ -57,5 +59,9 @@ public final class StorageHint {
 	
 	public String getFolder() {
 		return folder;
+	}
+	
+	public Path getPath() {
+		return Path.of(folder + "/" + fileName);
 	}
 }

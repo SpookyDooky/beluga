@@ -8,7 +8,6 @@ import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.model.task.event.task_result.StorageHint;
-import com.x.scrape.storage.io.FileWritingService;
 import com.x.scrape.storage.json.JsonService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -19,14 +18,14 @@ public class StorageService {
 	
 	private final ContextLogger logger;
 	private final JsonService jsonService;
-	private final FileWritingService fileWritingService;
+	private final DataStoreProvider dataStoreProvider;
 	
 	public StorageService(final ContextLogger logger,
 	                      final JsonService jsonService,
-	                      final FileWritingService fileWritingService) {
+	                      final DataStoreProvider dataStoreProvider) {
 		this.logger = logger;
 		this.jsonService = jsonService;
-		this.fileWritingService = fileWritingService;
+		this.dataStoreProvider = dataStoreProvider;
 	}
 	
 	/**
@@ -55,29 +54,26 @@ public class StorageService {
 	
 	private void saveJsonResult(final StorageHint storageHint,
 	                            final JsonPayload payload) {
-		fileWritingService.write(
-				storageHint.getFolder(),
-				storageHint.getFileName(),
-				jsonService.toJson(payload.getData())
+		dataStoreProvider.save(
+				storageHint.getPath(),
+				jsonService.toJson(payload.getData()).getBytes()
 		);
 		
 	}
 	
 	private void saveImageResult(final StorageHint storageHint,
 	                             final ImagePayload imagePayload) {
-		fileWritingService.write(
-				storageHint.getFolder(),
-				storageHint.getFileName(),
+		dataStoreProvider.save(
+				storageHint.getPath(),
 				imagePayload.getData()
 		);
 	}
 	
 	private void saveRawResult(final StorageHint storageHint,
 	                           final StringPayload stringPayload) {
-		fileWritingService.write(
-				storageHint.getFolder(),
-				storageHint.getFileName(),
-				stringPayload.getData()
+		dataStoreProvider.save(
+				storageHint.getPath(),
+				stringPayload.getData().getBytes()
 		);
 	}
 }
