@@ -10,6 +10,9 @@ import java.nio.file.Path;
 
 import static com.x.scrape.logging.ContextKeys.FILE_NAME;
 
+/**
+ * User for making more datastore implementations available as storage backend.
+ */
 public abstract class DataStoreProvider {
 	
 	protected final ContextLogger logger;

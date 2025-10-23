@@ -11,6 +11,9 @@ import java.nio.file.Path;
 
 import static com.x.scrape.logging.ContextKeys.FILE_NAME;
 
+/**
+ * Data store provider for S3 compatible object-stores.
+ */
 @Component
 @ConditionalOnBean(S3Service.class)
 public class S3DataStoreProvider extends DataStoreProvider {
