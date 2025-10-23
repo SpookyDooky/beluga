@@ -22,13 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +65,7 @@ class WorkerTest {
 	}
 	
 	@Test
-	void shouldExecuteTask() {
+	void shouldExecuteTask() throws Exception {
 		when(jobTaskQueue.isQueueEmpty(jobId))
 				.thenReturn(false)
 				.thenReturn(true);
@@ -95,11 +91,21 @@ class WorkerTest {
 		final JsonPayload mapPayload = (JsonPayload) taskResultEvent.getPayload();
 		assertSame(scrapeResult, mapPayload.getData());
 		
+		Thread.sleep(500L);
 		removeResultFolder(task);
 	}
 	
 	void removeResultFolder(final Task task) {
-		final File file = new File(task.getJob().getJobTaskResultsFolder());
+		final File file = new File(task.getJob().getJobFolder());
+		assertTrue(file.getPath().startsWith(task.getJob().getJobConfiguration().getStorageConfiguration().getFolder()));
+		removeFile(file);
+	}
+	
+	void removeFile(final File file) {
+		for (final File directoryFile : Objects.requireNonNull(file.listFiles())) {
+			removeFile(directoryFile);
+		}
+		
 		file.delete();
 	}
 	
