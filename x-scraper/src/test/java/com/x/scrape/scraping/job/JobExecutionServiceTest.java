@@ -44,12 +44,13 @@ class JobExecutionServiceTest {
 	@BeforeEach
 	void setup() {
 		when(applicationContext.getBean(Worker.class)).thenReturn(worker);
+		doNothing().when(worker).start();
 	}
 	
 	@Test
 	void shouldStartJob() throws Exception {
 		final URL taskUrl = new URL("https://not-existent-url.com");
-		final Job job = Instancio.of(Job.class)
+		final Job job = spy(Instancio.of(Job.class)
 				.set(
 						field(Job::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
@@ -64,7 +65,8 @@ class JobExecutionServiceTest {
 												).create()
 								)
 								.create()
-				).create();
+				).create());
+		doNothing().when(job).createJobFolders();
 		
 		final Task task = mock();
 		when(taskFactory.create(taskUrl, job)).thenReturn(task);
@@ -84,7 +86,7 @@ class JobExecutionServiceTest {
 				.getPath()
 				.replaceFirst("/", "");
 		
-		final Job job = Instancio.of(Job.class)
+		final Job job = spy(Instancio.of(Job.class)
 				.set(
 						field(Job::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
@@ -96,7 +98,8 @@ class JobExecutionServiceTest {
 												.set(field(UrlConfiguration::getUrlFile), urlFilePath).create()
 								)
 								.create()
-				).create();
+				).create());
+		doNothing().when(job).createJobFolders();
 		
 		final Task task = mock();
 		when(taskFactory.create(eq(expectedTaskUrl), eq(job))).thenReturn(task);
