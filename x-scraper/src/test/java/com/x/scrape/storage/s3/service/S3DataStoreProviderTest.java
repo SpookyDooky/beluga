@@ -2,14 +2,15 @@ package com.x.scrape.storage.s3.service;
 
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.properties.datastore.S3Properties;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.when;
+import java.nio.file.Path;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class S3DataStoreProviderTest {
@@ -32,12 +33,12 @@ class S3DataStoreProviderTest {
 	}
 	
 	@Test
-	void shouldSaveStream() {
-		Assertions.fail();
-	}
-	
-	@Test
 	void shouldSave() {
-		Assertions.fail();
+		final Path path = mock(RETURNS_DEEP_STUBS);
+		final byte[] fileContent = new byte[0];
+		
+		s3DataStoreProvider.save(path, fileContent);
+		
+		verify(s3Service).putObject(path, fileContent, bucket);
 	}
 }
