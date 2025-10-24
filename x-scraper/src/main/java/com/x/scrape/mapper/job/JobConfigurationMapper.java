@@ -1,5 +1,6 @@
 package com.x.scrape.mapper.job;
 
+import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
 import com.x.scrape.model.JobConfiguration;
@@ -16,7 +17,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		uses = {
 				UrlConfigurationMapper.class,
 				ScrapingConfigurationMapper.class,
-				StorageConfigurationMapper.class
+				StorageConfigurationMapper.class,
+				ExecutionConfigurationMapper.class
 		}
 )
 public interface JobConfigurationMapper {
@@ -24,6 +26,6 @@ public interface JobConfigurationMapper {
 	@Mapping(target = "urlConfiguration", source = "url")
 	@Mapping(target = "scrapingConfiguration", source = "scraping")
 	@Mapping(target = "storageConfiguration", source = "storage")
-	@Mapping(target = "workers", source = "workers")
+	@Mapping(target = "executionConfiguration", source = "execution")
 	JobConfiguration map(JobProperties jobProperties);
 }

@@ -2,6 +2,7 @@ package com.x.scrape.model;
 
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
+import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job.storage.StorageConfiguration;
 
@@ -13,7 +14,7 @@ public class JobConfiguration {
 	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;
 	
-	private int workers;
+	private ExecutionConfiguration executionConfiguration;
 	
 	public String getName() {
 		return name;
@@ -47,12 +48,12 @@ public class JobConfiguration {
 		this.storageConfiguration = storageConfiguration;
 	}
 	
-	public int getWorkers() {
-		return workers;
+	public ExecutionConfiguration getExecutionConfiguration() {
+		return executionConfiguration;
 	}
 	
-	public void setWorkers(final int workers) {
-		this.workers = workers;
+	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
+		this.executionConfiguration = executionConfiguration;
 	}
 	
 	public Job getJob() {

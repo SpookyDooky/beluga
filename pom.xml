@@ -30,6 +30,7 @@
         <pmd.version>3.27.0</pmd.version>
         <checkstyle.version>3.6.0</checkstyle.version>
         <s3.version>2.35.10</s3.version>
+        <guava.version>33.5.0-jre</guava.version>
     </properties>
 
     <dependencyManagement>
@@ -117,6 +118,11 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- Testing modules -->

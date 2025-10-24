@@ -77,6 +77,12 @@
             <artifactId>s3</artifactId>
         </dependency>
 
+        <!-- Misc -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

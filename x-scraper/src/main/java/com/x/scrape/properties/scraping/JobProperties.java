@@ -1,5 +1,6 @@
 package com.x.scrape.properties.scraping;
 
+import com.x.scrape.properties.scraping.execution.ExecutionProperties;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import com.x.scrape.properties.scraping.url.UrlProperties;
 
@@ -11,7 +12,7 @@ public class JobProperties {
 	private ScrapingProperties scraping;
 	private StorageProperties storage;
 	
-	private int workers = 1;
+	private ExecutionProperties execution;
 	
 	public String getName() {
 		return name;
@@ -45,11 +46,11 @@ public class JobProperties {
 		this.storage = storage;
 	}
 	
-	public int getWorkers() {
-		return workers;
+	public ExecutionProperties getExecution() {
+		return execution;
 	}
 	
-	public void setWorkers(final int workers) {
-		this.workers = workers;
+	public void setExecution(final ExecutionProperties execution) {
+		this.execution = execution;
 	}
 }

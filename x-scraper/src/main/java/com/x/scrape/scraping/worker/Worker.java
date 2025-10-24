@@ -1,5 +1,6 @@
 package com.x.scrape.scraping.worker;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.model.TaskCompletedActivity;
 import com.x.scrape.http.HttpService;
@@ -54,6 +55,8 @@ public class Worker {
 	private Instant startTime;
 	private final UUID workerId = UUID.randomUUID();
 	
+	private RateLimiter rateLimiter;
+	
 	public Worker(final JobTaskQueue jobTaskQueue,
 	              final ScrapingService scrapingService,
 	              final HttpService httpService,
@@ -71,8 +74,10 @@ public class Worker {
 	 *
 	 * @param jobId the id of the {@link Job}.
 	 */
-	public void init(final UUID jobId) {
+	public void init(final UUID jobId,
+	                 final RateLimiter rateLimiter) {
 		this.jobId = jobId;
+		this.rateLimiter = rateLimiter;
 	}
 	
 	public void start() {
@@ -84,6 +89,7 @@ public class Worker {
 			startTime = Instant.now();
 			
 			while (!jobTaskQueue.isQueueEmpty(jobId)) {
+				rateLimiter.acquire();
 				jobTaskQueue.pollTask(jobId)
 						.ifPresent(this::executeTask);
 			}
