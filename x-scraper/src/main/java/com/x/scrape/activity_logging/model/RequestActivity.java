@@ -11,12 +11,15 @@ public class RequestActivity extends Activity {
 	
 	private final URL url;
 	private final Long duration;
+	private final boolean success;
 	
 	public RequestActivity(final URL url,
-	                       final Long duration) {
+	                       final Long duration,
+	                       final boolean success) {
 		super(REQUEST);
 		this.url = url;
 		this.duration = duration;
+		this.success = success;
 	}
 	
 	public URL getUrl() {
@@ -25,5 +28,9 @@ public class RequestActivity extends Activity {
 	
 	public Long getDuration() {
 		return duration;
+	}
+	
+	public boolean isSuccess() {
+		return success;
 	}
 }

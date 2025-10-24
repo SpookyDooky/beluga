@@ -77,7 +77,7 @@ class ActivityLoggingServiceTest {
 	}
 	
 	RequestActivity createActivity(final UUID jobId) {
-		final RequestActivity activity =  new RequestActivity(mock(), 1L);
+		final RequestActivity activity =  new RequestActivity(mock(), 1L, false);
 		
 		activity.getContext()
 				.put(JOB_ID, jobId.toString());
