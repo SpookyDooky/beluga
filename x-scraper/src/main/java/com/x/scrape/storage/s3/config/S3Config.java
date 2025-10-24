@@ -11,6 +11,10 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URI;
 
 @Configuration
+@ConditionalOnProperty(
+		name = "x-scraper.datastore.type",
+		havingValue = "S3"
+)
 public class S3Config {
 	
 	@Bean

@@ -42,11 +42,11 @@ public class HttpService {
 							.get()
 			);
 			
-			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid))));
-			
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid), true)));
 			return document;
 		} catch (final Exception e) {
 			logger.error("Failed to retrieve document for: " + url, e);
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid), false)));
 			return Optional.empty();
 		}
 	}
@@ -56,10 +56,11 @@ public class HttpService {
 		
 		try {
 			final InputStream inputStream =  new BufferedInputStream(url.openStream());
-			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid))));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid), true)));
 			
 			return inputStream;
 		} catch (final IOException e) {
+			applicationEventPublisher.publishEvent(new ActivityEvent(new RequestActivity(url, timingService.stop(timingUuid), false)));
 			throw new IllegalStateException("Could not get URL", e);
 		}
 	}
