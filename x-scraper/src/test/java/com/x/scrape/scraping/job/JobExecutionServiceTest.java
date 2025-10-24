@@ -1,9 +1,11 @@
 package com.x.scrape.scraping.job;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.JobConfiguration;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
+import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;
@@ -12,6 +14,8 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +46,9 @@ class JobExecutionServiceTest {
 	@Mock
 	private Worker worker;
 	
+	@Captor
+	private ArgumentCaptor<RateLimiter> rateLimiterArgumentCaptor;
+	
 	@BeforeEach
 	void setup() {
 		when(applicationContext.getBean(Worker.class)).thenReturn(worker);
@@ -54,7 +62,12 @@ class JobExecutionServiceTest {
 				.set(
 						field(Job::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
-								.set(field(JobConfiguration::getWorkers), 1)
+								.set(
+										field(JobConfiguration::getExecutionConfiguration),
+										Instancio.of(ExecutionConfiguration.class)
+												.set(field(ExecutionConfiguration::getWorkers), 1)
+												.create()
+								)
 								.set(
 										field(JobConfiguration::getUrlConfiguration),
 										Instancio.of(UrlConfiguration.class)
@@ -74,8 +87,11 @@ class JobExecutionServiceTest {
 		jobExecutionService.executeJob(job);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(job.getId());
+		verify(worker).init(eq(job.getId()), rateLimiterArgumentCaptor.capture());
 		verify(worker, after(250)).start();
+		
+		final RateLimiter rateLimiter = rateLimiterArgumentCaptor.getValue();
+		assertEquals(job.getJobConfiguration().getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
 	}
 	
 	@Test
@@ -90,7 +106,12 @@ class JobExecutionServiceTest {
 				.set(
 						field(Job::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
-								.set(field(JobConfiguration::getWorkers), 1)
+								.set(
+										field(JobConfiguration::getExecutionConfiguration),
+										Instancio.of(ExecutionConfiguration.class)
+												.set(field(ExecutionConfiguration::getWorkers), 1)
+												.create()
+								)
 								.set(
 										field(JobConfiguration::getUrlConfiguration),
 										Instancio.of(UrlConfiguration.class)
@@ -107,7 +128,7 @@ class JobExecutionServiceTest {
 		jobExecutionService.executeJob(job);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(job.getId());
+		verify(worker).init(eq(job.getId()), any());
 		verify(worker, after(250)).start();
 	}
 }
