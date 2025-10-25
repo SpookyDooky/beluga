@@ -11,7 +11,8 @@ import java.nio.file.Path;
 import static com.x.scrape.logging.ContextKeys.FILE_NAME;
 
 /**
- * User for making more datastore implementations available as storage backend.
+ * Used for making more datastore implementations available as storage backend.
+ * This class is specifically focused on the storage of scraping results.
  */
 public abstract class ResultDataStoreProvider {
 	
