@@ -27,6 +27,7 @@ public class HasCorrectPersistenceStoreValidator
 				yield valid;
 			}
 			case FILE_SYSTEM -> {
+				System.out.println("Am i being ran");
 				final boolean valid = persistenceProperties.getFileSystem() != null;
 				
 				if (!valid) {
