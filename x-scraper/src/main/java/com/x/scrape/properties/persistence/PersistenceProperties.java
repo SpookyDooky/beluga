@@ -1,5 +1,7 @@
 package com.x.scrape.properties.persistence;
 
+import com.x.scrape.properties.persistence.validation.HasCorrectPersistenceStore;
+import com.x.scrape.properties.persistence.validation.HasOnlyOnePersistenceStore;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -9,6 +11,8 @@ import static com.x.scrape.properties.persistence.PersistenceType.FILE_SYSTEM;
  * Used for configuring how the scraper should store things such as jobs, tasks and execution of these things.
  */
 @ConfigurationProperties("x-scraper.persistence")
+@HasCorrectPersistenceStore
+@HasOnlyOnePersistenceStore
 public class PersistenceProperties {
 	
 	/**

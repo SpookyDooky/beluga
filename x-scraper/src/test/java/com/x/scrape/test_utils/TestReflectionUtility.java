@@ -49,4 +49,22 @@ public class TestReflectionUtility {
 			throw new IllegalArgumentException("Could not find field " + fieldName + " for class " + clazz.getSimpleName() + ".", e);
 		}
 	}
+	
+	/**
+	 * Asserts that an annotation is present on a {@link Class}.
+	 *
+	 * @param clazz           the class the annotation should be present on.
+	 * @param annotationClass the annotation to check for.
+	 * @param <T>             type of {@link Annotation}
+	 * @return the annotation.
+	 * @throws AssertionFailedError if the annotation is not present on the class.
+	 */
+	public static <T extends Annotation> T assertAnnotationPresentOnClass(final Class<?> clazz,
+	                                                                      final Class<T> annotationClass) {
+		try {
+			return clazz.getAnnotation(annotationClass);
+		} catch (final NullPointerException e) {
+			throw new AssertionFailedError("Annotation " + annotationClass.getSimpleName() + " not present on class " + clazz.getSimpleName() + ".", e);
+		}
+	}
 }
