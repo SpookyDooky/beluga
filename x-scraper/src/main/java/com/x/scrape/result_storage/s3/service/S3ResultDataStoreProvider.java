@@ -16,7 +16,7 @@ import static com.x.scrape.logging.ContextKeys.FILE_NAME;
  */
 @Component
 @ConditionalOnProperty(
-		name = "x-scraper.datastore.type",
+		name = "x-scraper.result-datastore.type",
 		havingValue = "S3"
 )
 public class S3ResultDataStoreProvider extends ResultDataStoreProvider {

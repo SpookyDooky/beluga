@@ -12,13 +12,13 @@ import java.net.URI;
 
 @Configuration
 @ConditionalOnProperty(
-		name = "x-scraper.datastore.type",
+		name = "x-scraper.result-datastore.type",
 		havingValue = "S3"
 )
 public class S3Config {
 	
 	@Bean
-	@ConditionalOnProperty("x-scraper.datastore.s3.host")
+	@ConditionalOnProperty("x-scraper.result-datastore.s3.host")
 	public S3Client s3Client(final S3Properties s3Properties) {
 		final AwsBasicCredentials credentials = AwsBasicCredentials.create(
 				s3Properties.getAccessKey(), s3Properties.getSecretKey()
