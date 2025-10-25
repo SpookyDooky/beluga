@@ -2,6 +2,7 @@ package com.x.scrape.properties.persistence;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class S3PersistencePropertiesTest {
 	
@@ -38,5 +40,13 @@ class S3PersistencePropertiesTest {
 		return Stream.of(
 				"folder"
 		).map(Arguments::of);
+	}
+	
+	@Test
+	void shouldStripTrailingSlashFromFolder() {
+		final S3PersistenceProperties properties = new S3PersistenceProperties();
+		properties.setFolder("test/");
+		
+		assertEquals("test", properties.getFolder());
 	}
 }

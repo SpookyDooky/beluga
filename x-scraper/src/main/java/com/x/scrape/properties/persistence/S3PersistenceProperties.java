@@ -91,6 +91,10 @@ public class S3PersistenceProperties {
 	}
 	
 	public void setFolder(final String folder) {
-		this.folder = folder;
+		if (folder.endsWith("/")) {
+			this.folder = folder.substring(0, folder.length() - 1);
+		} else {
+			this.folder = folder;
+		}
 	}
 }
