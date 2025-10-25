@@ -1,8 +1,10 @@
 package com.x.scrape.scraping.job;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job.Job;
 import com.x.scrape.model.job.UrlConfiguration;
+import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;
@@ -30,7 +32,7 @@ public class JobExecutionService {
 	private final JobTaskQueue jobTaskQueue;
 	
 	public JobExecutionService(final ContextLogger logger,
-							   final ApplicationContext applicationContext,
+	                           final ApplicationContext applicationContext,
 	                           final TaskFactory taskFactory,
 	                           final JobTaskQueue jobTaskQueue) {
 		this.logger = logger;
@@ -47,9 +49,15 @@ public class JobExecutionService {
 		
 		job.createJobFolders();
 		
-		for (int i = 0; i < job.getJobConfiguration().getWorkers(); i++) {
+		final ExecutionConfiguration executionConfiguration = job.getJobConfiguration().getExecutionConfiguration();
+		final RateLimiter rateLimiter = RateLimiter.create((double) executionConfiguration.getTasksPerSecond());
+		
+		for (int i = 0; i < executionConfiguration.getWorkers(); i++) {
 			final Worker worker = applicationContext.getBean(Worker.class);
-			worker.init(job.getId());
+			worker.init(
+					job.getId(),
+					rateLimiter
+			);
 			
 			new Thread(worker::start)
 					.start();
