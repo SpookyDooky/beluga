@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class JobDefinitionTest {
@@ -44,5 +43,16 @@ class JobDefinitionTest {
 		final String actualFolder = jobDefinition.getJobTaskResultsFolder();
 		
 		assertEquals(expectedFolder, actualFolder);
+	}
+	
+	@Test
+	void shouldAddExecution() {
+		final JobExecution jobExecution = mock();
+		final JobDefinition jobDefinition = new JobDefinition(null);
+		
+		jobDefinition.addExecution(jobExecution);
+		
+		assertEquals(1, jobDefinition.getExecutions().size());
+		assertSame(jobExecution, jobDefinition.getExecutions().getFirst());
 	}
 }

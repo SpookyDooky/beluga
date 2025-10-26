@@ -1,6 +1,7 @@
 package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,8 @@ class FileSystemServiceTest {
 
 	@Mock
 	private ObjectMapper objectMapper;
+	@Mock
+	private EntityIdSetterService entityIdSetterService;
 	
 	@InjectMocks
 	private FileSystemServiceImpl fileSystemService;
@@ -42,7 +45,7 @@ class FileSystemServiceTest {
 	}
 	
 	@Test
-	void shouldReadFileAs() {
+	void shouldReadFileAs() throws Exception {
 		final String filePath = FileSystemServiceTest.class
 				.getResource("/test-files/dummy-file.txt")
 				.getPath()
@@ -50,7 +53,7 @@ class FileSystemServiceTest {
 		final File file = new File(filePath);
 		
 		final String expectedResult = "test";
-		when(objectMapper.convertValue("dummy-file", String.class)).thenReturn(expectedResult);
+		when(objectMapper.readValue("dummy-file", String.class)).thenReturn(expectedResult);
 		
 		final String result = fileSystemService.readFileAs(file, String.class);
 		
@@ -102,8 +105,9 @@ class FileSystemServiceTest {
 	
 	static class FileSystemServiceImpl extends FileSystemService {
 		
-		protected FileSystemServiceImpl(final ObjectMapper objectMapper) {
-			super(objectMapper);
+		protected FileSystemServiceImpl(final ObjectMapper objectMapper,
+		                                final EntityIdSetterService entityIdSetterService) {
+			super(objectMapper, entityIdSetterService);
 		}
 	}
 }

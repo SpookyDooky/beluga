@@ -6,11 +6,15 @@ import java.util.List;
 
 public class UrlConfiguration {
 
-	private final List<URL> urls = new ArrayList<>();
+	private List<URL> urls = new ArrayList<>();
 	private String urlFile;
 	
 	public List<URL> getUrls() {
 		return urls;
+	}
+	
+	public void setUrls(final List<URL> urls) {
+		this.urls = urls;
 	}
 	
 	public String getUrlFile() {

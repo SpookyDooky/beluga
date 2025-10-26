@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.config.conditionals.IsFileSystem;
 import com.x.scrape.persistence.shared.model.Sequence;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.persistence.shared.service.StateService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,9 @@ public class FileSystemStateService extends FileSystemService
 	private final Path sequencePath;
 	
 	public FileSystemStateService(final ObjectMapper objectMapper,
-	                              final PersistenceProperties persistenceProperties) {
-		super(objectMapper);
+	                              final PersistenceProperties persistenceProperties,
+	                              @Lazy final EntityIdSetterService entityIdSetterService) {
+		super(objectMapper, entityIdSetterService);
 		
 		final String persistenceFolder = persistenceProperties.getFileSystem().getFolder();
 		sequencePath = Path.of(persistenceFolder + STATE_FOLDER + "/" + SEQUENCE_FILE);

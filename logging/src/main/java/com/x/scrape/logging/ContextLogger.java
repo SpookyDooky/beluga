@@ -54,4 +54,8 @@ public class ContextLogger {
 	                  final Throwable throwable) {
 		logger.error(message, throwable);
 	}
+	
+	public void trace(final String message) {
+		logger.trace(message);
+	}
 }

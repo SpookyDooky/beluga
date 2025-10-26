@@ -2,6 +2,7 @@ package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,9 +19,12 @@ import java.util.Optional;
 public abstract class FileSystemService {
 	
 	protected final ObjectMapper objectMapper;
+	protected final EntityIdSetterService entityIdSetterService;
 	
-	protected FileSystemService(final ObjectMapper objectMapper) {
+	protected FileSystemService(final ObjectMapper objectMapper,
+	                            final EntityIdSetterService entityIdSetterService) {
 		this.objectMapper = objectMapper;
+		this.entityIdSetterService = entityIdSetterService;
 	}
 	
 	/**
@@ -65,7 +69,6 @@ public abstract class FileSystemService {
 		}
 	}
 	
-	// TODO - should eventually also set ids
 	/**
 	 * Persists content to the file system.
 	 *
@@ -78,6 +81,8 @@ public abstract class FileSystemService {
 	                     final Path filePath) {
 		final String jsonContent = toJson(content);
 		final File file = filePath.toFile();
+		
+		entityIdSetterService.setIds(content);
 		
 		try {
 			if (!file.exists()) {

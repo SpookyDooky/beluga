@@ -5,15 +5,16 @@ import com.x.scrape.model.job_definition.configuration.JobConfiguration;
 import com.x.scrape.persistence.shared.model.HasId;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class JobDefinition implements HasId {
 	
 	private Long id;
-	private final UUID uuid;
-	private final JobConfiguration jobConfiguration;
-	private List<JobExecution> executions;
+	private UUID uuid;
+	private JobConfiguration jobConfiguration;
+	private List<JobExecution> executions = new ArrayList<>();
 	
 	public JobDefinition(final JobConfiguration jobConfiguration) {
 		uuid = UUID.randomUUID();
@@ -44,6 +45,10 @@ public class JobDefinition implements HasId {
 	
 	public void setExecutions(final List<JobExecution> executions) {
 		this.executions = executions;
+	}
+	
+	public void addExecution(final JobExecution jobExecution) {
+		executions.add(jobExecution);
 	}
 	
 	@JsonIgnore

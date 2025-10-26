@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.persistence.config.conditionals.IsFileSystem;
 import com.x.scrape.persistence.file_system.service.FileSystemService;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
@@ -15,19 +17,24 @@ import java.util.Optional;
 @Component
 public class JobDefinitionFileSystemRepository extends FileSystemService implements JobDefinitionRepository {
 	
-	private static final String JOB_PERSISTENCE_SUB_PATH = "/jobs";
+	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
+	private static final String JOB_DEFINITION_FILE_NAME = "job-definition.json";
 	
 	private final Path jobPersistencePath;
 	
 	public JobDefinitionFileSystemRepository(final PersistenceProperties persistenceProperties,
-	                                         final ObjectMapper objectMapper) {
-		super(objectMapper);
-		jobPersistencePath = Path.of(persistenceProperties.getFileSystem().getFolder() + JOB_PERSISTENCE_SUB_PATH);
+	                                         final ObjectMapper objectMapper,
+	                                         @Lazy final EntityIdSetterService entityIdSetterService) {
+		super(objectMapper, entityIdSetterService);
+		jobPersistencePath = Path.of(persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH);
 	}
 	
 	@Override
 	public JobDefinition save(final JobDefinition jobDefinition) {
-		return null;
+		entityIdSetterService.setIds(jobDefinition);
+		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + jobDefinition.getId() + "/" + JOB_DEFINITION_FILE_NAME);
+		
+		return save(jobDefinition, jobDefinitionPath);
 	}
 	
 	@Override

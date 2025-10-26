@@ -1,6 +1,7 @@
 package com.x.scrape.util;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public class ReflectionUtility {
 			Byte.class, Short.class, Integer.class, Long.class,
 			byte.class, short.class, int.class, long.class,
 			Double.class, Float.class, double.class, float.class,
-			UUID.class, String.class
+			UUID.class, String.class, Instant.class
 	);
 	
 	/**

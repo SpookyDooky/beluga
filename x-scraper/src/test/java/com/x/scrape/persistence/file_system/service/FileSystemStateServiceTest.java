@@ -3,6 +3,7 @@ package com.x.scrape.persistence.file_system.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
 import com.x.scrape.persistence.shared.model.Sequence;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +31,15 @@ class FileSystemStateServiceTest {
 	private ObjectMapper objectMapper;
 	@Mock(answer = RETURNS_DEEP_STUBS)
 	private PersistenceProperties persistenceProperties;
+	@Mock
+	private EntityIdSetterService entityIdSetterService;
 	
 	private FileSystemStateService fileSystemStateService;
 	
 	@BeforeEach
 	void setup() {
 		when(persistenceProperties.getFileSystem().getFolder()).thenReturn(PERSISTENCE_FOLDER);
-		fileSystemStateService = spy(new FileSystemStateService(objectMapper, persistenceProperties));
+		fileSystemStateService = spy(new FileSystemStateService(objectMapper, persistenceProperties, entityIdSetterService));
 	}
 	
 	@Test

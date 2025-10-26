@@ -1,5 +1,6 @@
 package com.x.scrape.model.job_definition.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
@@ -67,6 +68,7 @@ public class JobConfiguration implements HasId {
 		this.executionConfiguration = executionConfiguration;
 	}
 	
+	@JsonIgnore
 	public JobDefinition getJob() {
 		return new JobDefinition(this);
 	}

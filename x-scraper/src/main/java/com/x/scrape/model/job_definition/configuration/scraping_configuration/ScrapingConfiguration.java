@@ -6,7 +6,7 @@ import java.util.List;
 public class ScrapingConfiguration {
 	
 	private String elementSelector;
-	private final List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
+	private List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
 	
 	public String getElementSelector() {
 		return elementSelector;
@@ -18,5 +18,9 @@ public class ScrapingConfiguration {
 	
 	public List<DataPointConfiguration> getDataPointConfigurations() {
 		return dataPointConfigurations;
+	}
+	
+	public void setDataPointConfigurations(final List<DataPointConfiguration> dataPointConfigurations) {
+		this.dataPointConfigurations = dataPointConfigurations;
 	}
 }
