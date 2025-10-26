@@ -13,14 +13,14 @@ import java.util.Optional;
 
 @IsFileSystem
 @Component
-public class JobFileSystemRepository extends FileSystemService implements JobRepository {
+public class JobDefinitionFileSystemRepository extends FileSystemService implements JobDefinitionRepository {
 	
 	private static final String JOB_PERSISTENCE_SUB_PATH = "/jobs";
 	
 	private final Path jobPersistencePath;
 	
-	public JobFileSystemRepository(final PersistenceProperties persistenceProperties,
-	                               final ObjectMapper objectMapper) {
+	public JobDefinitionFileSystemRepository(final PersistenceProperties persistenceProperties,
+	                                         final ObjectMapper objectMapper) {
 		super(objectMapper);
 		jobPersistencePath = Path.of(persistenceProperties.getFileSystem().getFolder() + JOB_PERSISTENCE_SUB_PATH);
 	}

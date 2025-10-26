@@ -5,7 +5,7 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import java.util.List;
 import java.util.Optional;
 
-public interface JobRepository {
+public interface JobDefinitionRepository {
 	
 	/**
 	 * Persists a job.
