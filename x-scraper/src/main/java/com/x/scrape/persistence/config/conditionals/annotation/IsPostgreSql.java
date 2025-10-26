@@ -13,9 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Conditional annotation for persistence beans that are related to the PostgreSQL.
  */
-@Target(value = {
-		ElementType.TYPE
-})
+@Target(ElementType.TYPE)
 @Retention(RUNTIME)
 @Documented
 @Conditional(IsPostgreSqlCondition.class)
