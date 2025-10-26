@@ -1,10 +1,14 @@
 package com.x.scrape.execution.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+
+import java.io.File;
 
 /**
  * This is aimed at the execution of a {@link JobDefinition}.
@@ -22,6 +26,7 @@ public class Job {
 	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;
 	private ExecutionConfiguration executionConfiguration;
+	private UrlConfiguration urlConfiguration;
 	
 	public Long getId() {
 		return id;
@@ -69,5 +74,30 @@ public class Job {
 	
 	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
+	}
+	
+	public UrlConfiguration getUrlConfiguration() {
+		return urlConfiguration;
+	}
+	
+	public void setUrlConfiguration(final UrlConfiguration urlConfiguration) {
+		this.urlConfiguration = urlConfiguration;
+	}
+	
+	@JsonIgnore
+	public void createJobFolders() {
+		final File file = new File(getJobTaskResultsFolder());
+		file.mkdirs();
+	}
+	
+	@JsonIgnore
+	public String getJobFolder() {
+		return storageConfiguration.getFolder()
+				+ jobName;
+	}
+	
+	@JsonIgnore
+	public String getJobTaskResultsFolder() {
+		return getJobFolder() + "/job-executions/" + id + "/results/tasks";
 	}
 }

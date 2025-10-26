@@ -1,10 +1,8 @@
 package com.x.scrape.execution.service.worker.event;
 
-import java.util.UUID;
-
 public class WorkerFinishedEvent extends WorkerEvent {
 	
-	public WorkerFinishedEvent(final UUID jobId) {
+	public WorkerFinishedEvent(final Long jobId) {
 		super(jobId);
 	}
 }

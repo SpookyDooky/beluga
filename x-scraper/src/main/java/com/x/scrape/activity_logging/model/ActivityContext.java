@@ -13,8 +13,8 @@ public class ActivityContext extends HashMap<String, String> {
 		super(context);
 	}
 	
-	public UUID getJobId() {
-		return UUID.fromString(get(JOB_UUID));
+	public Long getJobId() {
+		return Long.valueOf(get(JOB_UUID));
 	}
 	
 	public UUID getTaskId() {

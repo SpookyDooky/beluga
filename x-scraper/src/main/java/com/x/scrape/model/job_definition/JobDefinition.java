@@ -52,18 +52,21 @@ public class JobDefinition implements HasId {
 	}
 	
 	@JsonIgnore
+	@Deprecated
 	public void createJobFolders() {
 		final File file = new File(getJobTaskResultsFolder());
 		file.mkdirs();
 	}
 	
 	@JsonIgnore
+	@Deprecated
 	public String getJobFolder() {
 		return jobConfiguration.getStorageConfiguration().getFolder()
 				+ jobConfiguration.getName();
 	}
 	
 	@JsonIgnore
+	@Deprecated
 	public String getJobTaskResultsFolder() {
 		return getJobFolder() + "/job-executions/" + uuid + "/results/tasks";
 	}

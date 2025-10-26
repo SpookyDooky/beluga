@@ -11,14 +11,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JobRegistry {
 
-	private final Map<UUID, JobDefinition> jobRegistry = new ConcurrentHashMap<>();
-	private final Map<Long, Job> jobRegistry2 = new ConcurrentHashMap<>();
+	private final Map<Long, Job> jobRegistry = new ConcurrentHashMap<>();
 	
 	private final ContextLogger logger;
 	private final XScraperProperties xScraperProperties;
@@ -61,12 +59,10 @@ public class JobRegistry {
 		jobDefinitionService.save(jobDefinition);
 		
 		final Job job = jobDefinitionService.createJob(jobDefinition);
-		jobRegistry2.put(job.getId(), job);
-		
-		jobRegistry.put(jobDefinition.getUuid(), jobDefinition);
+		jobRegistry.put(job.getId(), job);
 	}
 	
-	public JobDefinition get(final UUID jobId) {
+	public Job get(final Long jobId) {
 		return jobRegistry.get(jobId);
 	}
 }

@@ -8,6 +8,7 @@ import com.x.scrape.model.job_definition.configuration.JobConfiguration;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
+import com.x.scrape.service.JobDefinitionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,8 @@ class JobDefinitionRegistryTest {
 	private JobConfigurationMapper jobConfigurationMapper;
 	@Mock
 	private JobExecutionService jobExecutionService;
+	@Mock
+	private JobDefinitionService jobDefinitionService;
 	
 	@InjectMocks
 	private JobRegistry jobRegistry;

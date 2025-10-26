@@ -1,7 +1,7 @@
 package com.x.scrape.model.task;
 
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLoggable;
-import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 
@@ -18,7 +18,7 @@ import static com.x.scrape.model.job_definition.configuration.scraping_configura
 public class Task implements ContextLoggable {
 	
 	private final UUID id;
-	private JobDefinition jobDefinition;
+	private Job job;
 	
 	private URL url;
 	
@@ -33,12 +33,12 @@ public class Task implements ContextLoggable {
 		return id;
 	}
 	
-	public JobDefinition getJob() {
-		return jobDefinition;
+	public Job getJob() {
+		return job;
 	}
 	
-	public void setJob(final JobDefinition jobDefinition) {
-		this.jobDefinition = jobDefinition;
+	public void setJob(final Job job) {
+		this.job = job;
 	}
 	
 	public URL getUrl() {

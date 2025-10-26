@@ -7,15 +7,13 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class JobTaskQueue {
 	
-	// TODO - Should be based on a Long id
-	private final Map<UUID, Queue<Task>> jobTaskQueueMap = new ConcurrentHashMap<>();
+	private final Map<Long, Queue<Task>> jobTaskQueueMap = new ConcurrentHashMap<>();
 	
 	/**
 	 * Checks if a {@link JobDefinition}'s queue is empty
@@ -23,7 +21,7 @@ public class JobTaskQueue {
 	 * @param jobId id of the {@link JobDefinition}
 	 * @return true if empty or null.
 	 */
-	public boolean isQueueEmpty(final UUID jobId) {
+	public boolean isQueueEmpty(final Long jobId) {
 		if (jobTaskQueueMap.containsKey(jobId)) {
 			return jobTaskQueueMap.get(jobId).isEmpty();
 		}
@@ -38,7 +36,7 @@ public class JobTaskQueue {
 	 */
 	public void offerTask(final Task task) {
 		jobTaskQueueMap.compute(
-				task.getJob().getUuid(),
+				task.getJob().getId(),
 				(key, jobTaskQueue) -> {
 					if (jobTaskQueue == null) {
 						jobTaskQueue = new ConcurrentLinkedQueue<>();
@@ -56,7 +54,7 @@ public class JobTaskQueue {
 	 * @param jobId id of the {@link JobDefinition}
 	 * @return optional task, empty if no task is present.
 	 */
-	public Optional<Task> pollTask(final UUID jobId) {
+	public Optional<Task> pollTask(final Long jobId) {
 		if (isQueueEmpty(jobId)) {
 			return Optional.empty();
 		}

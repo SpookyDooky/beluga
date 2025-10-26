@@ -1,6 +1,7 @@
 package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
@@ -45,21 +46,21 @@ public class JobExecutionService {
 	// Create new JobExecution
 	// Persist JobDefinition
 	// Create new Job with JobExecutionId
-	public void executeJob(final JobDefinition jobDefinition) {
+	public void executeJob(final Job job) {
 		logger.info("Executing job");
 		
-		final List<Task> tasks = createTasks(jobDefinition);
+		final List<Task> tasks = createTasks(job);
 		tasks.forEach(jobTaskQueue::offerTask);
 		
-		jobDefinition.createJobFolders();
+		job.createJobFolders();
 		
-		final ExecutionConfiguration executionConfiguration = jobDefinition.getJobConfiguration().getExecutionConfiguration();
+		final ExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
 		final RateLimiter rateLimiter = RateLimiter.create((double) executionConfiguration.getTasksPerSecond());
 		
 		for (int i = 0; i < executionConfiguration.getWorkers(); i++) {
 			final Worker worker = applicationContext.getBean(Worker.class);
 			worker.init(
-					jobDefinition.getUuid(),
+					job.getId(),
 					rateLimiter
 			);
 			
@@ -68,24 +69,23 @@ public class JobExecutionService {
 		}
 	}
 	
-	private List<Task> createTasks(final JobDefinition jobDefinition) {
-		final UrlConfiguration urlConfiguration = jobDefinition.getJobConfiguration()
-				.getUrlConfiguration();
+	private List<Task> createTasks(final Job job) {
+		final UrlConfiguration urlConfiguration = job.getUrlConfiguration();
 		
 		if (urlConfiguration.getUrlFile() == null) {
-			return createTasksFromUrlList(jobDefinition, urlConfiguration.getUrls());
+			return createTasksFromUrlList(job, urlConfiguration.getUrls());
 		} else {
 			return createTasksFromUrlList(
-					jobDefinition,
+					job,
 					readUrlsFromFile(urlConfiguration.getUrlFile())
 			);
 		}
 	}
 	
-	private List<Task> createTasksFromUrlList(final JobDefinition jobDefinition,
+	private List<Task> createTasksFromUrlList(final Job job,
 	                                          final List<URL> urls) {
 		return urls.stream()
-				.map(url -> taskFactory.create(url, jobDefinition))
+				.map(url -> taskFactory.create(url, job))
 				.toList();
 	}
 	

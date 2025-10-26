@@ -35,8 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_UUID;
-import static com.x.scrape.logging.ContextKeys.WORKER_ID;
+import static com.x.scrape.logging.ContextKeys.*;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -51,7 +50,7 @@ public class Worker {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final TimingService timingService;
 	
-	private UUID jobId;
+	private Long jobId;
 	private Instant startTime;
 	private final UUID workerId = UUID.randomUUID();
 	
@@ -74,14 +73,14 @@ public class Worker {
 	 *
 	 * @param jobId the id of the {@link JobDefinition}.
 	 */
-	public void init(final UUID jobId,
+	public void init(final Long jobId,
 	                 final RateLimiter rateLimiter) {
 		this.jobId = jobId;
 		this.rateLimiter = rateLimiter;
 	}
 	
 	public void start() {
-		try (final CloseableContext context = logger.with(JOB_UUID, jobId.toString())) {
+		try (final CloseableContext context = logger.with(JOB_EXECUTION_ID, jobId.toString())) {
 			context.put(WORKER_ID, workerId.toString());
 			logger.info("Worker starting.");
 			

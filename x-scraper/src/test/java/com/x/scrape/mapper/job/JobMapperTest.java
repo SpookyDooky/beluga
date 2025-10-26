@@ -22,5 +22,6 @@ class JobMapperTest {
 		assertEquals(jobDefinition.getJobConfiguration().getScrapingConfiguration(), job.getScrapingConfiguration());
 		assertEquals(jobDefinition.getJobConfiguration().getExecutionConfiguration(), job.getExecutionConfiguration());
 		assertEquals(jobDefinition.getJobConfiguration().getStorageConfiguration(), job.getStorageConfiguration());
+		assertEquals(jobDefinition.getJobConfiguration().getUrlConfiguration(), job.getUrlConfiguration());
 	}
 }

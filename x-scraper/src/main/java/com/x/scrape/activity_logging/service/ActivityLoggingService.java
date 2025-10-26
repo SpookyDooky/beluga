@@ -3,10 +3,10 @@ package com.x.scrape.activity_logging.service;
 import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.event.ActivityFlushEvent;
 import com.x.scrape.activity_logging.model.Activity;
+import com.x.scrape.execution.service.job.JobRegistry;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.task.event.task_result.StorageHint;
-import com.x.scrape.execution.service.job.JobRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.x.scrape.logging.ContextKeys.JOB_UUID;
+import static com.x.scrape.logging.ContextKeys.JOB_EXECUTION_ID;
 
 /**
  * This service takes care of collecting all the {@link ActivityEvent}'s. It temporarily stores the {@link Activity}'s
@@ -41,7 +40,7 @@ public class ActivityLoggingService {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final JobRegistry jobRegistry;
 	
-	private final Map<UUID, AtomicReference<ConcurrentLinkedQueue<Activity>>> jobExecutionActivities = new ConcurrentHashMap<>();
+	private final Map<Long, AtomicReference<ConcurrentLinkedQueue<Activity>>> jobExecutionActivities = new ConcurrentHashMap<>();
 	
 	public ActivityLoggingService(final ContextLogger logger,
 	                              final ApplicationEventPublisher applicationEventPublisher,
@@ -82,9 +81,9 @@ public class ActivityLoggingService {
 		jobExecutionActivities.forEach(this::flushActivityLog);
 	}
 	
-	private void flushActivityLog(final UUID jobId,
+	private void flushActivityLog(final Long jobId,
 	                              final AtomicReference<ConcurrentLinkedQueue<Activity>> jobActivities) {
-		try (final CloseableContext ignored = logger.with(JOB_UUID, jobId.toString())) {
+		try (final CloseableContext ignored = logger.with(JOB_EXECUTION_ID, jobId.toString())) {
 			final ConcurrentLinkedQueue<Activity> activities = jobActivities.getAndSet(new ConcurrentLinkedQueue<>());
 			
 			if (!activities.isEmpty()) {
@@ -110,7 +109,7 @@ public class ActivityLoggingService {
 	}
 	
 	private String getFolder(final Activity activity) {
-		final UUID jobId = activity.getContext().getJobId();
+		final Long jobId = activity.getContext().getJobId();
 		
 		return jobRegistry.get(jobId)
 				.getJobFolder() + "/logs";

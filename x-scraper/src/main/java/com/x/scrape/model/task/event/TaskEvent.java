@@ -7,22 +7,21 @@ import org.springframework.context.ApplicationEvent;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_UUID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.logging.ContextKeys.*;
 
 public abstract class TaskEvent extends ApplicationEvent implements ContextLoggable {
 	
-	private final UUID jobId;
+	private final Long jobId;
 	private final UUID taskId;
 	
 	public TaskEvent(final Task task) {
 		super(task.getId());
 		
-		this.jobId = task.getJob().getUuid();
+		this.jobId = task.getJob().getId();
 		this.taskId = task.getId();
 	}
 	
-	public UUID getJobId() {
+	public Long getJobId() {
 		return jobId;
 	}
 	
@@ -33,7 +32,7 @@ public abstract class TaskEvent extends ApplicationEvent implements ContextLogga
 	@Override
 	public Map<String, String> loggingContext() {
 		return Map.of(
-				JOB_UUID, jobId.toString(),
+				JOB_EXECUTION_ID, jobId.toString(),
 				TASK_ID, taskId.toString()
 		);
 	}
