@@ -1,7 +1,9 @@
 package com.x.scrape.execution.service.worker;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.x.scrape.execution.service.worker.Worker;
+import com.x.scrape.execution.service.task.JobTaskQueue;
+import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
+import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.task.Task;
@@ -10,9 +12,6 @@ import com.x.scrape.model.task.event.TaskStartedEvent;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
-import com.x.scrape.execution.service.task.JobTaskQueue;
-import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
-import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
 import com.x.scrape.util.TimingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -24,16 +23,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class WorkerTest {
-
-	@Mock
-	private UUID jobId;
+	
 	@Mock
 	private JobTaskQueue jobTaskQueue;
 	@Mock
@@ -47,6 +47,8 @@ class WorkerTest {
 	
 	@InjectMocks
 	private Worker worker;
+	
+	private final Long jobId = 123L;
 	
 	@Test
 	void shouldSendWorkerEvents() {
@@ -99,7 +101,7 @@ class WorkerTest {
 	
 	void removeResultFolder(final Task task) {
 		final File file = new File(task.getJob().getJobFolder());
-		assertTrue(file.getPath().startsWith(task.getJob().getJobConfiguration().getStorageConfiguration().getFolder()));
+		assertTrue(file.getPath().startsWith(task.getJob().getStorageConfiguration().getFolder()));
 		removeFile(file);
 	}
 	
@@ -128,7 +130,7 @@ class WorkerTest {
 		verify(applicationEventPublisher).publishEvent(taskFailedEventArgumentCaptor.capture());
 		
 		final TaskFailedEvent taskFailedEvent = taskFailedEventArgumentCaptor.getValue();
-		assertSame(task.getJob().getUuid(), taskFailedEvent.getJobId());
+		assertSame(task.getJob().getId(), taskFailedEvent.getJobId());
 		assertSame(task.getId(), taskFailedEvent.getTaskId());
 	}
 }

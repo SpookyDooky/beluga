@@ -1,12 +1,11 @@
 package com.x.scrape.execution.service.task;
 
-import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,41 +16,41 @@ class JobDefinitionTaskQueueTest {
 	
 	@Test
 	void shouldBeEmptyIfNotPresent() {
-		assertTrue(jobTaskQueue.isQueueEmpty(UUID.randomUUID()));
+		assertTrue(jobTaskQueue.isQueueEmpty(123L));
 	}
 	
 	@Test
 	void shouldNotBeEmpty() {
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJob), Instancio.create(JobDefinition.class))
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
 		
-		assertFalse(jobTaskQueue.isQueueEmpty(task.getJob().getUuid()));
+		assertFalse(jobTaskQueue.isQueueEmpty(task.getJob().getId()));
 	}
 	
 	@Test
 	void shouldBeEmptyAfterRemovingLastTask() {
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJob), Instancio.create(JobDefinition.class))
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
-		jobTaskQueue.pollTask(task.getJob().getUuid());
+		jobTaskQueue.pollTask(task.getJob().getId());
 		
-		assertTrue(jobTaskQueue.isQueueEmpty(task.getJob().getUuid()));
+		assertTrue(jobTaskQueue.isQueueEmpty(task.getJob().getId()));
 	}
 	
 	@Test
 	void shouldReturnTask() {
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJob), Instancio.create(JobDefinition.class))
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
 		
-		final Task result = jobTaskQueue.pollTask(task.getJob().getUuid())
+		final Task result = jobTaskQueue.pollTask(task.getJob().getId())
 				.get();
 		
 		assertSame(task, result);
@@ -60,13 +59,13 @@ class JobDefinitionTaskQueueTest {
 	@Test
 	void shouldReturnOptionalEmpty() {
 		final Task task = Instancio.of(Task.class)
-				.set(field(Task::getJob), Instancio.create(JobDefinition.class))
+				.set(field(Task::getJob), Instancio.create(Job.class))
 				.create();
 		
 		jobTaskQueue.offerTask(task);
-		jobTaskQueue.pollTask(task.getJob().getUuid());
+		jobTaskQueue.pollTask(task.getJob().getId());
 		
-		final Optional<Task> taskOptional = jobTaskQueue.pollTask(task.getJob().getUuid());
+		final Optional<Task> taskOptional = jobTaskQueue.pollTask(task.getJob().getId());
 		
 		assertTrue(taskOptional.isEmpty());
 	}
