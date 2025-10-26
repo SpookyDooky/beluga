@@ -1,6 +1,6 @@
 package com.x.scrape.persistence.store.job;
 
-import com.x.scrape.model.job.JobDefinition;
+import com.x.scrape.model.job_definition.JobDefinition;
 
 import java.util.List;
 import java.util.Optional;

@@ -50,7 +50,11 @@ public abstract class FileSystemService {
 	protected <T> T readFileAs(final File file,
 	                           final Class<T> clazz) {
 		final String fileContent = readFile(file);
-		return objectMapper.convertValue(fileContent, clazz);
+		try {
+			return objectMapper.readValue(fileContent, clazz);
+		} catch (final JsonProcessingException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 	
 	private String readFile(final File file) {

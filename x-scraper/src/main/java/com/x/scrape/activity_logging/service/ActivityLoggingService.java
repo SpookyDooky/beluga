@@ -6,7 +6,7 @@ import com.x.scrape.activity_logging.model.Activity;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.task.event.task_result.StorageHint;
-import com.x.scrape.scraping.job.JobRegistry;
+import com.x.scrape.execution.service.job.JobRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

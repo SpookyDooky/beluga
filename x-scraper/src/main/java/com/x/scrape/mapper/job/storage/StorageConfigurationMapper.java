@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job.storage;
 
-import com.x.scrape.model.job.configuration.storage.StorageConfiguration;
+import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import org.mapstruct.Mapper;
 

@@ -1,8 +1,8 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.http.HttpService;
-import com.x.scrape.model.job.configuration.scraping_configuration.DataPointConfiguration;
-import com.x.scrape.model.job.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

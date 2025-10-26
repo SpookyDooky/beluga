@@ -1,8 +1,8 @@
 package com.x.scrape.properties.scraping;
 
-import com.x.scrape.model.job.configuration.scraping_configuration.DataPointType;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
 
-import static com.x.scrape.model.job.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public class DataPointProperties {
 	

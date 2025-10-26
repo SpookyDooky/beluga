@@ -1,7 +1,7 @@
 package com.x.scrape.mapper.job.scraping_configuration;
 
-import com.x.scrape.model.job.configuration.scraping_configuration.DataPointConfiguration;
-import com.x.scrape.model.job.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.scraping.DataPointProperties;
 import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.instancio.Instancio;

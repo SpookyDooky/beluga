@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job.execution;
 
-import com.x.scrape.model.job.configuration.execution.ExecutionConfiguration;
+import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.properties.scraping.execution.ExecutionProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

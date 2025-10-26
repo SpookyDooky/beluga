@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job;
 
-import com.x.scrape.model.job.configuration.UrlConfiguration;
+import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.properties.scraping.url.UrlProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
