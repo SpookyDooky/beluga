@@ -2,7 +2,7 @@ package com.x.scrape.persistence.store.job;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.persistence.config.conditionals.IsFileSystem;
+import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import com.x.scrape.persistence.file_system.service.FileSystemService;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;

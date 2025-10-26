@@ -1,6 +1,6 @@
 package com.x.scrape.persistence.config.conditionals.annotation;
 
-import com.x.scrape.persistence.config.conditionals.IsPostgreSqlCondition;
+import com.x.scrape.persistence.config.conditionals.IsFileSystemCondition;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.Documented;
@@ -11,13 +11,13 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Conditional annotation for persistence beans that are related to the PostgreSQL.
+ * Conditional annotation for persistence beans that are related to the filesystem.
  */
 @Target(value = {
 		ElementType.TYPE
 })
 @Retention(RUNTIME)
 @Documented
-@Conditional(IsPostgreSqlCondition.class)
-public @interface IsPostgreSql {
+@Conditional(IsFileSystemCondition.class)
+public @interface IsFileSystem {
 }

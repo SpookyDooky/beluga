@@ -1,6 +1,6 @@
 package com.x.scrape.persistence.file_system.config;
 
-import com.x.scrape.persistence.config.conditionals.IsFileSystem;
+import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import com.x.scrape.persistence.file_system.service.FileSystemStateService;
 import com.x.scrape.persistence.shared.service.PersistenceIdService;
 import org.springframework.context.ApplicationEventPublisher;

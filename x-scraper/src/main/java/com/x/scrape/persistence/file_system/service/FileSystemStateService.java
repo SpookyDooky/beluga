@@ -1,7 +1,7 @@
 package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.x.scrape.persistence.config.conditionals.IsFileSystem;
+import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import com.x.scrape.persistence.shared.model.Sequence;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
