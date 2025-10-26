@@ -1,4 +1,4 @@
-package com.x.scrape.persistence.file_system.model;
+package com.x.scrape.persistence.shared.model;
 
 public class Sequence {
 	
