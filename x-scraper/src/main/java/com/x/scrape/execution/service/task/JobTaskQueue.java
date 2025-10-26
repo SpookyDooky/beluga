@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Service
 public class JobTaskQueue {
 	
+	// TODO - Should be based on a Long id
 	private final Map<UUID, Queue<Task>> jobTaskQueueMap = new ConcurrentHashMap<>();
 	
 	/**

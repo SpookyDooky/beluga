@@ -41,6 +41,10 @@ public class JobExecutionService {
 		this.jobTaskQueue = jobTaskQueue;
 	}
 	
+	// Job definition comes in
+	// Create new JobExecution
+	// Persist JobDefinition
+	// Create new Job with JobExecutionId
 	public void executeJob(final JobDefinition jobDefinition) {
 		logger.info("Executing job");
 		
