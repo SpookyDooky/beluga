@@ -1,7 +1,6 @@
 package com.x.scrape.execution.service.job;
 
-import com.x.scrape.execution.service.job.JobExecutionService;
-import com.x.scrape.execution.service.job.JobRegistry;
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobConfigurationMapper;
 import com.x.scrape.model.job_definition.configuration.JobConfiguration;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class JobDefinitionRegistryTest {
+class JobRegistryTest {
 	
 	@Mock
 	private ContextLogger contextLogger;
@@ -47,11 +46,12 @@ class JobDefinitionRegistryTest {
 		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
 		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
-		when(jobConfiguration.getJob()).thenReturn(jobDefinition);
+		final Job job = mock();
+		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		
-		verify(jobExecutionService).executeJob(jobDefinition);
+		verify(jobExecutionService).executeJob(job);
 	}
 	
 	@Test
@@ -63,11 +63,12 @@ class JobDefinitionRegistryTest {
 		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
 		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
-		when(jobConfiguration.getJob()).thenReturn(jobDefinition);
+		final Job job = Instancio.create(Job.class);
+		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
 		
 		jobRegistry.registerJobs();
-		final JobDefinition result = jobRegistry.get(jobDefinition.getUuid());
+		final Job result = jobRegistry.get(job.getId());
 
-		assertSame(jobDefinition, result);
+		assertSame(job, result);
 	}
 }

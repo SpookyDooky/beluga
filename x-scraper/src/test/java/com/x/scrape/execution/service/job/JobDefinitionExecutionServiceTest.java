@@ -1,15 +1,14 @@
 package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job_definition.configuration.JobConfiguration;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
-import com.x.scrape.model.task.Task;
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.task.TaskFactory;
 import com.x.scrape.execution.service.worker.Worker;
+import com.x.scrape.logging.ContextLogger;
+import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
+import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
+import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,40 +57,35 @@ class JobDefinitionExecutionServiceTest {
 	@Test
 	void shouldStartJob() throws Exception {
 		final URL taskUrl = new URL("https://not-existent-url.com");
-		final JobDefinition jobDefinition = spy(Instancio.of(JobDefinition.class)
+		final Job job = spy(Instancio.of(Job.class)
 				.set(
-						field(JobDefinition::getJobConfiguration),
-						Instancio.of(JobConfiguration.class)
-								.set(
-										field(JobConfiguration::getExecutionConfiguration),
-										Instancio.of(ExecutionConfiguration.class)
-												.set(field(ExecutionConfiguration::getWorkers), 1)
-												.create()
-								)
-								.set(
-										field(JobConfiguration::getUrlConfiguration),
-										Instancio.of(UrlConfiguration.class)
-												.ignore(field(UrlConfiguration::getUrlFile))
-												.set(
-														field(UrlConfiguration::getUrls),
-														List.of(taskUrl)
-												).create()
-								)
+						field(Job::getExecutionConfiguration),
+						Instancio.of(ExecutionConfiguration.class)
+								.set(field(ExecutionConfiguration::getWorkers), 1)
 								.create()
+				).set(
+						field(Job::getUrlConfiguration),
+						Instancio.of(UrlConfiguration.class)
+								.ignore(field(UrlConfiguration::getUrlFile))
+								.set(
+										field(UrlConfiguration::getUrls),
+										List.of(taskUrl)
+								).create()
 				).create());
-		doNothing().when(jobDefinition).createJobFolders();
+		
+		doNothing().when(job).createJobFolders();
 		
 		final Task task = mock();
-		when(taskFactory.create(taskUrl, jobDefinition)).thenReturn(task);
+		when(taskFactory.create(taskUrl, job)).thenReturn(task);
 		
-		jobExecutionService.executeJob(jobDefinition);
+		jobExecutionService.executeJob(job);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(eq(jobDefinition.getUuid()), rateLimiterArgumentCaptor.capture());
+		verify(worker).init(eq(job.getId()), rateLimiterArgumentCaptor.capture());
 		verify(worker, after(250)).start();
 		
 		final RateLimiter rateLimiter = rateLimiterArgumentCaptor.getValue();
-		assertEquals(jobDefinition.getJobConfiguration().getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
+		assertEquals(job.getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
 	}
 	
 	@Test
@@ -102,33 +96,30 @@ class JobDefinitionExecutionServiceTest {
 				.getPath()
 				.replaceFirst("/", "");
 		
-		final JobDefinition jobDefinition = spy(Instancio.of(JobDefinition.class)
+		final Job job = spy(Instancio.of(Job.class)
 				.set(
-						field(JobDefinition::getJobConfiguration),
-						Instancio.of(JobConfiguration.class)
-								.set(
-										field(JobConfiguration::getExecutionConfiguration),
-										Instancio.of(ExecutionConfiguration.class)
-												.set(field(ExecutionConfiguration::getWorkers), 1)
-												.create()
-								)
-								.set(
-										field(JobConfiguration::getUrlConfiguration),
-										Instancio.of(UrlConfiguration.class)
-												.ignore(field(UrlConfiguration::getUrls))
-												.set(field(UrlConfiguration::getUrlFile), urlFilePath).create()
-								)
+						field(Job::getExecutionConfiguration),
+						Instancio.of(ExecutionConfiguration.class)
+								.set(field(ExecutionConfiguration::getWorkers), 1)
+								.create()
+				).set(
+						field(Job::getUrlConfiguration),
+						Instancio.of(UrlConfiguration.class)
+								.ignore(field(UrlConfiguration::getUrls))
+								.set(field(UrlConfiguration::getUrlFile), urlFilePath)
 								.create()
 				).create());
-		doNothing().when(jobDefinition).createJobFolders();
+		
+
+		doNothing().when(job).createJobFolders();
 		
 		final Task task = mock();
-		when(taskFactory.create(eq(expectedTaskUrl), eq(jobDefinition))).thenReturn(task);
+		when(taskFactory.create(eq(expectedTaskUrl), eq(job))).thenReturn(task);
 		
-		jobExecutionService.executeJob(jobDefinition);
+		jobExecutionService.executeJob(job);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(eq(jobDefinition.getUuid()), any());
+		verify(worker).init(eq(job.getId()), any());
 		verify(worker, after(250)).start();
 	}
 }
