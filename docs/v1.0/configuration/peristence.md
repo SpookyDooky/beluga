@@ -21,7 +21,9 @@ is only one property that should be set that is not specific for a specific data
 
 ### Filesystem
 
-To configure the file system as a data store the following additional properties are required.
+To configure the file system as a data store the following additional properties are required. Just a heads up
+do not move any of the files out of place unless also changing the configured folder. Otherwise, the engine
+won't be able to keep track of tasks properly.
 <br>
 <br>
 
