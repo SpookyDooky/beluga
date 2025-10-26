@@ -4,9 +4,9 @@ import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.event.ActivityFlushEvent;
 import com.x.scrape.activity_logging.model.Activity;
 import com.x.scrape.activity_logging.model.RequestActivity;
+import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.service.job.JobRegistry;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job.Job;
-import com.x.scrape.scraping.job.JobRegistry;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +18,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.JOB_EXECUTION_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +43,7 @@ class ActivityLoggingServiceTest {
 
 	@Test
 	void shouldHandleActivityEvent() {
-		final UUID jobId = UUID.randomUUID();
+		final Long jobId = 123L;
 		final Activity activity = createActivity(jobId);
 		
 		final ActivityEvent event = new ActivityEvent(activity);
@@ -76,11 +75,11 @@ class ActivityLoggingServiceTest {
 		
 	}
 	
-	RequestActivity createActivity(final UUID jobId) {
+	RequestActivity createActivity(final Long jobId) {
 		final RequestActivity activity =  new RequestActivity(mock(), 1L, false);
 		
 		activity.getContext()
-				.put(JOB_ID, jobId.toString());
+				.put(JOB_EXECUTION_ID, jobId.toString());
 		
 		return activity;
 	}

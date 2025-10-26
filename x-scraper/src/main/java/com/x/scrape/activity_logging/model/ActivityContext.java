@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.logging.ContextKeys.*;
 
 public class ActivityContext extends HashMap<String, String> {
 	
@@ -13,8 +12,8 @@ public class ActivityContext extends HashMap<String, String> {
 		super(context);
 	}
 	
-	public UUID getJobId() {
-		return UUID.fromString(get(JOB_ID));
+	public Long getJobId() {
+		return Long.valueOf(get(JOB_EXECUTION_ID));
 	}
 	
 	public UUID getTaskId() {

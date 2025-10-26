@@ -5,17 +5,16 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.x.scrape.logging.ContextKeys.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ActivityContextTest {
 	
 	@Test
 	void shouldGetJobId() {
-		final UUID jobId = UUID.randomUUID();
+		final Long jobId = 123L;
 		final Map<String, String> input = Map.of(
-				JOB_ID, jobId.toString()
+				JOB_EXECUTION_ID, jobId.toString()
 		);
 		
 		final ActivityContext context = new ActivityContext(input);

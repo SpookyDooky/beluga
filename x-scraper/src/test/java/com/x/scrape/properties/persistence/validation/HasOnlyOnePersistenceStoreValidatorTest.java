@@ -49,7 +49,8 @@ class HasOnlyOnePersistenceStoreValidatorTest {
 	
 	static Stream<Arguments> shouldBeInvalid() {
 		return Stream.of(
-				Instancio.create(PersistenceProperties.class)
+				Instancio.create(PersistenceProperties.class),
+				new PersistenceProperties()
 		).map(Arguments::of);
 	}
 }

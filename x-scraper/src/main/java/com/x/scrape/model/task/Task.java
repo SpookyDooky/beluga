@@ -1,9 +1,9 @@
 package com.x.scrape.model.task;
 
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLoggable;
-import com.x.scrape.model.job.Job;
-import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
-import com.x.scrape.model.job.storage.StorageConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
 import static com.x.scrape.logging.ContextKeys.URL;
-import static com.x.scrape.model.job.scraping_configuration.DataPointType.IMAGE;
+import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.IMAGE;
 
 public class Task implements ContextLoggable {
 	

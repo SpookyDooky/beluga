@@ -12,6 +12,7 @@
             <property name="tabWidth" value="4"/>
             <property name="braceAdjustment" value="0"/>
             <property name="lineWrappingIndentation" value="4"/>
+            <property name="arrayInitIndent" value="8"/>
         </module>
 
         <!-- Space after method parameters and commas -->

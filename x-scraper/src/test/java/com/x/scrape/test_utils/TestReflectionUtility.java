@@ -4,6 +4,7 @@ import org.opentest4j.AssertionFailedError;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * This class is used to make it easier to test reflection related things on classes such as
@@ -65,6 +66,46 @@ public class TestReflectionUtility {
 			return clazz.getAnnotation(annotationClass);
 		} catch (final NullPointerException e) {
 			throw new AssertionFailedError("Annotation " + annotationClass.getSimpleName() + " not present on class " + clazz.getSimpleName() + ".", e);
+		}
+	}
+	
+	/**
+	 * Asserts that an annotation is present on a {@link Method}.
+	 *
+	 * @param clazz            class the method is in.
+	 * @param annotationClass  annotation class to look for.
+	 * @param methodName       name of the method.
+	 * @param methodParameters parameter types of the method
+	 * @param <T>              return type.
+	 * @return the annotation if it was found.
+	 */
+	public static <T extends Annotation> T assertAnnotationPresentOnMethod(final Class<?> clazz,
+	                                                                       final Class<T> annotationClass,
+	                                                                       final String methodName,
+	                                                                       final Class<?>... methodParameters) {
+		try {
+			return getMethod(clazz, methodName, methodParameters).getAnnotation(annotationClass);
+		} catch (final NullPointerException e) {
+			throw new AssertionFailedError("Method " + methodName + " could not be found for class " + clazz.getSimpleName() + ".", e);
+		}
+	}
+	
+	/**
+	 * Finds a method in class.
+	 *
+	 * @param clazz            the class to find the method in.
+	 * @param methodName       the name of the method.
+	 * @param methodParameters the parameters of the method.
+	 * @return method if it is found.
+	 * @throws IllegalArgumentException if method is not found.
+	 */
+	public static Method getMethod(final Class<?> clazz,
+	                               final String methodName,
+	                               final Class<?>... methodParameters) {
+		try {
+			return clazz.getMethod(methodName, methodParameters);
+		} catch (final NoSuchMethodException e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 }

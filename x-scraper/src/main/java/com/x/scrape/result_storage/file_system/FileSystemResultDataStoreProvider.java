@@ -15,7 +15,7 @@ import static com.x.scrape.logging.ContextKeys.FILE_NAME;
 
 @Service
 @ConditionalOnProperty(
-		name = "x-scraper.datastore.type",
+		name = "x-scraper.result-datastore.type",
 		havingValue = "FILE_SYSTEM"
 )
 public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
