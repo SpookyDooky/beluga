@@ -13,7 +13,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface JobMapper {
 	
 	@Mapping(target = "jobDefinitionId", source = "id")
-	@Mapping(target = "jobName", source = "jobConfiguration.name")
+	@Mapping(target = "jobName", source = "name")
 	@Mapping(target = "scrapingConfiguration", source = "jobConfiguration.scrapingConfiguration")
 	@Mapping(target = "storageConfiguration", source = "jobConfiguration.storageConfiguration")
 	@Mapping(target = "executionConfiguration", source = "jobConfiguration.executionConfiguration")

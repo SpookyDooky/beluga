@@ -8,7 +8,6 @@ import com.x.scrape.persistence.shared.model.HasId;
 public class JobConfiguration implements HasId {
 	
 	private Long id;
-	private String name;
 	
 	private UrlConfiguration urlConfiguration;
 	private ScrapingConfiguration scrapingConfiguration;
@@ -24,14 +23,6 @@ public class JobConfiguration implements HasId {
 	@Override
 	public void setId(final Long id) {
 		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(final String name) {
-		this.name = name;
 	}
 	
 	public UrlConfiguration getUrlConfiguration() {

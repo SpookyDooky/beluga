@@ -9,6 +9,8 @@ import java.util.List;
 public class JobDefinition implements HasId {
 	
 	private Long id;
+	private String name;
+	
 	private JobConfiguration jobConfiguration;
 	private List<JobExecution> executions = new ArrayList<>();
 	
@@ -24,6 +26,14 @@ public class JobDefinition implements HasId {
 	@Override
 	public void setId(final Long id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(final String name) {
+		this.name = name;
 	}
 	
 	public JobConfiguration getJobConfiguration() {

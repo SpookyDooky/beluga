@@ -2,7 +2,7 @@ package com.x.scrape.execution.service.job;
 
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobConfigurationMapper;
+import com.x.scrape.mapper.job.JobDefinitionMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
@@ -20,18 +20,18 @@ public class JobRegistry {
 	
 	private final ContextLogger logger;
 	private final XScraperProperties xScraperProperties;
-	private final JobConfigurationMapper jobConfigurationMapper;
+	private final JobDefinitionMapper jobDefinitionMapper;
 	private final JobExecutionService jobExecutionService;
 	private final JobDefinitionService jobDefinitionService;
 	
 	public JobRegistry(final ContextLogger logger,
 	                   final XScraperProperties xScraperProperties,
-	                   final JobConfigurationMapper jobConfigurationMapper,
+	                   final JobDefinitionMapper jobDefinitionMapper,
 	                   final JobExecutionService jobExecutionService,
 	                   final JobDefinitionService jobDefinitionService) { // Needs to use the job service
 		this.logger = logger;
 		this.xScraperProperties = xScraperProperties;
-		this.jobConfigurationMapper = jobConfigurationMapper;
+		this.jobDefinitionMapper = jobDefinitionMapper;
 		this.jobExecutionService = jobExecutionService;
 		this.jobDefinitionService = jobDefinitionService;
 	}
@@ -48,7 +48,7 @@ public class JobRegistry {
 	private void registerConfigurationJob(final JobProperties jobProperties) {
 		logger.info("Registering job");
 		
-		final JobDefinition jobDefinition = jobConfigurationMapper.map(jobProperties);
+		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
 		jobDefinitionService.save(jobDefinition);
 		
 		final Job job = jobDefinitionService.createJob(jobDefinition);

@@ -18,7 +18,7 @@ class JobMapperTest {
 		final Job job = mapper.map(jobDefinition);
 		
 		assertEquals(jobDefinition.getId(), job.getJobDefinitionId());
-		assertEquals(jobDefinition.getJobConfiguration().getName(), job.getJobName());
+		assertEquals(jobDefinition.getName(), job.getJobName());
 		assertEquals(jobDefinition.getJobConfiguration().getScrapingConfiguration(), job.getScrapingConfiguration());
 		assertEquals(jobDefinition.getJobConfiguration().getExecutionConfiguration(), job.getExecutionConfiguration());
 		assertEquals(jobDefinition.getJobConfiguration().getStorageConfiguration(), job.getStorageConfiguration());

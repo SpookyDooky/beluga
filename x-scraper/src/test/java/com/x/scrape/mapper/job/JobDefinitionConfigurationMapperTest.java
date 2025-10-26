@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,7 +34,7 @@ class JobDefinitionConfigurationMapperTest {
 	private ExecutionConfigurationMapper executionConfigurationMapper;
 	
 	@InjectMocks
-	private JobConfigurationMapperImpl mapper;
+	private JobDefinitionMapperImpl mapper;
 	
 	@Test
 	void shouldMap() {
@@ -50,11 +51,12 @@ class JobDefinitionConfigurationMapperTest {
 		
 		final ExecutionConfiguration executionConfiguration = mock();
 		when(executionConfigurationMapper.map(jobProperties.getExecution())).thenReturn(executionConfiguration);
-		final JobDefinition jobConfiguration = mapper.map(jobProperties);
+		final JobDefinition jobDefinition = mapper.map(jobProperties);
 		
-		assertSame(urlConfiguration, jobConfiguration.getJobConfiguration().getUrlConfiguration());
-		assertSame(scrapingConfiguration, jobConfiguration.getJobConfiguration().getScrapingConfiguration());
-		assertSame(storageConfiguration, jobConfiguration.getJobConfiguration().getStorageConfiguration());
-		assertSame(executionConfiguration, jobConfiguration.getJobConfiguration().getExecutionConfiguration());
+		assertSame(urlConfiguration, jobDefinition.getJobConfiguration().getUrlConfiguration());
+		assertSame(scrapingConfiguration, jobDefinition.getJobConfiguration().getScrapingConfiguration());
+		assertSame(storageConfiguration, jobDefinition.getJobConfiguration().getStorageConfiguration());
+		assertSame(executionConfiguration, jobDefinition.getJobConfiguration().getExecutionConfiguration());
+		assertEquals(jobProperties.getName(), jobDefinition.getName());
 	}
 }
