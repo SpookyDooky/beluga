@@ -1,6 +1,6 @@
 package com.x.scrape.model.job;
 
-import com.x.scrape.model.JobConfiguration;
+import com.x.scrape.model.job.configuration.JobConfiguration;
 
 import java.io.File;
 import java.util.UUID;

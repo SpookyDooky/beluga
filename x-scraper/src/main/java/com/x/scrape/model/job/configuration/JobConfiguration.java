@@ -1,10 +1,9 @@
-package com.x.scrape.model;
+package com.x.scrape.model.job.configuration;
 
 import com.x.scrape.model.job.JobDefinition;
-import com.x.scrape.model.job.UrlConfiguration;
-import com.x.scrape.model.job.execution.ExecutionConfiguration;
-import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
-import com.x.scrape.model.job.storage.StorageConfiguration;
+import com.x.scrape.model.job.configuration.execution.ExecutionConfiguration;
+import com.x.scrape.model.job.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job.configuration.storage.StorageConfiguration;
 import com.x.scrape.persistence.shared.model.HasId;
 
 public class JobConfiguration implements HasId {

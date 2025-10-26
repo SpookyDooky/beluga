@@ -1,4 +1,4 @@
-package com.x.scrape.model.job.execution;
+package com.x.scrape.model.job.configuration.execution;
 
 public class ExecutionConfiguration {
 	

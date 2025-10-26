@@ -2,10 +2,10 @@ package com.x.scrape.scraping.job;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.JobConfiguration;
+import com.x.scrape.model.job.configuration.JobConfiguration;
 import com.x.scrape.model.job.JobDefinition;
-import com.x.scrape.model.job.UrlConfiguration;
-import com.x.scrape.model.job.execution.ExecutionConfiguration;
+import com.x.scrape.model.job.configuration.UrlConfiguration;
+import com.x.scrape.model.job.configuration.execution.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.scraping.task.JobTaskQueue;
 import com.x.scrape.scraping.task.TaskFactory;

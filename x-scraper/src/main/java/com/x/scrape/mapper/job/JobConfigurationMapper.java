@@ -3,7 +3,7 @@ package com.x.scrape.mapper.job;
 import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
-import com.x.scrape.model.JobConfiguration;
+import com.x.scrape.model.job.configuration.JobConfiguration;
 import com.x.scrape.properties.scraping.JobProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

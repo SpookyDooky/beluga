@@ -2,7 +2,7 @@ package com.x.scrape.scraping.job;
 
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobConfigurationMapper;
-import com.x.scrape.model.JobConfiguration;
+import com.x.scrape.model.job.configuration.JobConfiguration;
 import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;

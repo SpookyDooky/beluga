@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job.scraping_configuration;
 
-import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

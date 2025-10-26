@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job.storage;
 
-import com.x.scrape.model.job.storage.StorageConfiguration;
+import com.x.scrape.model.job.configuration.storage.StorageConfiguration;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
