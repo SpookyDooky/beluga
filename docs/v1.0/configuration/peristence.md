@@ -1,6 +1,6 @@
 # Persistence
 
-Persistence is used for persisting job execution and job configuration. This makes it easier to
+Persistence is used for persisting jobDefinition execution and jobDefinition configuration. This makes it easier to
 reuse existing configurations. There are three types of persistence that are currently supported:
 
 - Filesystem

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.JOB_UUID;
 
 /**
  * This service takes care of collecting all the {@link ActivityEvent}'s. It temporarily stores the {@link Activity}'s
@@ -84,7 +84,7 @@ public class ActivityLoggingService {
 	
 	private void flushActivityLog(final UUID jobId,
 	                              final AtomicReference<ConcurrentLinkedQueue<Activity>> jobActivities) {
-		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+		try (final CloseableContext ignored = logger.with(JOB_UUID, jobId.toString())) {
 			final ConcurrentLinkedQueue<Activity> activities = jobActivities.getAndSet(new ConcurrentLinkedQueue<>());
 			
 			if (!activities.isEmpty()) {

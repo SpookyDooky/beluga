@@ -1,13 +1,15 @@
 package com.x.scrape.model;
 
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.job.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job.storage.StorageConfiguration;
+import com.x.scrape.persistence.shared.model.HasId;
 
-public class JobConfiguration {
+public class JobConfiguration implements HasId {
 	
+	private Long id;
 	private String name;
 	
 	private UrlConfiguration urlConfiguration;
@@ -15,6 +17,16 @@ public class JobConfiguration {
 	private StorageConfiguration storageConfiguration;
 	
 	private ExecutionConfiguration executionConfiguration;
+	
+	@Override
+	public Long getId() {
+		return id;
+	}
+	
+	@Override
+	public void setId(final Long id) {
+		this.id = id;
+	}
 	
 	public String getName() {
 		return name;
@@ -56,7 +68,7 @@ public class JobConfiguration {
 		this.executionConfiguration = executionConfiguration;
 	}
 	
-	public Job getJob() {
-		return new Job(this);
+	public JobDefinition getJob() {
+		return new JobDefinition(this);
 	}
 }

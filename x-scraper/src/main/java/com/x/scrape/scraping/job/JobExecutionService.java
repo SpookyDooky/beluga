@@ -2,7 +2,7 @@ package com.x.scrape.scraping.job;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
@@ -20,8 +20,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * This service takes care of starting the correct amount of {@link Worker}'s for each {@link Job}.
- * Furthermore, for each {@link Job} it also places all tasks in the {@link JobTaskQueue}.
+ * This service takes care of starting the correct amount of {@link Worker}'s for each {@link JobDefinition}.
+ * Furthermore, for each {@link JobDefinition} it also places all tasks in the {@link JobTaskQueue}.
  */
 @Service
 public class JobExecutionService {
@@ -41,21 +41,21 @@ public class JobExecutionService {
 		this.jobTaskQueue = jobTaskQueue;
 	}
 	
-	public void executeJob(final Job job) {
+	public void executeJob(final JobDefinition jobDefinition) {
 		logger.info("Executing job");
 		
-		final List<Task> tasks = createTasks(job);
+		final List<Task> tasks = createTasks(jobDefinition);
 		tasks.forEach(jobTaskQueue::offerTask);
 		
-		job.createJobFolders();
+		jobDefinition.createJobFolders();
 		
-		final ExecutionConfiguration executionConfiguration = job.getJobConfiguration().getExecutionConfiguration();
+		final ExecutionConfiguration executionConfiguration = jobDefinition.getJobConfiguration().getExecutionConfiguration();
 		final RateLimiter rateLimiter = RateLimiter.create((double) executionConfiguration.getTasksPerSecond());
 		
 		for (int i = 0; i < executionConfiguration.getWorkers(); i++) {
 			final Worker worker = applicationContext.getBean(Worker.class);
 			worker.init(
-					job.getId(),
+					jobDefinition.getUuid(),
 					rateLimiter
 			);
 			
@@ -64,24 +64,24 @@ public class JobExecutionService {
 		}
 	}
 	
-	private List<Task> createTasks(final Job job) {
-		final UrlConfiguration urlConfiguration = job.getJobConfiguration()
+	private List<Task> createTasks(final JobDefinition jobDefinition) {
+		final UrlConfiguration urlConfiguration = jobDefinition.getJobConfiguration()
 				.getUrlConfiguration();
 		
 		if (urlConfiguration.getUrlFile() == null) {
-			return createTasksFromUrlList(job, urlConfiguration.getUrls());
+			return createTasksFromUrlList(jobDefinition, urlConfiguration.getUrls());
 		} else {
 			return createTasksFromUrlList(
-					job,
+					jobDefinition,
 					readUrlsFromFile(urlConfiguration.getUrlFile())
 			);
 		}
 	}
 	
-	private List<Task> createTasksFromUrlList(final Job job,
+	private List<Task> createTasksFromUrlList(final JobDefinition jobDefinition,
 	                                          final List<URL> urls) {
 		return urls.stream()
-				.map(url -> taskFactory.create(url, job))
+				.map(url -> taskFactory.create(url, jobDefinition))
 				.toList();
 	}
 	

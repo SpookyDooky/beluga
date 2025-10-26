@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.JOB_UUID;
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +15,7 @@ class ActivityContextTest {
 	void shouldGetJobId() {
 		final UUID jobId = UUID.randomUUID();
 		final Map<String, String> input = Map.of(
-				JOB_ID, jobId.toString()
+				JOB_UUID, jobId.toString()
 		);
 		
 		final ActivityContext context = new ActivityContext(input);

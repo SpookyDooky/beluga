@@ -2,7 +2,7 @@ package com.x.scrape.scraping.job;
 
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobConfigurationMapper;
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JobRegistry {
 
-	private final Map<UUID, Job> jobRegistry = new ConcurrentHashMap<>();
+	private final Map<UUID, JobDefinition> jobRegistry = new ConcurrentHashMap<>();
 	
 	private final ContextLogger logger;
 	private final XScraperProperties xScraperProperties;
@@ -44,12 +44,12 @@ public class JobRegistry {
 	private void registerConfigurationJob(final JobProperties jobProperties) {
 		logger.info("Registering job");
 		
-		final Job job = jobConfigurationMapper.map(jobProperties)
+		final JobDefinition jobDefinition = jobConfigurationMapper.map(jobProperties)
 						.getJob();
-		jobRegistry.put(job.getId(), job);
+		jobRegistry.put(jobDefinition.getUuid(), jobDefinition);
 	}
 	
-	public Job get(final UUID jobId) {
+	public JobDefinition get(final UUID jobId) {
 		return jobRegistry.get(jobId);
 	}
 }

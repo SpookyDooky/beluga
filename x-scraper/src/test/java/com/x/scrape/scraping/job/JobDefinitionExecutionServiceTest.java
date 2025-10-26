@@ -3,7 +3,7 @@ package com.x.scrape.scraping.job;
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.JobConfiguration;
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.model.job.UrlConfiguration;
 import com.x.scrape.model.job.execution.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class JobExecutionServiceTest {
+class JobDefinitionExecutionServiceTest {
 	
 	@Mock
 	private ContextLogger logger;
@@ -58,9 +58,9 @@ class JobExecutionServiceTest {
 	@Test
 	void shouldStartJob() throws Exception {
 		final URL taskUrl = new URL("https://not-existent-url.com");
-		final Job job = spy(Instancio.of(Job.class)
+		final JobDefinition jobDefinition = spy(Instancio.of(JobDefinition.class)
 				.set(
-						field(Job::getJobConfiguration),
+						field(JobDefinition::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
 								.set(
 										field(JobConfiguration::getExecutionConfiguration),
@@ -79,32 +79,32 @@ class JobExecutionServiceTest {
 								)
 								.create()
 				).create());
-		doNothing().when(job).createJobFolders();
+		doNothing().when(jobDefinition).createJobFolders();
 		
 		final Task task = mock();
-		when(taskFactory.create(taskUrl, job)).thenReturn(task);
+		when(taskFactory.create(taskUrl, jobDefinition)).thenReturn(task);
 		
-		jobExecutionService.executeJob(job);
+		jobExecutionService.executeJob(jobDefinition);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(eq(job.getId()), rateLimiterArgumentCaptor.capture());
+		verify(worker).init(eq(jobDefinition.getUuid()), rateLimiterArgumentCaptor.capture());
 		verify(worker, after(250)).start();
 		
 		final RateLimiter rateLimiter = rateLimiterArgumentCaptor.getValue();
-		assertEquals(job.getJobConfiguration().getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
+		assertEquals(jobDefinition.getJobConfiguration().getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
 	}
 	
 	@Test
 	void shouldStartJobWithUrlFile() throws Exception {
 		final URL expectedTaskUrl = new URL("https://not-a-real-url.com");
-		final String urlFilePath = JobExecutionServiceTest.class
+		final String urlFilePath = JobDefinitionExecutionServiceTest.class
 				.getResource("/test-files/url-file.txt")
 				.getPath()
 				.replaceFirst("/", "");
 		
-		final Job job = spy(Instancio.of(Job.class)
+		final JobDefinition jobDefinition = spy(Instancio.of(JobDefinition.class)
 				.set(
-						field(Job::getJobConfiguration),
+						field(JobDefinition::getJobConfiguration),
 						Instancio.of(JobConfiguration.class)
 								.set(
 										field(JobConfiguration::getExecutionConfiguration),
@@ -120,15 +120,15 @@ class JobExecutionServiceTest {
 								)
 								.create()
 				).create());
-		doNothing().when(job).createJobFolders();
+		doNothing().when(jobDefinition).createJobFolders();
 		
 		final Task task = mock();
-		when(taskFactory.create(eq(expectedTaskUrl), eq(job))).thenReturn(task);
+		when(taskFactory.create(eq(expectedTaskUrl), eq(jobDefinition))).thenReturn(task);
 		
-		jobExecutionService.executeJob(job);
+		jobExecutionService.executeJob(jobDefinition);
 		
 		verify(jobTaskQueue).offerTask(task);
-		verify(worker).init(eq(job.getId()), any());
+		verify(worker).init(eq(jobDefinition.getUuid()), any());
 		verify(worker, after(250)).start();
 	}
 }

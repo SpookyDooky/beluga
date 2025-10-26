@@ -1,6 +1,6 @@
 package com.x.scrape.scraping.task;
 
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,14 @@ class TaskFactoryTest {
 	
 	@Test
 	void shouldCreate() {
-		final Job job = Instancio.create(Job.class);
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		final URL url = mock();
 		
-		final Task task = taskFactory.create(url, job);
+		final Task task = taskFactory.create(url, jobDefinition);
 		
-		assertSame(job, task.getJob());
+		assertSame(jobDefinition, task.getJob());
 		assertSame(url, task.getUrl());
-		assertEquals(job.getJobConfiguration().getScrapingConfiguration(), task.getScrapingConfiguration());
-		assertEquals(job.getJobConfiguration().getStorageConfiguration(), task.getStorageConfiguration());
+		assertEquals(jobDefinition.getJobConfiguration().getScrapingConfiguration(), task.getScrapingConfiguration());
+		assertEquals(jobDefinition.getJobConfiguration().getStorageConfiguration(), task.getStorageConfiguration());
 	}
 }

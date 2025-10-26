@@ -5,7 +5,7 @@ import com.x.scrape.activity_logging.event.ActivityFlushEvent;
 import com.x.scrape.activity_logging.model.Activity;
 import com.x.scrape.activity_logging.model.RequestActivity;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.scraping.job.JobRegistry;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.JOB_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -54,8 +54,8 @@ class ActivityLoggingServiceTest {
 		
 		verifyNoInteractions(applicationEventPublisher, jobRegistry);
 		
-		final Job job = Instancio.create(Job.class);
-		when(jobRegistry.get(jobId)).thenReturn(job);
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(jobRegistry.get(jobId)).thenReturn(jobDefinition);
 
         final Instant currentTime = Instant.now();
         try (final MockedStatic<Instant> mockedInstant = mockStatic(Instant.class)) {
@@ -67,7 +67,7 @@ class ActivityLoggingServiceTest {
             verify(applicationEventPublisher).publishEvent(eventArgumentCaptor.capture());
             final ActivityFlushEvent actualEvent = eventArgumentCaptor.getValue();
 
-            assertEquals(job.getJobFolder() + "/logs", actualEvent.getStorageHint().getFolder());
+            assertEquals(jobDefinition.getJobFolder() + "/logs", actualEvent.getStorageHint().getFolder());
             assertEquals(
                     DATE_TIME_FORMATTER.format(LocalDateTime.ofInstant(currentTime, ZoneId.systemDefault())) + ".json",
                     actualEvent.getStorageHint().getFileName()
@@ -80,7 +80,7 @@ class ActivityLoggingServiceTest {
 		final RequestActivity activity =  new RequestActivity(mock(), 1L, false);
 		
 		activity.getContext()
-				.put(JOB_ID, jobId.toString());
+				.put(JOB_UUID, jobId.toString());
 		
 		return activity;
 	}

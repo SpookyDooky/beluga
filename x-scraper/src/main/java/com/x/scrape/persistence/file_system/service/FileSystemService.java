@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public abstract class FileSystemService {
 	
-	private final ObjectMapper objectMapper;
+	protected final ObjectMapper objectMapper;
 	
 	protected FileSystemService(final ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;

@@ -9,7 +9,7 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
-import com.x.scrape.model.job.Job;
+import com.x.scrape.model.job.JobDefinition;
 import com.x.scrape.model.task.ImageDownloadTask;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.event.TaskCompletedEvent;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
+import static com.x.scrape.logging.ContextKeys.JOB_UUID;
 import static com.x.scrape.logging.ContextKeys.WORKER_ID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
@@ -70,9 +70,9 @@ public class Worker {
 	}
 	
 	/**
-	 * Initializes the worker and configures it as a worker for a specific {@link Job}.
+	 * Initializes the worker and configures it as a worker for a specific {@link JobDefinition}.
 	 *
-	 * @param jobId the id of the {@link Job}.
+	 * @param jobId the id of the {@link JobDefinition}.
 	 */
 	public void init(final UUID jobId,
 	                 final RateLimiter rateLimiter) {
@@ -81,7 +81,7 @@ public class Worker {
 	}
 	
 	public void start() {
-		try (final CloseableContext context = logger.with(JOB_ID, jobId.toString())) {
+		try (final CloseableContext context = logger.with(JOB_UUID, jobId.toString())) {
 			context.put(WORKER_ID, workerId.toString());
 			logger.info("Worker starting.");
 			

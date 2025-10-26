@@ -127,7 +127,7 @@ class WorkerTest {
 		verify(applicationEventPublisher).publishEvent(taskFailedEventArgumentCaptor.capture());
 		
 		final TaskFailedEvent taskFailedEvent = taskFailedEventArgumentCaptor.getValue();
-		assertSame(task.getJob().getId(), taskFailedEvent.getJobId());
+		assertSame(task.getJob().getUuid(), taskFailedEvent.getJobId());
 		assertSame(task.getId(), taskFailedEvent.getTaskId());
 	}
 }
