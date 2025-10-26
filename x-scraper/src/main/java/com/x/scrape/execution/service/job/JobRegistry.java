@@ -39,13 +39,7 @@ public class JobRegistry {
 	@Scheduled(initialDelay = 0L)
 	public void registerJobs() {
 		xScraperProperties.getJobs()
-				.forEach(jobProperties -> {
-					// First persist
-					// Then register
-					// Then create job execution object (JOB)
-					// Execute job
-					registerConfigurationJob(jobProperties);
-				});
+				.forEach(this::registerConfigurationJob);
 		
 		jobRegistry.values()
 				.forEach(jobExecutionService::executeJob);
@@ -54,8 +48,7 @@ public class JobRegistry {
 	private void registerConfigurationJob(final JobProperties jobProperties) {
 		logger.info("Registering job");
 		
-		final JobDefinition jobDefinition = jobConfigurationMapper.map(jobProperties)
-						.getJob();
+		final JobDefinition jobDefinition = jobConfigurationMapper.map(jobProperties);
 		jobDefinitionService.save(jobDefinition);
 		
 		final Job job = jobDefinitionService.createJob(jobDefinition);

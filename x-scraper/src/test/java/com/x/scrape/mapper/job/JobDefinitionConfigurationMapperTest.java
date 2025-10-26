@@ -3,7 +3,7 @@ package com.x.scrape.mapper.job;
 import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
-import com.x.scrape.model.job_definition.configuration.JobConfiguration;
+import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
@@ -50,11 +50,11 @@ class JobDefinitionConfigurationMapperTest {
 		
 		final ExecutionConfiguration executionConfiguration = mock();
 		when(executionConfigurationMapper.map(jobProperties.getExecution())).thenReturn(executionConfiguration);
-		final JobConfiguration jobConfiguration = mapper.map(jobProperties);
+		final JobDefinition jobConfiguration = mapper.map(jobProperties);
 		
-		assertSame(urlConfiguration, jobConfiguration.getUrlConfiguration());
-		assertSame(scrapingConfiguration, jobConfiguration.getScrapingConfiguration());
-		assertSame(storageConfiguration, jobConfiguration.getStorageConfiguration());
-		assertSame(executionConfiguration, jobConfiguration.getExecutionConfiguration());
+		assertSame(urlConfiguration, jobConfiguration.getJobConfiguration().getUrlConfiguration());
+		assertSame(scrapingConfiguration, jobConfiguration.getJobConfiguration().getScrapingConfiguration());
+		assertSame(storageConfiguration, jobConfiguration.getJobConfiguration().getStorageConfiguration());
+		assertSame(executionConfiguration, jobConfiguration.getJobConfiguration().getExecutionConfiguration());
 	}
 }

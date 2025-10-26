@@ -1,5 +1,6 @@
 package com.x.scrape.persistence.shared.service;
 
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.persistence.shared.model.HasId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class EntityIdSetterServiceTest {
 	
+	@Mock
+	private ContextLogger logger;
 	@Mock
 	private PersistenceIdService persistenceIdService;
 	

@@ -2,20 +2,11 @@ package com.x.scrape.model.job_definition;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 class JobDefinitionTest {
-	
-	@Test
-	void shouldCreateUniqueId() {
-		final UUID id1 = new JobDefinition(mock()).getUuid();
-		final UUID id2 = new JobDefinition(mock()).getUuid();
-		
-		assertNotEquals(id1, id2);
-	}
 	
 	@Test
 	void shouldAddExecution() {

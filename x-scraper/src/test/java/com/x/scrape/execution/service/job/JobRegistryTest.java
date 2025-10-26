@@ -3,7 +3,6 @@ package com.x.scrape.execution.service.job;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobConfigurationMapper;
-import com.x.scrape.model.job_definition.configuration.JobConfiguration;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
@@ -42,10 +41,9 @@ class JobRegistryTest {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
 		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
-		final JobConfiguration jobConfiguration = mock();
-		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
-		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
+		
 		final Job job = mock();
 		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
 		
@@ -59,10 +57,9 @@ class JobRegistryTest {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
 		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
-		final JobConfiguration jobConfiguration = mock();
-		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobConfiguration);
-		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(jobConfigurationMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
+		
 		final Job job = Instancio.create(Job.class);
 		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
 		
