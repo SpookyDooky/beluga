@@ -1,6 +1,7 @@
 package com.x.scrape.result_storage.s3.service;
 
 import com.x.scrape.logging.ContextLogger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -20,7 +21,7 @@ public class S3Service {
 	private final S3Client s3Client;
 	
 	public S3Service(final ContextLogger logger,
-	                 final S3Client s3Client) {
+	                 @Qualifier("results-s3client") final S3Client s3Client) {
 		this.logger = logger;
 		this.s3Client = s3Client;
 	}
