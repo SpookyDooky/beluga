@@ -3,14 +3,12 @@ package com.x.scrape.properties.persistence;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 import software.amazon.awssdk.regions.Region;
 
 /**
  * Configures persistence for a S3 compatible data store.
  */
 @ConfigurationProperties("x-scraper.persistence.s3")
-@Validated
 public class S3PersistenceProperties {
 	
 	/**

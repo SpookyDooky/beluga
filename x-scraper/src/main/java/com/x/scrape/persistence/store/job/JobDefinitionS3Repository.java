@@ -6,6 +6,8 @@ import com.x.scrape.persistence.config.conditionals.annotation.IsS3;
 import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -22,8 +24,8 @@ public class JobDefinitionS3Repository extends S3PersistenceService implements J
 	
 	private final Path jobPersistencePath;
 	
-	public JobDefinitionS3Repository(final S3Client s3Client,
-	                                 final EntityIdSetterService entityIdSetterService,
+	public JobDefinitionS3Repository(@Qualifier("persistence-s3client") final S3Client s3Client,
+	                                 @Lazy final EntityIdSetterService entityIdSetterService,
 	                                 final ObjectMapper objectMapper,
 	                                 final S3PersistenceProperties s3PersistenceProperties) {
 		super(s3Client, entityIdSetterService, objectMapper, s3PersistenceProperties);

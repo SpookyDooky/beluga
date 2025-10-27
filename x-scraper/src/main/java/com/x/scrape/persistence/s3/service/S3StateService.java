@@ -9,6 +9,7 @@ import com.x.scrape.persistence.shared.service.StateService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -55,6 +56,7 @@ public class S3StateService extends S3PersistenceService implements StateService
 	}
 	
 	@Override
+	@EventListener
 	public void onSequenceIncremented(final SequenceIncrementedEvent event) {
 		final Sequence sequence = getObjectAs(sequencePath, Sequence.class)
 				.orElseThrow(() -> new IllegalStateException("Could not find sequence object."));

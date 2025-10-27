@@ -2,7 +2,7 @@ package com.x.scrape.result_storage.s3.service;
 
 import com.x.scrape.logging.ContextLogger;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -14,7 +14,10 @@ import java.nio.file.Path;
  * Service that handles communication with S3-compatible object stores.
  */
 @Service
-@ConditionalOnBean(S3Client.class)
+@ConditionalOnProperty(
+		name = "x-scraper.result-datastore.type",
+		havingValue = "S3"
+)
 public class S3Service {
 	
 	private final ContextLogger logger;
