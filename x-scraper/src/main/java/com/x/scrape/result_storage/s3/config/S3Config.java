@@ -17,7 +17,7 @@ import java.net.URI;
 )
 public class S3Config {
 	
-	@Bean
+	@Bean("results-s3client")
 	@ConditionalOnProperty("x-scraper.result-datastore.s3.host")
 	public S3Client s3Client(final S3Properties s3Properties) {
 		final AwsBasicCredentials credentials = AwsBasicCredentials.create(

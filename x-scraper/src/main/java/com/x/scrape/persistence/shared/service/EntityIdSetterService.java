@@ -2,6 +2,7 @@ package com.x.scrape.persistence.shared.service;
 
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.persistence.shared.model.HasId;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -20,7 +21,7 @@ public class EntityIdSetterService {
 	private final PersistenceIdService persistenceIdService;
 	
 	public EntityIdSetterService(final ContextLogger logger,
-	                             final PersistenceIdService persistenceIdService) {
+	                             @Lazy final PersistenceIdService persistenceIdService) {
 		this.logger = logger;
 		this.persistenceIdService = persistenceIdService;
 	}
