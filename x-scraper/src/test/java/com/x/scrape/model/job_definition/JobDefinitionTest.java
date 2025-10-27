@@ -11,7 +11,7 @@ class JobDefinitionTest {
 	@Test
 	void shouldAddExecution() {
 		final JobExecution jobExecution = mock();
-		final JobDefinition jobDefinition = new JobDefinition(null);
+		final JobDefinition jobDefinition = new JobDefinition();
 		
 		jobDefinition.addExecution(jobExecution);
 		

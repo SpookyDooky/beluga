@@ -1,14 +1,34 @@
 package com.x.scrape.model.job_definition.configuration.scraping_configuration;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import com.x.scrape.persistence.shared.model.HasId;
+import jakarta.persistence.*;
 
-public class DataPointConfiguration {
+import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
+public class DataPointConfiguration implements HasId {
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private Long id;
 	
 	private String selector;
 	private String propertyName;
 	
 	private String attribute;
+	
+	@Enumerated(STRING)
 	private DataPointType type = TEXT;
+	
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(final Long id) {
+		this.id = id;
+	}
 	
 	public String getSelector() {
 		return selector;

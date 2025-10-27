@@ -1,13 +1,32 @@
 package com.x.scrape.model.job_definition.configuration.storage_configuration;
 
 import com.x.scrape.model.types.StorageFormat;
+import com.x.scrape.persistence.shared.model.HasId;
+import jakarta.persistence.*;
 
-public class StorageConfiguration {
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
+public class StorageConfiguration implements HasId {
 	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private Long id;
+	
+	@Enumerated(STRING)
 	private StorageFormat format;
-	
 	private String folder;
-	private String file;
+	
+	@Override
+	public Long getId() {
+		return id;
+	}
+	
+	@Override
+	public void setId(final Long id) {
+		this.id = id;
+	}
 	
 	public StorageFormat getFormat() {
 		return format;
@@ -23,13 +42,5 @@ public class StorageConfiguration {
 	
 	public void setFolder(final String folder) {
 		this.folder = folder;
-	}
-	
-	public String getFile() {
-		return file;
-	}
-	
-	public void setFile(final String file) {
-		this.file = file;
 	}
 }

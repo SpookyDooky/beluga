@@ -9,14 +9,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
+import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
+
 @IsPostgreSql
 @Configuration
 public class PostgreSqlPersistenceConfig {
+	
+	// TODO - Set connection pool size
+	// Isolation level
+	// Autocommit mode
 	
 	@Bean
 	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
@@ -36,11 +43,23 @@ public class PostgreSqlPersistenceConfig {
 	}
 	
 	@Bean
+	public JpaVendorAdapter jpaVendorAdapter() {
+		final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		
+		adapter.setShowSql(true);
+		adapter.setGenerateDdl(false);
+		adapter.setDatabase(POSTGRESQL);
+		
+		return adapter;
+	}
+	
+	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(final DataSource dataSource,
 	                                                                   final JpaVendorAdapter jpaVendorAdapter) {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
+		entityManagerFactory.setPackagesToScan("com.x.scrape.model");
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
