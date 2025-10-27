@@ -27,7 +27,6 @@ public class HasCorrectPersistenceStoreValidator
 				yield valid;
 			}
 			case FILE_SYSTEM -> {
-				System.out.println("Am i being ran");
 				final boolean valid = persistenceProperties.getFileSystem() != null;
 				
 				if (!valid) {
@@ -37,9 +36,14 @@ public class HasCorrectPersistenceStoreValidator
 				yield valid;
 			}
 			case POSTGRESQL -> {
-				constraintValidatorContext.buildConstraintViolationWithTemplate("PostgreSQL is currently not supported as a persistence store")
-						.addConstraintViolation();
-				yield false;
+				final boolean valid = persistenceProperties.getPostgresql() != null;
+				
+				if (!valid) {
+					constraintValidatorContext.buildConstraintViolationWithTemplate("When POSTGRESQL is used as persistence type, then the postgresql properties should be configured")
+							.addConstraintViolation();
+				}
+
+				yield valid;
 			}
 		};
 	}

@@ -37,11 +37,18 @@ class HasCorrectPersistenceStoreValidatorTest {
 		return Stream.of(
 				Instancio.of(PersistenceProperties.class)
 						.ignore(field(PersistenceProperties::getFileSystem))
+						.ignore(field(PersistenceProperties::getPostgresql))
 						.set(field(PersistenceProperties::getType), S3)
 						.create(),
 				Instancio.of(PersistenceProperties.class)
 						.ignore(field(PersistenceProperties::getS3))
+						.ignore(field(PersistenceProperties::getPostgresql))
 						.set(field(PersistenceProperties::getType), FILE_SYSTEM)
+						.create(),
+				Instancio.of(PersistenceProperties.class)
+						.ignore(field(PersistenceProperties::getS3))
+						.ignore(field(PersistenceProperties::getFileSystem))
+						.set(field(PersistenceProperties::getType), POSTGRESQL)
 						.create()
 		).map(Arguments::of);
 	}
@@ -78,7 +85,7 @@ class HasCorrectPersistenceStoreValidatorTest {
 								.ignore(field(PersistenceProperties::getFileSystem))
 								.set(field(PersistenceProperties::getType), POSTGRESQL)
 								.create(),
-						"PostgreSQL is currently not supported as a persistence store"
+						"When POSTGRESQL is used as persistence type, then the postgresql properties should be configured"
 				)
 		);
 	}

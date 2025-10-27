@@ -19,6 +19,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
+
   postgresql:
     image: docker.io/postgres:18.0
     container_name: postgresql

@@ -34,9 +34,15 @@ class HasOnlyOnePersistenceStoreValidatorTest {
 		return Stream.of(
 				Instancio.of(PersistenceProperties.class)
 						.ignore(field(PersistenceProperties::getS3))
+						.ignore(field(PersistenceProperties::getPostgresql))
 						.create(),
 				Instancio.of(PersistenceProperties.class)
 						.ignore(field(PersistenceProperties::getFileSystem))
+						.ignore(field(PersistenceProperties::getPostgresql))
+						.create(),
+				Instancio.of(PersistenceProperties.class)
+						.ignore(field(PersistenceProperties::getFileSystem))
+						.ignore(field(PersistenceProperties::getS3))
 						.create()
 		).map(Arguments::of);
 	}

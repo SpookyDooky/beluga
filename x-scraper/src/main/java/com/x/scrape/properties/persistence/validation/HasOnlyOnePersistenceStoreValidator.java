@@ -11,6 +11,7 @@ public class HasOnlyOnePersistenceStoreValidator
 	public boolean isValid(final PersistenceProperties persistenceProperties,
 	                       final ConstraintValidatorContext constraintValidatorContext) {
 		return persistenceProperties.getFileSystem() != null ^
-				persistenceProperties.getS3() != null;
+				persistenceProperties.getS3() != null ^
+				persistenceProperties.getPostgresql() != null;
 	}
 }
