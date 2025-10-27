@@ -17,7 +17,7 @@ import java.util.Optional;
 public abstract class S3PersistenceService {
 	
 	private final S3Client s3Client;
-	private final EntityIdSetterService entityIdSetterService;
+	protected final EntityIdSetterService entityIdSetterService;
 	private final ObjectMapper objectMapper;
 	
 	private final String bucket;
@@ -40,7 +40,7 @@ public abstract class S3PersistenceService {
 	 * @param <T>   return type.
 	 * @return the object.
 	 */
-	protected <T> Optional<T> getObjectAs(final Path key,
+	public <T> Optional<T> getObjectAs(final Path key,
 	                                      final Class<T> clazz) {
 		final GetObjectRequest getObjectRequest = GetObjectRequest.builder()
 				.bucket(bucket)
@@ -72,7 +72,7 @@ public abstract class S3PersistenceService {
 	 * @param <T>    return type.
 	 * @return saved object.
 	 */
-	protected <T> T putObject(final Path key,
+	public <T> T putObject(final Path key,
 	                          final T object) {
 		entityIdSetterService.setIds(object);
 		

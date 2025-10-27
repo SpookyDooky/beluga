@@ -1,7 +1,10 @@
 package com.x.scrape.persistence.s3.config;
 
 import com.x.scrape.persistence.config.conditionals.annotation.IsS3;
+import com.x.scrape.persistence.s3.service.S3StateService;
+import com.x.scrape.persistence.shared.service.PersistenceIdService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -26,5 +29,12 @@ public class S3PersistenceConfig {
 				.region(properties.getRegion())
 				.forcePathStyle(true)
 				.build();
+	}
+	
+	@Bean
+	public PersistenceIdService persistenceIdService(final S3StateService s3StateService,
+	                                                 final ApplicationEventPublisher applicationEventPublisher) {
+		final Long sequence = s3StateService.getSequence();
+		return new PersistenceIdService(sequence, applicationEventPublisher);
 	}
 }
