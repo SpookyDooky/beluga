@@ -41,7 +41,8 @@ public class JobDefinitionS3Repository implements JobDefinitionRepository {
 	
 	@Override
 	public Optional<JobDefinition> findById(final Long id) {
-		return Optional.empty();
+		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + id + "/" + JOB_DEFINITION_FILE_NAME);
+		return s3PersistenceService.getObjectAs(jobDefinitionPath, JobDefinition.class);
 	}
 	
 	@Override

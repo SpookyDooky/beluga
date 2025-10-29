@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -60,6 +61,23 @@ class JobDefinitionS3RepositoryTest {
 		
 		assertSame(jobDefinition, result);
 		verify(entityIdSetterService).setIds(jobDefinition);
+		
+		final Path path = pathArgumentCaptor.getValue();
+		assertEquals(
+				S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "\\" + jobDefinitionId + "\\" + JOB_DEFINITION_FILE_NAME,
+				path.toString()
+		);
+	}
+	
+	@Test
+	void shouldFindById() {
+		final Long jobDefinitionId = 123L;
+		final Optional<JobDefinition> jobDefinition = mock();
+		when(s3PersistenceService.getObjectAs(pathArgumentCaptor.capture(), eq(JobDefinition.class))).thenReturn(jobDefinition);
+		
+		final Optional<JobDefinition> result = jobDefinitionS3Repository.findById(jobDefinitionId);
+		
+		assertSame(jobDefinition, result);
 		
 		final Path path = pathArgumentCaptor.getValue();
 		assertEquals(
