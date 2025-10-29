@@ -3,13 +3,17 @@ package com.x.scrape.service;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.persistence.store.job.JobDefinitionRepository;
+import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -48,15 +52,20 @@ class JobDefinitionServiceTest {
 	
 	@Test
 	void shouldCreateJob() {
+		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
+		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
 		when(repository.save(jobDefinition)).thenReturn(jobDefinition);
 		
 		final Job job = mock();
 		when(jobMapper.map(jobDefinition)).thenReturn(job);
 		
-		final Job result = jobDefinitionService.createJob(jobDefinition);
+		final JobExecution jobExecution = Instancio.create(JobExecution.class);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
 		
-		verify(job).setId(null);
+		final Job result = jobDefinitionService.createJobById(jobDefinitionId);
+		
+		verify(job).setId(jobExecution.getId());
 		assertSame(job, result);
 	}
 }

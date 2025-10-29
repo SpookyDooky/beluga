@@ -53,10 +53,10 @@ class JobDefinitionConfigurationMapperTest {
 		when(executionConfigurationMapper.map(jobProperties.getExecution())).thenReturn(executionConfiguration);
 		final JobDefinition jobDefinition = mapper.map(jobProperties);
 		
-		assertSame(urlConfiguration, jobDefinition.getJobConfiguration().getUrlConfiguration());
-		assertSame(scrapingConfiguration, jobDefinition.getJobConfiguration().getScrapingConfiguration());
-		assertSame(storageConfiguration, jobDefinition.getJobConfiguration().getStorageConfiguration());
-		assertSame(executionConfiguration, jobDefinition.getJobConfiguration().getExecutionConfiguration());
+		assertSame(urlConfiguration, jobDefinition.getUrlConfiguration());
+		assertSame(scrapingConfiguration, jobDefinition.getScrapingConfiguration());
+		assertSame(storageConfiguration, jobDefinition.getStorageConfiguration());
+		assertSame(executionConfiguration, jobDefinition.getExecutionConfiguration());
 		assertEquals(jobProperties.getName(), jobDefinition.getName());
 	}
 }

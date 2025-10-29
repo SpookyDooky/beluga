@@ -9,6 +9,7 @@ public class JobConfiguration implements HasId {
 	
 	private Long id;
 	
+	// Change to just a list of urls
 	private UrlConfiguration urlConfiguration;
 	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;

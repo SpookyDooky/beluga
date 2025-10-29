@@ -43,6 +43,9 @@ public class EntityIdSetterService {
 	}
 	
 	private void setIdsRecursive(final Object entity, final Set<Object> processed) {
+		if (processed.contains(entity)) {
+			return;
+		}
 		processed.add(entity);
 		
 		if (entity == null || entity.getClass().equals(Object.class) || isValueHolder(entity) || Enum.class.isAssignableFrom(entity.getClass())) {

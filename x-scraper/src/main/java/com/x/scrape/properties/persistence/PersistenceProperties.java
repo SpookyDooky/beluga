@@ -24,6 +24,7 @@ public class PersistenceProperties {
 	
 	private FileSystemPersistenceProperties fileSystem;
 	private S3PersistenceProperties s3;
+	private PostgreSqlPersistenceProperties postgresql;
 	
 	public PersistenceType getType() {
 		return type;
@@ -47,5 +48,13 @@ public class PersistenceProperties {
 	
 	public void setS3(final S3PersistenceProperties s3) {
 		this.s3 = s3;
+	}
+	
+	public PostgreSqlPersistenceProperties getPostgresql() {
+		return postgresql;
+	}
+	
+	public void setPostgresql(final PostgreSqlPersistenceProperties postgresql) {
+		this.postgresql = postgresql;
 	}
 }

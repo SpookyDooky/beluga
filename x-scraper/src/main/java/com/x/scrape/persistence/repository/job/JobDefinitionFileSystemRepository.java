@@ -1,6 +1,5 @@
-package com.x.scrape.persistence.store.job;
+package com.x.scrape.persistence.repository.job;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import com.x.scrape.persistence.file_system.service.FileSystemService;
@@ -15,17 +14,22 @@ import java.util.Optional;
 
 @IsFileSystem
 @Component
-public class JobDefinitionFileSystemRepository extends FileSystemService implements JobDefinitionRepository {
+public class JobDefinitionFileSystemRepository implements JobDefinitionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
 	private static final String JOB_DEFINITION_FILE_NAME = "job-definition.json";
 	
+	private final FileSystemService fileSystemService;
+	private final EntityIdSetterService entityIdSetterService;
+	
 	private final Path jobPersistencePath;
 	
-	public JobDefinitionFileSystemRepository(final PersistenceProperties persistenceProperties,
-	                                         final ObjectMapper objectMapper,
-	                                         @Lazy final EntityIdSetterService entityIdSetterService) {
-		super(objectMapper, entityIdSetterService);
+	public JobDefinitionFileSystemRepository(final FileSystemService fileSystemService,
+	                                         @Lazy final EntityIdSetterService entityIdSetterService,
+	                                         final PersistenceProperties persistenceProperties) {
+		this.fileSystemService = fileSystemService;
+		this.entityIdSetterService = entityIdSetterService;
+		
 		jobPersistencePath = Path.of(persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH);
 	}
 	
@@ -34,12 +38,13 @@ public class JobDefinitionFileSystemRepository extends FileSystemService impleme
 		entityIdSetterService.setIds(jobDefinition);
 		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + jobDefinition.getId() + "/" + JOB_DEFINITION_FILE_NAME);
 		
-		return save(jobDefinition, jobDefinitionPath);
+		return fileSystemService.save(jobDefinition, jobDefinitionPath);
 	}
 	
 	@Override
 	public Optional<JobDefinition> findById(final Long id) {
-		return Optional.empty();
+		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + id + "/" + JOB_DEFINITION_FILE_NAME);
+		return Optional.of(fileSystemService.readFileAs(fileSystemService.get(jobDefinitionPath).get(), JobDefinition.class));
 	}
 	
 	@Override

@@ -18,7 +18,6 @@ class StorageConfigurationMapperTest {
 		final StorageConfiguration storageConfiguration = mapper.map(storageProperties);
 		
 		assertEquals(storageProperties.getFormat(), storageConfiguration.getFormat());
-		assertEquals(storageProperties.getFile(), storageConfiguration.getFile());
 		assertEquals(storageProperties.getFolder(), storageConfiguration.getFolder());
 	}
 }

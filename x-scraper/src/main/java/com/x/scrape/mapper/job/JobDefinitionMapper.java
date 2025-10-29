@@ -23,9 +23,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface JobDefinitionMapper {
 	
-	@Mapping(target = "jobConfiguration.urlConfiguration", source = "url")
-	@Mapping(target = "jobConfiguration.scrapingConfiguration", source = "scraping")
-	@Mapping(target = "jobConfiguration.storageConfiguration", source = "storage")
-	@Mapping(target = "jobConfiguration.executionConfiguration", source = "execution")
+	@Mapping(target = "urlConfiguration", source = "url")
+	@Mapping(target = "scrapingConfiguration", source = "scraping")
+	@Mapping(target = "storageConfiguration", source = "storage")
+	@Mapping(target = "executionConfiguration", source = "execution")
 	JobDefinition map(JobProperties jobProperties);
 }
