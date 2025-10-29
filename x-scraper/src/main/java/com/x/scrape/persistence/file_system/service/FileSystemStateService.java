@@ -1,13 +1,10 @@
 package com.x.scrape.persistence.file_system.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
-import com.x.scrape.persistence.shared.model.Sequence;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
+import com.x.scrape.persistence.shared.model.Sequence;
 import com.x.scrape.persistence.shared.service.StateService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +14,17 @@ import java.util.Optional;
 
 @Service
 @IsFileSystem
-public class FileSystemStateService extends FileSystemService
-		implements StateService {
+public class FileSystemStateService implements StateService {
 	
 	public static final String STATE_FOLDER = "/state";
 	public static final String SEQUENCE_FILE = "sequences.json";
 	
+	private final FileSystemService fileSystemService;
 	private final Path sequencePath;
 	
-	public FileSystemStateService(final ObjectMapper objectMapper,
-	                              final PersistenceProperties persistenceProperties,
-	                              @Lazy final EntityIdSetterService entityIdSetterService) {
-		super(objectMapper, entityIdSetterService);
-		
+	public FileSystemStateService(final FileSystemService fileSystemService,
+	                              final PersistenceProperties persistenceProperties) {
+		this.fileSystemService = fileSystemService;
 		final String persistenceFolder = persistenceProperties.getFileSystem().getFolder();
 		sequencePath = Path.of(persistenceFolder + STATE_FOLDER + "/" + SEQUENCE_FILE);
 	}
@@ -41,15 +36,15 @@ public class FileSystemStateService extends FileSystemService
 	 * @return the current sequence count.
 	 */
 	public Long getSequence() {
-		final Optional<File> sequenceFileOptional = get(sequencePath);
+		final Optional<File> sequenceFileOptional = fileSystemService.get(sequencePath);
 		
 		final Sequence sequence;
 		if (sequenceFileOptional.isPresent()) {
-			sequence = readFileAs(sequenceFileOptional.get(), Sequence.class);
+			sequence = fileSystemService.readFileAs(sequenceFileOptional.get(), Sequence.class);
 		} else {
 			sequence = new Sequence();
 			sequence.setSequence(0L);
-			save(sequence, sequencePath);
+			fileSystemService.save(sequence, sequencePath);
 		}
 		
 		return sequence.getSequence();
@@ -58,12 +53,12 @@ public class FileSystemStateService extends FileSystemService
 	@Override
 	@EventListener
 	public void onSequenceIncremented(final SequenceIncrementedEvent event) {
-		final File sequenceFile = get(sequencePath)
+		final File sequenceFile = fileSystemService.get(sequencePath)
 				.orElseThrow(() -> new IllegalStateException("Could not find sequence file."));
 		
-		final Sequence sequence = readFileAs(sequenceFile, Sequence.class);
+		final Sequence sequence = fileSystemService.readFileAs(sequenceFile, Sequence.class);
 		sequence.setSequence(event.getSequence());
 		
-		save(sequence, sequencePath);
+		fileSystemService.save(sequence, sequencePath);
 	}
 }

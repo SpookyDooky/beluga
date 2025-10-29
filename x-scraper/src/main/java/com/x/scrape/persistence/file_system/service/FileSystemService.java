@@ -3,6 +3,7 @@ package com.x.scrape.persistence.file_system.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,13 +17,14 @@ import java.util.Optional;
  * Template for any persistence service that deals with the file system. It mainly
  * offers methods that help with file system operations.
  */
-public abstract class FileSystemService {
+@Service
+public class FileSystemService {
 	
-	protected final ObjectMapper objectMapper;
-	protected final EntityIdSetterService entityIdSetterService;
+	private final ObjectMapper objectMapper;
+	private final EntityIdSetterService entityIdSetterService;
 	
-	protected FileSystemService(final ObjectMapper objectMapper,
-	                            final EntityIdSetterService entityIdSetterService) {
+	public FileSystemService(final ObjectMapper objectMapper,
+	                         final EntityIdSetterService entityIdSetterService) {
 		this.objectMapper = objectMapper;
 		this.entityIdSetterService = entityIdSetterService;
 	}
@@ -33,7 +35,7 @@ public abstract class FileSystemService {
 	 * @param filePath path of the file to find.
 	 * @return optional containing the file if it was found, otherwise empty.
 	 */
-	protected Optional<File> get(final Path filePath) {
+	public Optional<File> get(final Path filePath) {
 		final File file = filePath.toFile();
 		
 		if (file.exists()) {
@@ -51,8 +53,8 @@ public abstract class FileSystemService {
 	 * @param <T>   return type.
 	 * @return an instance of the class based on the file content.
 	 */
-	protected <T> T readFileAs(final File file,
-	                           final Class<T> clazz) {
+	public <T> T readFileAs(final File file,
+	                        final Class<T> clazz) {
 		final String fileContent = readFile(file);
 		try {
 			return objectMapper.readValue(fileContent, clazz);
@@ -77,8 +79,8 @@ public abstract class FileSystemService {
 	 * @param <T>      type of the content to persist.
 	 * @return the persisted instance.
 	 */
-	protected <T> T save(final T content,
-	                     final Path filePath) {
+	public <T> T save(final T content,
+	                  final Path filePath) {
 		final String jsonContent = toJson(content);
 		final File file = filePath.toFile();
 		

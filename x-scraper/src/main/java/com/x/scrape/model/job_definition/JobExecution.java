@@ -1,5 +1,6 @@
 package com.x.scrape.model.job_definition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
@@ -37,6 +38,7 @@ public class JobExecution implements HasId {
 		this.executedAt = executedAt;
 	}
 	
+	@JsonIgnore
 	public JobDefinition getJobDefinition() {
 		return jobDefinition;
 	}

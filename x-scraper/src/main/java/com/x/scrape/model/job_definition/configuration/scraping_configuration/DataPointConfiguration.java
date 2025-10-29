@@ -1,5 +1,6 @@
 package com.x.scrape.model.job_definition.configuration.scraping_configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
@@ -15,7 +16,7 @@ public class DataPointConfiguration implements HasId {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="scraping_configuration_id")
+	@JoinColumn(name = "scraping_configuration_id")
 	private ScrapingConfiguration scrapingConfiguration;
 	
 	private String selector;
@@ -36,6 +37,7 @@ public class DataPointConfiguration implements HasId {
 		this.id = id;
 	}
 	
+	@JsonIgnore
 	public ScrapingConfiguration getScrapingConfiguration() {
 		return scrapingConfiguration;
 	}

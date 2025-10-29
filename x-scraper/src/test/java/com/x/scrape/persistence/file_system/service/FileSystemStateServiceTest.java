@@ -1,9 +1,7 @@
 package com.x.scrape.persistence.file_system.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
 import com.x.scrape.persistence.shared.model.Sequence;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,27 +26,25 @@ class FileSystemStateServiceTest {
 	private static final Path SEQUENCE_PATH = Path.of(PERSISTENCE_FOLDER + "/state/sequences.json");
 	
 	@Mock
-	private ObjectMapper objectMapper;
+	private FileSystemService fileSystemService;
 	@Mock(answer = RETURNS_DEEP_STUBS)
 	private PersistenceProperties persistenceProperties;
-	@Mock
-	private EntityIdSetterService entityIdSetterService;
 	
 	private FileSystemStateService fileSystemStateService;
 	
 	@BeforeEach
 	void setup() {
 		when(persistenceProperties.getFileSystem().getFolder()).thenReturn(PERSISTENCE_FOLDER);
-		fileSystemStateService = spy(new FileSystemStateService(objectMapper, persistenceProperties, entityIdSetterService));
+		fileSystemStateService = new FileSystemStateService(fileSystemService, persistenceProperties);
 	}
 	
 	@Test
 	void shouldGetSequence() {
 		final File file = new File("test");
-		when(fileSystemStateService.get(SEQUENCE_PATH)).thenReturn(Optional.of(file));
+		when(fileSystemService.get(SEQUENCE_PATH)).thenReturn(Optional.of(file));
 		
 		final Sequence sequence = Instancio.create(Sequence.class);
-		doReturn(sequence).when(fileSystemStateService).readFileAs(file, Sequence.class);
+		when(fileSystemService.readFileAs(file, Sequence.class)).thenReturn(sequence);
 		
 		final Long sequenceCount = fileSystemStateService.getSequence();
 		
@@ -57,8 +53,8 @@ class FileSystemStateServiceTest {
 	
 	@Test
 	void shouldCreateSequence() {
-		when(fileSystemStateService.get(SEQUENCE_PATH)).thenReturn(Optional.empty());
-		doAnswer(invocation -> invocation.getArguments()[0]).when(fileSystemStateService).save(any(Sequence.class), eq(SEQUENCE_PATH));
+		when(fileSystemService.get(SEQUENCE_PATH)).thenReturn(Optional.empty());
+		doAnswer(invocation -> invocation.getArguments()[0]).when(fileSystemService).save(any(Sequence.class), eq(SEQUENCE_PATH));
 		
 		final Long sequence = fileSystemStateService.getSequence();
 		
@@ -70,12 +66,12 @@ class FileSystemStateServiceTest {
 		final SequenceIncrementedEvent event = Instancio.create(SequenceIncrementedEvent.class);
 		
 		final File file = new File("test");
-		when(fileSystemStateService.get(SEQUENCE_PATH)).thenReturn(Optional.of(file));
+		when(fileSystemService.get(SEQUENCE_PATH)).thenReturn(Optional.of(file));
 		
 		final Sequence sequence = Instancio.create(Sequence.class);
-		doReturn(sequence).when(fileSystemStateService).readFileAs(file, Sequence.class);
+		when(fileSystemService.readFileAs(file, Sequence.class)).thenReturn(sequence);
 		
-		doAnswer(invocation -> invocation.getArguments()[0]).when(fileSystemStateService).save(sequence, SEQUENCE_PATH);
+		doAnswer(invocation -> invocation.getArguments()[0]).when(fileSystemService).save(sequence, SEQUENCE_PATH);
 		
 		fileSystemStateService.onSequenceIncremented(event);
 		
@@ -85,7 +81,7 @@ class FileSystemStateServiceTest {
 	@Test
 	void shouldThrowIllegalStateExceptionOnSequenceIncremented() {
 		final SequenceIncrementedEvent event = Instancio.create(SequenceIncrementedEvent.class);
-		when(fileSystemStateService.get(SEQUENCE_PATH)).thenReturn(Optional.empty());
+		when(fileSystemService.get(SEQUENCE_PATH)).thenReturn(Optional.empty());
 		
 		assertThrows(IllegalStateException.class, () -> fileSystemStateService.onSequenceIncremented(event));
 	}

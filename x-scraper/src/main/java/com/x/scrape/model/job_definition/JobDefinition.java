@@ -1,5 +1,6 @@
 package com.x.scrape.model.job_definition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
@@ -108,6 +109,7 @@ public class JobDefinition implements HasId {
 		jobExecution.setJobDefinition(this);
 	}
 	
+	@JsonIgnore
 	public Optional<JobExecution> getMostRecentExecution() {
 		if (executions.isEmpty()) {
 			return Optional.empty();
