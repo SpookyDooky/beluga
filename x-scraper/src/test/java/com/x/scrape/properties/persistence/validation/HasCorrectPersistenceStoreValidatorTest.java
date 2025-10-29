@@ -82,7 +82,7 @@ class HasCorrectPersistenceStoreValidatorTest {
 				Arguments.of(
 						Instancio.of(PersistenceProperties.class)
 								.ignore(field(PersistenceProperties::getS3))
-								.ignore(field(PersistenceProperties::getFileSystem))
+								.ignore(field(PersistenceProperties::getPostgresql))
 								.set(field(PersistenceProperties::getType), POSTGRESQL)
 								.create(),
 						"When POSTGRESQL is used as persistence type, then the postgresql properties should be configured"

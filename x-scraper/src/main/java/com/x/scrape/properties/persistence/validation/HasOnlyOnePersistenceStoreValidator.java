@@ -10,8 +10,12 @@ public class HasOnlyOnePersistenceStoreValidator
 	@Override
 	public boolean isValid(final PersistenceProperties persistenceProperties,
 	                       final ConstraintValidatorContext constraintValidatorContext) {
-		return persistenceProperties.getFileSystem() != null ^
-				persistenceProperties.getS3() != null ^
-				persistenceProperties.getPostgresql() != null;
+		int count = 0;
+		
+		count += persistenceProperties.getFileSystem() != null ? 1 : 0;
+		count += persistenceProperties.getS3() != null ? 1 : 0;
+		count += persistenceProperties.getPostgresql() != null ? 1 : 0;
+		
+		return count == 1;
 	}
 }
