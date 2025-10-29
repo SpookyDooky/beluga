@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -19,6 +20,9 @@ import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
 
 @IsPostgreSql
 @Configuration
+@EnableJpaRepositories(
+		basePackages = "com.x.scrape.persistence.repository"
+)
 public class PostgreSqlPersistenceConfig {
 	
 	// TODO - Set connection pool size
@@ -62,6 +66,7 @@ public class PostgreSqlPersistenceConfig {
 		entityManagerFactory.setPackagesToScan("com.x.scrape.model");
 		
 		final Properties jpaProperties = new Properties();
+		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 		entityManagerFactory.setJpaProperties(jpaProperties);
 		

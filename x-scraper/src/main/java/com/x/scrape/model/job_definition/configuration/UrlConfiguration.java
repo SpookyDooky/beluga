@@ -17,6 +17,13 @@ public class UrlConfiguration implements HasId {
 	private Long id;
 	
 	@ElementCollection
+	@CollectionTable(
+			name = "urls",
+			joinColumns = @JoinColumn(
+					name = "url_configuration_id"
+			)
+	)
+	@Column(name = "url")
 	private List<URL> urls = new ArrayList<>();
 	private String urlFile;
 	

@@ -51,7 +51,8 @@ public class JobRegistry {
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
 		jobDefinitionService.save(jobDefinition);
 		
-		final Job job = jobDefinitionService.createJob(jobDefinition);
+		final Job job = jobDefinitionService.createJobById(jobDefinition.getId());
+		
 		jobRegistry.put(job.getId(), job);
 	}
 	

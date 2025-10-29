@@ -9,7 +9,9 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -20,16 +22,27 @@ public class JobDefinition implements HasId {
 	private Long id;
 	private String name;
 	
-	@OneToOne
+	@OneToOne(cascade = ALL)
+	@JoinColumn(name = "url_configuration_id")
 	private UrlConfiguration urlConfiguration;
-	@OneToOne
+	
+	@OneToOne(cascade = ALL)
+	@JoinColumn(name = "scraping_configuration_id")
 	private ScrapingConfiguration scrapingConfiguration;
-	@OneToOne
+	
+	@OneToOne(cascade = ALL)
+	@JoinColumn(name = "storage_configuration_id")
 	private StorageConfiguration storageConfiguration;
-	@OneToOne
+	
+	@OneToOne(cascade = ALL)
+	@JoinColumn(name = "execution_configuration_id")
 	private ExecutionConfiguration executionConfiguration;
 	
-	@OneToMany
+	@OneToMany(
+			cascade = ALL,
+			mappedBy = "jobDefinition"
+	)
+	@OrderBy("executedAt DESC")
 	private List<JobExecution> executions = new ArrayList<>();
 	
 	@Override
@@ -92,5 +105,14 @@ public class JobDefinition implements HasId {
 	
 	public void addExecution(final JobExecution jobExecution) {
 		executions.add(jobExecution);
+		jobExecution.setJobDefinition(this);
+	}
+	
+	public Optional<JobExecution> getMostRecentExecution() {
+		if (executions.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(executions.getFirst());
 	}
 }

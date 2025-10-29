@@ -4,17 +4,9 @@ import com.x.scrape.model.job_definition.configuration.execution_configuration.E
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.persistence.shared.model.HasId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-
-@Entity
 public class JobConfiguration implements HasId {
 	
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
 	// Change to just a list of urls

@@ -1,4 +1,4 @@
-package com.x.scrape.persistence.store.job;
+package com.x.scrape.persistence.repository.job;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.job_definition.JobDefinition;

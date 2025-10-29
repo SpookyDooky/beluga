@@ -14,6 +14,10 @@ public class DataPointConfiguration implements HasId {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
+	@ManyToOne
+	@JoinColumn(name="scraping_configuration_id")
+	private ScrapingConfiguration scrapingConfiguration;
+	
 	private String selector;
 	private String propertyName;
 	
@@ -22,12 +26,22 @@ public class DataPointConfiguration implements HasId {
 	@Enumerated(STRING)
 	private DataPointType type = TEXT;
 	
+	@Override
 	public Long getId() {
 		return id;
 	}
 	
+	@Override
 	public void setId(final Long id) {
 		this.id = id;
+	}
+	
+	public ScrapingConfiguration getScrapingConfiguration() {
+		return scrapingConfiguration;
+	}
+	
+	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
+		this.scrapingConfiguration = scrapingConfiguration;
 	}
 	
 	public String getSelector() {

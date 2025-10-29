@@ -45,7 +45,7 @@ class JobRegistryTest {
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
 		final Job job = mock();
-		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
+		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		
@@ -61,7 +61,7 @@ class JobRegistryTest {
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
 		final Job job = Instancio.create(Job.class);
-		when(jobDefinitionService.createJob(jobDefinition)).thenReturn(job);
+		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		final Job result = jobRegistry.get(job.getId());
