@@ -1,7 +1,7 @@
 package com.x.scrape.persistence.repository.job;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.nio.file.Path;
 
@@ -28,11 +27,9 @@ class JobDefinitionS3RepositoryTest {
 	private static final String JOB_DEFINITION_FILE_NAME = "job-definition.json";
 	
 	@Mock
-	private S3Client s3Client;
+	private S3PersistenceService s3PersistenceService;
 	@Mock
 	private EntityIdSetterService entityIdSetterService;
-	@Mock
-	private ObjectMapper objectMapper;
 	@Mock
 	private S3PersistenceProperties s3PersistenceProperties;
 	
@@ -45,9 +42,8 @@ class JobDefinitionS3RepositoryTest {
 	void setup() {
 		when(s3PersistenceProperties.getFolder()).thenReturn(S3_PERSISTENCE_FOLDER);
 		jobDefinitionS3Repository = spy(new JobDefinitionS3Repository(
-				s3Client,
+				s3PersistenceService,
 				entityIdSetterService,
-				objectMapper,
 				s3PersistenceProperties
 		));
 	}
@@ -55,7 +51,7 @@ class JobDefinitionS3RepositoryTest {
 	@Test
 	void shouldSave() {
 		final JobDefinition jobDefinition = mock();
-		doReturn(jobDefinition).when(jobDefinitionS3Repository).putObject(pathArgumentCaptor.capture(), eq(jobDefinition));
+		doReturn(jobDefinition).when(s3PersistenceService).putObject(pathArgumentCaptor.capture(), eq(jobDefinition));
 		
 		final Long jobDefinitionId = 123L;
 		when(jobDefinition.getId()).thenReturn(jobDefinitionId);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -14,7 +16,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public abstract class S3PersistenceService {
+@Service
+public class S3PersistenceService {
 	
 	private final S3Client s3Client;
 	protected final EntityIdSetterService entityIdSetterService;
@@ -22,7 +25,7 @@ public abstract class S3PersistenceService {
 	
 	private final String bucket;
 	
-	public S3PersistenceService(final S3Client s3Client,
+	public S3PersistenceService(@Qualifier("persistence-s3client") final S3Client s3Client,
 	                            final EntityIdSetterService entityIdSetterService,
 	                            final ObjectMapper objectMapper,
 	                            final S3PersistenceProperties s3PersistenceProperties) {

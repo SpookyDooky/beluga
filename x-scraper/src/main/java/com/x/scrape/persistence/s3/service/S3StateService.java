@@ -1,35 +1,29 @@
 package com.x.scrape.persistence.s3.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.config.conditionals.annotation.IsS3;
 import com.x.scrape.persistence.shared.event.SequenceIncrementedEvent;
 import com.x.scrape.persistence.shared.model.Sequence;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.persistence.shared.service.StateService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
 @IsS3
 @Service
-public class S3StateService extends S3PersistenceService implements StateService {
+public class S3StateService implements StateService {
 	
 	public static final String STATE_FOLDER = "/state";
 	public static final String SEQUENCE_FILE = "sequences.json";
 	
+	private final S3PersistenceService s3PersistenceService;
 	private final Path sequencePath;
 	
-	public S3StateService(@Qualifier("persistence-s3client") final S3Client s3Client,
-	                      @Lazy final EntityIdSetterService entityIdSetterService,
-	                      final ObjectMapper objectMapper,
+	public S3StateService(final S3PersistenceService s3PersistenceService,
 	                      final S3PersistenceProperties s3PersistenceProperties) {
-		super(s3Client, entityIdSetterService, objectMapper, s3PersistenceProperties);
+		this.s3PersistenceService = s3PersistenceService;
 		
 		final String persistenceFolder = s3PersistenceProperties.getFolder();
 		sequencePath = Path.of(persistenceFolder + STATE_FOLDER + "/" + SEQUENCE_FILE);
@@ -42,7 +36,7 @@ public class S3StateService extends S3PersistenceService implements StateService
 	 * @return the current sequence count.
 	 */
 	public Long getSequence() {
-		final Optional<Sequence> sequenceOptional = getObjectAs(sequencePath, Sequence.class);
+		final Optional<Sequence> sequenceOptional = s3PersistenceService.getObjectAs(sequencePath, Sequence.class);
 		
 		if (sequenceOptional.isPresent()) {
 			return sequenceOptional.get().getSequence();
@@ -50,7 +44,7 @@ public class S3StateService extends S3PersistenceService implements StateService
 		
 		final Sequence sequence = new Sequence();
 		sequence.setSequence(0L);
-		putObject(sequencePath, sequence);
+		s3PersistenceService.putObject(sequencePath, sequence);
 		
 		return sequence.getSequence();
 	}
@@ -58,11 +52,11 @@ public class S3StateService extends S3PersistenceService implements StateService
 	@Override
 	@EventListener
 	public void onSequenceIncremented(final SequenceIncrementedEvent event) {
-		final Sequence sequence = getObjectAs(sequencePath, Sequence.class)
+		final Sequence sequence = s3PersistenceService.getObjectAs(sequencePath, Sequence.class)
 				.orElseThrow(() -> new IllegalStateException("Could not find sequence object."));
 		
 		sequence.setSequence(event.getSequence());
 		
-		putObject(sequencePath, sequence);
+		s3PersistenceService.putObject(sequencePath, sequence);
 	}
 }
