@@ -5,6 +5,7 @@ import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
@@ -38,6 +39,12 @@ public class JobDefinition implements HasId {
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "execution_configuration_id")
 	private ExecutionConfiguration executionConfiguration;
+	
+	@OneToMany(
+			cascade = ALL,
+			mappedBy = "jobDefinition"
+	)
+	private List<TaskDefinition> taskDefinitions = new ArrayList<>();
 	
 	@OneToMany(
 			cascade = ALL,
@@ -94,6 +101,15 @@ public class JobDefinition implements HasId {
 	
 	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
+	}
+	
+	public List<TaskDefinition> getTaskDefinitions() {
+		return taskDefinitions;
+	}
+	
+	public void setTaskDefinitions(final List<TaskDefinition> taskDefinitions) {
+		this.taskDefinitions = taskDefinitions;
+		taskDefinitions.forEach(taskDefinition -> taskDefinition.setJobDefinition(this));
 	}
 	
 	public List<JobExecution> getExecutions() {
