@@ -1,4 +1,4 @@
-create table(
+create table task_definition(
     id bigint not null primary key default nextval('primary_sequence'),
     job_definition_id bigint not null,
     url varchar not null,

@@ -2,6 +2,7 @@ package com.x.scrape.persistence.s3.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.persistence.config.conditionals.annotation.IsS3;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 @Service
+@IsS3
 public class S3PersistenceService {
 	
 	private final S3Client s3Client;

@@ -4,10 +4,13 @@ import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.task.Task;
 import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class JobDefinitionService {
@@ -41,6 +44,11 @@ public class JobDefinitionService {
 		job.setId(jobDefinition.getMostRecentExecution().get().getId());
 		
 		return job;
+	}
+	
+	@Transactional
+	public List<Task> createTasksById(final Long id) {
+	
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
  * offers methods that help with file system operations.
  */
 @Service
+@IsFileSystem
 public class FileSystemService {
 	
 	private final ObjectMapper objectMapper;
