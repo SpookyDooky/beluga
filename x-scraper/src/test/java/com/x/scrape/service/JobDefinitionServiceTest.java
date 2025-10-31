@@ -1,11 +1,9 @@
 package com.x.scrape.service;
 
-import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
-import org.instancio.Instancio;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +15,9 @@ import java.util.Optional;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JobDefinitionServiceTest {
@@ -50,22 +50,33 @@ class JobDefinitionServiceTest {
 		);
 	}
 	
+
 	@Test
-	void shouldCreateJob() {
-		final Long jobDefinitionId = 123L;
+	void shouldGetById() {
+		final Long id = 123L;
 		final JobDefinition jobDefinition = mock();
-		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
-		when(repository.save(jobDefinition)).thenReturn(jobDefinition);
+		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
 		
-		final Job job = mock();
-		when(jobMapper.map(jobDefinition)).thenReturn(job);
+		final JobDefinition result = jobDefinitionService.getById(id);
 		
-		final JobExecution jobExecution = Instancio.create(JobExecution.class);
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		assertSame(jobDefinition, result);
+	}
+	
+	@Test
+	void shouldThrowEntityNotFoundExceptionForGetById() {
+		final Long id = 123L;
+		when(repository.findById(id)).thenReturn(Optional.empty());
 		
-		final Job result = jobDefinitionService.createJobById(jobDefinitionId);
-		
-		verify(job).setId(jobExecution.getId());
-		assertSame(job, result);
+		assertThrows(EntityNotFoundException.class, () -> jobDefinitionService.getById(id));
+	}
+	
+	@Test
+	void shouldHaveTransactionalAnnotationOnGetById() {
+		assertAnnotationPresentOnMethod(
+				JobDefinitionService.class,
+				Transactional.class,
+				"getById",
+				Long.class
+		);
 	}
 }

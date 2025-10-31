@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class TaskDefinitionMapperService {
 	
-	// Task definition -> Create Task executions for job that are linked to the ids of task. Method is JobDefinitionService for this
 	public List<TaskDefinition> map(final UrlProperties urlProperties) {
 		if (!urlProperties.getUrls().isEmpty()) {
 			return urlProperties.getUrls()

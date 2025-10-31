@@ -7,6 +7,7 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
 import com.x.scrape.service.JobDefinitionService;
+import com.x.scrape.service.JobService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +24,20 @@ public class JobRegistry {
 	private final JobDefinitionMapper jobDefinitionMapper;
 	private final JobExecutionService jobExecutionService;
 	private final JobDefinitionService jobDefinitionService;
+	private final JobService jobService;
 	
 	public JobRegistry(final ContextLogger logger,
 	                   final XScraperProperties xScraperProperties,
 	                   final JobDefinitionMapper jobDefinitionMapper,
 	                   final JobExecutionService jobExecutionService,
-	                   final JobDefinitionService jobDefinitionService) { // Needs to use the job service
+	                   final JobDefinitionService jobDefinitionService,
+	                   final JobService jobService) {
 		this.logger = logger;
 		this.xScraperProperties = xScraperProperties;
 		this.jobDefinitionMapper = jobDefinitionMapper;
 		this.jobExecutionService = jobExecutionService;
 		this.jobDefinitionService = jobDefinitionService;
+		this.jobService = jobService;
 	}
 	
 	@Scheduled(initialDelay = 0L)
@@ -51,7 +55,7 @@ public class JobRegistry {
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
 		jobDefinitionService.save(jobDefinition);
 		
-		final Job job = jobDefinitionService.createJobById(jobDefinition.getId());
+		final Job job = jobService.createJobByJobDefinitionId(jobDefinition.getId());
 		
 		jobRegistry.put(job.getId(), job);
 	}

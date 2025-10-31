@@ -4,13 +4,12 @@ import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.task.Task;
 import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
 public class JobDefinitionService {
@@ -29,9 +28,11 @@ public class JobDefinitionService {
 		return repository.save(jobDefinition);
 	}
 	
-	// Should be done by id or in the same transaction as the JobRegistry so there should probably be another service before the
-	// Job registry that saves and then creates a job based on the definition
-	// If it is done by id it means we would have to retrieve the job definition first.
+	/**
+	 * Creates a job that needs to be executed.
+	 * @param id job definition id.
+	 * @return a new {@link Job}
+	 */
 	@Transactional
 	public Job createJobById(final Long id) {
 		final JobDefinition jobDefinition = repository.findById(id)
@@ -46,9 +47,9 @@ public class JobDefinitionService {
 		return job;
 	}
 	
-	@Transactional
-	public List<Task> createTasksById(final Long id) {
-	
+	@Transactional(propagation = MANDATORY)
+	public JobDefinition getById(final Long id) {
+		return repository.findById(id)
+				.orElseThrow(EntityNotFoundException::new);
 	}
-	
 }

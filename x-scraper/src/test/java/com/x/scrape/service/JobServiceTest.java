@@ -1,0 +1,104 @@
+package com.x.scrape.service;
+
+import com.x.scrape.execution.model.Job;
+import com.x.scrape.mapper.job.JobMapper;
+import com.x.scrape.mapper.task.TaskMapper;
+import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.task.Task;
+import com.x.scrape.model.task.TaskDefinition;
+import jakarta.persistence.EntityManager;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class JobServiceTest {
+
+	@Mock
+	private JobDefinitionService jobDefinitionService;
+	@Mock
+	private JobMapper jobMapper;
+	@Mock
+	private TaskMapper taskMapper;
+	@Mock
+	private EntityManager entityManager;
+	
+	private JobService jobService;
+	
+	@Test
+	void shouldCreateJobByDefinitionId() {
+		initializeJobService(Optional.of(entityManager));
+		
+		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
+		final JobDefinition jobDefinition = spy(
+				Instancio.of(JobDefinition.class)
+						.ignore(field(JobDefinition::getExecutions))
+						.set(field(JobDefinition::getTaskDefinitions), List.of(taskDefinition))
+						.create()
+		);
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		
+		final Job job = Instancio.create(Job.class);
+		when(jobMapper.map(jobDefinition)).thenReturn(job);
+		
+		final Task task = Instancio.create(Task.class);
+		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
+		
+		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
+		
+		assertEquals(jobDefinition.getMostRecentExecution().get().getId(), result.getId());
+		assertEquals(1, job.getTasks().size());
+		assertTrue(job.getTasks().contains(task));
+		
+		verify(entityManager).persist(jobDefinition.getMostRecentExecution().get().getTasks().get(0));
+		verify(jobDefinitionService).save(jobDefinition);
+		verify(jobDefinition).addExecution(any());
+	}
+	
+	void initializeJobService(final Optional<EntityManager> entityManager) {
+		jobService = new JobService(
+				jobDefinitionService,
+				jobMapper,
+				taskMapper,
+				entityManager
+		);
+	}
+	
+	@Test
+	void shouldCreateJobByDefinitionIdWithoutEntityManager() {
+		initializeJobService(Optional.empty());
+		
+		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
+		final JobDefinition jobDefinition = spy(
+				Instancio.of(JobDefinition.class)
+						.ignore(field(JobDefinition::getExecutions))
+						.set(field(JobDefinition::getTaskDefinitions), List.of(taskDefinition))
+						.create()
+		);
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		
+		final Job job = Instancio.create(Job.class);
+		when(jobMapper.map(jobDefinition)).thenReturn(job);
+		
+		final Task task = Instancio.create(Task.class);
+		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
+		
+		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
+		
+		assertEquals(jobDefinition.getMostRecentExecution().get().getId(), result.getId());
+		assertEquals(1, job.getTasks().size());
+		assertTrue(job.getTasks().contains(task));
+		
+		verify(jobDefinitionService, times(2)).save(jobDefinition);
+		verify(jobDefinition).addExecution(any());
+	}
+}

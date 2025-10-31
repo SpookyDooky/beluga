@@ -131,6 +131,6 @@ class WorkerTest {
 		
 		final TaskFailedEvent taskFailedEvent = taskFailedEventArgumentCaptor.getValue();
 		assertSame(task.getJob().getId(), taskFailedEvent.getJobId());
-		assertSame(task.getId(), taskFailedEvent.getTaskId());
+		assertSame(task.getUuid(), taskFailedEvent.getTaskId());
 	}
 }

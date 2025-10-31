@@ -10,8 +10,8 @@ class TaskTest {
 	
 	@Test
 	void shouldCreateUniqueId() {
-		final UUID id1 = new Task().getId();
-		final UUID id2 = new Task().getId();
+		final UUID id1 = new Task().getUuid();
+		final UUID id2 = new Task().getUuid();
 		
 		assertNotEquals(id1, id2);
 	}

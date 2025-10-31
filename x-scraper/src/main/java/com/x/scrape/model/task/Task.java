@@ -17,7 +17,8 @@ import static com.x.scrape.model.job_definition.configuration.scraping_configura
 
 public class Task implements ContextLoggable {
 	
-	private final UUID id;
+	private Long id;
+	private final UUID uuid;
 	private Job job;
 	
 	private URL url;
@@ -26,11 +27,19 @@ public class Task implements ContextLoggable {
 	private StorageConfiguration storageConfiguration;
 	
 	public Task() {
-		id = UUID.randomUUID();
+		uuid = UUID.randomUUID();
 	}
 	
-	public UUID getId() {
+	public Long getId() {
 		return id;
+	}
+	
+	public void setId(final Long id) {
+		this.id = id;
+	}
+	
+	public UUID getUuid() {
+		return uuid;
 	}
 	
 	public Job getJob() {
@@ -98,7 +107,7 @@ public class Task implements ContextLoggable {
 	@Override
 	public Map<String, String> loggingContext() {
 		return Map.of(
-				TASK_ID, id.toString(),
+				TASK_ID, uuid.toString(),
 				URL, url.toString()
 		);
 	}

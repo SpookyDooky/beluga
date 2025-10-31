@@ -7,6 +7,7 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
 import com.x.scrape.service.JobDefinitionService;
+import com.x.scrape.service.JobService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,8 @@ class JobRegistryTest {
 	private JobExecutionService jobExecutionService;
 	@Mock
 	private JobDefinitionService jobDefinitionService;
+	@Mock
+	private JobService jobService;
 	
 	@InjectMocks
 	private JobRegistry jobRegistry;
@@ -44,8 +47,8 @@ class JobRegistryTest {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
-		final Job job = mock();
-		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
+		final Job job = Instancio.create(Job.class);
+		when(jobService.createJobByJobDefinitionId(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		
@@ -61,7 +64,7 @@ class JobRegistryTest {
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
 		final Job job = Instancio.create(Job.class);
-		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
+		when(jobService.createJobByJobDefinitionId(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		final Job result = jobRegistry.get(job.getId());

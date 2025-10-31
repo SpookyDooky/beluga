@@ -100,7 +100,7 @@ public class Worker {
 	private void executeTask(final Task task) {
 		try (final CloseableContext ignored = logger.with(task)) {
 			applicationEventPublisher.publishEvent(new TaskStartedEvent(task));
-			timingService.start(task.getId());
+			timingService.start(task.getUuid());
 			
 			logger.info("Executing task.");
 			
@@ -116,7 +116,7 @@ public class Worker {
 			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
-			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getId()))));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getUuid()))));
 			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task));
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
@@ -125,7 +125,7 @@ public class Worker {
 	}
 	
 	private void createTaskResultFolder(final Task task) {
-		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getId());
+		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid());
 		file.mkdirs();
 	}
 	
@@ -139,7 +139,7 @@ public class Worker {
 			for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
 				final String fileName = UUID.randomUUID() + ".png";
 				downloadImage(task, imageDownloadTask, fileName);
-				final String filePath = task.getId() + "/images/" + fileName;
+				final String filePath = task.getUuid() + "/images/" + fileName;
 				
 				addImagePathToResult(elementScrapedData, filePath, imageDownloadTask.getPropertyName());
 			}
@@ -153,7 +153,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								UUID.randomUUID() + ".json",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/"
 						),
 						new JsonPayload(scrapingResult.getResult())
 				)
@@ -164,7 +164,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								"source.html",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/"
 						),
 						new StringPayload(scrapingResult.getRawPage())
 				)
@@ -189,7 +189,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								fileName,
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/images/"
 						),
 						new ImagePayload(imageInputStream)
 				)
