@@ -6,8 +6,8 @@ import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
+import com.x.scrape.model.task.Task;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,12 +60,14 @@ class JobDefinitionExecutionServiceTest {
 								.set(field(ExecutionConfiguration::getWorkers), 1)
 								.create()
 				).create());
-		
 		doNothing().when(job).createJobFolders();
+		
+		final List<Task> tasks = new ArrayList<>(job.getTasks());
 		
 		jobExecutionService.executeJob(job);
 		
-		job.getTasks().forEach(task -> {
+		assertTrue(job.getTasks().isEmpty());
+		tasks.forEach(task -> {
 			verify(jobTaskQueue).offerTask(task);
 		});
 		verify(worker).init(eq(job.getId()), rateLimiterArgumentCaptor.capture());
@@ -69,10 +75,5 @@ class JobDefinitionExecutionServiceTest {
 		
 		final RateLimiter rateLimiter = rateLimiterArgumentCaptor.getValue();
 		assertEquals(job.getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
-	}
-	
-	@Test
-	void shouldRemoveTasksFromJob() {
-		Assertions.fail();
 	}
 }
