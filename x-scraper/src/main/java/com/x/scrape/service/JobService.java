@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class JobService {
@@ -58,7 +59,7 @@ public class JobService {
 		return jobDefinition.getTaskDefinitions()
 				.stream()
 				.map(taskDefinition -> createTask(jobDefinition, taskDefinition, job))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	/**

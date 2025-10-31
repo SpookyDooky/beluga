@@ -100,7 +100,7 @@ public class Worker {
 	private void executeTask(final Task task) {
 		try (final CloseableContext ignored = logger.with(task)) {
 			applicationEventPublisher.publishEvent(new TaskStartedEvent(task));
-			timingService.start(task.getUuid());
+			timingService.start(workerId);
 			
 			logger.info("Executing task.");
 			
@@ -116,21 +116,20 @@ public class Worker {
 			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
-			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getUuid()))));
-			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(workerId))));
+			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task, task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"));
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
 			applicationEventPublisher.publishEvent(new TaskFailedEvent(task));
+			timingService.stop(workerId);
 		}
 	}
 	
 	private void createTaskResultFolder(final Task task) {
-		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid());
+		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getId());
 		file.mkdirs();
 	}
 	
-	// TODO offer this as a task too so that rate limiting can be applied properly in the future
-	// Or make this use the same rate limiter in the code, Resilience4J will be used for this.
 	private void downloadImages(final Task task,
 	                            final List<Map<String, Object>> scrapedData) {
 		scrapedData.forEach(elementScrapedData -> {
@@ -139,7 +138,7 @@ public class Worker {
 			for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
 				final String fileName = UUID.randomUUID() + ".png";
 				downloadImage(task, imageDownloadTask, fileName);
-				final String filePath = task.getUuid() + "/images/" + fileName;
+				final String filePath = task.getId() + "/images/" + fileName;
 				
 				addImagePathToResult(elementScrapedData, filePath, imageDownloadTask.getPropertyName());
 			}
@@ -153,7 +152,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								UUID.randomUUID() + ".json",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
 						),
 						new JsonPayload(scrapingResult.getResult())
 				)
@@ -164,7 +163,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								"source.html",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
 						),
 						new StringPayload(scrapingResult.getRawPage())
 				)
@@ -189,7 +188,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								fileName,
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getUuid() + "/images/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/"
 						),
 						new ImagePayload(imageInputStream)
 				)
