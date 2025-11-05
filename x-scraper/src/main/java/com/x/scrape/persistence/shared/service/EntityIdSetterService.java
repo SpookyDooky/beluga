@@ -63,12 +63,12 @@ public class EntityIdSetterService {
 		if (processed.contains(entity)) {
 			return;
 		}
-		processed.add(entity);
 		
 		if (isIncompatible(entity) || cache.contains(entity.hashCode())) {
 			return;
 		}
 		
+		processed.add(entity);
 		updateCache(entity);
 		
 		if (entity instanceof HasId hasId && hasId.getId() == null) {

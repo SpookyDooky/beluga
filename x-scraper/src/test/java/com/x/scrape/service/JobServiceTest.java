@@ -6,6 +6,7 @@ import com.x.scrape.mapper.task.TaskMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -31,12 +32,14 @@ class JobServiceTest {
 	private TaskMapper taskMapper;
 	@Mock
 	private EntityManager entityManager;
+	@Mock
+	private EntityIdSetterService entityIdSetterService;
 	
 	private JobService jobService;
 	
 	@Test
 	void shouldCreateJobByDefinitionId() {
-		initializeJobService(Optional.of(entityManager));
+		initializeJobService(Optional.of(entityManager), Optional.empty());
 		
 		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
 		final JobDefinition jobDefinition = spy(
@@ -64,18 +67,20 @@ class JobServiceTest {
 		verify(jobDefinition).addExecution(any());
 	}
 	
-	void initializeJobService(final Optional<EntityManager> entityManager) {
+	void initializeJobService(final Optional<EntityManager> entityManager,
+	                          final Optional<EntityIdSetterService> entityIdSetterService) {
 		jobService = new JobService(
 				jobDefinitionService,
 				jobMapper,
 				taskMapper,
-				entityManager
+				entityManager,
+				entityIdSetterService
 		);
 	}
 	
 	@Test
 	void shouldCreateJobByDefinitionIdWithoutEntityManager() {
-		initializeJobService(Optional.empty());
+		initializeJobService(Optional.empty(), Optional.of(entityIdSetterService));
 		
 		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
 		final JobDefinition jobDefinition = spy(

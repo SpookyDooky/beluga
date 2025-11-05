@@ -1,9 +1,13 @@
 package com.x.scrape.persistence.shared.service;
 
 import com.x.scrape.logging.ContextLogger;
+import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.persistence.shared.model.HasId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EntityIdSetterServiceTest {
@@ -55,6 +59,21 @@ class EntityIdSetterServiceTest {
 		assertEquals(0L, entity.getId());
 		assertEquals(1L, entity.getList().getFirst().getId());
 		assertEquals(2L, entity.getList().getFirst().getSimpleEntity().getId());
+	}
+	
+	@ParameterizedTest
+	@ValueSource(classes = {
+			TaskExecution.class,
+			TaskDefinition.class
+	})
+	void shouldNotCheckCachedEntityTwice(final Class<? extends HasId> clazz) {
+		final HasId taskExecution = mock(clazz);
+		
+		entityIdSetterService.setIds(taskExecution);
+		reset(taskExecution);
+		
+		entityIdSetterService.setIds(taskExecution);
+		verifyNoInteractions(taskExecution);
 	}
 	
 	static class SimpleEntity implements HasId {

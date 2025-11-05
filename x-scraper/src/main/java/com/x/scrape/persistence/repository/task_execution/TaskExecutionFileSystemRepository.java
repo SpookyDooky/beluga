@@ -72,10 +72,10 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 				
 				enrichTaskExecution(taskExecution, taskExecutionPath);
 				
-				return Optional.empty();
-//				return Optional.of(taskExecution);
+				return Optional.of(taskExecution);
 			}
 		}
+		
 		return Optional.empty();
 	}
 	

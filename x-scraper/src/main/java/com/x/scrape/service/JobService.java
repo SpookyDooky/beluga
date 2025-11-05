@@ -23,8 +23,12 @@ public class JobService {
 	private final JobDefinitionService jobDefinitionService;
 	private final JobMapper jobMapper;
 	private final TaskMapper taskMapper;
+	
+	// TODO -These two dependencies should maybe be abstracted away so that the entity id setter service
+	// TODO - has a different implementation for s3/filesystem and postgresql
 	private final EntityManager entityManager;
 	private final EntityIdSetterService entityIdSetterService;
+	
 	public JobService(final JobDefinitionService jobDefinitionService,
 	                  final JobMapper jobMapper,
 	                  final TaskMapper taskMapper,
