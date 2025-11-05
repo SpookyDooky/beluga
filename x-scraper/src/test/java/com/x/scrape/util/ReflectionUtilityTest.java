@@ -5,6 +5,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -22,7 +24,7 @@ class ReflectionUtilityTest {
 		assertTrue(isValueHolder(object));
 	}
 	
-	static Stream<Arguments> shouldBeValueHolder() {
+	static Stream<Arguments> shouldBeValueHolder() throws MalformedURLException {
 		return Stream.of(
 				(byte) 1,
 				Byte.valueOf((byte) 1),
@@ -38,7 +40,8 @@ class ReflectionUtilityTest {
 				Float.valueOf((float) 1.0),
 				UUID.randomUUID(),
 				"string",
-				Instant.now()
+				Instant.now(),
+				URI.create("http://lol.com").toURL()
 		).map(Arguments::of);
 	}
 	

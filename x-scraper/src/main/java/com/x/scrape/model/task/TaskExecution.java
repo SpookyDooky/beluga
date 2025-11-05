@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 
+import static com.x.scrape.model.task.TaskStatus.PLANNED;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -18,7 +19,7 @@ public class TaskExecution implements HasId {
 	private Instant executedAt;
 	
 	@Enumerated(STRING)
-	private TaskStatus status;
+	private TaskStatus status = PLANNED;
 	private String resultFolder;
 	
 	@ManyToOne

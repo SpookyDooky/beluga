@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -111,5 +112,18 @@ public class FileSystemService {
 		} catch (final JsonProcessingException e) {
 			throw new IllegalStateException("Could not serialize " + content.getClass().getSimpleName(), e);
 		}
+	}
+	
+	/**
+	 * Lists all files found at a specific path.
+	 * @param path path to list all files for.
+	 * @return list of files.
+	 */
+	public List<File> listFiles(final Path path) {
+		final File[] files = path.toFile().listFiles();
+		if (files == null) {
+			return List.of();
+		}
+		return List.of(files);
 	}
 }

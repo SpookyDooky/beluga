@@ -57,6 +57,7 @@ public class JobExecution implements HasId {
 		this.jobDefinition = jobDefinition;
 	}
 	
+	@JsonIgnore
 	public List<TaskExecution> getTasks() {
 		return tasks;
 	}

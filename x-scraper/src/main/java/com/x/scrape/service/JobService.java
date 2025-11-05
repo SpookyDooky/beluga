@@ -8,6 +8,7 @@ import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +24,17 @@ public class JobService {
 	private final JobMapper jobMapper;
 	private final TaskMapper taskMapper;
 	private final EntityManager entityManager;
-	
+	private final EntityIdSetterService entityIdSetterService;
 	public JobService(final JobDefinitionService jobDefinitionService,
 	                  final JobMapper jobMapper,
 	                  final TaskMapper taskMapper,
-	                  final Optional<EntityManager> entityManager) {
+	                  final Optional<EntityManager> entityManager,
+	                  final Optional<EntityIdSetterService> entityIdSetterService) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.jobMapper = jobMapper;
 		this.taskMapper = taskMapper;
 		this.entityManager = entityManager.orElse(null);
+		this.entityIdSetterService = entityIdSetterService.orElse(null);
 	}
 	
 	/**
@@ -50,6 +53,8 @@ public class JobService {
 		
 		job.setId(jobDefinition.getMostRecentExecution().get().getId());
 		job.setTasks(createTasks(jobDefinition, job));
+		
+		jobDefinitionService.save(jobDefinition);
 		
 		return job;
 	}
@@ -80,10 +85,11 @@ public class JobService {
 		
 		jobExecution.addTask(taskExecution);
 		
+		// Maybe we need two services one for s3/fs and one for postgresql
 		if (entityManager != null) {
 			entityManager.persist(taskExecution);
-		} else {
-			jobDefinitionService.save(jobDefinition);
+		} else if (entityIdSetterService != null){
+			entityIdSetterService.setIds(taskExecution);
 		}
 		
 		final Task task = taskMapper.map(jobDefinition, taskDefinition);
