@@ -3,7 +3,6 @@ package com.x.scrape.persistence.file_system.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -24,12 +23,9 @@ import java.util.Optional;
 public class FileSystemService {
 	
 	private final ObjectMapper objectMapper;
-	private final EntityIdSetterService entityIdSetterService;
 	
-	public FileSystemService(final ObjectMapper objectMapper,
-	                         final EntityIdSetterService entityIdSetterService) {
+	public FileSystemService(final ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		this.entityIdSetterService = entityIdSetterService;
 	}
 	
 	/**
@@ -87,8 +83,6 @@ public class FileSystemService {
 		final String jsonContent = toJson(content);
 		final File file = filePath.toFile();
 		
-		entityIdSetterService.setIds(content);
-		
 		try {
 			if (!file.exists()) {
 				if (!file.getParentFile().exists()) {
@@ -116,14 +110,17 @@ public class FileSystemService {
 	
 	/**
 	 * Lists all files found at a specific path.
+	 *
 	 * @param path path to list all files for.
 	 * @return list of files.
 	 */
 	public List<File> listFiles(final Path path) {
 		final File[] files = path.toFile().listFiles();
+		
 		if (files == null) {
 			return List.of();
 		}
+		
 		return List.of(files);
 	}
 }

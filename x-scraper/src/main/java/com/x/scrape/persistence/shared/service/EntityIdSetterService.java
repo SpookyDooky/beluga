@@ -33,7 +33,9 @@ public class EntityIdSetterService {
 	private final ContextLogger logger;
 	private final PersistenceIdService persistenceIdService;
 	
-	// Optimization to prevent processing previously objects again.
+	/**
+	 * These serve as an optimization to prevent iterating objects that have been completely initialized.
+	 */
 	private final Set<Integer> cache = new HashSet<>();
 	private final ConcurrentLinkedDeque<Integer> cacheEvictionQueue = new ConcurrentLinkedDeque<>();
 	
@@ -60,11 +62,7 @@ public class EntityIdSetterService {
 	}
 	
 	private void setIdsRecursive(final Object entity, final Set<Object> processed) {
-		if (processed.contains(entity)) {
-			return;
-		}
-		
-		if (isIncompatible(entity) || cache.contains(entity.hashCode())) {
+		if (isIncompatible(entity) || cache.contains(entity.hashCode()) || processed.contains(entity)) {
 			return;
 		}
 		
@@ -95,6 +93,12 @@ public class EntityIdSetterService {
 				Enum.class.isAssignableFrom(entity.getClass());
 	}
 	
+	/**
+	 * Updates the cache, adds the entity if it not already in the cache. Also evicts the item that has been
+	 * in the cache the longest.
+	 *
+	 * @param entity entity to update the cache with.
+	 */
 	private void updateCache(final Object entity) {
 		final Integer objectHash = entity.hashCode();
 		

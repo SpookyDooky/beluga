@@ -58,6 +58,7 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 		final List<File> files = fileSystemService.listFiles(jobDefinitionsPath);
 		
 		// Iterate over all job definitions to scan the task execution indices
+		final long startTime = System.currentTimeMillis();
 		for (final File jobDefinitionsFile : files) {
 			final Path taskExecutionIndexPath = Path.of(jobDefinitionsFile.getPath() + "/" + "task-execution-index.json");
 			
@@ -72,10 +73,12 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 				
 				enrichTaskExecution(taskExecution, taskExecutionPath);
 				
+				final long totalTime = System.currentTimeMillis() - startTime;
+				System.out.println("took: " + totalTime + "ms");
 				return Optional.of(taskExecution);
 			}
 		}
-		
+
 		return Optional.empty();
 	}
 	

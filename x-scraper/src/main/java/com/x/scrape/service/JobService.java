@@ -43,6 +43,7 @@ public class JobService {
 	
 	/**
 	 * Creates a job that needs to be executed.
+	 *
 	 * @param jobDefinitionId {@link JobDefinition} id.
 	 * @return a new {@link Job}
 	 */
@@ -73,9 +74,10 @@ public class JobService {
 	
 	/**
 	 * Creates a task and links it to a task execution to set the correct id for the task/
-	 * @param jobDefinition the job definition this task belongs to.
+	 *
+	 * @param jobDefinition  the job definition this task belongs to.
 	 * @param taskDefinition the task definition of this  task.
-	 * @param job the job this task belongs to.
+	 * @param job            the job this task belongs to.
 	 * @return task for the {@link TaskDefinition}.
 	 */
 	private Task createTask(final JobDefinition jobDefinition,
@@ -92,7 +94,7 @@ public class JobService {
 		// Maybe we need two services one for s3/fs and one for postgresql
 		if (entityManager != null) {
 			entityManager.persist(taskExecution);
-		} else if (entityIdSetterService != null){
+		} else if (entityIdSetterService != null) {
 			entityIdSetterService.setIds(taskExecution);
 		}
 		

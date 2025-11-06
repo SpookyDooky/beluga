@@ -76,6 +76,21 @@ class EntityIdSetterServiceTest {
 		verifyNoInteractions(taskExecution);
 	}
 	
+	@Test
+	void shouldRemoveOldObjectFromCache() {
+		final TaskExecution taskExecution = mock();
+		
+		entityIdSetterService.setIds(taskExecution);
+		reset(taskExecution);
+		
+		for (int i = 0; i < 50_000; i++) {
+			entityIdSetterService.setIds(mock(TaskExecution.class));
+		}
+		
+		entityIdSetterService.setIds(taskExecution);
+		verify(taskExecution).getId();
+	}
+	
 	static class SimpleEntity implements HasId {
 		
 		private Long id;
