@@ -73,9 +73,8 @@ public class EntityIdSetterService {
 			hasId.setId(persistenceIdService.getNext());
 		} else if (entity instanceof Iterable<?> iterable) {
 			logger.trace("Processing iterable");
-			final Iterator<?> iterator = iterable.iterator();
-			while (iterator.hasNext()) {
-				setIdsRecursive(iterator.next(), processed);
+			for (final Object object : iterable) {
+				setIdsRecursive(object, processed);
 			}
 			return;
 		}

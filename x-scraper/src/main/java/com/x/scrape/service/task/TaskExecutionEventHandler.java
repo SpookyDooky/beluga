@@ -44,9 +44,13 @@ public class TaskExecutionEventHandler {
 	@EventListener
 	@Transactional
 	public void onTaskFailed(final TaskFailedEvent event) {
-		final TaskExecution taskExecution = taskExecutionService.getById(event.getTaskId());
-		taskExecution.setStatus(FAILED);
-		
-		taskExecutionService.save(taskExecution);
+		try {
+			final TaskExecution taskExecution = taskExecutionService.getById(event.getTaskId());
+			taskExecution.setStatus(FAILED);
+			
+			taskExecutionService.save(taskExecution);
+		} catch (final NullPointerException e) {
+			throw e;
+		}
 	}
 }

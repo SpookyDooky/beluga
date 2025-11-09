@@ -2,10 +2,12 @@ package com.x.scrape.persistence.s3.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.persistence.config.conditionals.annotation.IsS3;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -15,26 +17,40 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 @IsS3
 public class S3PersistenceService {
 	
+	private final ContextLogger logger;
 	private final S3Client s3Client;
-	protected final EntityIdSetterService entityIdSetterService;
 	private final ObjectMapper objectMapper;
 	
-	private final String bucket;
+	private final Map<Path, Object> writeQueue = new ConcurrentHashMap<>();
+	private final Map<Path, Instant> lastUpdated = new ConcurrentHashMap<>();
 	
-	public S3PersistenceService(@Qualifier("persistence-s3client") final S3Client s3Client,
-	                            final EntityIdSetterService entityIdSetterService,
+	private final String bucket;
+	private final String path;
+	
+	private final AtomicBoolean flushing = new AtomicBoolean(false);
+	
+	public S3PersistenceService(final ContextLogger logger,
+	                            @Qualifier("persistence-s3client") final S3Client s3Client,
 	                            final ObjectMapper objectMapper,
 	                            final S3PersistenceProperties s3PersistenceProperties) {
+		this.logger = logger;
 		this.s3Client = s3Client;
-		this.entityIdSetterService = entityIdSetterService;
 		this.objectMapper = objectMapper;
 		this.bucket = s3PersistenceProperties.getBucket();
+		this.path = s3PersistenceProperties.getFolder();
 	}
 	
 	/**
@@ -46,7 +62,13 @@ public class S3PersistenceService {
 	 * @return the object.
 	 */
 	public <T> Optional<T> getObjectAs(final Path key,
-	                                      final Class<T> clazz) {
+	                                   final Class<T> clazz) {
+		synchronized (writeQueue) {
+			if (writeQueue.containsKey(key)) {
+				return Optional.of((T) writeQueue.get(key));
+			}
+		}
+		
 		final GetObjectRequest getObjectRequest = GetObjectRequest.builder()
 				.bucket(bucket)
 				.key(convertKey(key))
@@ -65,8 +87,11 @@ public class S3PersistenceService {
 	}
 	
 	private String convertKey(final Path key) {
-		return key.toString()
-				.replaceAll("\\\\", "/");
+		return convertKey(key.toString());
+	}
+	
+	private String convertKey(final String key) {
+		return key.replaceAll("\\\\", "/");
 	}
 	
 	/**
@@ -78,9 +103,52 @@ public class S3PersistenceService {
 	 * @return saved object.
 	 */
 	public <T> T putObject(final Path key,
-	                          final T object) {
-		entityIdSetterService.setIds(object);
+	                       final T object) {
+		synchronized (writeQueue) {
+			synchronized (lastUpdated) {
+				writeQueue.put(key, object);
+				lastUpdated.put(key, Instant.now());
+				return object;
+			}
+		}
+	}
+	
+	// TODO - make this configurable
+	@Async
+	@Scheduled(fixedRate = 1_000, timeUnit = MILLISECONDS)
+	void flushObjects() {
+		if (flushing.get()) {
+			logger.trace("Write queue size: " + writeQueue.size());
+			return;
+		}
+		flushing.set(true);
 		
+		logger.info("Flushing S3 persistence write queue.");
+		final Instant flushStartTime = Instant.now();
+		
+		final Map<Path, Object> writeQueueCopy;
+		synchronized (writeQueue) {
+			writeQueueCopy = new HashMap<>(writeQueue);
+		}
+		
+		writeQueueCopy.forEach((path, value) -> {
+			synchronized (writeQueue) {
+				synchronized (lastUpdated) {
+					if (flushStartTime.isAfter(lastUpdated.get(path))) {
+						writeQueue.remove(path);
+						lastUpdated.remove(path);
+					}
+				}
+			}
+			
+			flushObject(path, value);
+		});
+		
+		flushing.set(false);
+	}
+	
+	private void flushObject(final Path key,
+	                         final Object object) {
 		final String json = toJson(object);
 		
 		final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -90,8 +158,6 @@ public class S3PersistenceService {
 		final RequestBody requestBody = RequestBody.fromBytes(json.getBytes());
 		
 		s3Client.putObject(putObjectRequest, requestBody);
-		
-		return object;
 	}
 	
 	private <T> String toJson(final T content) {
@@ -100,5 +166,6 @@ public class S3PersistenceService {
 		} catch (final JsonProcessingException e) {
 			throw new IllegalStateException("Could not serialize " + content.getClass().getSimpleName(), e);
 		}
+		
 	}
 }
