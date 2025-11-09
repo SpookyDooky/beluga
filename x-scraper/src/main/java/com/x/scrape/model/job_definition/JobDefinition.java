@@ -133,4 +133,12 @@ public class JobDefinition implements HasId {
 		
 		return Optional.of(executions.getFirst());
 	}
+	
+	@JsonIgnore
+	public JobExecution getExecutionById(final Long executionId) {
+		return executions.stream()
+				.filter(execution -> executionId.equals(execution.getId()))
+				.findFirst()
+				.orElseThrow(() -> new EntityNotFoundException("Could not find execution with specified id " + executionId + "."));
+	}
 }

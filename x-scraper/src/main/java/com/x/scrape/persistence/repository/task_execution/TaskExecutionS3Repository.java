@@ -43,6 +43,25 @@ public class TaskExecutionS3Repository implements TaskExecutionRepository {
 		return s3PersistenceService.putObject(taskExecutionPath, taskExecution);
 	}
 	
+	/**
+	 * Creates a simple index file containing all the ids of all task execution to improve {@link TaskExecution} retrieval performance.
+	 *
+	 * @param jobDefinitionId the job definition to create the index for.
+	 */
+	private void updateIndex(final Long jobDefinitionId,
+	                         final Long taskExecutionId) {
+		final Path taskExecutionIndexPath = Path.of(
+				persistenceProperties.getS3().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
+						+ "/" + jobDefinitionId + "/" + "task-execution-index.json"
+		);
+		
+		final TaskExecutionIndex index = s3PersistenceService.getObjectAs(taskExecutionIndexPath, TaskExecutionIndex.class)
+				.orElse(new TaskExecutionIndex());
+		index.getIds().add(taskExecutionId);
+		
+		s3PersistenceService.putObject(taskExecutionIndexPath, index);
+	}
+	
 	private Path createTaskExecutionPersistencePath(final TaskExecution taskExecution) {
 		return Path.of(
 				persistenceProperties.getS3().getFolder() +
@@ -90,30 +109,9 @@ public class TaskExecutionS3Repository implements TaskExecutionRepository {
 		final JobDefinition jobDefinition = s3PersistenceService.getObjectAs(jobDefinitionPath, JobDefinition.class)
 				.get();
 		
-		final JobExecution jobExecution = jobDefinition.getExecutions()
-				.stream().filter(execution -> execution.getId().equals(taskExecution.getJobExecution().getId()))
-				.findFirst().get();
+		final JobExecution jobExecution = jobDefinition.getExecutionById(taskExecution.getJobExecution().getId());
 		
 		jobExecution.setJobDefinition(jobDefinition);
 		taskExecution.setJobExecution(jobExecution);
-	}
-	
-	/**
-	 * Creates a simple index file containing all the ids of all task execution to improve {@link TaskExecution} retrieval performance.
-	 *
-	 * @param jobDefinitionId the job definition to create the index for.
-	 */
-	private void updateIndex(final Long jobDefinitionId,
-	                         final Long taskExecutionId) {
-		final Path taskExecutionIndexPath = Path.of(
-				persistenceProperties.getS3().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
-						+ "/" + jobDefinitionId + "/" + "task-execution-index.json"
-		);
-		
-		final TaskExecutionIndex index = s3PersistenceService.getObjectAs(taskExecutionIndexPath, TaskExecutionIndex.class)
-				.orElse(new TaskExecutionIndex());
-		index.getIds().add(taskExecutionId);
-		
-		s3PersistenceService.putObject(taskExecutionIndexPath, index);
 	}
 }
