@@ -7,15 +7,12 @@ import com.x.scrape.persistence.file_system.service.FileSystemService;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionFileSystemRepository;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
-import com.x.scrape.util.TimingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @IsFileSystem
 @Component
@@ -29,11 +26,6 @@ public class JobDefinitionFileSystemRepository implements JobDefinitionRepositor
 	private final TaskExecutionFileSystemRepository taskExecutionRepository;
 	
 	private final Path jobPersistencePath;
-	
-	@Autowired
-	private TimingService timingService;
-	
-	private final UUID uuid = UUID.randomUUID();
 	
 	public JobDefinitionFileSystemRepository(final FileSystemService fileSystemService,
 	                                         @Lazy final EntityIdSetterService entityIdSetterService,

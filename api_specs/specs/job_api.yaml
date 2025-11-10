@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: Job's REST API
+  version: '1.0'
+paths:
+  /jobs:
+    post:
+      description: Creates a new job
+      tags:
+        - Job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createJob"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequestResponse"
+  /jobs/{jobId}:
+    get:
+      description: Retrieve a job
+      tags:
+        - Job
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
+        404:
+          description: NOT FOUND
+    put:
+      description: Update a job
+      tags:
+        - Job
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createJob"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequestResponse"
+        404:
+          description: NOT FOUND
+
+components:
+  schemas:
+
+    createJob:
+      type: object
+      properties:
+        name:
+          type: string
+          example: job-name
+        resultStorage:
+          $ref: "#/components/schemas/createStorageConfiguration"
+        execution:
+          $ref: "#/components/schemas/createExecutionConfiguration"
+        scraping:
+          $ref: "#/components/schemas/createScrapingConfiguration"
+      required:
+        - name
+        - resultStorage
+        - execution
+        - scraping
+
+    updateJob:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createJob"
+
+    job:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: job-name
+        resultStorage:
+          $ref: "#/components/schemas/storageConfiguration"
+        execution:
+          $ref: "#/components/schemas/executionConfiguration"
+        scraping:
+          $ref: "#/components/schemas/scrapingConfiguration"
+      required:
+        - id
+        - name
+        - resultStorage
+        - execution
+        - scraping
+
+    createStorageConfiguration:
+      type: object
+      properties:
+        folder:
+          type: string
+          example: /path/to/result/location
+      required:
+        - folder
+
+    storageConfiguration:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createStorageConfiguration"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    createExecutionConfiguration:
+      type: object
+      properties:
+        workers:
+          type: integer
+          example: 1
+        tasksPerSecond:
+          type: integer
+          example: 5
+      required:
+        - workers
+        - tasksPerSecond
+
+    executionConfiguration:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createExecutionConfiguration"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    createScrapingConfiguration:
+      type: object
+      properties:
+        elementSelector:
+          type: string
+          example: main#content
+          description: Css selector
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/createScrapingDataPoint"
+          minLength: 1
+      required:
+        - elementSelector
+        - dataPoints
+
+    scrapingConfiguration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        elementSelector:
+          type: string
+          example: main#content
+          description: Css selector
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/scrapingDataPoint"
+          minLength: 1
+      required:
+        - id
+        - elementSelector
+        - dataPoints
+
+    createScrapingDataPoint:
+      type: object
+      properties:
+        selector:
+          type: string
+          example: main#content
+          description: Css selector
+        propertyName:
+          type: string
+          example: name
+          description: the name under which to store the scraped value
+        attribute:
+          type: string
+          example: src
+          description: Can be set in case a specific attribute of an HTML tag needs to be scraped
+          nullable: true
+        type:
+          allOf:
+            - $ref: "#/components/schemas/dataPointType"
+          default: TEXT
+      required:
+        - selector
+        - propertyName
+
+    scrapingDataPoint:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createScrapingDataPoint"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    dataPointType:
+      type: string
+      enum:
+        - IMAGE
+        - TEXT
+
+    badRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: some property was null but expected not null
+      required:
+        - message
