@@ -100,7 +100,7 @@ public class Worker {
 	private void executeTask(final Task task) {
 		try (final CloseableContext ignored = logger.with(task)) {
 			applicationEventPublisher.publishEvent(new TaskStartedEvent(task));
-			timingService.start(task.getId());
+			timingService.start(workerId);
 			
 			logger.info("Executing task.");
 			
@@ -116,11 +116,12 @@ public class Worker {
 			publishScrapingResultEvents(task, scrapingResult);
 			
 			logger.info("Task completed");
-			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(task.getId()))));
-			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(workerId))));
+			applicationEventPublisher.publishEvent(new TaskCompletedEvent(task, task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"));
 		} catch (final Exception e) {
 			logger.error("Task execution failed.", e);
 			applicationEventPublisher.publishEvent(new TaskFailedEvent(task));
+			timingService.stop(workerId);
 		}
 	}
 	
@@ -129,8 +130,6 @@ public class Worker {
 		file.mkdirs();
 	}
 	
-	// TODO offer this as a task too so that rate limiting can be applied properly in the future
-	// Or make this use the same rate limiter in the code, Resilience4J will be used for this.
 	private void downloadImages(final Task task,
 	                            final List<Map<String, Object>> scrapedData) {
 		scrapedData.forEach(elementScrapedData -> {

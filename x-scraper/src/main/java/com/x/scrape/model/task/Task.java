@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.x.scrape.logging.ContextKeys.TASK_ID;
 import static com.x.scrape.logging.ContextKeys.URL;
@@ -17,20 +16,19 @@ import static com.x.scrape.model.job_definition.configuration.scraping_configura
 
 public class Task implements ContextLoggable {
 	
-	private final UUID id;
+	private Long id;
 	private Job job;
 	
 	private URL url;
-	
 	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;
 	
-	public Task() {
-		id = UUID.randomUUID();
+	public Long getId() {
+		return id;
 	}
 	
-	public UUID getId() {
-		return id;
+	public void setId(final Long id) {
+		this.id = id;
 	}
 	
 	public Job getJob() {

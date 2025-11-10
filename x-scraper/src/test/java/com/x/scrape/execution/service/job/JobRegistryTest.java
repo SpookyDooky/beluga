@@ -7,6 +7,8 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.scraping.JobProperties;
 import com.x.scrape.service.JobDefinitionService;
+import com.x.scrape.service.JobService;
+import com.x.scrape.util.TimingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Answers.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JobRegistryTest {
@@ -32,6 +36,10 @@ class JobRegistryTest {
 	private JobExecutionService jobExecutionService;
 	@Mock
 	private JobDefinitionService jobDefinitionService;
+	@Mock
+	private JobService jobService;
+	@Mock(answer = RETURNS_DEEP_STUBS)
+	private TimingService timingService;
 	
 	@InjectMocks
 	private JobRegistry jobRegistry;
@@ -44,8 +52,8 @@ class JobRegistryTest {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
-		final Job job = mock();
-		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
+		final Job job = Instancio.create(Job.class);
+		when(jobService.createJobByJobDefinitionId(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		
@@ -61,7 +69,7 @@ class JobRegistryTest {
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
 		
 		final Job job = Instancio.create(Job.class);
-		when(jobDefinitionService.createJobById(jobDefinition.getId())).thenReturn(job);
+		when(jobService.createJobByJobDefinitionId(jobDefinition.getId())).thenReturn(job);
 		
 		jobRegistry.registerJobs();
 		final Job result = jobRegistry.get(job.getId());

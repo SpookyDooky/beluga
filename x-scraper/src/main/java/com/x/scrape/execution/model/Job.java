@@ -3,12 +3,13 @@ package com.x.scrape.execution.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.task.Task;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is aimed at the execution of a {@link JobDefinition}.
@@ -23,10 +24,10 @@ public class Job {
 	private Long jobDefinitionId;
 	private String jobName;
 	
-	private ScrapingConfiguration scrapingConfiguration;
 	private StorageConfiguration storageConfiguration;
 	private ExecutionConfiguration executionConfiguration;
-	private UrlConfiguration urlConfiguration;
+	
+	private List<Task> tasks = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -52,14 +53,6 @@ public class Job {
 		this.jobName = jobName;
 	}
 	
-	public ScrapingConfiguration getScrapingConfiguration() {
-		return scrapingConfiguration;
-	}
-	
-	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
-		this.scrapingConfiguration = scrapingConfiguration;
-	}
-	
 	public StorageConfiguration getStorageConfiguration() {
 		return storageConfiguration;
 	}
@@ -74,14 +67,6 @@ public class Job {
 	
 	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
-	}
-	
-	public UrlConfiguration getUrlConfiguration() {
-		return urlConfiguration;
-	}
-	
-	public void setUrlConfiguration(final UrlConfiguration urlConfiguration) {
-		this.urlConfiguration = urlConfiguration;
 	}
 	
 	@JsonIgnore
@@ -99,5 +84,13 @@ public class Job {
 	@JsonIgnore
 	public String getJobTaskResultsFolder() {
 		return getJobFolder() + "/job-executions/" + id + "/results/tasks";
+	}
+	
+	public List<Task> getTasks() {
+		return tasks;
+	}
+	
+	public void setTasks(final List<Task> tasks) {
+		this.tasks = tasks;
 	}
 }

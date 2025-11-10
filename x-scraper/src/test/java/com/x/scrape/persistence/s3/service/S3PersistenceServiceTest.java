@@ -1,7 +1,7 @@
 package com.x.scrape.persistence.s3.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
+import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +31,9 @@ class S3PersistenceServiceTest {
 	private static final String BUCKET = "bucket";
 	
 	@Mock
-	private S3Client s3Client;
+	private ContextLogger logger;
 	@Mock
-	private EntityIdSetterService entityIdSetterService;
+	private S3Client s3Client;
 	@Mock
 	private ObjectMapper objectMapper;
 	@Mock
@@ -51,9 +51,9 @@ class S3PersistenceServiceTest {
 	@BeforeEach
 	void setup() {
 		when(s3PersistenceProperties.getBucket()).thenReturn(BUCKET);
-		s3PersistenceService = new S3PersistenceServiceImpl(
+		s3PersistenceService = new S3PersistenceService(
+				logger,
 				s3Client,
-				entityIdSetterService,
 				objectMapper,
 				s3PersistenceProperties
 		);
@@ -91,6 +91,21 @@ class S3PersistenceServiceTest {
 	}
 	
 	@Test
+	void shouldGetObjectFromWriteQueue() {
+		final Path key = Path.of("some\\key");
+		final String object = "object";
+		
+		s3PersistenceService.putObject(key, object);
+		verifyNoInteractions(s3Client);
+		
+		final String result = s3PersistenceService.getObjectAs(key, String.class)
+				.get();
+		verifyNoInteractions(s3Client);
+		
+		assertSame(object, result);
+	}
+	
+	@Test
 	void shouldPutObject() throws Exception {
 		final Path key = Path.of("some\\key");
 		final String object = "object";
@@ -104,8 +119,8 @@ class S3PersistenceServiceTest {
 		)).thenReturn(mock());
 		
 		final String result = s3PersistenceService.putObject(key, object);
+		s3PersistenceService.flushObjects();
 		
-		verify(entityIdSetterService).setIds(object);
 		assertSame(object, result);
 		
 		final PutObjectRequest putObjectRequest = putObjectRequestArgumentCaptor.getValue();
@@ -114,15 +129,5 @@ class S3PersistenceServiceTest {
 		
 		final RequestBody requestBody = requestBodyArgumentCaptor.getValue();
 		assertEquals(json.getBytes().length, requestBody.optionalContentLength().get().intValue());
-	}
-	
-	static class S3PersistenceServiceImpl extends S3PersistenceService {
-		
-		public S3PersistenceServiceImpl(final S3Client s3Client,
-		                                final EntityIdSetterService entityIdSetterService,
-		                                final ObjectMapper objectMapper,
-		                                final S3PersistenceProperties s3PersistenceProperties) {
-			super(s3Client, entityIdSetterService, objectMapper, s3PersistenceProperties);
-		}
 	}
 }

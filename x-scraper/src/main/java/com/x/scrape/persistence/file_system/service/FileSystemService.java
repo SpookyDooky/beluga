@@ -2,7 +2,7 @@ package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
+import com.x.scrape.persistence.config.conditionals.annotation.IsFileSystem;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,15 +19,13 @@ import java.util.Optional;
  * offers methods that help with file system operations.
  */
 @Service
+@IsFileSystem
 public class FileSystemService {
 	
 	private final ObjectMapper objectMapper;
-	private final EntityIdSetterService entityIdSetterService;
 	
-	public FileSystemService(final ObjectMapper objectMapper,
-	                         final EntityIdSetterService entityIdSetterService) {
+	public FileSystemService(final ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		this.entityIdSetterService = entityIdSetterService;
 	}
 	
 	/**
@@ -53,6 +52,7 @@ public class FileSystemService {
 	 * @param <T>   return type.
 	 * @return an instance of the class based on the file content.
 	 */
+	// TODO should return an optional an take a path as parameter instead of a file
 	public <T> T readFileAs(final File file,
 	                        final Class<T> clazz) {
 		final String fileContent = readFile(file);
@@ -84,8 +84,6 @@ public class FileSystemService {
 		final String jsonContent = toJson(content);
 		final File file = filePath.toFile();
 		
-		entityIdSetterService.setIds(content);
-		
 		try {
 			if (!file.exists()) {
 				if (!file.getParentFile().exists()) {
@@ -109,5 +107,21 @@ public class FileSystemService {
 		} catch (final JsonProcessingException e) {
 			throw new IllegalStateException("Could not serialize " + content.getClass().getSimpleName(), e);
 		}
+	}
+	
+	/**
+	 * Lists all files found at a specific path.
+	 *
+	 * @param path path to list all files for.
+	 * @return list of files.
+	 */
+	public List<File> listFiles(final Path path) {
+		final File[] files = path.toFile().listFiles();
+		
+		if (files == null) {
+			return List.of();
+		}
+		
+		return List.of(files);
 	}
 }

@@ -1,6 +1,8 @@
 package com.x.scrape.persistence.repository.job;
 
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.persistence.repository.task_execution.TaskExecutionS3Repository;
+import com.x.scrape.persistence.s3.model.JobDefinitionIndex;
 import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.S3PersistenceProperties;
@@ -15,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,8 @@ class JobDefinitionS3RepositoryTest {
 	@Mock
 	private EntityIdSetterService entityIdSetterService;
 	@Mock
+	private TaskExecutionS3Repository taskExecutionS3Repository;
+	@Mock
 	private S3PersistenceProperties s3PersistenceProperties;
 	
 	private JobDefinitionS3Repository jobDefinitionS3Repository;
@@ -45,29 +48,58 @@ class JobDefinitionS3RepositoryTest {
 		jobDefinitionS3Repository = spy(new JobDefinitionS3Repository(
 				s3PersistenceService,
 				entityIdSetterService,
+				taskExecutionS3Repository,
 				s3PersistenceProperties
 		));
 	}
 	
 	@Test
-	void shouldSave() {
+	void shouldSaveAndUpdateIndex() {
 		final JobDefinition jobDefinition = mock();
-		doReturn(jobDefinition).when(s3PersistenceService).putObject(pathArgumentCaptor.capture(), eq(jobDefinition));
-		
 		final Long jobDefinitionId = 123L;
 		when(jobDefinition.getId()).thenReturn(jobDefinitionId);
+		
+		final Path jobDefinitionPath = Path.of(S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "\\" + jobDefinitionId + "\\" + JOB_DEFINITION_FILE_NAME);
+		when(s3PersistenceService.putObject(jobDefinitionPath, jobDefinition)).thenReturn(jobDefinition);
+		
+		final JobDefinitionIndex jobDefinitionIndex = mock(RETURNS_DEEP_STUBS);
+		final Path jobDefinitionIndexPath = Path.of(S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "/job-definition-index.json");
+		when(s3PersistenceService.getObjectAs(jobDefinitionIndexPath, JobDefinitionIndex.class)).thenReturn(Optional.of(jobDefinitionIndex));
+		when(s3PersistenceService.putObject(jobDefinitionIndexPath, jobDefinitionIndex)).thenReturn(jobDefinitionIndex);
 		
 		final JobDefinition result = jobDefinitionS3Repository.save(jobDefinition);
 		
 		assertSame(jobDefinition, result);
+		
+		verify(entityIdSetterService).setIds(jobDefinition);
+		verify(jobDefinitionIndex.getJobDefinitionIds()).add(jobDefinitionId);
+	}
+	
+	@Test
+	void shouldSaveAndCreateIndex() {
+		final JobDefinition jobDefinition = mock();
+		final Long jobDefinitionId = 123L;
+		when(jobDefinition.getId()).thenReturn(jobDefinitionId);
+		
+		final Path jobDefinitionPath = Path.of(S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "\\" + jobDefinitionId + "\\" + JOB_DEFINITION_FILE_NAME);
+		when(s3PersistenceService.putObject(jobDefinitionPath, jobDefinition)).thenReturn(jobDefinition);
+		
+		final ArgumentCaptor<JobDefinitionIndex> jobDefinitionIndexArgumentCaptor = ArgumentCaptor.forClass(JobDefinitionIndex.class);
+		final Path jobDefinitionIndexPath = Path.of(S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "/job-definition-index.json");
+		when(s3PersistenceService.getObjectAs(jobDefinitionIndexPath, JobDefinitionIndex.class)).thenReturn(Optional.empty());
+		when(s3PersistenceService.putObject(eq(jobDefinitionIndexPath), jobDefinitionIndexArgumentCaptor.capture())).thenAnswer(answer -> answer.getArguments()[0]);
+		
+		final JobDefinition result = jobDefinitionS3Repository.save(jobDefinition);
+		
+		assertSame(jobDefinition, result);
+		
 		verify(entityIdSetterService).setIds(jobDefinition);
 		
-		final Path path = pathArgumentCaptor.getValue();
-		assertEquals(
-				S3_PERSISTENCE_FOLDER + JOB_DEFINITION_PERSISTENCE_SUB_PATH + "\\" + jobDefinitionId + "\\" + JOB_DEFINITION_FILE_NAME,
-				path.toString()
-		);
+		final JobDefinitionIndex jobDefinitionIndex = jobDefinitionIndexArgumentCaptor.getValue();
+		assertEquals(1, jobDefinitionIndex.getJobDefinitionIds().size());
+		assertTrue(jobDefinitionIndex.getJobDefinitionIds().contains(jobDefinitionId));
 	}
+	
 	
 	@Test
 	void shouldFindById() {

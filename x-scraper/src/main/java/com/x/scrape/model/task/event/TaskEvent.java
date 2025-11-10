@@ -5,14 +5,14 @@ import com.x.scrape.model.task.Task;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Map;
-import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.*;
+import static com.x.scrape.logging.ContextKeys.JOB_EXECUTION_ID;
+import static com.x.scrape.logging.ContextKeys.TASK_ID;
 
 public abstract class TaskEvent extends ApplicationEvent implements ContextLoggable {
 	
 	private final Long jobId;
-	private final UUID taskId;
+	private final Long taskId;
 	
 	public TaskEvent(final Task task) {
 		super(task.getId());
@@ -25,7 +25,7 @@ public abstract class TaskEvent extends ApplicationEvent implements ContextLogga
 		return jobId;
 	}
 	
-	public UUID getTaskId() {
+	public Long getTaskId() {
 		return taskId;
 	}
 	

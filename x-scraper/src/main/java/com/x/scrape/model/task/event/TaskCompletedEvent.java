@@ -4,7 +4,15 @@ import com.x.scrape.model.task.Task;
 
 public class TaskCompletedEvent extends TaskEvent {
 	
-	public TaskCompletedEvent(final Task task) {
+	private final String resultFolder;
+	
+	public TaskCompletedEvent(final Task task,
+	                          final String resultFolder) {
 		super(task);
+		this.resultFolder = resultFolder;
+	}
+	
+	public String getResultFolder() {
+		return resultFolder;
 	}
 }

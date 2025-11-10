@@ -1,7 +1,6 @@
 package com.x.scrape.persistence.file_system.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,21 +10,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FileSystemServiceTest {
 
 	@Mock
 	private ObjectMapper objectMapper;
-	@Mock
-	private EntityIdSetterService entityIdSetterService;
 	
 	@InjectMocks
-	private FileSystemServiceImpl fileSystemService;
+	private FileSystemService fileSystemService;
 	
 	@Test
 	void shouldGet() {
@@ -103,11 +101,25 @@ class FileSystemServiceTest {
 		file.delete();
 	}
 	
-	static class FileSystemServiceImpl extends FileSystemService {
+	@Test
+	void shouldListFiles() {
+		final Path path = mock(RETURNS_DEEP_STUBS);
+		final File file = mock();
+		when(path.toFile().listFiles()).thenReturn(new File[]{file});
 		
-		protected FileSystemServiceImpl(final ObjectMapper objectMapper,
-		                                final EntityIdSetterService entityIdSetterService) {
-			super(objectMapper, entityIdSetterService);
-		}
+		final List<File> files = fileSystemService.listFiles(path);
+		
+		assertEquals(1, files.size());
+		assertTrue(files.contains(file));
+	}
+	
+	@Test
+	void shouldReturnEmptyListForListFiles() {
+		final Path path = mock(RETURNS_DEEP_STUBS);
+		when(path.toFile().listFiles()).thenReturn(new File[]{});
+		
+		final List<File> files = fileSystemService.listFiles(path);
+		
+		assertTrue(files.isEmpty());
 	}
 }

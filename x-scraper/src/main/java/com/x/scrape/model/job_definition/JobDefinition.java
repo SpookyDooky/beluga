@@ -5,6 +5,7 @@ import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
@@ -38,6 +39,12 @@ public class JobDefinition implements HasId {
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "execution_configuration_id")
 	private ExecutionConfiguration executionConfiguration;
+	
+	@OneToMany(
+			cascade = ALL,
+			mappedBy = "jobDefinition"
+	)
+	private List<TaskDefinition> taskDefinitions = new ArrayList<>();
 	
 	@OneToMany(
 			cascade = ALL,
@@ -96,6 +103,15 @@ public class JobDefinition implements HasId {
 		this.executionConfiguration = executionConfiguration;
 	}
 	
+	public List<TaskDefinition> getTaskDefinitions() {
+		return taskDefinitions;
+	}
+	
+	public void setTaskDefinitions(final List<TaskDefinition> taskDefinitions) {
+		this.taskDefinitions = taskDefinitions;
+		taskDefinitions.forEach(taskDefinition -> taskDefinition.setJobDefinition(this));
+	}
+	
 	public List<JobExecution> getExecutions() {
 		return executions;
 	}
@@ -116,5 +132,13 @@ public class JobDefinition implements HasId {
 		}
 		
 		return Optional.of(executions.getFirst());
+	}
+	
+	@JsonIgnore
+	public JobExecution getExecutionById(final Long executionId) {
+		return executions.stream()
+				.filter(execution -> executionId.equals(execution.getId()))
+				.findFirst()
+				.orElseThrow(() -> new EntityNotFoundException("Could not find execution with specified id " + executionId + "."));
 	}
 }
