@@ -48,6 +48,38 @@ paths:
                 $ref: "#/components/schemas/job"
         404:
           description: NOT FOUND
+    put:
+      description: Update a job
+      tags:
+        - Job
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createJob"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequestResponse"
+        404:
+          description: NOT FOUND
 
 components:
   schemas:
@@ -69,6 +101,11 @@ components:
         - resultStorage
         - execution
         - scraping
+
+    updateJob:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createJob"
 
     job:
       type: object
