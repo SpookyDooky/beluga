@@ -37,6 +37,7 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	@Override
 	public TaskExecution save(final TaskExecution taskExecution) {
 		entityIdSetterService.setIds(taskExecution);
+		updateIndex(taskExecution);
 		
 		final Path taskExecutionPath = createTaskExecutionPersistencePath(taskExecution);
 		
@@ -89,37 +90,32 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	private void enrichTaskExecution(final TaskExecution taskExecution,
 	                                 final Path taskExecutionPath) {
 		final File jobDefinitionFile = Path.of(taskExecutionPath.getParent().getParent().toString() + "/job-definition.json").toFile();
+		
 		final JobDefinition jobDefinition = fileSystemService.readFileAs(jobDefinitionFile, JobDefinition.class);
-		final JobExecution jobExecution = jobDefinition.getExecutions()
-				.stream().filter(execution -> execution.getId().equals(taskExecution.getJobExecution().getId()))
-				.findFirst().get();
+		final JobExecution jobExecution = jobDefinition.getExecutionById(taskExecution.getJobExecution().getId());
+		
 		jobExecution.setJobDefinition(jobDefinition);
 		taskExecution.setJobExecution(jobExecution);
 	}
 	
 	/**
-	 * Creates a simple index file containing all the ids of all task execution to improve {@link TaskExecution} retrieval performance.
+	 * Update or create a new {@link TaskExecutionIndex} if it does not exist.
 	 *
-	 * @param jobDefinitionId the job definition to create the index for.
+	 * @param taskExecution the task execution to add to the index.
 	 */
-	public void createIndex(final Long jobDefinitionId) {
-		final Path taskExecutionsPath = Path.of(
+	void updateIndex(final TaskExecution taskExecution) {
+		final Path taskExecutionIndexPath = Path.of(
 				persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
-						+ "/" + jobDefinitionId + TASK_EXECUTIONS_SUB_PATH
+						+ "/" + taskExecution.getJobExecution().getJobDefinition().getId() + "/task-execution-index.json"
 		);
 		
-		final TaskExecutionIndex index = new TaskExecutionIndex();
-		for (final File taskExecutionFile : fileSystemService.listFiles(taskExecutionsPath)) {
-			final Long taskExecutionId = Long.valueOf(taskExecutionFile.getName().replaceAll(".json", ""));
-			index.getIds().add(taskExecutionId);
-		}
+		final Optional<File> taskExecutionIndexFileOptional = fileSystemService.get(taskExecutionIndexPath);
+		final TaskExecutionIndex taskExecutionIndex = taskExecutionIndexFileOptional
+				.map(taskExecutionIndexFile -> fileSystemService.readFileAs(taskExecutionIndexFile, TaskExecutionIndex.class))
+				.orElse(new TaskExecutionIndex());
 		
-		fileSystemService.save(
-				index,
-				Path.of(
-						persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
-								+ "/" + jobDefinitionId + "/" + "task-execution-index.json"
-				)
-		);
+		taskExecutionIndex.getIds().add(taskExecution.getId());
+		
+		fileSystemService.save(taskExecutionIndex, taskExecutionIndexPath);
 	}
 }

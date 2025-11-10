@@ -52,6 +52,7 @@ public class FileSystemService {
 	 * @param <T>   return type.
 	 * @return an instance of the class based on the file content.
 	 */
+	// TODO should return an optional an take a path as parameter instead of a file
 	public <T> T readFileAs(final File file,
 	                        final Class<T> clazz) {
 		final String fileContent = readFile(file);

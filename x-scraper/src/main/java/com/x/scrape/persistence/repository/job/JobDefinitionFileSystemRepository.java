@@ -53,7 +53,6 @@ public class JobDefinitionFileSystemRepository implements JobDefinitionRepositor
 		entityIdSetterService.setIds(jobDefinition);
 		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + jobDefinition.getId() + "/" + JOB_DEFINITION_FILE_NAME);
 		
-		taskExecutionRepository.createIndex(jobDefinition.getId());
 		return fileSystemService.save(jobDefinition, jobDefinitionPath);
 	}
 	
