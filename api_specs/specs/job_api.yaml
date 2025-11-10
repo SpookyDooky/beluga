@@ -5,7 +5,6 @@ info:
 paths:
   /jobs:
     post:
-      operationId: Job
       description: Creates a new job
       tags:
         - Job
@@ -22,6 +21,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/job"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequestResponse"
+  /jobs/{jobId}:
+    get:
+      description: Retrieve a job
+      tags:
+        - Job
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
+        404:
+          description: NOT FOUND
 
 components:
   schemas:
@@ -78,7 +104,7 @@ components:
     storageConfiguration:
       type: object
       allOf:
-        - $ref: "#/components/schemas/createExecutionConfiguration"
+        - $ref: "#/components/schemas/createStorageConfiguration"
       properties:
         id:
           type: integer
@@ -186,3 +212,12 @@ components:
       enum:
         - IMAGE
         - TEXT
+
+    badRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: some property was null but expected not null
+      required:
+        - message
