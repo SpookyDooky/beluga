@@ -82,9 +82,8 @@ class EntityIdSetterServiceTest {
 		
 		entityIdSetterService.setIds(taskExecution);
 		reset(taskExecution);
-		
-		for (int i = 0; i < 50_000; i++) {
-			entityIdSetterService.setIds(mock(TaskExecution.class));
+		for (int i = 0; i < 50_001; i++) {
+			entityIdSetterService.setIds(new TaskExecution());
 		}
 		
 		entityIdSetterService.setIds(taskExecution);

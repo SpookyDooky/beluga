@@ -63,7 +63,7 @@ class JobServiceTest {
 		assertTrue(job.getTasks().contains(task));
 		
 		verify(entityManager).persist(jobDefinition.getMostRecentExecution().get().getTasks().get(0));
-		verify(jobDefinitionService).save(jobDefinition);
+		verify(jobDefinitionService, times(2)).save(jobDefinition);
 		verify(jobDefinition).addExecution(any());
 	}
 	
