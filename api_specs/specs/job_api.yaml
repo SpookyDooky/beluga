@@ -18,6 +18,10 @@ paths:
       responses:
         200:
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/job"
 
 components:
   schemas:
@@ -40,6 +44,28 @@ components:
         - execution
         - scraping
 
+    job:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: job-name
+        resultStorage:
+          $ref: "#/components/schemas/storageConfiguration"
+        execution:
+          $ref: "#/components/schemas/executionConfiguration"
+        scraping:
+          $ref: "#/components/schemas/scrapingConfiguration"
+      required:
+        - id
+        - name
+        - resultStorage
+        - execution
+        - scraping
+
     createStorageConfiguration:
       type: object
       properties:
@@ -48,6 +74,17 @@ components:
           example: /path/to/result/location
       required:
         - folder
+
+    storageConfiguration:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createExecutionConfiguration"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
 
     createExecutionConfiguration:
       type: object
@@ -62,6 +99,17 @@ components:
         - workers
         - tasksPerSecond
 
+    executionConfiguration:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createExecutionConfiguration"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
     createScrapingConfiguration:
       type: object
       properties:
@@ -75,6 +123,26 @@ components:
             $ref: "#/components/schemas/createScrapingDataPoint"
           minLength: 1
       required:
+        - elementSelector
+        - dataPoints
+
+    scrapingConfiguration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        elementSelector:
+          type: string
+          example: main#content
+          description: Css selector
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/scrapingDataPoint"
+          minLength: 1
+      required:
+        - id
         - elementSelector
         - dataPoints
 
@@ -101,6 +169,17 @@ components:
       required:
         - selector
         - propertyName
+
+    scrapingDataPoint:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/createScrapingDataPoint"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
 
     dataPointType:
       type: string
