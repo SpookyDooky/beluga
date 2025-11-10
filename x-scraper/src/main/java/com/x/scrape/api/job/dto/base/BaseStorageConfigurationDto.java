@@ -2,7 +2,7 @@ package com.x.scrape.api.job.dto.base;
 
 import com.x.scrape.api.job.dto.validation.Path;
 
-public class BaseResultStorageDto {
+public abstract class BaseStorageConfigurationDto {
 	
 	@Path
 	private String folder;

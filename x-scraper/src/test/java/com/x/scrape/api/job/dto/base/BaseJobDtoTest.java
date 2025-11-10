@@ -1,18 +1,18 @@
 package com.x.scrape.api.job.dto.base;
 
-import com.x.scrape.api.job.dto.validation.Path;
+import jakarta.validation.constraints.NotEmpty;
 import org.junit.jupiter.api.Test;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 
-class BaseResultStorageDtoTest {
+class BaseJobDtoTest {
 	
 	@Test
-	void shouldHavePathAnnotationOnFolderField() {
+	void shouldHaveNotEmptyAnnotationOnName() {
 		assertAnnotationPresentOnField(
-				"folder",
-				BaseResultStorageDto.class,
-				Path.class
+				"name",
+				BaseJobDto.class,
+				NotEmpty.class
 		);
 	}
 }
