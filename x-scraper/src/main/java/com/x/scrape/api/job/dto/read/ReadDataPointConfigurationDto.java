@@ -2,7 +2,7 @@ package com.x.scrape.api.job.dto.read;
 
 import com.x.scrape.api.job.dto.base.BaseScrapingDataPointDto;
 
-public class ReadScrapingDataPointDto extends BaseScrapingDataPointDto {
+public class ReadDataPointConfigurationDto extends BaseScrapingDataPointDto {
 	
 	private Long id;
 	

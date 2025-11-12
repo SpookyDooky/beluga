@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 
-class BaseJobDtoTest {
+class BaseJobDefinitionDtoTest {
 	
 	@Test
 	void shouldHaveNotEmptyAnnotationOnName() {
 		assertAnnotationPresentOnField(
 				"name",
-				BaseJobDto.class,
+				BaseJobDefinitionDto.class,
 				NotEmpty.class
 		);
 	}

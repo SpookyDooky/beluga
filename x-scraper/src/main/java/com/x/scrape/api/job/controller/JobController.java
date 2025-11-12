@@ -1,6 +1,6 @@
 package com.x.scrape.api.job.controller;
 
-import com.x.scrape.api.job.dto.write.WriteJobDto;
+import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.logging.ContextLogger;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ public class JobController {
 	
 	@PostMapping
 	@Transactional
-	public void createJob(@RequestBody final WriteJobDto job) {
+	public void createJob(@RequestBody final WriteJobDefinitionDto job) {
 	
 	}
 }

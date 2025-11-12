@@ -1,5 +1,6 @@
 package com.x.scrape.mapper.job;
 
+import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
@@ -69,5 +70,25 @@ class JobDefinitionConfigurationMapperTest {
 		assertSame(executionConfiguration, jobDefinition.getExecutionConfiguration());
 		assertSame(taskDefinitions, jobDefinition.getTaskDefinitions());
 		assertEquals(jobProperties.getName(), jobDefinition.getName());
+	}
+	
+	@Test
+	void shouldMapFromWriteJobDefinitionDto() {
+		final WriteJobDefinitionDto dto = Instancio.create(WriteJobDefinitionDto.class);
+		
+		final ScrapingConfiguration scrapingConfiguration = mock();
+		when(scrapingConfigurationMapper.map(dto.getScraping())).thenReturn(scrapingConfiguration);
+		
+		final StorageConfiguration storageConfiguration = mock();
+		when(storageConfigurationMapper.map(dto.getStorage())).thenReturn(storageConfiguration);
+		
+		final ExecutionConfiguration executionConfiguration = mock();
+		when(executionConfigurationMapper.map(dto.getExecution())).thenReturn(executionConfiguration);
+		
+		final JobDefinition entity = mapper.map(dto);
+		
+		assertSame(scrapingConfiguration, entity.getScrapingConfiguration());
+		assertSame(storageConfiguration, entity.getStorageConfiguration());
+		assertSame(executionConfiguration, entity.getExecutionConfiguration());
 	}
 }

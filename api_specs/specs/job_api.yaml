@@ -90,7 +90,7 @@ components:
         name:
           type: string
           example: job-name
-        resultStorage:
+        storage:
           $ref: "#/components/schemas/createStorageConfiguration"
         execution:
           $ref: "#/components/schemas/createExecutionConfiguration"
@@ -98,7 +98,7 @@ components:
           $ref: "#/components/schemas/createScrapingConfiguration"
       required:
         - name
-        - resultStorage
+        - storage
         - execution
         - scraping
 
@@ -116,7 +116,7 @@ components:
         name:
           type: string
           example: job-name
-        resultStorage:
+        storage:
           $ref: "#/components/schemas/storageConfiguration"
         execution:
           $ref: "#/components/schemas/executionConfiguration"
@@ -125,7 +125,7 @@ components:
       required:
         - id
         - name
-        - resultStorage
+        - storage
         - execution
         - scraping
 

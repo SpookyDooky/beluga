@@ -19,7 +19,7 @@ class WriteJobDtoTest {
 	void shouldHaveNotNullOnFields(final String fieldName) {
 		assertAnnotationPresentOnField(
 				fieldName,
-				WriteJobDto.class,
+				WriteJobDefinitionDto.class,
 				NotNull.class
 		);
 	}

@@ -1,6 +1,6 @@
 package com.x.scrape.api.job.dto.read;
 
-public class ReadJobDto {
+public class ReadJobDefinitionDto {
 	
 	private Long id;
 	private ReadStorageConfigurationDto resultStorage;

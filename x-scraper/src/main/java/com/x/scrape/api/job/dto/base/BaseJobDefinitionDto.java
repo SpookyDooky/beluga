@@ -2,7 +2,7 @@ package com.x.scrape.api.job.dto.base;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public abstract class BaseJobDto {
+public abstract class BaseJobDefinitionDto {
 	
 	@NotEmpty
 	private String name;

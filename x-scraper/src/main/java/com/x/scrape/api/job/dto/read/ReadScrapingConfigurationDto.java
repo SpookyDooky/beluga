@@ -7,7 +7,7 @@ import java.util.List;
 public class ReadScrapingConfigurationDto extends BaseScrapingConfigurationDto {
 	
 	private Long id;
-	private List<ReadScrapingDataPointDto> dataPoints;
+	private List<ReadDataPointConfigurationDto> dataPoints;
 	
 	public Long getId() {
 		return id;
@@ -17,11 +17,11 @@ public class ReadScrapingConfigurationDto extends BaseScrapingConfigurationDto {
 		this.id = id;
 	}
 	
-	public List<ReadScrapingDataPointDto> getDataPoints() {
+	public List<ReadDataPointConfigurationDto> getDataPoints() {
 		return dataPoints;
 	}
 	
-	public void setDataPoints(final List<ReadScrapingDataPointDto> dataPoints) {
+	public void setDataPoints(final List<ReadDataPointConfigurationDto> dataPoints) {
 		this.dataPoints = dataPoints;
 	}
 }
