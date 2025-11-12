@@ -2,7 +2,7 @@ spring:
   application:
     name: x-scraper
   main:
-    web-application-type: none
+    web-application-type: servlet
   profiles:
     active:
       - local

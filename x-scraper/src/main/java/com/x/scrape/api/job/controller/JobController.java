@@ -2,6 +2,10 @@ package com.x.scrape.api.job.controller;
 
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.logging.ContextLogger;
+import com.x.scrape.mapper.job.JobDefinitionMapper;
+import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.service.JobDefinitionService;
+import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,14 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class JobController {
 	
 	private final ContextLogger logger;
+	private final JobDefinitionMapper jobDefinitionMapper;
+	private final JobDefinitionService jobDefinitionService;
 	
-	public JobController(final ContextLogger logger) {
+	public JobController(final ContextLogger logger,
+	                     final JobDefinitionMapper jobDefinitionMapper,
+	                     final JobDefinitionService jobDefinitionService) {
 		this.logger = logger;
+		this.jobDefinitionMapper = jobDefinitionMapper;
+		this.jobDefinitionService = jobDefinitionService;
 	}
 	
+	// Todo - improve logging, and use AOP to automatically log all endpoint access.
 	@PostMapping
 	@Transactional
-	public void createJob(@RequestBody final WriteJobDefinitionDto job) {
-	
+	public void createJob(@RequestBody @Valid final WriteJobDefinitionDto job) {
+		logger.info("Received new job definition.");
+		
+		final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
+		
+		jobDefinitionService.save(jobDefinition);
 	}
 }

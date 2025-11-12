@@ -1,0 +1,1 @@
+alter table job_definition alter column url_configuration_id drop not null;
