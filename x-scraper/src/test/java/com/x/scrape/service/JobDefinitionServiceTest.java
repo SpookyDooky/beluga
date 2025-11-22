@@ -79,4 +79,25 @@ class JobDefinitionServiceTest {
 				Long.class
 		);
 	}
+	
+	@Test
+	void shouldFindById() {
+		final Long id = 123L;
+		final Optional<JobDefinition> optional = Optional.empty();
+		when(repository.findById(id)).thenReturn(optional);
+		
+		final Optional<JobDefinition> result = jobDefinitionService.findById(id);
+		
+		assertSame(optional, result);
+	}
+	
+	@Test
+	void shouldHaveTransactionalAnnotationOnFindById() {
+		assertAnnotationPresentOnMethod(
+				JobDefinitionService.class,
+				Transactional.class,
+				"findById",
+				Long.class
+		);
+	}
 }
