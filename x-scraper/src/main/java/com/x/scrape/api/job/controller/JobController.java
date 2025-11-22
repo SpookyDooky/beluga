@@ -43,7 +43,7 @@ public class JobController {
 	
 	@GetMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ReadJobDefinitionDto> getJob(@PathVariable final Long id) {
+	public ResponseEntity<ReadJobDefinitionDto> getJob(@PathVariable("id") final Long id) {
 		try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
 			logger.info("Retrieving job.");
 			
