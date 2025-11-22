@@ -47,6 +47,10 @@ public class JobRegistry {
 	
 	@Scheduled(initialDelay = 0L)
 	public void registerJobs() {
+		if (xScraperProperties.getJobs() == null) {
+			return;
+		}
+		
 		xScraperProperties.getJobs()
 				.forEach(this::registerConfigurationJob);
 		

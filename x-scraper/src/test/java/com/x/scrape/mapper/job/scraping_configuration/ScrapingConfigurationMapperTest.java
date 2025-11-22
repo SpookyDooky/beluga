@@ -1,5 +1,9 @@
 package com.x.scrape.mapper.job.scraping_configuration;
 
+import com.x.scrape.api.job.dto.read.ReadDataPointConfigurationDto;
+import com.x.scrape.api.job.dto.read.ReadScrapingConfigurationDto;
+import com.x.scrape.api.job.dto.write.WriteDataPointConfigurationDto;
+import com.x.scrape.api.job.dto.write.WriteScrapingConfigurationDto;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.properties.scraping.DataPointProperties;
@@ -42,5 +46,38 @@ class ScrapingConfigurationMapperTest {
 		assertEquals(dataScrapingProperties.getElementSelector(), scrapingConfiguration.getElementSelector());
 		assertEquals(1, scrapingConfiguration.getDataPointConfigurations().size());
 		assertSame(dataPointConfiguration, scrapingConfiguration.getDataPointConfigurations().getFirst());
+	}
+	
+	@Test
+	void shouldMapFromWriteScrapingConfigurationDto() {
+		final WriteScrapingConfigurationDto dto = Instancio.of(WriteScrapingConfigurationDto.class)
+				.set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(mock(WriteDataPointConfigurationDto.class)))
+				.create();
+		
+		final DataPointConfiguration dataPointConfiguration = mock();
+		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointConfiguration);
+		
+		final ScrapingConfiguration entity = mapper.map(dto);
+		
+		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+		assertEquals(1, entity.getDataPointConfigurations().size());
+		assertSame(dataPointConfiguration, entity.getDataPointConfigurations().getFirst());
+	}
+	
+	@Test
+	void shouldMapToDto() {
+		final ScrapingConfiguration entity = Instancio.of(ScrapingConfiguration.class)
+				.set(field(ScrapingConfiguration::getDataPointConfigurations), List.of(mock(DataPointConfiguration.class)))
+				.create();
+		
+		final ReadDataPointConfigurationDto dataPointConfigurationDto = mock();
+		when(dataPointConfigurationMapper.map(entity.getDataPointConfigurations().getFirst())).thenReturn(dataPointConfigurationDto);
+		
+		final ReadScrapingConfigurationDto dto = mapper.map(entity);
+		
+		assertEquals(entity.getId(), dto.getId());
+		assertEquals(entity.getElementSelector(), dto.getElementSelector());
+		assertEquals(1, dto.getDataPoints().size());
+		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
 	}
 }
