@@ -2,16 +2,16 @@ package com.x.scrape.api.job.controller;
 
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
+import com.x.scrape.logging.CloseableContext;
+import com.x.scrape.logging.ContextKeys;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobDefinitionMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.service.JobDefinitionService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/jobs")
@@ -36,9 +36,22 @@ public class JobController {
 		logger.info("Received new job definition.");
 		
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
-		
 		jobDefinitionService.save(jobDefinition);
 		
 		return jobDefinitionMapper.map(jobDefinition);
+	}
+	
+	@GetMapping("/{id}")
+	@Transactional
+	public ResponseEntity<ReadJobDefinitionDto> getJob(@PathVariable("id") final Long id) {
+		try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
+			logger.info("Retrieving job.");
+			
+			return jobDefinitionService.findById(id)
+					.map(jobDefinitionMapper::map)
+					.map(ResponseEntity::ok)
+					.orElseGet(() -> ResponseEntity.notFound().build());
+			
+		}
 	}
 }

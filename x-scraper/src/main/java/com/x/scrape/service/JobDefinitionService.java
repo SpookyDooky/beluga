@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
@@ -26,5 +28,10 @@ public class JobDefinitionService {
 	public JobDefinition getById(final Long id) {
 		return repository.findById(id)
 				.orElseThrow(EntityNotFoundException::new);
+	}
+	
+	@Transactional(propagation = MANDATORY)
+	public Optional<JobDefinition> findById(final Long id) {
+		return repository.findById(id);
 	}
 }
