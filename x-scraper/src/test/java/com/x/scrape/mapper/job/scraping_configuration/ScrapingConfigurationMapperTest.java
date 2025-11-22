@@ -80,4 +80,22 @@ class ScrapingConfigurationMapperTest {
 		assertEquals(1, dto.getDataPoints().size());
 		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
 	}
+	
+	@Test
+	void shouldUpdate() {
+		final WriteScrapingConfigurationDto dto = Instancio.of(WriteScrapingConfigurationDto.class)
+				.set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(mock(WriteDataPointConfigurationDto.class)))
+				.create();
+		
+		final DataPointConfiguration dataPointConfiguration = mock();
+		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointConfiguration);
+		
+		final ScrapingConfiguration entity = Instancio.create(ScrapingConfiguration.class);
+		
+		mapper.update(dto, entity);
+		
+		assertEquals(1, entity.getDataPointConfigurations().size());
+		assertSame(dataPointConfiguration, entity.getDataPointConfigurations().getFirst());
+		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+	}
 }

@@ -6,6 +6,7 @@ import com.x.scrape.model.job_definition.configuration.scraping_configuration.Sc
 import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -27,4 +28,7 @@ public interface ScrapingConfigurationMapper {
 	
 	@Mapping(target = "dataPoints", source = "dataPointConfigurations")
 	ReadScrapingConfigurationDto map(ScrapingConfiguration scrapingConfiguration);
+	
+	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
+	void update(WriteScrapingConfigurationDto dto, @MappingTarget ScrapingConfiguration scrapingConfiguration);
 }
