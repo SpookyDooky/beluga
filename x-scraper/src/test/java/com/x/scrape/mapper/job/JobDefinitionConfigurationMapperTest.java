@@ -27,8 +27,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobDefinitionConfigurationMapperTest {
@@ -115,5 +114,17 @@ class JobDefinitionConfigurationMapperTest {
 		assertSame(readScrapingConfigurationDto, dto.getScraping());
 		assertSame(readStorageConfigurationDto, dto.getStorage());
 		assertSame(readExecutionConfigurationDto, dto.getExecution());
+	}
+	
+	@Test
+	void shouldUpdate() {
+		final WriteJobDefinitionDto dto = Instancio.create(WriteJobDefinitionDto.class);
+		final JobDefinition entity = Instancio.create(JobDefinition.class);
+		
+		mapper.update(dto, entity);
+		
+		verify(scrapingConfigurationMapper).update(dto.getScraping(), entity.getScrapingConfiguration());
+		verify(storageConfigurationMapper).update(dto.getStorage(), entity.getStorageConfiguration());
+		verify(executionConfigurationMapper).update(dto.getExecution(), entity.getExecutionConfiguration());
 	}
 }

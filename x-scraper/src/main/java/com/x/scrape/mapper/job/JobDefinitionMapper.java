@@ -10,6 +10,7 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.properties.scraping.JobProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -43,4 +44,9 @@ public interface JobDefinitionMapper {
 	@Mapping(target = "storage", source = "storageConfiguration")
 	@Mapping(target = "execution", source = "executionConfiguration")
 	ReadJobDefinitionDto map(JobDefinition jobDefinition);
+	
+	@Mapping(target = "scrapingConfiguration", source = "scraping")
+	@Mapping(target = "storageConfiguration", source = "storage")
+	@Mapping(target = "executionConfiguration", source = "execution")
+	void update(WriteJobDefinitionDto dto, @MappingTarget JobDefinition jobDefinition);
 }

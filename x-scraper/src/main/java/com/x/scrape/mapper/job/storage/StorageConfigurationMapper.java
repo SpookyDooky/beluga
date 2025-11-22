@@ -5,6 +5,7 @@ import com.x.scrape.api.job.dto.write.WriteStorageConfigurationDto;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -16,4 +17,6 @@ public interface StorageConfigurationMapper {
 	StorageConfiguration map(WriteStorageConfigurationDto dto);
 	
 	ReadStorageConfigurationDto map(StorageConfiguration entity);
+	
+	void update(WriteStorageConfigurationDto dto, @MappingTarget StorageConfiguration storageConfiguration);
 }
