@@ -1,5 +1,6 @@
 package com.x.scrape.mapper.job.storage;
 
+import com.x.scrape.api.job.dto.read.ReadStorageConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteStorageConfigurationDto;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
@@ -29,5 +30,15 @@ class StorageConfigurationMapperTest {
 		final StorageConfiguration entity = mapper.map(dto);
 		
 		assertEquals(dto.getFolder(), entity.getFolder());
+	}
+	
+	@Test
+	void shouldMapToDto() {
+		final StorageConfiguration entity = Instancio.create(StorageConfiguration.class);
+		
+		final ReadStorageConfigurationDto dto = mapper.map(entity);
+		
+		assertEquals(entity.getId(), dto.getId());
+		assertEquals(entity.getFolder(), dto.getFolder());
 	}
 }

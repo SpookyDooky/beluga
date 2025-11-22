@@ -1,5 +1,6 @@
 package com.x.scrape.mapper.job.scraping_configuration;
 
+import com.x.scrape.api.job.dto.read.ReadDataPointConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteDataPointConfigurationDto;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
 import com.x.scrape.properties.scraping.DataPointProperties;
@@ -33,5 +34,17 @@ class DataPointConfigurationMapperTest {
 		assertEquals(dto.getPropertyName(), entity.getPropertyName());
 		assertEquals(dto.getAttribute(), entity.getAttribute());
 		assertEquals(dto.getType(), entity.getType());
+	}
+	
+	@Test
+	void shouldMapToDto() {
+		final DataPointConfiguration entity = Instancio.create(DataPointConfiguration.class);
+		
+		final ReadDataPointConfigurationDto dto = mapper.map(entity);
+		
+		assertEquals(entity.getId(), dto.getId());
+		assertEquals(entity.getType(), dto.getType());
+		assertEquals(entity.getSelector(), dto.getSelector());
+		assertEquals(entity.getAttribute(), dto.getAttribute());
 	}
 }

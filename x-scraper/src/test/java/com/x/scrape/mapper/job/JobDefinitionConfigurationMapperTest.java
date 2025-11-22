@@ -1,5 +1,9 @@
 package com.x.scrape.mapper.job;
 
+import com.x.scrape.api.job.dto.read.ReadExecutionConfigurationDto;
+import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
+import com.x.scrape.api.job.dto.read.ReadScrapingConfigurationDto;
+import com.x.scrape.api.job.dto.read.ReadStorageConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
 import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
@@ -90,5 +94,26 @@ class JobDefinitionConfigurationMapperTest {
 		assertSame(scrapingConfiguration, entity.getScrapingConfiguration());
 		assertSame(storageConfiguration, entity.getStorageConfiguration());
 		assertSame(executionConfiguration, entity.getExecutionConfiguration());
+	}
+	
+	@Test
+	void shouldMapToDto() {
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		
+		final ReadScrapingConfigurationDto readScrapingConfigurationDto = mock();
+		when(scrapingConfigurationMapper.map(jobDefinition.getScrapingConfiguration())).thenReturn(readScrapingConfigurationDto);
+		
+		final ReadStorageConfigurationDto readStorageConfigurationDto = mock();
+		when(storageConfigurationMapper.map(jobDefinition.getStorageConfiguration())).thenReturn(readStorageConfigurationDto);
+		
+		final ReadExecutionConfigurationDto readExecutionConfigurationDto = mock();
+		when(executionConfigurationMapper.map(jobDefinition.getExecutionConfiguration())).thenReturn(readExecutionConfigurationDto);
+		
+		final ReadJobDefinitionDto dto = mapper.map(jobDefinition);
+		
+		assertEquals(jobDefinition.getId(), dto.getId());
+		assertSame(readScrapingConfigurationDto, dto.getScraping());
+		assertSame(readStorageConfigurationDto, dto.getStorage());
+		assertSame(readExecutionConfigurationDto, dto.getExecution());
 	}
 }

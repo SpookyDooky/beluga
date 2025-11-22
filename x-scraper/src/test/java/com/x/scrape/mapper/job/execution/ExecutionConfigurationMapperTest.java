@@ -1,5 +1,6 @@
 package com.x.scrape.mapper.job.execution;
 
+import com.x.scrape.api.job.dto.read.ReadExecutionConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteExecutionConfigurationDto;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.properties.scraping.execution.ExecutionProperties;
@@ -30,5 +31,16 @@ class ExecutionConfigurationMapperTest {
 		
 		assertEquals(dto.getWorkers(), entity.getWorkers());
 		assertEquals(dto.getTasksPerSecond(), entity.getTasksPerSecond());
+	}
+	
+	@Test
+	void shouldMapToDto() {
+		final ExecutionConfiguration entity = Instancio.create(ExecutionConfiguration.class);
+		
+		final ReadExecutionConfigurationDto dto = mapper.map(entity);
+		
+		assertEquals(entity.getId(), dto.getId());
+		assertEquals(entity.getWorkers(), dto.getWorkers());
+		assertEquals(entity.getTasksPerSecond(), dto.getTasksPerSecond());
 	}
 }

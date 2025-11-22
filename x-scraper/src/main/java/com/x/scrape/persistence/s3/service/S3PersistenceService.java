@@ -94,6 +94,7 @@ public class S3PersistenceService {
 		return key.replaceAll("\\\\", "/");
 	}
 	
+	// TODO - Add debug logs that track the internal queue size which is not being flushed.
 	/**
 	 * Puts an object in the S3 compatible object store.
 	 *

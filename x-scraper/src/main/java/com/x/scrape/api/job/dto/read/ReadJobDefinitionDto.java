@@ -3,7 +3,7 @@ package com.x.scrape.api.job.dto.read;
 public class ReadJobDefinitionDto {
 	
 	private Long id;
-	private ReadStorageConfigurationDto resultStorage;
+	private ReadStorageConfigurationDto storage;
 	private ReadExecutionConfigurationDto execution;
 	private ReadScrapingConfigurationDto scraping;
 	
@@ -15,12 +15,12 @@ public class ReadJobDefinitionDto {
 		this.id = id;
 	}
 	
-	public ReadStorageConfigurationDto getResultStorage() {
-		return resultStorage;
+	public ReadStorageConfigurationDto getStorage() {
+		return storage;
 	}
 	
-	public void setResultStorage(final ReadStorageConfigurationDto resultStorage) {
-		this.resultStorage = resultStorage;
+	public void setStorage(final ReadStorageConfigurationDto storage) {
+		this.storage = storage;
 	}
 	
 	public ReadExecutionConfigurationDto getExecution() {
@@ -29,5 +29,13 @@ public class ReadJobDefinitionDto {
 	
 	public void setExecution(final ReadExecutionConfigurationDto execution) {
 		this.execution = execution;
+	}
+	
+	public ReadScrapingConfigurationDto getScraping() {
+		return scraping;
+	}
+	
+	public void setScraping(final ReadScrapingConfigurationDto scraping) {
+		this.scraping = scraping;
 	}
 }
