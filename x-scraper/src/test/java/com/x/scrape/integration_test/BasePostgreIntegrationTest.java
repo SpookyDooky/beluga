@@ -17,9 +17,8 @@ public class BasePostgreIntegrationTest {
 			.withPassword("password");
 	
 	@BeforeAll
-	static void setup() throws Exception {
+	static void setup() {
 		postgreSQLContainer.start();
-		
 		System.setProperty("POSTGRE_HOST", postgreSQLContainer.getJdbcUrl());
 	}
 }

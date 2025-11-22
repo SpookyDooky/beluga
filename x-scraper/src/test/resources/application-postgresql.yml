@@ -3,7 +3,6 @@ x-scraper:
   persistence:
     type: POSTGRESQL
     postgresql:
-#      url: jdbc:postgresql://localhost:5432/test?currentSchema=x_scraper
       url: ${POSTGRE_HOST}
       username: username
       password: password
