@@ -41,4 +41,14 @@ class StorageConfigurationMapperTest {
 		assertEquals(entity.getId(), dto.getId());
 		assertEquals(entity.getFolder(), dto.getFolder());
 	}
+	
+	@Test
+	void shouldUpdate() {
+		final WriteStorageConfigurationDto dto = Instancio.create(WriteStorageConfigurationDto.class);
+		final StorageConfiguration entity = Instancio.create(StorageConfiguration.class);
+		
+		mapper.update(dto, entity);
+		
+		assertEquals(dto.getFolder(), entity.getFolder());
+	}
 }
