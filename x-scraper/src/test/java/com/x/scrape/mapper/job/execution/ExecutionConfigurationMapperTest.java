@@ -43,4 +43,15 @@ class ExecutionConfigurationMapperTest {
 		assertEquals(entity.getWorkers(), dto.getWorkers());
 		assertEquals(entity.getTasksPerSecond(), dto.getTasksPerSecond());
 	}
+	
+	@Test
+	void shouldUpdate() {
+		final WriteExecutionConfigurationDto dto = Instancio.create(WriteExecutionConfigurationDto.class);
+		final ExecutionConfiguration entity = Instancio.create(ExecutionConfiguration.class);
+		
+		mapper.update(dto, entity);
+		
+		assertEquals(dto.getWorkers(), entity.getWorkers());
+		assertEquals(dto.getTasksPerSecond(), entity.getTasksPerSecond());
+	}
 }
