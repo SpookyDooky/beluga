@@ -22,7 +22,6 @@ public class ScrapingConfiguration implements HasId {
 	@OneToMany(
 			cascade = ALL,
 			mappedBy = "scrapingConfiguration",
-			orphanRemoval = true,
 			fetch = EAGER
 	)
 	private List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();

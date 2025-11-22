@@ -8,12 +8,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import static org.mapstruct.CollectionMappingStrategy.TARGET_IMMUTABLE;
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(
 		componentModel = SPRING,
 		injectionStrategy = CONSTRUCTOR,
+		collectionMappingStrategy = TARGET_IMMUTABLE,
 		uses = {
 				DataPointConfigurationMapper.class
 		}
