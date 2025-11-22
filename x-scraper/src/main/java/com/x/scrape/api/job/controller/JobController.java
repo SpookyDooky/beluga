@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/jobs")
 public class JobController {
@@ -32,7 +34,7 @@ public class JobController {
 	// Todo - improve logging, and use AOP to automatically log all endpoint access.
 	@PostMapping
 	@Transactional
-	public ReadJobDefinitionDto createJob(@RequestBody @Valid final WriteJobDefinitionDto job) {
+	public ReadJobDefinitionDto create(@RequestBody @Valid final WriteJobDefinitionDto job) {
 		logger.info("Received new job definition.");
 		
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
@@ -43,7 +45,7 @@ public class JobController {
 	
 	@GetMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ReadJobDefinitionDto> getJob(@PathVariable("id") final Long id) {
+	public ResponseEntity<ReadJobDefinitionDto> get(@PathVariable("id") final Long id) {
 		try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
 			logger.info("Retrieving job.");
 			
@@ -52,6 +54,27 @@ public class JobController {
 					.map(ResponseEntity::ok)
 					.orElseGet(() -> ResponseEntity.notFound().build());
 			
+		}
+	}
+	
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<ReadJobDefinitionDto> update(@PathVariable("id") final Long id,
+	                                                   @RequestBody @Valid final WriteJobDefinitionDto writeJobDefinitionDto) {
+		try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
+			logger.info("Updating job.");
+			
+			final Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findById(id);
+			if (jobDefinitionOptional.isEmpty()) {
+				return ResponseEntity.notFound()
+						.build();
+			}
+			
+			final JobDefinition jobDefinition = jobDefinitionOptional.get();
+			jobDefinitionMapper.update(writeJobDefinitionDto, jobDefinition);
+			jobDefinitionService.save(jobDefinition);
+			
+			return ResponseEntity.ok(jobDefinitionMapper.map(jobDefinition));
 		}
 	}
 }
