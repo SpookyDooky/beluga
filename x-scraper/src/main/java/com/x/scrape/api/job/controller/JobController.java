@@ -1,5 +1,6 @@
 package com.x.scrape.api.job.controller;
 
+import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobDefinitionMapper;
@@ -31,11 +32,13 @@ public class JobController {
 	// Todo - improve logging, and use AOP to automatically log all endpoint access.
 	@PostMapping
 	@Transactional
-	public void createJob(@RequestBody @Valid final WriteJobDefinitionDto job) {
+	public ReadJobDefinitionDto createJob(@RequestBody @Valid final WriteJobDefinitionDto job) {
 		logger.info("Received new job definition.");
 		
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
 		
 		jobDefinitionService.save(jobDefinition);
+		
+		return jobDefinitionMapper.map(jobDefinition);
 	}
 }
