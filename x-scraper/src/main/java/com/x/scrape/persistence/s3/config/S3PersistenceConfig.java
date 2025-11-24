@@ -15,7 +15,6 @@ import org.springframework.transaction.support.SimpleTransactionStatus;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 
 import java.net.URI;
 
@@ -29,25 +28,12 @@ public class S3PersistenceConfig {
 				properties.getAccessKey(), properties.getSecretKey()
 		);
 		
-		final S3Client s3Client = S3Client.builder()
+		return S3Client.builder()
 				.endpointOverride(URI.create(properties.getHost()))
 				.credentialsProvider(StaticCredentialsProvider.create(credentials))
 				.region(properties.getRegion())
 				.forcePathStyle(true)
 				.build();
-		
-		createBucket(s3Client, properties.getBucket());
-		
-		return s3Client;
-	}
-	
-	private void createBucket(final S3Client s3Client,
-	                          final String bucketName) {
-		final CreateBucketRequest request = CreateBucketRequest.builder()
-				.bucket(bucketName)
-				.build();
-		
-		s3Client.createBucket(request);
 	}
 	
 	@Bean
