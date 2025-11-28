@@ -57,7 +57,9 @@ public class JobDefinitionFileSystemRepository implements JobDefinitionRepositor
 	@Override
 	public Optional<JobDefinition> findById(final Long id) {
 		final Path jobDefinitionPath = Path.of(jobPersistencePath.toString() + "/" + id + "/" + JOB_DEFINITION_FILE_NAME);
-		return Optional.of(fileSystemService.readFileAs(fileSystemService.get(jobDefinitionPath).get(), JobDefinition.class));
+		
+		return fileSystemService.get(jobDefinitionPath)
+				.map(file -> fileSystemService.readFileAs(file, JobDefinition.class));
 	}
 	
 	@Override
