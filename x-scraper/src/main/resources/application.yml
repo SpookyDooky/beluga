@@ -3,9 +3,9 @@ spring:
     name: x-scraper
   main:
     web-application-type: servlet
-#  profiles:
-#    active:
-#      - local
+  profiles:
+    active:
+      - local
   flyway:
     enabled: true
     locations: classpath:db

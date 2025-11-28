@@ -38,6 +38,7 @@ public class S3PersistenceService {
 	private final Map<Path, Instant> lastUpdated = new ConcurrentHashMap<>();
 	
 	private final String bucket;
+	// TODO - This path should be prepended to any received path
 	private final String path;
 	
 	private final AtomicBoolean flushing = new AtomicBoolean(false);

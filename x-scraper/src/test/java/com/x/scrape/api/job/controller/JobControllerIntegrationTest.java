@@ -1,24 +1,92 @@
 package com.x.scrape.api.job.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
+import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.integration_test.BaseIntegrationTest;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.MvcResult;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 public class JobControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@Autowired
 	private MockMvc mvc;
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@TestTemplate
-	void shouldReturn404() throws Exception {
+	void shouldCreateJob() throws Exception {
+		final WriteJobDefinitionDto jobDefinition = Instancio.create(WriteJobDefinitionDto.class);
+		
+		// Account for async application configuration
+		Thread.sleep(250);
+		
+		mvc.perform(post("/jobs")
+						.content(objectMapper.writeValueAsString(jobDefinition))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", notNullValue()));
+	}
+	
+	@TestTemplate
+	void shouldGetJob() throws Exception {
+		final WriteJobDefinitionDto jobDefinition = Instancio.create(WriteJobDefinitionDto.class);
+		
+		// Account for async application configuration
+		Thread.sleep(250);
+		
+		final MvcResult result = mvc.perform(post("/jobs")
+				.content(objectMapper.writeValueAsString(jobDefinition))
+				.contentType(APPLICATION_JSON)
+		).andReturn();
+		
+		final byte[] expectedContent = result.getResponse().getContentAsByteArray();
+		final ReadJobDefinitionDto contentDto = objectMapper.readValue(expectedContent, ReadJobDefinitionDto.class);
+		
+		final byte[] actualContent = mvc.perform(get("/jobs/" + contentDto.getId()))
+				.andReturn().getResponse().getContentAsByteArray();
+		
+		assertArrayEquals(expectedContent, actualContent);
+	}
+	
+	@TestTemplate
+	void shouldGetJobReturn404() throws Exception {
 		final Long jobId = 123L;
 		
-		mvc.perform(MockMvcRequestBuilders.get("/jobs/" + jobId))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+		mvc.perform(get("/jobs/" + jobId))
+				.andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
+	void shouldUpdateJob() throws Exception {
+		final WriteJobDefinitionDto jobDefinition = Instancio.create(WriteJobDefinitionDto.class);
+		
+		// Account for async application configuration
+		Thread.sleep(250);
+		
+		final MvcResult result = mvc.perform(post("/jobs")
+				.content(objectMapper.writeValueAsString(jobDefinition))
+				.contentType(APPLICATION_JSON)
+		).andReturn();
+		
+		final byte[] expectedContent = result.getResponse().getContentAsByteArray();
+		final ReadJobDefinitionDto contentDto = objectMapper.readValue(expectedContent, ReadJobDefinitionDto.class);
+		
+		mvc.perform(put("/jobs/" + contentDto.getId())
+				.content(objectMapper.writeValueAsString(jobDefinition))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
 	}
 }
