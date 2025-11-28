@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Task REST API
+  version: '1.0'
+paths:
+  /jobs/{jobId}/tasks:
+    put:
+      description: Update the tasks for a job.
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job for which to update the tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateTasksDto"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/updateTasksResponseDto"
+        404:
+          description: Job not found
+
+components:
+  schemas:
+
+    updateTasksDto:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+            example: https://some.host.com/some/path
+      required:
+        - urls
+
+    updateTasksResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        url:
+          type: string
+          example: https://some.host.com/some/path
+      required:
+        - id
+        - url
