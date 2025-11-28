@@ -1,0 +1,8 @@
+# For integration tests that use PostgreSQL but do not create jobs from spring properties
+x-scraper:
+  persistence:
+    type: FILE_SYSTEM
+    file-system:
+      folder: ${PERSISTENCE_FOLDER}
+  result-datastore:
+    type: FILE_SYSTEM

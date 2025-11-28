@@ -1,0 +1,13 @@
+# For integration tests that use PostgreSQL but do not create jobs from spring properties
+x-scraper:
+  persistence:
+    type: S3
+    s3:
+      folder: /test/database
+      host: ${S3_HOST}
+      access-key: username
+      secret-key: password
+      bucket: test
+      region: US_EAST_1
+  result-datastore:
+    type: FILE_SYSTEM
