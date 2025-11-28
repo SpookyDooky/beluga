@@ -1,5 +1,6 @@
 package com.x.scrape.integration_test;
 
+import com.x.scrape.integration_test.datastore.FileSystemTemplateFactory;
 import com.x.scrape.integration_test.datastore.PostgreSqlTemplateFactory;
 import com.x.scrape.integration_test.datastore.S3TemplateFactory;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -33,7 +34,8 @@ public class MultiStoreTestExtension implements TestTemplateInvocationContextPro
 						new MinIOContainer("minio/minio:latest")
 								.withUserName("username")
 								.withPassword("password")
-				)
+				),
+				FileSystemTemplateFactory.createContext()
 		);
 	}
 }
