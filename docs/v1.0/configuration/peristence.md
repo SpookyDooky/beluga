@@ -45,4 +45,11 @@ To configure an S3 compatible storage as data store for persistence the followin
 | x-scraper.persistence.s3.folder    | true     | -       | /persistence       | Folder to use for persisting data                          | 
 
 ### PostgreSQL
-PostgreSQL is currently not yet supported as a data store for persistence, this is planned for the initial release.
+
+To configure PostgreSQL as persistence data store the following properties have to be configured.
+
+| property                                  | required | default | example                              | description  |
+|:------------------------------------------|:---------|:--------|:-------------------------------------|:-------------|
+| x-scraper.persistence.postgresql.url      | true     | -       | jdbc:postgresql://host:5432/database | Database url |
+| x-scraper.persistence.postgresql.username | true     | -       | Username                             | -            | 
+| x-scraper.persistence.postgresql.password | true     | -       | Password                             | -            |
