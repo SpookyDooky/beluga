@@ -17,14 +17,14 @@ public class TaskDefinitionMapperService {
 	
 	public List<TaskDefinition> map(final UrlProperties urlProperties) {
 		if (!urlProperties.getUrls().isEmpty()) {
-			return urlProperties.getUrls()
-					.stream()
-					.map(this::createTaskDefinition)
-					.toList();
+			return map(urlProperties.getUrls());
 		}
 		
-		return readUrlFile(urlProperties.getUrlFile())
-				.stream()
+		return map(readUrlFile(urlProperties.getUrlFile()));
+	}
+	
+	public List<TaskDefinition> map(final List<URL> urls) {
+		return urls.stream()
 				.map(this::createTaskDefinition)
 				.toList();
 	}
