@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +39,42 @@ class TaskControllerTest {
 	
 	@InjectMocks
 	private TaskController taskController;
+	
+	@Test
+	void shouldGetTasks() {
+		final List<TaskDefinition> taskDefinitions = List.of(mock(TaskDefinition.class));
+		final ReadTaskDefinitionDto readTaskDefinitionDto = mock();
+		when(readTaskDefinitionDtoMapper.map(taskDefinitions.getFirst())).thenReturn(readTaskDefinitionDto);
+		
+		final JobDefinition jobDefinition = Instancio.of(JobDefinition.class)
+				.set(field(JobDefinition::getTaskDefinitions), taskDefinitions)
+				.create();
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		
+		final List<ReadTaskDefinitionDto> result = taskController.getTasks(jobDefinition.getId());
+		
+		assertEquals(1, result.size());
+		assertTrue(result.contains(readTaskDefinitionDto));
+	}
+	
+	@Test
+	void shouldHandleJobDefinitionNotFoundException() {
+		final ResponseEntity<Void> result = taskController.handleJobDefinitionNotFound();
+		
+		assertEquals(404, result.getStatusCode().value());
+	}
+	
+	@Test
+	void shouldHaveExceptionHandlerOnHandleJobDefinitionNotFound() {
+		final ExceptionHandler exceptionHandler = TestReflectionUtility.assertAnnotationPresentOnMethod(
+				TaskController.class,
+				ExceptionHandler.class,
+				"handleJobDefinitionNotFound"
+		);
+		
+		assertEquals(1, exceptionHandler.value().length);
+		assertEquals(JobDefinitionNotFoundException.class, exceptionHandler.value()[0]);
+	}
 	
 	@Test
 	void shouldUpdateTasks() {
@@ -59,24 +96,5 @@ class TaskControllerTest {
 		
 		assertEquals(1, result.size());
 		assertTrue(result.contains(expectedTaskDefinition));
-	}
-	
-	@Test
-	void shouldHandleJobDefinitionNotFoundException() {
-		final ResponseEntity<Void> result = taskController.handleJobDefinitionNotFound();
-		
-		assertEquals(404, result.getStatusCode().value());
-	}
-	
-	@Test
-	void shouldHaveExceptionHandlerOnHandleJobDefinitionNotFound() {
-		final ExceptionHandler exceptionHandler = TestReflectionUtility.assertAnnotationPresentOnMethod(
-				TaskController.class,
-				ExceptionHandler.class,
-				"handleJobDefinitionNotFound"
-		);
-		
-		assertEquals(1, exceptionHandler.value().length);
-		assertEquals(JobDefinitionNotFoundException.class, exceptionHandler.value()[0]);
 	}
 }
