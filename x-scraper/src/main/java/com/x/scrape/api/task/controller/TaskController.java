@@ -39,14 +39,13 @@ public class TaskController {
 	
 	@PutMapping
 	@Transactional
-	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable final Long jobId,
+	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobId") final Long jobId,
 	                                               @RequestBody final UpdateTaskDto tasks) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
 			final List<TaskDefinition> taskDefinitions = taskDefinitionMapperService.map(tasks.getUrls());
 			
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
-			jobDefinition.getTaskDefinitions().clear();
-			jobDefinition.getTaskDefinitions().addAll(taskDefinitions);
+			jobDefinition.setTaskDefinitions(taskDefinitions);
 			
 			jobDefinitionService.save(jobDefinition);
 
