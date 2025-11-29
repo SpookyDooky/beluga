@@ -29,7 +29,30 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/updateTasksResponseDto"
+                  $ref: "#/components/schemas/ReadTaskDefinitionDto"
+        404:
+          description: Job not found
+    get:
+      description: Retrieve the tasks for a job
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job for which to update the tasks
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadTaskDefinitionDto"
         404:
           description: Job not found
 
@@ -47,7 +70,7 @@ components:
       required:
         - urls
 
-    updateTasksResponseDto:
+    ReadTaskDefinitionDto:
       type: object
       properties:
         id:

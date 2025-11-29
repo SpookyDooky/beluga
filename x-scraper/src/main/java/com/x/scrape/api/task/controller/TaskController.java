@@ -37,6 +37,25 @@ public class TaskController {
 		this.taskDefinitionDtoMapper = taskDefinitionDtoMapper;
 	}
 	
+	@GetMapping
+	@Transactional
+	public List<ReadTaskDefinitionDto> getTasks(@PathVariable("jobId") final Long jobId) {
+		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
+			
+			return jobDefinition.getTaskDefinitions()
+					.stream()
+					.map(taskDefinitionDtoMapper::map)
+					.toList();
+		}
+	}
+	
+	@ExceptionHandler(JobDefinitionNotFoundException.class)
+	public ResponseEntity<Void> handleJobDefinitionNotFound() {
+		return ResponseEntity.notFound()
+				.build();
+	}
+	
 	@PutMapping
 	@Transactional
 	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobId") final Long jobId,
@@ -54,11 +73,5 @@ public class TaskController {
 					.map(taskDefinitionDtoMapper::map)
 					.toList();
 		}
-	}
-	
-	@ExceptionHandler(JobDefinitionNotFoundException.class)
-	public ResponseEntity<Void> handleJobDefinitionNotFound() {
-		return ResponseEntity.notFound()
-				.build();
 	}
 }
