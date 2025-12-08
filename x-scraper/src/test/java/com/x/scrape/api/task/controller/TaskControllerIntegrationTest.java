@@ -1,8 +1,10 @@
 package com.x.scrape.api.task.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
+import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.BaseIntegrationTest;
 import org.instancio.Instancio;
@@ -11,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -48,6 +53,41 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	@TestTemplate
 	void shouldGetTasks404() throws Exception {
 		mvc.perform(get("/jobs/123/tasks"))
+				.andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
+	void shouldGetTask() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		
+		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
+		
+		final MvcResult mvcResult = mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
+				.content(objectMapper.writeValueAsString(updateTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk())
+				.andReturn();
+		
+		final byte[] content = mvcResult.getResponse().getContentAsByteArray();
+		final List<ReadTaskDefinitionDto> taskDefinitions = objectMapper.readValue(content, new TypeReference<List<ReadTaskDefinitionDto>>() {
+			@Override
+			public Type getType() {
+				return super.getType();
+			}
+		});
+		
+		final ReadTaskDefinitionDto taskDefinition = taskDefinitions.getFirst();
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks/" + taskDefinition.getId()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.url").value(taskDefinition.getUrl().toString()));
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingTaskForNonExistentJob() throws Exception {
+		mvc.perform(get("/jobs/123/tasks/321"))
 				.andExpect(status().isNotFound());
 	}
 	
