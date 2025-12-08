@@ -55,6 +55,34 @@ paths:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
         404:
           description: Job not found
+    patch:
+      description: Update the tasks for a job by adding and/or removing tasks.
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job for which to update the tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/patchTaskDto"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadTaskDefinitionDto"
+        404:
+          description: Job not found
   /jobs/{jobId}/tasks/{taskId}:
     get:
       description: Retrieves a specific task
@@ -111,3 +139,11 @@ components:
       required:
         - id
         - url
+
+    patchTaskDto:
+      type: object
+      properties:
+        add:
+          $ref: "#/components/schemas/updateTasksDto"
+        remove:
+          $ref: "#/components/schemas/updateTasksDto"
