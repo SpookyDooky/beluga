@@ -13,8 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -24,6 +24,32 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	private MockMvc mvc;
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@TestTemplate
+	void shouldGetTasks() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		
+		Thread.sleep(250);
+		
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		
+		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
+		
+		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
+				.content(objectMapper.writeValueAsString(updateTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(updateTaskDto.getUrls().size()));
+	}
+	
+	@TestTemplate
+	void shouldGetTasks404() throws Exception {
+		mvc.perform(get("/jobs/123/tasks"))
+				.andExpect(status().isNotFound());
+	}
 	
 	@TestTemplate
 	void shouldUpdateTasks() throws Exception {

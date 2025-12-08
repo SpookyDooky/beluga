@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskDefinitionMapperService {
@@ -26,7 +27,7 @@ public class TaskDefinitionMapperService {
 	public List<TaskDefinition> map(final List<URL> urls) {
 		return urls.stream()
 				.map(this::createTaskDefinition)
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	private TaskDefinition createTaskDefinition(final URL url) {
