@@ -179,7 +179,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		
 		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.length()").value(0));
+				.andExpect(jsonPath("$.length()").value(1));
 	}
 	
 	@TestTemplate

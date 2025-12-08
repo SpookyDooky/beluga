@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 
-import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.*;
@@ -49,9 +48,8 @@ class TaskControllerTest {
 		final ReadTaskDefinitionDto readTaskDefinitionDto = mock();
 		when(readTaskDefinitionDtoMapper.map(taskDefinitions.getFirst())).thenReturn(readTaskDefinitionDto);
 		
-		final JobDefinition jobDefinition = Instancio.of(JobDefinition.class)
-				.set(field(JobDefinition::getTaskDefinitions), taskDefinitions)
-				.create();
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(taskDefinitions);
 		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
 		
 		final List<ReadTaskDefinitionDto> result = taskController.getTasks(jobDefinition.getId());
@@ -106,8 +104,9 @@ class TaskControllerTest {
 		final List<TaskDefinition> taskDefinitions = List.of(mock(TaskDefinition.class));
 		when(taskDefinitionMapperService.map(updateTaskDto.getUrls())).thenReturn(taskDefinitions);
 		
-		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobId)).thenReturn(jobDefinition);
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(taskDefinitions);
 		
 		final ReadTaskDefinitionDto expectedTaskDefinition = mock();
 		when(readTaskDefinitionDtoMapper.map(taskDefinitions.get(0))).thenReturn(expectedTaskDefinition);
