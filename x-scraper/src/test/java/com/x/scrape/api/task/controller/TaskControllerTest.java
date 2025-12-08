@@ -1,5 +1,6 @@
 package com.x.scrape.api.task.controller;
 
+import com.x.scrape.api.task.dto.PatchTaskDto;
 import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.api.task.mapper.ReadTaskDefinitionDtoMapper;
@@ -117,5 +118,30 @@ class TaskControllerTest {
 		
 		assertEquals(1, result.size());
 		assertTrue(result.contains(expectedTaskDefinition));
+	}
+	
+	@Test
+	void shouldUpdateTasksWithPatch() {
+		final Long jobId = 123L;
+		final PatchTaskDto patchTaskDto = Instancio.create(PatchTaskDto.class);
+		
+		final List<TaskDefinition> taskDefinitions = List.of(mock(TaskDefinition.class));
+		when(taskDefinitionMapperService.map(patchTaskDto.getAdd())).thenReturn(taskDefinitions);
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobId)).thenReturn(jobDefinition);
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(taskDefinitions);
+		
+		final ReadTaskDefinitionDto readTaskDefinitionDto = mock();
+		when(readTaskDefinitionDtoMapper.map(taskDefinitions.getFirst())).thenReturn(readTaskDefinitionDto);
+		
+		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobId, patchTaskDto);
+		
+		assertEquals(1, result.size());
+		assertTrue(result.contains(readTaskDefinitionDto));
+		
+		verify(jobDefinitionService).setTaskDefinitionsInactiveByUrl(jobId, patchTaskDto.getRemove());
+		verify(jobDefinition).addTaskDefinitions(taskDefinitions);
+		verify(jobDefinitionService).save(jobDefinition);
 	}
 }

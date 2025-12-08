@@ -144,6 +144,12 @@ components:
       type: object
       properties:
         add:
-          $ref: "#/components/schemas/updateTasksDto"
+          type: array
+          items:
+            type: string
+            example: https://some.host.com/some/path
         remove:
-          $ref: "#/components/schemas/updateTasksDto"
+          type: array
+          items:
+            type: string
+            example: https://some.host.com/some/path

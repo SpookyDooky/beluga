@@ -1,5 +1,6 @@
 package com.x.scrape.api.task.controller;
 
+import com.x.scrape.api.task.dto.PatchTaskDto;
 import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.api.task.mapper.ReadTaskDefinitionDtoMapper;
@@ -43,9 +44,10 @@ public class TaskController {
 	@Transactional
 	public List<ReadTaskDefinitionDto> getTasks(@PathVariable("jobId") final Long jobId) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+			// Todo - set all existing task definitions to inactive
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
 			
-			return jobDefinition.getTaskDefinitions()
+			return jobDefinition.getActiveTaskDefinitions()
 					.stream()
 					.map(taskDefinitionDtoMapper::map)
 					.toList();
@@ -88,6 +90,27 @@ public class TaskController {
 			jobDefinitionService.save(jobDefinition);
 
 			return jobDefinition.getTaskDefinitions()
+					.stream()
+					.map(taskDefinitionDtoMapper::map)
+					.toList();
+		}
+	}
+	
+	@PatchMapping
+	@Transactional
+	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobId") final Long jobId,
+	                                               @RequestBody final PatchTaskDto patchTaskDto) {
+		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+			jobDefinitionService.setTaskDefinitionsInactiveByUrl(jobId, patchTaskDto.getRemove());
+			
+			final List<TaskDefinition> taskDefinitions = taskDefinitionMapperService.map(patchTaskDto.getAdd());
+			
+			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
+			jobDefinition.addTaskDefinitions(taskDefinitions);
+			
+			jobDefinitionService.save(jobDefinition);
+			
+			return jobDefinition.getActiveTaskDefinitions()
 					.stream()
 					.map(taskDefinitionDtoMapper::map)
 					.toList();

@@ -10,9 +10,8 @@ import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.net.URL;
+import java.util.*;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -115,9 +114,32 @@ public class JobDefinition implements HasId {
 				.orElseThrow(TaskDefinitionNotFoundException::new);
 	}
 	
+	public List<TaskDefinition> getActiveTaskDefinitions() {
+		return taskDefinitions.stream()
+				.filter(TaskDefinition::isActive)
+				.toList();
+	}
+	
+	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
+		final Set<URL> urlSet = new HashSet<>(urls);
+		
+		taskDefinitions.stream()
+				.filter(taskDefinition -> urlSet.contains(taskDefinition.getUrl()))
+				.forEach(taskDefinition -> taskDefinition.setActive(false));
+	}
+	
 	public void setTaskDefinitions(final List<TaskDefinition> taskDefinitions) {
 		this.taskDefinitions = taskDefinitions;
 		taskDefinitions.forEach(taskDefinition -> taskDefinition.setJobDefinition(this));
+	}
+	
+	public void addTaskDefinitions(final Collection<TaskDefinition> taskDefinitions) {
+		taskDefinitions.forEach(this::addTaskDefinition);
+	}
+	
+	private void addTaskDefinition(final TaskDefinition taskDefinition) {
+		taskDefinition.setJobDefinition(this);
+		taskDefinitions.add(taskDefinition);
 	}
 	
 	public List<JobExecution> getExecutions() {

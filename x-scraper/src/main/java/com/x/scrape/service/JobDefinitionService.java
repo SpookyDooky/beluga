@@ -6,6 +6,8 @@ import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URL;
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
@@ -33,5 +35,14 @@ public class JobDefinitionService {
 	@Transactional(propagation = MANDATORY)
 	public Optional<JobDefinition> findById(final Long id) {
 		return repository.findById(id);
+	}
+	
+	@Transactional
+	public void setTaskDefinitionsInactiveByUrl(final Long id,
+	                                            final Collection<URL> urls) {
+		final JobDefinition jobDefinition = getById(id);
+		jobDefinition.setTaskDefinitionsInactiveByUrl(urls);
+		
+		repository.save(jobDefinition);
 	}
 }
