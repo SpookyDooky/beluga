@@ -55,6 +55,35 @@ paths:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
         404:
           description: Job not found
+  /jobs/{jobId}/tasks/{taskId}:
+    get:
+      description: Retrieves a specific task
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job for which to update the tasks
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the task
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadTaskDefinitionDto"
+        404:
+          description: Not found
 
 components:
   schemas:
