@@ -12,7 +12,8 @@ public class ReflectionUtility {
 			Byte.class, Short.class, Integer.class, Long.class,
 			byte.class, short.class, int.class, long.class,
 			Double.class, Float.class, double.class, float.class,
-			UUID.class, String.class, Instant.class, URL.class
+			UUID.class, String.class, Instant.class, URL.class,
+			boolean.class, Boolean.class
 	);
 	
 	/**

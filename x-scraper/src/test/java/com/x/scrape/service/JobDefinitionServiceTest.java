@@ -11,13 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URL;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobDefinitionServiceTest {
@@ -99,5 +100,19 @@ class JobDefinitionServiceTest {
 				"findById",
 				Long.class
 		);
+	}
+	
+	@Test
+	void shouldSetTaskDefinitionsInactiveByUrl() {
+		final Long jobId = 123L;
+		final Set<URL> urls = Set.of(mock(URL.class));
+		
+		final JobDefinition jobDefinition = mock();
+		when(repository.findById(jobId)).thenReturn(Optional.of(jobDefinition));
+		
+		jobDefinitionService.setTaskDefinitionsInactiveByUrl(jobId, urls);
+		
+		verify(jobDefinition).setTaskDefinitionsInactiveByUrl(urls);
+		verify(repository).save(jobDefinition);
 	}
 }

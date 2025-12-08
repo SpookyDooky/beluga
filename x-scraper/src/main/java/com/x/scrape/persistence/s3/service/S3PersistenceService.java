@@ -116,6 +116,7 @@ public class S3PersistenceService {
 	}
 	
 	// TODO - make this configurable
+	// TODO - Graceful shutdown -> flush to object store before shut down
 	@Async
 	@Scheduled(fixedRate = 1_000, timeUnit = MILLISECONDS)
 	void flushObjects() {

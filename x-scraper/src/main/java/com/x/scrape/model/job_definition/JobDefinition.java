@@ -5,13 +5,14 @@ import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -107,9 +108,39 @@ public class JobDefinition implements HasId {
 		return taskDefinitions;
 	}
 	
+	public TaskDefinition getTaskDefinitionById(final Long taskDefinitionId) {
+		return taskDefinitions.stream()
+				.filter(taskDefinition -> taskDefinition.getId().equals(taskDefinitionId))
+				.findFirst()
+				.orElseThrow(TaskDefinitionNotFoundException::new);
+	}
+	
+	public List<TaskDefinition> getActiveTaskDefinitions() {
+		return taskDefinitions.stream()
+				.filter(TaskDefinition::isActive)
+				.collect(Collectors.toList());
+	}
+	
+	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
+		final Set<URL> urlSet = new HashSet<>(urls);
+		
+		taskDefinitions.stream()
+				.filter(taskDefinition -> urlSet.contains(taskDefinition.getUrl()))
+				.forEach(taskDefinition -> taskDefinition.setActive(false));
+	}
+	
 	public void setTaskDefinitions(final List<TaskDefinition> taskDefinitions) {
 		this.taskDefinitions = taskDefinitions;
 		taskDefinitions.forEach(taskDefinition -> taskDefinition.setJobDefinition(this));
+	}
+	
+	public void addTaskDefinitions(final Collection<TaskDefinition> taskDefinitions) {
+		taskDefinitions.forEach(this::addTaskDefinition);
+	}
+	
+	private void addTaskDefinition(final TaskDefinition taskDefinition) {
+		taskDefinition.setJobDefinition(this);
+		taskDefinitions.add(taskDefinition);
 	}
 	
 	public List<JobExecution> getExecutions() {

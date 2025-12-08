@@ -17,6 +17,7 @@ public class TaskDefinition implements HasId {
 	private Long id;
 	
 	private URL url;
+	private boolean active = true;
 	
 	@ManyToOne
 	@JoinColumn(name = "job_definition_id")
@@ -38,6 +39,14 @@ public class TaskDefinition implements HasId {
 	
 	public void setUrl(final URL url) {
 		this.url = url;
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+	
+	public void setActive(final boolean active) {
+		this.active = active;
 	}
 	
 	@JsonIgnore

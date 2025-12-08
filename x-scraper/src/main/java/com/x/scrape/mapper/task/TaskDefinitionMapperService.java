@@ -10,23 +10,25 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskDefinitionMapperService {
 	
 	public List<TaskDefinition> map(final UrlProperties urlProperties) {
 		if (!urlProperties.getUrls().isEmpty()) {
-			return urlProperties.getUrls()
-					.stream()
-					.map(this::createTaskDefinition)
-					.toList();
+			return map(urlProperties.getUrls());
 		}
 		
-		return readUrlFile(urlProperties.getUrlFile())
-				.stream()
+		return map(readUrlFile(urlProperties.getUrlFile()));
+	}
+	
+	public List<TaskDefinition> map(final Collection<URL> urls) {
+		return urls.stream()
 				.map(this::createTaskDefinition)
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	private TaskDefinition createTaskDefinition(final URL url) {
