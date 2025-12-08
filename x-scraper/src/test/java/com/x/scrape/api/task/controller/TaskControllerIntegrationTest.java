@@ -52,6 +52,16 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	}
 	
 	@TestTemplate
+	void shouldGet404ForRetrievingNonExistentTask() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks/321"))
+				.andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
 	void shouldUpdateTasks() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
 		

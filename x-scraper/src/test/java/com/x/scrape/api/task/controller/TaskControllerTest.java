@@ -6,6 +6,7 @@ import com.x.scrape.api.task.mapper.ReadTaskDefinitionDtoMapper;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.task.TaskDefinitionMapperService;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.service.JobDefinitionService;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
@@ -23,12 +24,13 @@ import java.util.List;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskControllerTest {
 	
-	@Mock
+	@Mock(answer = RETURNS_DEEP_STUBS)
 	private ContextLogger logger;
 	@Mock
 	private TaskDefinitionMapperService taskDefinitionMapperService;
@@ -72,8 +74,27 @@ class TaskControllerTest {
 				"handleJobDefinitionNotFound"
 		);
 		
-		assertEquals(1, exceptionHandler.value().length);
+		assertEquals(2, exceptionHandler.value().length);
 		assertEquals(JobDefinitionNotFoundException.class, exceptionHandler.value()[0]);
+		assertEquals(TaskDefinitionNotFoundException.class, exceptionHandler.value()[1]);
+	}
+	
+	@Test
+	void shouldGetTask() {
+		final Long jobId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobId)).thenReturn(jobDefinition);
+		
+		final Long taskId = 321L;
+		final TaskDefinition taskDefinition = mock();
+		when(jobDefinition.getTaskDefinitionById(taskId)).thenReturn(taskDefinition);
+		
+		final ReadTaskDefinitionDto expected = mock();
+		when(readTaskDefinitionDtoMapper.map(taskDefinition)).thenReturn(expected);
+		
+		final ReadTaskDefinitionDto result = taskController.getTask(jobId, taskId);
+		
+		assertSame(expected, result);
 	}
 	
 	@Test
