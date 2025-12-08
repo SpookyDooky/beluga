@@ -17,7 +17,7 @@ public class TaskDefinition implements HasId {
 	private Long id;
 	
 	private URL url;
-	private boolean active;
+	private boolean active = true;
 	
 	@ManyToOne
 	@JoinColumn(name = "job_definition_id")

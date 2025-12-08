@@ -41,7 +41,9 @@ class ReflectionUtilityTest {
 				UUID.randomUUID(),
 				"string",
 				Instant.now(),
-				URI.create("http://lol.com").toURL()
+				URI.create("http://lol.com").toURL(),
+				false,
+				Boolean.valueOf(false)
 		).map(Arguments::of);
 	}
 	

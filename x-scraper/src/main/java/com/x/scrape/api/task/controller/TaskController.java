@@ -44,7 +44,6 @@ public class TaskController {
 	@Transactional
 	public List<ReadTaskDefinitionDto> getTasks(@PathVariable("jobId") final Long jobId) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
-			// Todo - set all existing task definitions to inactive
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
 			
 			return jobDefinition.getActiveTaskDefinitions()
@@ -89,7 +88,7 @@ public class TaskController {
 			
 			jobDefinitionService.save(jobDefinition);
 
-			return jobDefinition.getTaskDefinitions()
+			return jobDefinition.getActiveTaskDefinitions()
 					.stream()
 					.map(taskDefinitionDtoMapper::map)
 					.toList();

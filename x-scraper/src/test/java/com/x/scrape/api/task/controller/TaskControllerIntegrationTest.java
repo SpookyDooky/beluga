@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
+import com.x.scrape.api.task.dto.PatchTaskDto;
 import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.BaseIntegrationTest;
@@ -15,7 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,9 +69,9 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
 		
 		final MvcResult mvcResult = mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
-				.content(objectMapper.writeValueAsString(updateTaskDto))
-				.contentType(APPLICATION_JSON)
-		).andExpect(status().isOk())
+						.content(objectMapper.writeValueAsString(updateTaskDto))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isOk())
 				.andReturn();
 		
 		final byte[] content = mvcResult.getResponse().getContentAsByteArray();
@@ -104,11 +108,8 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	@TestTemplate
 	void shouldUpdateTasks() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		
 		Thread.sleep(250);
-		
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
-		
 		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
 		
 		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -133,6 +134,60 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		
 		mvc.perform(put("/jobs/123/tasks")
 				.content(objectMapper.writeValueAsString(updateTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
+	void shouldRemoveTasksWhenPatchingTasks() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
+		
+		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
+				.content(objectMapper.writeValueAsString(updateTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
+		
+		final PatchTaskDto patchTaskDto = new PatchTaskDto();
+		patchTaskDto.setRemove(new HashSet<>(updateTaskDto.getUrls()));
+		
+		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
+				.content(objectMapper.writeValueAsString(patchTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(0));
+	}
+	
+	@TestTemplate
+	void shouldAddTasksWhenPatchingTasks() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		final PatchTaskDto patchTaskDto = new PatchTaskDto();
+		patchTaskDto.setAdd(Set.of(URI.create("http://some.host.com").toURL()));
+		
+		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
+						.content(objectMapper.writeValueAsString(patchTaskDto))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(0));
+	}
+	
+	@TestTemplate
+	void shouldReturn404WhenPatchingTasksForNonExistingJob() throws Exception {
+		final PatchTaskDto patchTaskDto = new PatchTaskDto();
+		
+		mvc.perform(patch("/jobs/123/tasks")
+				.content(objectMapper.writeValueAsString(patchTaskDto))
 				.contentType(APPLICATION_JSON)
 		).andExpect(status().isNotFound());
 	}

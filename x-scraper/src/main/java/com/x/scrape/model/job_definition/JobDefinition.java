@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -117,7 +118,7 @@ public class JobDefinition implements HasId {
 	public List<TaskDefinition> getActiveTaskDefinitions() {
 		return taskDefinitions.stream()
 				.filter(TaskDefinition::isActive)
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
