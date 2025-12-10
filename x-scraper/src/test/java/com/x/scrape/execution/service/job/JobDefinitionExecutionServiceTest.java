@@ -1,6 +1,7 @@
 package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.x.scrape.execution.event.job.JobStartedEvent;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,8 @@ class JobDefinitionExecutionServiceTest {
 	private ApplicationContext applicationContext;
 	@Mock
 	private JobTaskQueue jobTaskQueue;
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
 	
 	@InjectMocks
 	private JobExecutionService jobExecutionService;
@@ -44,6 +48,8 @@ class JobDefinitionExecutionServiceTest {
 	
 	@Captor
 	private ArgumentCaptor<RateLimiter> rateLimiterArgumentCaptor;
+	@Captor
+	private ArgumentCaptor<JobStartedEvent> jobStartedEventArgumentCaptor;
 	
 	@BeforeEach
 	void setup() {
@@ -75,5 +81,11 @@ class JobDefinitionExecutionServiceTest {
 		
 		final RateLimiter rateLimiter = rateLimiterArgumentCaptor.getValue();
 		assertEquals(job.getExecutionConfiguration().getTasksPerSecond(), (int) rateLimiter.getRate());
+		
+		verify(applicationEventPublisher).publishEvent(jobStartedEventArgumentCaptor.capture());
+		
+		final JobStartedEvent jobStartedEvent = jobStartedEventArgumentCaptor.getValue();
+		assertEquals(job.getJobDefinitionId(), jobStartedEvent.getJobDefinitionId());
+		assertEquals(job.getId(), jobStartedEvent.getJobExecutionId());
 	}
 }

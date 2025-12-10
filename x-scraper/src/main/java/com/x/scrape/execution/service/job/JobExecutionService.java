@@ -1,6 +1,7 @@
 package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.x.scrape.execution.event.job.JobStartedEvent;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
@@ -8,6 +9,7 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,13 +22,16 @@ public class JobExecutionService {
 	private final ContextLogger logger;
 	private final ApplicationContext applicationContext;
 	private final JobTaskQueue jobTaskQueue;
+	private final ApplicationEventPublisher eventPublisher;
 	
 	public JobExecutionService(final ContextLogger logger,
 	                           final ApplicationContext applicationContext,
-	                           final JobTaskQueue jobTaskQueue) {
+	                           final JobTaskQueue jobTaskQueue,
+	                           final ApplicationEventPublisher eventPublisher) {
 		this.logger = logger;
 		this.applicationContext = applicationContext;
 		this.jobTaskQueue = jobTaskQueue;
+		this.eventPublisher = eventPublisher;
 	}
 	
 	public void executeJob(final Job job) {
@@ -50,5 +55,7 @@ public class JobExecutionService {
 			new Thread(worker::start)
 					.start();
 		}
+		
+		eventPublisher.publishEvent(new JobStartedEvent(job.getJobDefinitionId(), job.getId()));
 	}
 }
