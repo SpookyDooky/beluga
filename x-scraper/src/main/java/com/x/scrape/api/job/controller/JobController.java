@@ -7,7 +7,7 @@ import com.x.scrape.logging.ContextKeys;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobDefinitionMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.service.JobDefinitionService;
+import com.x.scrape.service.job.JobDefinitionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,8 @@
-package com.x.scrape.service;
+package com.x.scrape.service.job;
 
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.job_definition.JobStatus;
 import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,18 @@ public class JobDefinitionService {
 	                                            final Collection<URL> urls) {
 		final JobDefinition jobDefinition = getById(id);
 		jobDefinition.setTaskDefinitionsInactiveByUrl(urls);
+		
+		repository.save(jobDefinition);
+	}
+	
+	@Transactional
+	public void setJobExecutionStatusById(final JobStatus status,
+	                                      final Long jobDefinitionId,
+	                                      final Long jobExecutionId) {
+		final JobDefinition jobDefinition = getById(jobDefinitionId);
+		
+		final JobExecution jobExecution = jobDefinition.getExecutionById(jobExecutionId);
+		jobExecution.setStatus(status);
 		
 		repository.save(jobDefinition);
 	}

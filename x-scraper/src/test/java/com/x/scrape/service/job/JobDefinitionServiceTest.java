@@ -1,7 +1,8 @@
-package com.x.scrape.service;
+package com.x.scrape.service.job;
 
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -113,6 +115,22 @@ class JobDefinitionServiceTest {
 		jobDefinitionService.setTaskDefinitionsInactiveByUrl(jobId, urls);
 		
 		verify(jobDefinition).setTaskDefinitionsInactiveByUrl(urls);
+		verify(repository).save(jobDefinition);
+	}
+	
+	@Test
+	void shouldSetJobExecutionStatusById() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
+		
+		final Long jobExecutionId = 321L;
+		final JobExecution jobExecution = mock();
+		when(jobDefinition.getExecutionById(jobDefinitionId)).thenReturn(jobExecution);
+		
+		jobDefinitionService.setJobExecutionStatusById(COMPLETED, jobDefinitionId, jobExecutionId);
+		
+		verify(jobExecution).setStatus(COMPLETED);
 		verify(repository).save(jobDefinition);
 	}
 }

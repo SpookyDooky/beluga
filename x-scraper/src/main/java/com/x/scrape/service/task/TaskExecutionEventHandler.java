@@ -12,6 +12,7 @@ import java.time.Instant;
 
 import static com.x.scrape.model.task.TaskStatus.*;
 
+// Todo move to event package -> which contains a package for all the event handlers
 @Component
 public class TaskExecutionEventHandler {
 	

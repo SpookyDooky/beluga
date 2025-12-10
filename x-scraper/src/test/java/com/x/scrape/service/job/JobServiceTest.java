@@ -1,4 +1,4 @@
-package com.x.scrape.service;
+package com.x.scrape.service.job;
 
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
@@ -7,6 +7,8 @@ import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
+import com.x.scrape.service.job.JobDefinitionService;
+import com.x.scrape.service.job.JobService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

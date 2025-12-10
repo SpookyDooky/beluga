@@ -26,7 +26,7 @@ class ExecutionControllerTest {
 		
 		final ResponseEntity<Void> response = executionController.start(jobId);
 		
-		assertEquals(201, response.getStatusCode().value());
+		assertEquals(204, response.getStatusCode().value());
 		verify(executionApiService).start(jobId);
 	}
 	
@@ -36,7 +36,7 @@ class ExecutionControllerTest {
 		
 		final ResponseEntity<Void> response = executionController.stop(jobId);
 		
-		assertEquals(201, response.getStatusCode().value());
+		assertEquals(204, response.getStatusCode().value());
 		verify(executionApiService).stop(jobId);
 	}
 	
@@ -46,7 +46,7 @@ class ExecutionControllerTest {
 		
 		final ResponseEntity<Void> response = executionController.pause(jobId);
 		
-		assertEquals(201, response.getStatusCode().value());
+		assertEquals(204, response.getStatusCode().value());
 		verify(executionApiService).pause(jobId);
 	}
 	
@@ -56,7 +56,7 @@ class ExecutionControllerTest {
 		
 		final ResponseEntity<Void> response = executionController.resume(jobId);
 		
-		assertEquals(201, response.getStatusCode().value());
+		assertEquals(204, response.getStatusCode().value());
 		verify(executionApiService).resume(jobId);
 	}
 }

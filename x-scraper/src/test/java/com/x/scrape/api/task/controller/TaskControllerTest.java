@@ -9,7 +9,7 @@ import com.x.scrape.mapper.task.TaskDefinitionMapperService;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.x.scrape.model.task.TaskDefinition;
-import com.x.scrape.service.JobDefinitionService;
+import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import com.x.scrape.test_utils.TestReflectionUtility;
 import org.instancio.Instancio;

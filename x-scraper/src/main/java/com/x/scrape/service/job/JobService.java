@@ -1,4 +1,4 @@
-package com.x.scrape.service;
+package com.x.scrape.service.job;
 
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;

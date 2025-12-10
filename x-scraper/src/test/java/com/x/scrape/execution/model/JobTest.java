@@ -12,7 +12,7 @@ class JobTest {
 		final Job job = Instancio.create(Job.class);
 		
 		final String expectedFolder = job.getStorageConfiguration()
-				.getFolder() +
+				.getFolder() + "/" +
 				job.getJobName();
 		
 		final String actualFolder = job.getJobFolder();

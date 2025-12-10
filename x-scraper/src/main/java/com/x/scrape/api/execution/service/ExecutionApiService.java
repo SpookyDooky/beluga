@@ -2,8 +2,8 @@ package com.x.scrape.api.execution.service;
 
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
-import com.x.scrape.service.JobDefinitionService;
-import com.x.scrape.service.JobService;
+import com.x.scrape.service.job.JobDefinitionService;
+import com.x.scrape.service.job.JobService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
