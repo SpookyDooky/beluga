@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Job execution REST API
+  version: '1.0'
+
+paths:
+  /jobs/{jobId}/start:
+    post:
+      description: Starts a job, does nothing if job already running
+      tags:
+        - Execution
+      responses:
+        201:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/stop:
+    post:
+      description: Stops a job, does nothing if job not running
+      tags:
+        - Execution
+      responses:
+        201:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/pause:
+    post:
+      description: Pauses a job, does nothing if job already paused
+      tags:
+        - Execution
+      responses:
+        201:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/resume:
+    post:
+      description: Resumes a job, does nothing if job was already running
+      tags:
+        - Execution
+      responses:
+        201:
+          description: OK
+        404:
+          description: Not found
