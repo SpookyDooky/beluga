@@ -1,1 +1,1 @@
-alter table job_execution add column status varchar not null default PLANNED;
+alter table job_execution add column status varchar not null default 'PLANNED';
