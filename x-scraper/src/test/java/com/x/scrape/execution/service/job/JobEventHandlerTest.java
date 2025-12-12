@@ -1,6 +1,8 @@
-package com.x.scrape.service.job;
+package com.x.scrape.execution.service.job;
 
+import com.x.scrape.execution.event.job.JobFinishedEvent;
 import com.x.scrape.execution.event.job.JobStartedEvent;
+import com.x.scrape.service.job.JobDefinitionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.x.scrape.model.job_definition.JobStatus.ACTIVE;
+import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,5 +30,14 @@ class JobEventHandlerTest {
 		jobEventHandler.onJobStartedEvent(event);
 		
 		verify(jobDefinitionService).setJobExecutionStatusById(ACTIVE, event.getJobDefinitionId(), event.getJobExecutionId());
+	}
+	
+	@Test
+	void shouldOnJobFinishedEvent() {
+		final JobFinishedEvent event = Instancio.create(JobFinishedEvent.class);
+		
+		jobEventHandler.onJobFinishedEvent(event);
+		
+		verify(jobDefinitionService).setJobExecutionStatusById(COMPLETED, event.getJobDefinitionId(), event.getJobExecutionId());
 	}
 }

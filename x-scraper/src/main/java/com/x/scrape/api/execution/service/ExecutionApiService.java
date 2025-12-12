@@ -6,6 +6,8 @@ import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.job.JobService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 public class ExecutionApiService {
@@ -26,7 +28,16 @@ public class ExecutionApiService {
 	public void start(final Long jobId) {
 		final Job job = jobService.createJobByJobDefinitionId(jobId);
 		
-		jobExecutionService.executeJob(job);
+		start(job);
+	}
+	
+	private void start(final Job job) {
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCommit() {
+				jobExecutionService.executeJob(job);
+			}
+		});
 	}
 	
 	@Transactional

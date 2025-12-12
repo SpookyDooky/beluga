@@ -75,6 +75,7 @@ public class ActivityLoggingService {
 	 * Flushes all the stored activities by sending an event. This event should be picked up
 	 * at least by a service that handles saving data to the file system.
 	 */
+	// TODO - Should be configurable
 	@Scheduled(fixedRate = 15_000)
 	public void flushActivityLogs() {
 		logger.info("Flushing activity logs");
@@ -111,6 +112,8 @@ public class ActivityLoggingService {
 	private String getFolder(final Activity activity) {
 		final Long jobId = activity.getContext().getJobId();
 		
+		// TODO - should use the job definition repository as endpoints do not register jobs in the registry, only configuration does.
+		// Besides that it might be a good idea to deprecate and/or remove the JobRegistry as it seems somewhat obsolete now
 		return jobRegistry.get(jobId)
 				.getJobFolder() + "/logs";
 	}
