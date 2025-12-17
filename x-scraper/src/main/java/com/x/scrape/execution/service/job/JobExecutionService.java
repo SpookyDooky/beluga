@@ -71,4 +71,8 @@ public class JobExecutionService {
 		
 		eventPublisher.publishEvent(new JobFinishedEvent(job.getJobDefinitionId(), job.getId()));
 	}
+	
+	public void stop(final Long jobId) {
+	
+	}
 }
