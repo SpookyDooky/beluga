@@ -105,8 +105,8 @@ public class Worker {
 			
 			logger.info("Executing task.");
 			
-			// Should not be the responsibility of the worker
-			createTaskResultFolder(task);
+			// Todo - Should not be the responsibility of the worker
+			// createTaskResultFolder(task);
 			
 			final ScrapingResult scrapingResult = scrapingService.scrape(
 					task.getUrl(),

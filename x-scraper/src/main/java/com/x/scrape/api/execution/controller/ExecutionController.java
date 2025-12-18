@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 // TODO - Rename job id -> jobDefinitionId as that actually represents the id this is. Do not rename to jobDefinitionId in the API specs, users should not be bothered with underlying architecture.
+// Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
+// Because there should be support for multiple running jobs per job definition this should be included in V1.0
 @RestController
 @RequestMapping("/jobs/{jobId}")
 public class ExecutionController {

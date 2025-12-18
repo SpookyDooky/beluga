@@ -5,14 +5,17 @@ import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.MultiStoreTest;
+import com.x.scrape.result_storage.file_system.FileSystemResultDataStoreProvider;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -22,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MultiStoreTest
 @AutoConfigureMockMvc
 class ExecutionControllerIntegrationTest {
+	
+	@MockitoBean(answers = RETURNS_DEEP_STUBS)
+	private FileSystemResultDataStoreProvider fileSystemResultDataStoreProvider;
 	
 	@Autowired
 	private MockMvc mvc;

@@ -52,11 +52,8 @@ public class JobExecutionService {
 	public void executeJob(final Job job) {
 		logger.info("Executing job");
 		
-		
 		job.getTasks().forEach(jobTaskQueue::offerTask);
 		job.getTasks().clear();
-		
-		job.createJobFolders();
 		
 		final ExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
 		
