@@ -2,6 +2,7 @@ package com.x.scrape.model.job_definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
@@ -73,6 +74,12 @@ public class JobExecution implements HasId {
 	@JsonIgnore
 	public List<TaskExecution> getTasks() {
 		return tasks;
+	}
+	
+	public List<TaskExecution> getTasksByStatus(final TaskStatus status) {
+		return tasks.stream()
+				.filter(task -> task.getStatus() == status)
+				.toList();
 	}
 	
 	public void setTasks(final List<TaskExecution> tasks) {

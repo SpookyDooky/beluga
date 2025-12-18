@@ -1,8 +1,14 @@
 package com.x.scrape.model.job_definition;
 
 import com.x.scrape.model.task.TaskExecution;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static com.x.scrape.model.task.TaskStatus.COMPLETED;
+import static com.x.scrape.model.task.TaskStatus.PAUSED;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JobExecutionTest {
@@ -19,4 +25,24 @@ class JobExecutionTest {
 		assertTrue(jobExecution.getTasks().contains(taskExecution));
 	}
 	
+	@Test
+	void shouldGetTasksByStatus() {
+		final TaskExecution completedTask = Instancio.of(TaskExecution.class)
+				.set(field(TaskExecution::getStatus), COMPLETED)
+				.create();
+		final TaskExecution pausedTask = Instancio.of(TaskExecution.class)
+				.set(field(TaskExecution::getStatus), PAUSED)
+				.create();
+		
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getTasks), List.of(
+						completedTask,
+						pausedTask
+				)).create();
+		
+		final List<TaskExecution> result = jobExecution.getTasksByStatus(PAUSED);
+		
+		assertEquals(1, result.size());
+		assertTrue(result.contains(pausedTask));
+	}
 }

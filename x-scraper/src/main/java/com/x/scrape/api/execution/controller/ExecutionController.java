@@ -5,7 +5,7 @@ import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// TODO - Rename job id -> jobDefinitionId as that actually represents the id this is.
+// TODO - Rename job id -> jobDefinitionId as that actually represents the id this is. Do not rename to jobDefinitionId in the API specs, users should not be bothered with underlying architecture.
 @RestController
 @RequestMapping("/jobs/{jobId}")
 public class ExecutionController {

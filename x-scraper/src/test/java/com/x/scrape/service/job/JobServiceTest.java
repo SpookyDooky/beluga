@@ -4,11 +4,12 @@ import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.mapper.task.TaskMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
-import com.x.scrape.service.job.JobDefinitionService;
-import com.x.scrape.service.job.JobService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
+import static com.x.scrape.model.job_definition.JobStatus.PAUSED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -107,5 +110,92 @@ class JobServiceTest {
 		
 		verify(jobDefinitionService, times(2)).save(jobDefinition);
 		verify(jobDefinition).addExecution(any());
+	}
+	
+	@Test
+	void shouldCreateResumedJob() {
+		initializeJobService(Optional.empty(), Optional.empty());
+		
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final Long jobExecutionId = 123L;
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getId()).thenReturn(jobExecutionId);
+		when(jobExecution.getStatus()).thenReturn(PAUSED);
+		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
+		when(jobExecution.getTasksByStatus(TaskStatus.PAUSED)).thenReturn(List.of(taskExecution));
+		
+		final Job expected = new Job();
+		when(jobMapper.map(jobDefinition)).thenReturn(expected);
+		
+		final Task task = new Task();
+		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(task);
+		
+		final Job result = jobService.createResumedJob(jobDefinitionId)
+						.get();
+		
+		assertSame(expected, result);
+		assertEquals(1, result.getTasks().size());
+		assertTrue(result.getTasks().contains(task));
+		
+		assertEquals(jobExecutionId, result.getId());
+		
+		final Task createdTask = result.getTasks().getFirst();
+		assertEquals(taskExecution.getId(), createdTask.getId());
+		assertSame(result, createdTask.getJob());
+	}
+	
+	@Test
+	void shouldNotCreateResumedJobForJobWithNoExecutions() {
+		initializeJobService(Optional.empty(), Optional.empty());
+		
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		
+		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
+		
+		assertTrue(result.isEmpty());
+	}
+	
+	@Test
+	void shouldNotCreateResumedJobForCompletedJob() {
+		initializeJobService(Optional.empty(), Optional.empty());
+		
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getStatus()).thenReturn(COMPLETED);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
+		
+		assertTrue(result.isEmpty());
+	}
+	
+	@Test
+	void shouldNotCreatedResumedJobForPausedJobWithNoTasksLeft() {
+		initializeJobService(Optional.empty(), Optional.empty());
+		
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getStatus()).thenReturn(PAUSED);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		when(jobExecution.getTasksByStatus(TaskStatus.PAUSED)).thenReturn(List.of());
+		
+		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
+		
+		assertTrue(result.isEmpty());
 	}
 }
