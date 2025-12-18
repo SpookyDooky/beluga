@@ -16,7 +16,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import java.util.Optional;
 
-import static com.x.scrape.model.job_definition.JobStatus.STOPPED;
+import static com.x.scrape.model.job_definition.JobStatus.*;
+import static org.instancio.Select.field;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +59,9 @@ class ExecutionApiServiceTest {
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
 		
-		final JobExecution jobExecution = Instancio.create(JobExecution.class);
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), ACTIVE)
+				.create();
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
 		
 		executionApiService.stop(jobDefinitionId);
@@ -68,13 +71,77 @@ class ExecutionApiServiceTest {
 	}
 	
 	@Test
-	void shouldStopIfNoExecutionPresent() {
+	void shouldNotStopIfExecutionIsAlreadyCompleted() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), COMPLETED)
+				.create();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		executionApiService.stop(jobDefinitionId);
+		
+		verify(jobDefinitionService, never()).setJobExecutionStatusById(STOPPED, jobDefinitionId, jobExecution.getId());
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldNotStopIfNoExecutionPresent() {
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
 		
 		executionApiService.stop(jobDefinitionId);
+		
+		verify(jobDefinitionService, never()).setJobExecutionStatusById(any(), any(), any());
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldPauseJob() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), ACTIVE)
+				.create();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		executionApiService.pause(jobDefinitionId);
+		
+		verify(jobDefinitionService).setJobExecutionStatusById(PAUSED, jobDefinitionId, jobExecution.getId());
+		verify(jobExecutionService).pause(jobExecution.getId());
+	}
+	
+	@Test
+	void shouldNotPauseJobIfExecutionAlreadyCompleted() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), COMPLETED)
+				.create();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		executionApiService.stop(jobDefinitionId);
+		
+		verify(jobDefinitionService, never()).setJobExecutionStatusById(PAUSED, jobDefinitionId, jobExecution.getId());
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldNotPauseJobIfNoExecutionPresent() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		
+		executionApiService.pause(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(any(), any(), any());
 		verifyNoInteractions(jobExecutionService);

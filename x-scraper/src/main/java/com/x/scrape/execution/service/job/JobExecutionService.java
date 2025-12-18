@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.x.scrape.model.task.TaskStatus.PAUSED;
 import static com.x.scrape.model.task.TaskStatus.STOPPED;
 
 /**
@@ -88,5 +89,16 @@ public class JobExecutionService {
 		jobTaskQueue.clearTasks(jobId).stream()
 				.map(Task::getId)
 				.forEach(taskId -> taskExecutionService.setStatusById(taskId, STOPPED));
+	}
+	
+	/**
+	 * Pauses a running {@link Job}, and takes care of pausing all the remaining tasks.
+	 *
+	 * @param jobId the id of the {@link Job}.
+	 */
+	public void pause(final Long jobId) {
+		jobTaskQueue.clearTasks(jobId).stream()
+				.map(Task::getId)
+				.forEach(taskId -> taskExecutionService.setStatusById(taskId, PAUSED));
 	}
 }

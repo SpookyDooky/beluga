@@ -3,6 +3,7 @@ package com.x.scrape.api.execution.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
+import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.MultiStoreTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
@@ -13,7 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -44,7 +46,19 @@ class ExecutionControllerIntegrationTest {
 		).andReturn();
 		
 		final byte[] expectedContent = result.getResponse().getContentAsByteArray();
-		return objectMapper.readValue(expectedContent, ReadJobDefinitionDto.class);
+		final ReadJobDefinitionDto readJobDefinitionDto = objectMapper.readValue(expectedContent, ReadJobDefinitionDto.class);
+		
+		addTasks(readJobDefinitionDto.getId());
+		
+		return readJobDefinitionDto;
+	}
+	
+	void addTasks(final Long jobDefinitionId) throws Exception{
+		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
+		mvc.perform(put("/jobs/" + jobDefinitionId + "/tasks")
+				.content(objectMapper.writeValueAsString(updateTaskDto))
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
 	}
 	
 	@TestTemplate
@@ -60,6 +74,11 @@ class ExecutionControllerIntegrationTest {
 		
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
+		// First start job
+		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
+				.andExpect(status().isNoContent());
+		
+		// Stop job
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/stop"))
 				.andExpect(status().isNoContent());
 	}

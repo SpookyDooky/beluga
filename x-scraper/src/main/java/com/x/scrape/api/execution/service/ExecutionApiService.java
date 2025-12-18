@@ -13,7 +13,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import java.util.Optional;
 
-import static com.x.scrape.model.job_definition.JobStatus.STOPPED;
+import static com.x.scrape.model.job_definition.JobStatus.*;
 
 @Service
 public class ExecutionApiService {
@@ -53,19 +53,37 @@ public class ExecutionApiService {
 		
 		if (latestExecutionOptional.isPresent()) {
 			final JobExecution latestExecution = latestExecutionOptional.get();
-			jobDefinitionService.setJobExecutionStatusById(STOPPED, jobDefinitionId, latestExecution.getId());
 			
+			// Todo - reconsider when a job can be stopped
+			if (latestExecution.getStatus() == COMPLETED) {
+				return;
+			}
+			
+			jobDefinitionService.setJobExecutionStatusById(STOPPED, jobDefinitionId, latestExecution.getId());
 			jobExecutionService.stop(latestExecution.getId());
 		}
 	}
 	
 	@Transactional
-	public void pause(final Long jobId) {
-		// TODO - Implement
+	public void pause(final Long jobDefinitionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		final Optional<JobExecution> latestExecutionOptional = jobDefinition.getMostRecentExecution();
+		
+		if (latestExecutionOptional.isPresent()) {
+			final JobExecution latestExecution = latestExecutionOptional.get();
+			
+			// Todo - reconsider when a job can be paused
+			if (latestExecution.getStatus() == COMPLETED) {
+				return;
+			}
+			
+			jobDefinitionService.setJobExecutionStatusById(PAUSED, jobDefinitionId, latestExecution.getId());
+			jobExecutionService.pause(latestExecution.getId());
+		}
 	}
 	
 	@Transactional
-	public void resume(final Long jobId) {
+	public void resume(final Long jobDefinitionId) {
 		// TODO - Implement
 	}
 }

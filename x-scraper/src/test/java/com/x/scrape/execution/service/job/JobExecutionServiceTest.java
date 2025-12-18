@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.x.scrape.model.task.TaskStatus.PAUSED;
 import static com.x.scrape.model.task.TaskStatus.STOPPED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -104,6 +105,19 @@ class JobExecutionServiceTest {
 		
 		tasks.forEach(task -> {
 			verify(taskExecutionService).setStatusById(task.getId(), STOPPED);
+		});
+	}
+	
+	@Test
+	void shouldPauseJob() {
+		final Long jobId = 123L;
+		final Collection<Task> tasks = List.of(Instancio.create(Task.class));
+		when(jobTaskQueue.clearTasks(jobId)).thenReturn(tasks);
+		
+		jobExecutionService.pause(jobId);
+		
+		tasks.forEach(task -> {
+			verify(taskExecutionService).setStatusById(task.getId(), PAUSED);
 		});
 	}
 }
