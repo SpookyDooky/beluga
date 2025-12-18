@@ -8,6 +8,7 @@ import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
+import com.x.scrape.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,15 +22,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import static com.x.scrape.model.task.TaskStatus.STOPPED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class JobDefinitionExecutionServiceTest {
+class JobExecutionServiceTest {
 	
 	@Mock
 	private ContextLogger logger;
@@ -39,6 +42,8 @@ class JobDefinitionExecutionServiceTest {
 	private JobTaskQueue jobTaskQueue;
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
+	@Mock
+	private TaskExecutionService taskExecutionService;
 	
 	@InjectMocks
 	private JobExecutionService jobExecutionService;
@@ -87,5 +92,18 @@ class JobDefinitionExecutionServiceTest {
 		final JobStartedEvent jobStartedEvent = jobStartedEventArgumentCaptor.getValue();
 		assertEquals(job.getJobDefinitionId(), jobStartedEvent.getJobDefinitionId());
 		assertEquals(job.getId(), jobStartedEvent.getJobExecutionId());
+	}
+	
+	@Test
+	void shouldStopJob() {
+		final Long jobId = 123L;
+		final Collection<Task> tasks = List.of(Instancio.create(Task.class));
+		when(jobTaskQueue.clearTasks(jobId)).thenReturn(tasks);
+		
+		jobExecutionService.stop(jobId);
+		
+		tasks.forEach(task -> {
+			verify(taskExecutionService).setStatusById(task.getId(), STOPPED);
+		});
 	}
 }

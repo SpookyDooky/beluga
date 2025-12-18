@@ -10,12 +10,16 @@ import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
+import com.x.scrape.model.task.Task;
+import com.x.scrape.service.task.TaskExecutionService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.x.scrape.model.task.TaskStatus.STOPPED;
 
 /**
  * This service takes care of starting the correct amount of {@link Worker}'s for each {@link JobDefinition}.
@@ -28,17 +32,20 @@ public class JobExecutionService {
 	private final JobTaskQueue jobTaskQueue;
 	private final ApplicationEventPublisher eventPublisher;
 	private final WorkerOrchestrator workerOrchestrator;
+	private final TaskExecutionService taskExecutionService;
 	
 	private final Map<Long, Job> jobIdJobMap = new HashMap<>();
 	
 	public JobExecutionService(final ContextLogger logger,
 	                           final JobTaskQueue jobTaskQueue,
 	                           final ApplicationEventPublisher eventPublisher,
-	                           final WorkerOrchestrator workerOrchestrator) {
+	                           final WorkerOrchestrator workerOrchestrator,
+	                           final TaskExecutionService taskExecutionService) {
 		this.logger = logger;
 		this.jobTaskQueue = jobTaskQueue;
 		this.eventPublisher = eventPublisher;
 		this.workerOrchestrator = workerOrchestrator;
+		this.taskExecutionService = taskExecutionService;
 	}
 	
 	public void executeJob(final Job job) {
@@ -72,7 +79,14 @@ public class JobExecutionService {
 		eventPublisher.publishEvent(new JobFinishedEvent(job.getJobDefinitionId(), job.getId()));
 	}
 	
+	/**
+	 * Stops a running {@link Job}, and takes care of changing the status of all remaining tasks.
+	 *
+	 * @param jobId the id of the {@link Job}.
+	 */
 	public void stop(final Long jobId) {
-	
+		jobTaskQueue.clearTasks(jobId).stream()
+				.map(Task::getId)
+				.forEach(taskId -> taskExecutionService.setStatusById(taskId, STOPPED));
 	}
 }

@@ -31,8 +31,8 @@ public class ExecutionApiService {
 	}
 	
 	@Transactional
-	public void start(final Long jobId) {
-		final Job job = jobService.createJobByJobDefinitionId(jobId);
+	public void start(final Long jobDefinitionId) {
+		final Job job = jobService.createJobByJobDefinitionId(jobDefinitionId);
 		
 		start(job);
 	}
@@ -47,23 +47,25 @@ public class ExecutionApiService {
 	}
 	
 	@Transactional
-	public void stop(final Long jobId) {
-		final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
+	public void stop(final Long jobDefinitionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
 		final Optional<JobExecution> latestExecutionOptional = jobDefinition.getMostRecentExecution();
 		
 		if (latestExecutionOptional.isPresent()) {
 			final JobExecution latestExecution = latestExecutionOptional.get();
-			jobDefinitionService.setJobExecutionStatusById(STOPPED, jobId, latestExecution.getId());
+			jobDefinitionService.setJobExecutionStatusById(STOPPED, jobDefinitionId, latestExecution.getId());
+			
+			jobExecutionService.stop(latestExecution.getId());
 		}
 	}
 	
 	@Transactional
 	public void pause(final Long jobId) {
-	
+		// TODO - Implement
 	}
 	
 	@Transactional
 	public void resume(final Long jobId) {
-	
+		// TODO - Implement
 	}
 }
