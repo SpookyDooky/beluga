@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static com.x.scrape.model.job_definition.JobStatus.*;
 
+// Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
 @Service
 public class ExecutionApiService {
 	
@@ -84,6 +85,23 @@ public class ExecutionApiService {
 	
 	@Transactional
 	public void resume(final Long jobDefinitionId) {
-		// TODO - Implement
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		final Optional<JobExecution> latestExecutionOptional = jobDefinition.getMostRecentExecution();
+		
+		if (latestExecutionOptional.isPresent()) {
+			final JobExecution latestExecution = latestExecutionOptional.get();
+			
+			if (latestExecution.getStatus() != PAUSED) {
+				return;
+			}
+			
+			jobDefinitionService.setJobExecutionStatusById(ACTIVE, jobDefinitionId, latestExecution.getId());
+			final Optional<Job> jobOptional = jobService.createResumedJob(jobDefinitionId);
+			
+			if (jobOptional.isPresent()) {
+				final Job job = jobOptional.get();
+				jobExecutionService.executeJob(job);
+			}
+		}
 	}
 }

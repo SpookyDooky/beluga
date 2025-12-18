@@ -34,11 +34,13 @@ public class S3PersistenceService {
 	private final S3Client s3Client;
 	private final ObjectMapper objectMapper;
 	
+	// TODO - Maybe the flushing logic should be extracted in an S3 flush service
 	private final Map<Path, Object> writeQueue = new ConcurrentHashMap<>();
 	private final Map<Path, Instant> lastUpdated = new ConcurrentHashMap<>();
 	
 	private final String bucket;
 	// TODO - This path should be prepended to any received path
+	// TODO - Important that none of the supplying services prepend this path otherwise the stored location will be incorrect
 	private final String path;
 	
 	private final AtomicBoolean flushing = new AtomicBoolean(false);
@@ -115,8 +117,9 @@ public class S3PersistenceService {
 		}
 	}
 	
-	// TODO - make this configurable
-	// TODO - Graceful shutdown -> flush to object store before shut down
+	// Todo - should use multiple threads to flush items, this should be configurable, necessary for V1.0
+	// TODO - make this configurable (V1.0)
+	// TODO - Graceful shutdown -> flush to object store before shut down (V1.0)
 	@Async
 	@Scheduled(fixedRate = 1_000, timeUnit = MILLISECONDS)
 	void flushObjects() {

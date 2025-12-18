@@ -4,11 +4,14 @@ import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.job_definition.JobStatus;
 import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.job.JobService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -18,6 +21,7 @@ import java.util.Optional;
 
 import static com.x.scrape.model.job_definition.JobStatus.*;
 import static org.instancio.Select.field;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -144,6 +148,75 @@ class ExecutionApiServiceTest {
 		executionApiService.pause(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(any(), any(), any());
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldResume() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getStatus()).thenReturn(PAUSED);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		final Job job = mock();
+		when(jobService.createResumedJob(jobDefinitionId)).thenReturn(Optional.of(job));
+		
+		executionApiService.resume(jobDefinitionId);
+		
+		verify(jobExecutionService).executeJob(job);
+	}
+	
+	@Test
+	void shouldNotResumeIfJobHasNoExecution() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		
+		executionApiService.resume(jobDefinitionId);
+		
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@ParameterizedTest
+	@EnumSource(
+			value = JobStatus.class,
+			mode = EXCLUDE,
+			names = {
+					"PAUSED"
+			}
+	)
+	void shouldNotResumeIfLastExecutionIsNotPaused(final JobStatus status) {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getStatus()).thenReturn(status);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		executionApiService.resume(jobDefinitionId);
+		
+		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldNotResumeIfJobServiceReturnsEmptyOptional() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getStatus()).thenReturn(PAUSED);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		when(jobService.createResumedJob(jobDefinitionId)).thenReturn(Optional.empty());
+		
+		executionApiService.resume(jobDefinitionId);
+		
 		verifyNoInteractions(jobExecutionService);
 	}
 }
