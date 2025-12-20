@@ -1,5 +1,7 @@
 package com.x.scrape.api.execution.service;
 
+import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.mapper.ReadJobExecutionMapper;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
 import com.x.scrape.model.job_definition.JobDefinition;
@@ -22,13 +24,16 @@ public class ExecutionApiService {
 	private final JobDefinitionService jobDefinitionService;
 	private final JobService jobService;
 	private final JobExecutionService jobExecutionService;
+	private final ReadJobExecutionMapper readJobExecutionMapper;
 	
 	public ExecutionApiService(final JobDefinitionService jobDefinitionService,
 	                           final JobService jobService,
-	                           final JobExecutionService jobExecutionService) {
+	                           final JobExecutionService jobExecutionService,
+	                           final ReadJobExecutionMapper readJobExecutionMapper) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.jobService = jobService;
 		this.jobExecutionService = jobExecutionService;
+		this.readJobExecutionMapper = readJobExecutionMapper;
 	}
 	
 	@Transactional
@@ -103,5 +108,13 @@ public class ExecutionApiService {
 				jobExecutionService.executeJob(job);
 			}
 		}
+	}
+	
+	@Transactional
+	public Optional<ReadJobExecutionDto> getLatestJobExecution(final Long jobDefinitionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		
+		return jobDefinition.getMostRecentExecution()
+				.map(readJobExecutionMapper::map);
 	}
 }

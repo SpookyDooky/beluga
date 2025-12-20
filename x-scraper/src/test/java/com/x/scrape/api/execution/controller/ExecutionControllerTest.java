@@ -1,5 +1,6 @@
 package com.x.scrape.api.execution.controller;
 
+import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,8 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExecutionControllerTest {
@@ -58,5 +62,26 @@ class ExecutionControllerTest {
 		
 		assertEquals(204, response.getStatusCode().value());
 		verify(executionApiService).resume(jobId);
+	}
+	
+	@Test
+	void shouldGetLatestExecution() {
+		final Long jobDefinitionId = 123L;
+		final ReadJobExecutionDto expected = mock();
+		when(executionApiService.getLatestJobExecution(jobDefinitionId)).thenReturn(Optional.of(expected));
+		
+		final ResponseEntity<ReadJobExecutionDto> result = executionController.getLatestExecution(jobDefinitionId);
+		
+		assertSame(expected, result.getBody());
+	}
+	
+	@Test
+	void shouldGetNotFoundWhenGettingLatestExecution() {
+		final Long jobDefinitionId = 321L;
+		when(executionApiService.getLatestJobExecution(jobDefinitionId)).thenReturn(Optional.empty());
+		
+		final ResponseEntity<ReadJobExecutionDto> result = executionController.getLatestExecution(jobDefinitionId);
+	
+		assertEquals(404, result.getStatusCode().value());
 	}
 }

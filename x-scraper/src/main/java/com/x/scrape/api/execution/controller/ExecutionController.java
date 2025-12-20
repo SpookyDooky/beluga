@@ -1,5 +1,6 @@
 package com.x.scrape.api.execution.controller;
 
+import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
@@ -64,8 +65,8 @@ public class ExecutionController {
 	 * @return the latest execution.
 	 */
 	@GetMapping("/executions/latest")
-	public ResponseEntity<Void> getLatestExecution(@PathVariable("jobId") final Long jobId) {
-		return null;
+	public ResponseEntity<ReadJobExecutionDto> getLatestExecution(@PathVariable("jobId") final Long jobId) {
+		return ResponseEntity.of(executionApiService.getLatestJobExecution(jobId));
 	}
 	
 	@GetMapping("/executions")

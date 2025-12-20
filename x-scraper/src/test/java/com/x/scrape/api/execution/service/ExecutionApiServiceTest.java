@@ -1,5 +1,7 @@
 package com.x.scrape.api.execution.service;
 
+import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.mapper.ReadJobExecutionMapper;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
 import com.x.scrape.model.job_definition.JobDefinition;
@@ -21,6 +23,8 @@ import java.util.Optional;
 
 import static com.x.scrape.model.job_definition.JobStatus.*;
 import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.*;
 
@@ -33,6 +37,8 @@ class ExecutionApiServiceTest {
 	private JobService jobService;
 	@Mock
 	private JobExecutionService jobExecutionService;
+	@Mock
+	private ReadJobExecutionMapper readJobExecutionMapper;
 	
 	@InjectMocks
 	private ExecutionApiService executionApiService;
@@ -218,5 +224,31 @@ class ExecutionApiServiceTest {
 		executionApiService.resume(jobDefinitionId);
 		
 		verifyNoInteractions(jobExecutionService);
+	}
+	
+	@Test
+	void shouldGetLatestJobExecution() {
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		
+		final ReadJobExecutionDto expected = mock();
+		when(readJobExecutionMapper.map(jobDefinition.getMostRecentExecution().get())).thenReturn(expected);
+		
+		final ReadJobExecutionDto result = executionApiService.getLatestJobExecution(jobDefinition.getId())
+				.get();
+		
+		assertSame(expected, result);
+	}
+	
+	@Test
+	void shouldNotGetLatestJobExecutionIfNoExecutionPresent() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		
+		final Optional<ReadJobExecutionDto> result = executionApiService.getLatestJobExecution(jobDefinitionId);
+		
+		assertTrue(result.isEmpty());
 	}
 }
