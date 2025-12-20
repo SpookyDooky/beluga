@@ -19,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.x.scrape.model.job_definition.JobStatus.*;
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.*;
 
@@ -250,5 +250,22 @@ class ExecutionApiServiceTest {
 		final Optional<ReadJobExecutionDto> result = executionApiService.getLatestJobExecution(jobDefinitionId);
 		
 		assertTrue(result.isEmpty());
+	}
+	
+	@Test
+	void shouldGetExecutions() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		final ReadJobExecutionDto readJobExecutionDto = mock();
+		when(readJobExecutionMapper.map(jobExecution)).thenReturn(readJobExecutionDto);
+		when(jobDefinition.getExecutions()).thenReturn(List.of(jobExecution));
+		
+		final List<ReadJobExecutionDto> result = executionApiService.getExecutions(jobDefinitionId);
+		
+		assertEquals(1, result.size());
+		assertTrue(result.contains(readJobExecutionDto));
 	}
 }

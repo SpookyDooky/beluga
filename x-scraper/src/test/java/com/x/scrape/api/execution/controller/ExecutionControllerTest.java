@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,5 +84,16 @@ class ExecutionControllerTest {
 		final ResponseEntity<ReadJobExecutionDto> result = executionController.getLatestExecution(jobDefinitionId);
 	
 		assertEquals(404, result.getStatusCode().value());
+	}
+	
+	@Test
+	void shouldGetExecutions() {
+		final Long jobDefinitionId = 543L;
+		final List<ReadJobExecutionDto> expected = List.of();
+		when(executionApiService.getExecutions(jobDefinitionId)).thenReturn(expected);
+		
+		final List<ReadJobExecutionDto> result = executionController.getExecutions(jobDefinitionId);
+		
+		assertSame(expected, result);
 	}
 }

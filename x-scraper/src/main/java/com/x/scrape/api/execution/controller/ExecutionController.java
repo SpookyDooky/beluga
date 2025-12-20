@@ -2,10 +2,13 @@ package com.x.scrape.api.execution.controller;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
+import com.x.scrape.execution.model.Job;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // TODO - Rename job id -> jobDefinitionId as that actually represents the id this is. Do not rename to jobDefinitionId in the API specs, users should not be bothered with underlying architecture.
 // Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
@@ -58,6 +61,9 @@ public class ExecutionController {
 				.build();
 	}
 	
+	// TODO - consider if including all tasks is too slow/heavy
+	// And if we need a separate endpoint for retrieving detailed information about an execution per id
+	
 	/**
 	 * Retrieves the latest execution of a specific {@link JobDefinition}.
 	 *
@@ -69,8 +75,14 @@ public class ExecutionController {
 		return ResponseEntity.of(executionApiService.getLatestJobExecution(jobId));
 	}
 	
+	/**
+	 * Retrieves all executions of a {@link Job}
+	 *
+	 * @param jobId the id of the {@link JobDefinition}
+	 * @return a list containing all executions of the job
+	 */
 	@GetMapping("/executions")
-	public void getExecutions(@PathVariable("jobId") final Long jobId) {
-	
+	public List<ReadJobExecutionDto> getExecutions(@PathVariable("jobId") final Long jobId) {
+		return executionApiService.getExecutions(jobId);
 	}
 }

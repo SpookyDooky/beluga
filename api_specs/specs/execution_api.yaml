@@ -122,6 +122,35 @@ paths:
                   $ref: "#/components/schemas/ReadExecutionDto"
         404:
           description: Job was not found
+  /jobs/{jobId}/executions/{executionId}:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+      - in: path
+        name: executionId
+        required: true
+        schema:
+          type: integer
+          example: 321
+        description: id of the job
+    get:
+      description: Returns all details of a job execution including tasks
+      tags:
+        - Execution
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadExecutionWithTasksDto"
+        404:
+          description: Job was not found
 
 components:
   schemas:
@@ -151,6 +180,18 @@ components:
         - id
         - executedAt
         - status
+
+    ReadExecutionWithTasksDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ReadExecutionDto"
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReadTaskDto"
+      required:
+        - tasks
 
     ReadTaskDto:
       type: object

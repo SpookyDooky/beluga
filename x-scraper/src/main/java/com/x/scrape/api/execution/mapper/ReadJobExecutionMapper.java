@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.mapper;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.model.job_definition.JobExecution;
 import org.mapstruct.Mapper;
 
@@ -17,4 +18,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface ReadJobExecutionMapper {
 	
 	ReadJobExecutionDto map(JobExecution jobExecution);
+	
+	ReadJobExecutionWithTasksDto mapWithTasks(JobExecution jobExecution);
 }

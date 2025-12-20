@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.x.scrape.model.job_definition.JobStatus.*;
@@ -116,5 +117,14 @@ public class ExecutionApiService {
 		
 		return jobDefinition.getMostRecentExecution()
 				.map(readJobExecutionMapper::map);
+	}
+	
+	@Transactional
+	public List<ReadJobExecutionDto> getExecutions(final Long jobDefinitionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		
+		return jobDefinition.getExecutions().stream()
+				.map(readJobExecutionMapper::map)
+				.toList();
 	}
 }

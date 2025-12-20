@@ -4,8 +4,6 @@ import com.x.scrape.model.job_definition.JobStatus;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReadJobExecutionDto {
 
@@ -15,8 +13,6 @@ public class ReadJobExecutionDto {
 	private Instant executedAt;
 	@NotNull
 	private JobStatus status;
-	
-	private List<@NotNull ReadTaskExecutionDto> tasks = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -42,11 +38,4 @@ public class ReadJobExecutionDto {
 		this.status = status;
 	}
 	
-	public List<ReadTaskExecutionDto> getTasks() {
-		return tasks;
-	}
-	
-	public void setTasks(final List<ReadTaskExecutionDto> tasks) {
-		this.tasks = tasks;
-	}
 }

@@ -6,6 +6,7 @@ import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.MultiStoreTest;
 import com.x.scrape.result_storage.file_system.FileSystemResultDataStoreProvider;
+import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,5 +128,30 @@ class ExecutionControllerIntegrationTest {
 	void shouldGet404ForResume() throws Exception {
 		mvc.perform(post("/jobs/123/resume"))
 				.andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
+	void shouldGetLatestExecution() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingLatestExecutionIfJobDoesNotExist() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingLatestExecutionIfJobHasNoExecutions() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldRetrieveExecutions() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingExecutionsForNonExistingJob() {
+		Assertions.fail();
 	}
 }

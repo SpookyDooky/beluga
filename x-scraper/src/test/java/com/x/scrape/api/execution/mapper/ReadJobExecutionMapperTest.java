@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.mapper;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.dto.ReadTaskExecutionDto;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.task.TaskExecution;
@@ -29,6 +30,17 @@ class ReadJobExecutionMapperTest {
 	
 	@Test
 	void shouldMap() {
+		final JobExecution jobExecution = Instancio.create(JobExecution.class);
+		
+		final ReadJobExecutionDto readJobExecutionDto = mapper.map(jobExecution);
+		
+		assertEquals(jobExecution.getId(), readJobExecutionDto.getId());
+		assertEquals(jobExecution.getExecutedAt(), readJobExecutionDto.getExecutedAt());
+		assertEquals(jobExecution.getStatus(), readJobExecutionDto.getStatus());
+	}
+	
+	@Test
+	void shouldMapWithTasks() {
 		final TaskExecution taskExecution = mock();
 		final ReadTaskExecutionDto readTaskExecutionDto = mock();
 		when(readTaskExecutionMapper.map(taskExecution)).thenReturn(readTaskExecutionDto);
@@ -37,7 +49,7 @@ class ReadJobExecutionMapperTest {
 				.set(field(JobExecution::getTasks), List.of(taskExecution))
 				.create();
 		
-		final ReadJobExecutionDto readJobExecutionDto = mapper.map(jobExecution);
+		final ReadJobExecutionWithTasksDto readJobExecutionDto = mapper.mapWithTasks(jobExecution);
 		
 		assertEquals(jobExecution.getId(), readJobExecutionDto.getId());
 		assertEquals(jobExecution.getExecutedAt(), readJobExecutionDto.getExecutedAt());
