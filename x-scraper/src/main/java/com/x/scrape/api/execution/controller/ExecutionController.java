@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.controller;
 
 import com.x.scrape.api.execution.service.ExecutionApiService;
+import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,21 @@ public class ExecutionController {
 		
 		return ResponseEntity.noContent()
 				.build();
+	}
+	
+	/**
+	 * Retrieves the latest execution of a specific {@link JobDefinition}.
+	 *
+	 * @param jobId the id of the {@link JobDefinition}
+	 * @return the latest execution.
+	 */
+	@GetMapping("/executions/latest")
+	public ResponseEntity<Void> getLatestExecution(@PathVariable("jobId") final Long jobId) {
+		return null;
+	}
+	
+	@GetMapping("/executions")
+	public void getExecutions(@PathVariable("jobId") final Long jobId) {
+	
 	}
 }
