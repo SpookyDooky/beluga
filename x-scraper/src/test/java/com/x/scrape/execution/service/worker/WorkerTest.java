@@ -94,15 +94,6 @@ class WorkerTest {
 		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getAllValues().getFirst();
 		final JsonPayload mapPayload = (JsonPayload) taskResultEvent.getPayload();
 		assertSame(scrapeResult, mapPayload.getData());
-		
-		Thread.sleep(500L);
-		removeResultFolder(task);
-	}
-	
-	void removeResultFolder(final Task task) {
-		final File file = new File(task.getJob().getJobFolder());
-		assertTrue(file.getPath().startsWith(task.getJob().getStorageConfiguration().getFolder()));
-		removeFile(file);
 	}
 	
 	void removeFile(final File file) {

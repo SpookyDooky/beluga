@@ -126,7 +126,7 @@ class JobDefinitionServiceTest {
 		
 		final Long jobExecutionId = 321L;
 		final JobExecution jobExecution = mock();
-		when(jobDefinition.getExecutionById(jobDefinitionId)).thenReturn(jobExecution);
+		when(jobDefinition.getExecutionById(jobExecutionId)).thenReturn(jobExecution);
 		
 		jobDefinitionService.setJobExecutionStatusById(COMPLETED, jobDefinitionId, jobExecutionId);
 		

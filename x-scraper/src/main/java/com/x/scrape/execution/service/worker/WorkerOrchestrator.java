@@ -8,8 +8,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WorkerOrchestrator {
@@ -17,7 +17,7 @@ public class WorkerOrchestrator {
 	private final ApplicationContext applicationContext;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	
-	private final Map<Long, Integer> activeWorkersPerJob = new HashMap<>();
+	private final Map<Long, Integer> activeWorkersPerJob = new ConcurrentHashMap<>();
 	
 	public WorkerOrchestrator(final ApplicationContext applicationContext,
 	                          final ApplicationEventPublisher applicationEventPublisher) {
@@ -50,7 +50,7 @@ public class WorkerOrchestrator {
 		final int activeWorkers = activeWorkersPerJob.get(event.getJobId()) - 1;
 		activeWorkersPerJob.put(event.getJobId(), activeWorkers);
 		
-		if (activeWorkers == 0) {
+		if (activeWorkers <= 0) {
 			applicationEventPublisher.publishEvent(new JobWorkersFinishedEvent(event.getJobId()));
 		}
 	}
