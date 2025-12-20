@@ -73,6 +73,7 @@ public class Worker {
 	 *
 	 * @param jobId the id of the {@link JobDefinition}.
 	 */
+	// TODO - job id should be of the execution id, not the job definition id
 	public void init(final Long jobId,
 	                 final RateLimiter rateLimiter) {
 		this.jobId = jobId;
@@ -104,8 +105,8 @@ public class Worker {
 			
 			logger.info("Executing task.");
 			
-			// Should not be the responsibility of the worker
-			createTaskResultFolder(task);
+			// Todo - Should not be the responsibility of the worker
+			// createTaskResultFolder(task);
 			
 			final ScrapingResult scrapingResult = scrapingService.scrape(
 					task.getUrl(),

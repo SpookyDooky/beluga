@@ -1,6 +1,7 @@
 package com.x.scrape.service.task;
 
 import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.x.scrape.model.task.TaskStatus.COMPLETED;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskExecutionServiceTest {
@@ -51,5 +52,18 @@ class TaskExecutionServiceTest {
 		final TaskExecution result = taskExecutionService.save(taskExecution);
 		
 		assertSame(taskExecution, result);
+	}
+	
+	@Test
+	void shouldSetStatusById() {
+		final Long id = 123L;
+		final TaskExecution taskExecution = mock();
+		when(taskExecutionRepository.findById(id)).thenReturn(Optional.of(taskExecution));
+		
+		final TaskStatus status = COMPLETED;
+		taskExecutionService.setStatusById(id, status);
+		
+		verify(taskExecution).setStatus(status);
+		verify(taskExecutionRepository).save(taskExecution);
 	}
 }

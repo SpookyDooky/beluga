@@ -1,10 +1,11 @@
-package com.x.scrape.service;
+package com.x.scrape.service.job;
 
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.mapper.task.TaskMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.job_definition.JobStatus;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.model.task.TaskExecution;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.x.scrape.model.task.TaskStatus.PAUSED;
 
 @Service
 public class JobService {
@@ -97,6 +100,66 @@ public class JobService {
 		} else if (entityIdSetterService != null) {
 			entityIdSetterService.setIds(taskExecution);
 		}
+		
+		final Task task = taskMapper.map(jobDefinition, taskDefinition);
+		task.setId(taskExecution.getId());
+		task.setJob(job);
+		
+		return task;
+	}
+	
+	/**
+	 * Creates a {@link Job} for a {@link Job} that has previously been paused.
+	 *
+	 * @param jobDefinitionId the id of the {@link JobDefinition}.
+	 * @return optional {@link Job} if there is no previous execution or the previous execution has been completed it will be empty.
+	 */
+	@Transactional
+	public Optional<Job> createResumedJob(final Long jobDefinitionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		final Optional<JobExecution> latestExecutionOptional = jobDefinition.getMostRecentExecution();
+		
+		if (latestExecutionOptional.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return createResumedJob(latestExecutionOptional.get());
+	}
+	
+	private Optional<Job> createResumedJob(final JobExecution jobExecution) {
+		if (jobExecution.getStatus() != JobStatus.PAUSED) {
+			return Optional.empty();
+		}
+		
+		final List<TaskExecution> pausedTasks = jobExecution.getTasksByStatus(PAUSED);
+		if (pausedTasks.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		final JobDefinition jobDefinition = jobExecution.getJobDefinition();
+		
+		return Optional.of(createResumedJob(pausedTasks, jobDefinition, jobExecution));
+	}
+	
+	private Job createResumedJob(final List<TaskExecution> taskExecutions,
+	                             final JobDefinition jobDefinition,
+	                             final JobExecution jobExecution) {
+		final Job job = jobMapper.map(jobDefinition);
+		job.setId(jobExecution.getId());
+		
+		job.setTasks(
+				taskExecutions.stream()
+						.map(taskExecution -> createTask(taskExecution, jobDefinition, job))
+						.toList()
+		);
+		
+		return job;
+	}
+	
+	private Task createTask(final TaskExecution taskExecution,
+	                        final JobDefinition jobDefinition,
+	                        final Job job) {
+		final TaskDefinition taskDefinition = taskExecution.getTaskDefinition();
 		
 		final Task task = taskMapper.map(jobDefinition, taskDefinition);
 		task.setId(taskExecution.getId());

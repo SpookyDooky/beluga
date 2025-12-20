@@ -77,7 +77,7 @@ public class Job {
 	
 	@JsonIgnore
 	public String getJobFolder() {
-		return storageConfiguration.getFolder()
+		return storageConfiguration.getFolder() + "/"
 				+ jobName;
 	}
 	

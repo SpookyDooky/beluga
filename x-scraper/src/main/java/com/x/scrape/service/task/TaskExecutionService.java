@@ -1,6 +1,7 @@
 package com.x.scrape.service.task;
 
 import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,15 @@ public class TaskExecutionService {
 	@Transactional(propagation = MANDATORY)
 	public TaskExecution save(final TaskExecution taskExecution) {
 		return taskExecutionRepository.save(taskExecution);
+	}
+	
+	@Transactional
+	public void setStatusById(final Long id,
+	                          final TaskStatus status) {
+		final TaskExecution taskExecution = getById(id);
+		taskExecution.setStatus(status);
+		
+		taskExecutionRepository.save(taskExecution);
 	}
 	
 }

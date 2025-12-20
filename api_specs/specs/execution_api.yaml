@@ -1,0 +1,221 @@
+openapi: 3.0.0
+info:
+  title: Job execution REST API
+  version: '1.0'
+
+paths:
+  /jobs/{jobId}/start:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    post:
+      description: Starts a job, does nothing if job already running
+      tags:
+        - Execution
+      responses:
+        204:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/stop:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    post:
+      description: Stops a job, does nothing if job not running
+      tags:
+        - Execution
+      responses:
+        204:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/pause:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    post:
+      description: Pauses a job, does nothing if job already paused
+      tags:
+        - Execution
+      responses:
+        204:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/resume:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    post:
+      description: Resumes a job, does nothing if job was already running
+      tags:
+        - Execution
+      responses:
+        204:
+          description: OK
+        404:
+          description: Not found
+  /jobs/{jobId}/executions/latest:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    get:
+      description: Returns the last or current exection of a job.
+      tags:
+        - Execution
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadExecutionDto"
+        404:
+          description: Either the job was not found, or there was has not been an execution
+  /jobs/{jobId}/executions:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+    get:
+      description: Returns all job executions
+      tags:
+        - Execution
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadExecutionDto"
+        404:
+          description: Job was not found
+  /jobs/{jobId}/executions/{executionId}:
+    parameters:
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: integer
+          example: 123
+        description: If of the job
+      - in: path
+        name: executionId
+        required: true
+        schema:
+          type: integer
+          example: 321
+        description: id of the job
+    get:
+      description: Returns all details of a job execution including tasks
+      tags:
+        - Execution
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadExecutionWithTasksDto"
+        404:
+          description: Job was not found
+
+components:
+  schemas:
+
+    ReadExecutionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        executedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PLANNED
+            - PAUSED
+            - STOPPED
+            - ACTIVE
+            - COMPLETED
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReadTaskDto"
+      required:
+        - id
+        - executedAt
+        - status
+
+    ReadExecutionWithTasksDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ReadExecutionDto"
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReadTaskDto"
+      required:
+        - tasks
+
+    ReadTaskDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        executedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PLANNED
+            - ACTIVE
+            - COMPLETED
+            - FAILED
+            - STOPPED
+            - PAUSED
+        url:
+          type: string
+          example: http://some.website.com/some/path
+      required:
+        - id
+        - executedAt
+        - status
+        - url
