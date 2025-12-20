@@ -1,12 +1,12 @@
 package com.x.scrape.api.execution.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.integration_test.MultiStoreTest;
 import com.x.scrape.result_storage.file_system.FileSystemResultDataStoreProvider;
-import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -131,42 +131,85 @@ class ExecutionControllerIntegrationTest {
 	}
 	
 	@TestTemplate
-	void shouldGetLatestExecution() {
-		Assertions.fail();
+	void shouldGetLatestExecution() throws Exception{
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		writeJobDefinitionDto.getExecution().setWorkers(1);
+		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
+		
+		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
+				.andExpect(status().isNoContent());
+		
+		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/latest"))
+				.andExpect(status().isOk());
 	}
 	
 	@TestTemplate
-	void shouldGet404ForRetrievingLatestExecutionIfJobDoesNotExist() {
-		Assertions.fail();
+	void shouldGet404ForRetrievingLatestExecutionIfJobDoesNotExist() throws Exception {
+		mvc.perform(get("/jobs/123/executions/latest"))
+				.andExpect(status().isNotFound());
 	}
 	
 	@TestTemplate
-	void shouldGet404ForRetrievingLatestExecutionIfJobHasNoExecutions() {
-		Assertions.fail();
+	void shouldGet404ForRetrievingLatestExecutionIfJobHasNoExecutions() throws Exception {
+		final ReadJobDefinitionDto readJobDefinitionDto = createJob(Instancio.create(WriteJobDefinitionDto.class));
+		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/latest"))
+				.andExpect(status().isNotFound());
 	}
 	
 	@TestTemplate
-	void shouldRetrieveExecutions() {
-		Assertions.fail();
+	void shouldRetrieveExecutions() throws Exception{
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		writeJobDefinitionDto.getExecution().setWorkers(1);
+		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
+		
+		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
+				.andExpect(status().isNoContent());
+		
+		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
 	}
 	
 	@TestTemplate
-	void shouldGet404ForRetrievingExecutionsForNonExistingJob() {
-		Assertions.fail();
+	void shouldGet404ForRetrievingExecutionsForNonExistingJob() throws Exception{
+		mvc.perform(get("/jobs/123/executions"))
+				.andExpect(status().isNotFound());
 	}
 	
 	@TestTemplate
-	void shouldGetExecution() {
-		Assertions.fail();
+	void shouldGetExecution() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		writeJobDefinitionDto.getExecution().setWorkers(1);
+		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
+		
+		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
+				.andExpect(status().isNoContent());
+		
+		final MvcResult result = mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/latest")
+				.content(objectMapper.writeValueAsString(writeJobDefinitionDto))
+				.contentType(APPLICATION_JSON)
+		).andReturn();
+		
+		final byte[] expectedContent = result.getResponse().getContentAsByteArray();
+		final ReadJobExecutionDto readJobExecutionDto = objectMapper.readValue(expectedContent, ReadJobExecutionDto.class);
+		
+		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId()))
+				.andExpect(status().isOk());
 	}
 	
 	@TestTemplate
-	void shouldGet404ForRetrievingExecutionOfNonExistingJob() {
-		Assertions.fail();
+	void shouldGet404ForRetrievingExecutionOfNonExistingJob() throws Exception{
+		mvc.perform(get("/jobs/123/executions/321"))
+				.andExpect(status().isNotFound());
 	}
 	
 	@TestTemplate
-	void shouldGet404ForRetrievingNonExistingExecutionFromJob() {
-		Assertions.fail();
+	void shouldGet404ForRetrievingNonExistingExecutionFromJob() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		writeJobDefinitionDto.getExecution().setWorkers(1);
+		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
+		
+		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/321"))
+				.andExpect(status().isNotFound());
 	}
 }
