@@ -7,6 +7,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.instancio.Select.field;
@@ -45,7 +46,7 @@ class JobDefinitionTest {
 	}
 	
 	@Test
-	void shouldFindExecutionById() {
+	void shouldGetExecutionById() {
 		final Long executionId = 123L;
 		final JobExecution jobExecution = Instancio.of(JobExecution.class)
 				.set(field(JobExecution::getId), executionId)
@@ -122,5 +123,32 @@ class JobDefinitionTest {
 		
 		assertEquals(1, activeTaskDefinitions.size());
 		assertTrue(activeTaskDefinitions.contains(activeTaskDefinition));
+	}
+	
+	@Test
+	void shouldFindExecutionById() {
+		final Long jobExecutionId = 123L;
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getId()).thenReturn(jobExecutionId);
+		
+		final JobDefinition jobDefinition = Instancio.of(JobDefinition.class)
+				.set(field(JobDefinition::getExecutions), List.of(jobExecution))
+				.create();
+		
+		final JobExecution result = jobDefinition.findExecutionById(jobExecutionId)
+				.get();
+		
+		assertSame(jobExecution, result);
+	}
+	
+	@Test
+	void shouldNotFindExecutionById() {
+		final JobDefinition jobDefinition = Instancio.of(JobDefinition.class)
+				.ignore(field(JobDefinition::getExecutions))
+				.create();
+		
+		final Optional<JobExecution> result = jobDefinition.findExecutionById(123L);
+		
+		assertTrue(result.isEmpty());
 	}
 }

@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.service;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.mapper.ReadJobExecutionMapper;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
@@ -267,5 +268,38 @@ class ExecutionApiServiceTest {
 		
 		assertEquals(1, result.size());
 		assertTrue(result.contains(readJobExecutionDto));
+	}
+	
+	@Test
+	void shouldGetExecution() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final Long jobExecutionId = 123L;
+		final JobExecution jobExecution = mock();
+		when(jobDefinition.findExecutionById(jobExecutionId)).thenReturn(Optional.of(jobExecution));
+		
+		final ReadJobExecutionWithTasksDto expected = mock();
+		when(readJobExecutionMapper.mapWithTasks(jobExecution)).thenReturn(expected);
+		
+		final ReadJobExecutionWithTasksDto result = executionApiService.getExecution(jobDefinitionId, jobExecutionId)
+				.get();
+		
+		assertSame(expected, result);
+	}
+	
+	@Test
+	void shouldNotGetExecution() {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final Long jobExecutionId = 123L;
+		when(jobDefinition.findExecutionById(jobExecutionId)).thenReturn(Optional.empty());
+		
+		final Optional<ReadJobExecutionWithTasksDto> result = executionApiService.getExecution(jobDefinitionId, jobExecutionId);
+		
+		assertTrue(result.isEmpty());
 	}
 }

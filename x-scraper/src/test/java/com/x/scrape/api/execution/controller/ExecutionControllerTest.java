@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.controller;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,5 +96,30 @@ class ExecutionControllerTest {
 		final List<ReadJobExecutionDto> result = executionController.getExecutions(jobDefinitionId);
 		
 		assertSame(expected, result);
+	}
+	
+	@Test
+	void shouldGetExecution() {
+		final Long jobDefinitionId = 123L;
+		final Long jobExecutionId = 123L;
+		
+		final ReadJobExecutionWithTasksDto expected = mock();
+		when(executionApiService.getExecution(jobDefinitionId, jobExecutionId)).thenReturn(Optional.of(expected));
+		
+		final ResponseEntity<ReadJobExecutionWithTasksDto> result = executionController.getExecution(jobDefinitionId, jobExecutionId);
+
+		assertSame(expected, result.getBody());
+	}
+	
+	@Test
+	void shouldGetNotFoundWhenExecutionDoesNotExist() {
+		final Long jobDefinitionId = 123L;
+		final Long jobExecutionId = 123L;
+		when(executionApiService.getExecution(jobDefinitionId, jobExecutionId)).thenReturn(Optional.empty());
+		
+		final ResponseEntity<ReadJobExecutionWithTasksDto> result = executionController.getExecution(jobDefinitionId, jobExecutionId);
+		
+		assertEquals(404, result.getStatusCode().value());
+		
 	}
 }

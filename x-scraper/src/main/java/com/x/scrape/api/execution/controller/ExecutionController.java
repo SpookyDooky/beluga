@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.controller;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.model.job_definition.JobDefinition;
@@ -61,9 +62,6 @@ public class ExecutionController {
 				.build();
 	}
 	
-	// TODO - consider if including all tasks is too slow/heavy
-	// And if we need a separate endpoint for retrieving detailed information about an execution per id
-	
 	/**
 	 * Retrieves the latest execution of a specific {@link JobDefinition}.
 	 *
@@ -84,5 +82,11 @@ public class ExecutionController {
 	@GetMapping("/executions")
 	public List<ReadJobExecutionDto> getExecutions(@PathVariable("jobId") final Long jobId) {
 		return executionApiService.getExecutions(jobId);
+	}
+	
+	@GetMapping("/executions/{executionId}")
+	public ResponseEntity<ReadJobExecutionWithTasksDto> getExecution(@PathVariable("jobId") final Long jobId,
+	                                                                 @PathVariable("executionId") final Long executionId) {
+		return ResponseEntity.of(executionApiService.getExecution(jobId, executionId));
 	}
 }

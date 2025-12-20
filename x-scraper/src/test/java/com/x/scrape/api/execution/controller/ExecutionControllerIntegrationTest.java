@@ -154,4 +154,19 @@ class ExecutionControllerIntegrationTest {
 	void shouldGet404ForRetrievingExecutionsForNonExistingJob() {
 		Assertions.fail();
 	}
+	
+	@TestTemplate
+	void shouldGetExecution() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingExecutionOfNonExistingJob() {
+		Assertions.fail();
+	}
+	
+	@TestTemplate
+	void shouldGet404ForRetrievingNonExistingExecutionFromJob() {
+		Assertions.fail();
+	}
 }

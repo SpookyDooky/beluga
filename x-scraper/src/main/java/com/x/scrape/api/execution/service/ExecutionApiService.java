@@ -1,6 +1,7 @@
 package com.x.scrape.api.execution.service;
 
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
+import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.mapper.ReadJobExecutionMapper;
 import com.x.scrape.execution.model.Job;
 import com.x.scrape.execution.service.job.JobExecutionService;
@@ -126,5 +127,14 @@ public class ExecutionApiService {
 		return jobDefinition.getExecutions().stream()
 				.map(readJobExecutionMapper::map)
 				.toList();
+	}
+	
+	@Transactional
+	public Optional<ReadJobExecutionWithTasksDto> getExecution(final Long jobDefinitionId,
+	                                                           final Long jobExecutionId) {
+		final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
+		
+		return jobDefinition.findExecutionById(jobExecutionId)
+				.map(readJobExecutionMapper::mapWithTasks);
 	}
 }
