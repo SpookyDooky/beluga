@@ -22,13 +22,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,14 +93,6 @@ class WorkerTest {
 		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getAllValues().getFirst();
 		final JsonPayload mapPayload = (JsonPayload) taskResultEvent.getPayload();
 		assertSame(scrapeResult, mapPayload.getData());
-	}
-	
-	void removeFile(final File file) {
-		for (final File directoryFile : Objects.requireNonNull(file.listFiles())) {
-			removeFile(directoryFile);
-		}
-		
-		file.delete();
 	}
 	
 	@Test
