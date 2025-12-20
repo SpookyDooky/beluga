@@ -7,7 +7,7 @@ public abstract class BaseExecutionConfigurationDto {
 	@Positive
 	private Integer workers;
 	@Positive
-	private Integer tasksPerSecond;
+	private Double tasksPerSecond;
 	
 	public Integer getWorkers() {
 		return workers;
@@ -17,11 +17,11 @@ public abstract class BaseExecutionConfigurationDto {
 		this.workers = workers;
 	}
 	
-	public Integer getTasksPerSecond() {
+	public Double getTasksPerSecond() {
 		return tasksPerSecond;
 	}
 	
-	public void setTasksPerSecond(final Integer tasksPerSecond) {
+	public void setTasksPerSecond(final Double tasksPerSecond) {
 		this.tasksPerSecond = tasksPerSecond;
 	}
 }
