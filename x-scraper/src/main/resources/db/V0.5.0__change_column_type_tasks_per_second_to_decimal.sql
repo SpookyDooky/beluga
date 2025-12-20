@@ -1,0 +1,1 @@
+alter table execution_configuration alter column tasks_per_second type double precision;

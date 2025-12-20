@@ -15,7 +15,7 @@ public class ExecutionConfiguration implements HasId {
 	private Long id;
 	
 	private int workers;
-	private int tasksPerSecond;
+	private double tasksPerSecond;
 	
 	@Override
 	public Long getId() {
@@ -35,11 +35,11 @@ public class ExecutionConfiguration implements HasId {
 		this.workers = workers;
 	}
 	
-	public int getTasksPerSecond() {
+	public double getTasksPerSecond() {
 		return tasksPerSecond;
 	}
 	
-	public void setTasksPerSecond(final int tasksPerSecond) {
+	public void setTasksPerSecond(final double tasksPerSecond) {
 		this.tasksPerSecond = tasksPerSecond;
 	}
 }
