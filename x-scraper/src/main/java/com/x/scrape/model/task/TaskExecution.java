@@ -1,12 +1,15 @@
 package com.x.scrape.model.task;
 
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.List;
 
 import static com.x.scrape.model.task.TaskStatus.PLANNED;
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -29,6 +32,12 @@ public class TaskExecution implements HasId {
 	@ManyToOne
 	@JoinColumn(name = "job_execution_id")
 	private JobExecution jobExecution;
+	
+	@OneToMany(
+			cascade = ALL,
+			mappedBy = "taskExecution"
+	)
+	private List<ResultFile> resultFiles;
 	
 	@Override
 	public Long getId() {
@@ -78,5 +87,13 @@ public class TaskExecution implements HasId {
 	
 	public void setJobExecution(final JobExecution jobExecution) {
 		this.jobExecution = jobExecution;
+	}
+	
+	public List<ResultFile> getResultFiles() {
+		return resultFiles;
+	}
+	
+	public void setResultFiles(final List<ResultFile> resultFiles) {
+		this.resultFiles = resultFiles;
 	}
 }
