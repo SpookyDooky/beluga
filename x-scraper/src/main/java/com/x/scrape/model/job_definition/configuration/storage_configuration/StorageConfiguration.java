@@ -17,6 +17,8 @@ public class StorageConfiguration implements HasId {
 	// Todo - remove as this is not used for anything Only json will be offered as result storage format
 	@Enumerated(STRING)
 	private StorageFormat format;
+	
+	// TODO - This should never be able to change once it has been set
 	private String folder;
 	
 	@Override

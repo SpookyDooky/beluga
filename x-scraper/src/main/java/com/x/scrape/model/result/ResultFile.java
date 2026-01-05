@@ -5,6 +5,7 @@ import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
+import static com.x.scrape.model.result.CompressionType.NONE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -19,7 +20,7 @@ public class ResultFile implements HasId {
 	private Long sizeInBytes;
 	
 	@Enumerated(STRING)
-	private CompressionType compressionType;
+	private CompressionType compressionType = NONE;
 	
 	@ManyToOne
 	@JoinColumn(name = "task_execution_id")

@@ -96,4 +96,9 @@ public class TaskExecution implements HasId {
 	public void setResultFiles(final List<ResultFile> resultFiles) {
 		this.resultFiles = resultFiles;
 	}
+	
+	public void addResultFile(final ResultFile resultFile) {
+		resultFiles.add(resultFile);
+		resultFile.setTaskExecution(this);
+	}
 }

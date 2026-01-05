@@ -1,9 +1,12 @@
 package com.x.scrape.service.task;
 
+import com.x.scrape.mapper.ResultFileMapper;
+import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.event.TaskCompletedEvent;
 import com.x.scrape.model.task.event.TaskFailedEvent;
 import com.x.scrape.model.task.event.TaskStartedEvent;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +17,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.x.scrape.model.task.TaskStatus.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskExecutionEventHandlerTest {
 	
 	@Mock
 	private TaskExecutionService taskExecutionService;
+	@Mock
+	private ResultFileMapper resultFileMapper;
 	
 	@InjectMocks
 	private TaskExecutionEventHandler taskExecutionEventHandler;
@@ -65,5 +69,16 @@ class TaskExecutionEventHandlerTest {
 		assertEquals(FAILED, taskExecution.getStatus());
 		
 		verify(taskExecutionService).save(taskExecution);
+	}
+	
+	@Test
+	void onTaskResult() {
+		final TaskResultEvent taskResultEvent = Instancio.create(TaskResultEvent.class);
+		final ResultFile resultFile = mock();
+		when(resultFileMapper.map(taskResultEvent)).thenReturn(resultFile);
+		
+		taskExecutionEventHandler.onTaskResult(taskResultEvent);
+		
+		verify(taskExecutionService).addResultFile(taskResultEvent.getTaskId(), resultFile);
 	}
 }
