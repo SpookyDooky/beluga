@@ -22,7 +22,8 @@ public class ScrapingConfiguration implements HasId {
 	@OneToMany(
 			cascade = ALL,
 			mappedBy = "scrapingConfiguration",
-			fetch = EAGER
+			fetch = EAGER,
+			orphanRemoval = true
 	)
 	private List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
 	
@@ -49,8 +50,9 @@ public class ScrapingConfiguration implements HasId {
 	}
 	
 	public void setDataPointConfigurations(final List<DataPointConfiguration> dataPointConfigurations) {
-		this.dataPointConfigurations = dataPointConfigurations;
-		dataPointConfigurations.forEach(dataPointConfiguration -> {
+		this.dataPointConfigurations.clear();
+		this.dataPointConfigurations.addAll(dataPointConfigurations);
+		this.dataPointConfigurations.forEach(dataPointConfiguration -> {
 			dataPointConfiguration.setScrapingConfiguration(this);
 		});
 	}

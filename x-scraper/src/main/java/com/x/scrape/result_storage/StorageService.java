@@ -8,7 +8,10 @@ import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
 import com.x.scrape.model.task.event.task_result.StorageHint;
+import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.model.task.event.task_result.TaskResultPersistedEvent;
 import com.x.scrape.result_storage.json.JsonService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,13 +22,16 @@ public class StorageService {
 	private final ContextLogger logger;
 	private final JsonService jsonService;
 	private final ResultDataStoreProvider resultDataStoreProvider;
+	private final ApplicationEventPublisher applicationEventPublisher;
 	
 	public StorageService(final ContextLogger logger,
 	                      final JsonService jsonService,
-	                      final ResultDataStoreProvider resultDataStoreProvider) {
+	                      final ResultDataStoreProvider resultDataStoreProvider,
+	                      final ApplicationEventPublisher applicationEventPublisher) {
 		this.logger = logger;
 		this.jsonService = jsonService;
 		this.resultDataStoreProvider = resultDataStoreProvider;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 	
 	/**
@@ -39,6 +45,10 @@ public class StorageService {
 		try (final CloseableContext ignored = logger.with(event)) {
 			logger.info("Saving task result.");
 			saveResult(event.getStorageHint(), event.getPayload());
+			
+			if (event instanceof TaskResultEvent taskResultEvent) {
+				applicationEventPublisher.publishEvent(new TaskResultPersistedEvent(taskResultEvent));
+			}
 		}
 	}
 	

@@ -17,6 +17,7 @@ public class ResultFile implements HasId {
 	private Long id;
 	
 	private String path;
+	private String fileName;
 	private Long sizeInBytes;
 	
 	@Enumerated(STRING)
@@ -42,6 +43,14 @@ public class ResultFile implements HasId {
 	
 	public void setPath(final String path) {
 		this.path = path;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+	
+	public void setFileName(final String fileName) {
+		this.fileName = fileName;
 	}
 	
 	public Long getSizeInBytes() {

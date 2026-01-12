@@ -3,6 +3,9 @@ package com.x.scrape.execution.service.worker;
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.model.TaskCompletedActivity;
+import com.x.scrape.execution.service.task.JobTaskQueue;
+import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
+import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
@@ -19,23 +22,20 @@ import com.x.scrape.model.task.event.task_result.StorageHint;
 import com.x.scrape.model.task.event.task_result.TaskResultEvent;
 import com.x.scrape.scraping.ScrapingService;
 import com.x.scrape.scraping.model.ScrapingResult;
-import com.x.scrape.execution.service.task.JobTaskQueue;
-import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
-import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
 import com.x.scrape.util.TimingService;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.x.scrape.logging.ContextKeys.*;
+import static com.x.scrape.logging.ContextKeys.JOB_EXECUTION_ID;
+import static com.x.scrape.logging.ContextKeys.WORKER_ID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Component
@@ -105,9 +105,6 @@ public class Worker {
 			
 			logger.info("Executing task.");
 			
-			// Todo - Should not be the responsibility of the worker
-			// createTaskResultFolder(task);
-			
 			final ScrapingResult scrapingResult = scrapingService.scrape(
 					task.getUrl(),
 					task.getScrapingConfiguration()
@@ -126,11 +123,6 @@ public class Worker {
 		}
 	}
 	
-	private void createTaskResultFolder(final Task task) {
-		final File file = new File(task.getJob().getJobTaskResultsFolder() + "/" + task.getId());
-		file.mkdirs();
-	}
-	
 	private void downloadImages(final Task task,
 	                            final List<Map<String, Object>> scrapedData) {
 		scrapedData.forEach(elementScrapedData -> {
@@ -139,9 +131,8 @@ public class Worker {
 			for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
 				final String fileName = UUID.randomUUID() + ".png";
 				downloadImage(task, imageDownloadTask, fileName);
-				final String filePath = task.getId() + "/images/" + fileName;
 				
-				addImagePathToResult(elementScrapedData, filePath, imageDownloadTask.getPropertyName());
+				addImagePathToResult(elementScrapedData, fileName, imageDownloadTask.getPropertyName());
 			}
 		});
 	}
@@ -164,7 +155,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								"source.html",
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/files/"
 						),
 						new StringPayload(scrapingResult.getRawPage())
 				)
@@ -189,7 +180,7 @@ public class Worker {
 						task,
 						StorageHint.of(
 								fileName,
-								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/images/"
+								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/files/"
 						),
 						new ImagePayload(imageInputStream)
 				)
@@ -197,13 +188,13 @@ public class Worker {
 	}
 	
 	private void addImagePathToResult(final Map<String, Object> scrapedData,
-	                                  final String filePath,
+	                                  final String fileName,
 	                                  final String propertyName) {
 		final String urlValue = (String) scrapedData.get(propertyName);
 		scrapedData.remove(propertyName);
 		
-		scrapedData.put(propertyName + ".url", urlValue);
-		scrapedData.put(propertyName + ".imagePath", filePath);
+		scrapedData.put(propertyName + "." + propertyName, urlValue);
+		scrapedData.put(propertyName + ".fileName", fileName);
 	}
 	
 	private void finish() {
