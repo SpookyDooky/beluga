@@ -84,6 +84,9 @@ public class TaskController {
 			final List<TaskDefinition> taskDefinitions = taskDefinitionMapperService.map(tasks.getUrls());
 			
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobId);
+			// TODO - Check what happens with duplicate tasks? If it is added but the current one is inactive. (It should be set to active)
+			// TODO - If a task does not have a result yet it can be removed, otherwise it should be set to inactive
+			jobDefinition.setExistingTaskDefinitionsToInactive();
 			jobDefinition.setTaskDefinitions(taskDefinitions);
 			
 			jobDefinitionService.save(jobDefinition);

@@ -69,7 +69,7 @@ public class JobService {
 	
 	private List<Task> createTasks(final JobDefinition jobDefinition,
 	                               final Job job) {
-		return jobDefinition.getTaskDefinitions()
+		return jobDefinition.getActiveTaskDefinitions()
 				.stream()
 				.map(taskDefinition -> createTask(jobDefinition, taskDefinition, job))
 				.collect(Collectors.toList());
