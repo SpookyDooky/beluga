@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: Results REST API
+  version: '1.0'
+paths:
+  /jobs/{jobId}/executions/{executionId}/results:
+    get:
+      description: Retrieve all scraped data for a job
+      tags:
+        - Results
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job to retrieve the results for
+        - in: path
+          name: executionId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of an execution of a job
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            example: 100
+            default: 50
+          description: Page size
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            example: 1
+            default: 0
+          description: Page index
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedJobExecutionResults"
+        404:
+          description: Not found
+  /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results:
+    get:
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job to retrieve the results for
+        - in: path
+          name: executionId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of an execution of a job
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of a task that belongs to an executions
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskExecutionResult"
+        404:
+          description: Not found
+  /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results/files:
+    get:
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job to retrieve the results for
+        - in: path
+          name: executionId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of an execution of a job
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of a task that belongs to an executions
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskFiles"
+        404:
+          description: Not found
+  /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results/files/download:
+    get:
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of the job to retrieve the results for
+        - in: path
+          name: executionId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of an execution of a job
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+            example: 123
+          description: Id of a task that belongs to an executions
+        - in: query
+          name: fileName
+          required: true
+          schema:
+            type: string
+            example: image.png
+          description: The file name that belongs to a task
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                format: binary
+        404:
+          description: Not found
+
+components:
+  schemas:
+
+    PaginatedJobExecutionResults:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskExecutionResult"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalPages:
+          type: integer
+          example: 10
+        totalElements:
+          type: integer
+          example: 500
+        last:
+          type: boolean
+          example: false
+        size:
+          type: integer
+          example: 2
+        number:
+          type: integer
+          example: 1
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          example: 500
+        first:
+          type: boolean
+          example: false
+        empty:
+          type: boolean
+          example: false
+      required:
+        - content
+        - pageable
+        - totalPages
+        - totalElements
+        - last
+        - size
+        - number
+        - sort
+        - numberOfElements
+        - first
+        - empty
+
+    Pageable:
+      type: object
+      properties:
+        sort:
+          $ref: "#/components/schemas/Sort"
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 50
+        offset:
+          type: integer
+          example: 0
+        paged:
+          type: boolean
+          example: true
+        unpaged:
+          type: boolean
+          example: false
+      required:
+        - sort
+        - pageNumber
+        - pageSize
+        - offset
+        - paged
+        - unpaged
+
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+          example: false
+        unsorted:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+      required:
+        - sorted
+        - unsorted
+        - empty
+
+    TaskExecutionResult:
+      type: object
+      properties:
+        taskId:
+          type: integer
+          example: 123
+        data:
+          type: object
+          description: JSON object representing the scraped data
+      required:
+        - taskId
+        - data
+
+    TaskFiles:
+      type: object
+      properties:
+        taskId:
+          type: integer
+          example: 123
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskResultFile"
+      required:
+        - taskId
+        - files
+
+    TaskResultFile:
+      type: object
+      properties:
+        path:
+          type: string
+          example: /path/to/file
+        fileName:
+          type: string
+          example: fileName
+        sizeInBytes:
+          type: integer
+          example: 123
+      required:
+        - path
+        - fileName
+        - sizeInBytes
