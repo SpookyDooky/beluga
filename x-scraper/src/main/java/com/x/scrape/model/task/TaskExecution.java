@@ -6,6 +6,7 @@ import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.x.scrape.model.task.TaskStatus.PLANNED;
@@ -37,7 +38,7 @@ public class TaskExecution implements HasId {
 			cascade = ALL,
 			mappedBy = "taskExecution"
 	)
-	private List<ResultFile> resultFiles;
+	private final List<ResultFile> resultFiles = new ArrayList<>();
 	
 	@Override
 	public Long getId() {
@@ -94,7 +95,11 @@ public class TaskExecution implements HasId {
 	}
 	
 	public void setResultFiles(final List<ResultFile> resultFiles) {
-		this.resultFiles = resultFiles;
+		this.resultFiles.clear();
+		resultFiles.forEach(resultFile -> {
+			resultFile.setTaskExecution(this);
+			this.resultFiles.add(resultFile);
+		});
 	}
 	
 	public void addResultFile(final ResultFile resultFile) {
