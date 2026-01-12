@@ -1,5 +1,6 @@
 package com.x.scrape.service.task;
 
+import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
@@ -64,6 +65,20 @@ class TaskExecutionServiceTest {
 		taskExecutionService.setStatusById(id, status);
 		
 		verify(taskExecution).setStatus(status);
+		verify(taskExecutionRepository).save(taskExecution);
+	}
+	
+	@Test
+	void shouldAddResultFile() {
+		final Long id = 123L;
+		final TaskExecution taskExecution = mock();
+		when(taskExecutionRepository.findById(id)).thenReturn(Optional.of(taskExecution));
+		
+		final ResultFile resultFile = mock();
+		
+		taskExecutionService.addResultFile(id, resultFile);
+		
+		verify(taskExecution).addResultFile(resultFile);
 		verify(taskExecutionRepository).save(taskExecution);
 	}
 }

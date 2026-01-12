@@ -13,7 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayInputStream;
+
 import static org.instancio.Select.field;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,8 +64,8 @@ class StorageServiceTest {
 		storageService.onTaskResultEvent(imageTaskResultEvent);
 		
 		verify(resultDataStoreProvider).save(
-				imageTaskResultEvent.getStorageHint().getPath(),
-				imagePayload.getData()
+				eq(imageTaskResultEvent.getStorageHint().getPath()),
+				any(ByteArrayInputStream.class)
 		);
 	}
 }

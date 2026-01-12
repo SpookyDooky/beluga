@@ -30,9 +30,9 @@ public class TaskResultEvent extends TaskEvent
 	 * @param payload     the payload.
 	 * @throws NullPointerException thrown when the payload is null.
 	 */
-	private TaskResultEvent(final Task task,
-	                        final StorageHint storageHint,
-	                        final Payload<?> payload) {
+	protected TaskResultEvent(final Task task,
+	                          final StorageHint storageHint,
+	                          final Payload<?> payload) {
 		super(task);
 		this.storageHint = storageHint;
 		this.payload = payload;

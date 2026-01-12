@@ -1,5 +1,6 @@
 package com.x.scrape.service.task;
 
+import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
@@ -38,4 +39,19 @@ public class TaskExecutionService {
 		taskExecutionRepository.save(taskExecution);
 	}
 	
+	/**
+	 * Adds a {@link ResultFile} to a {@link TaskExecution}.
+	 *
+	 * @param id         of the {@link TaskExecution}.
+	 * @param resultFile the {@link ResultFile} to add.
+	 */
+	@Transactional
+	public void addResultFile(final Long id,
+	                          final ResultFile resultFile) {
+		final TaskExecution taskExecution = getById(id);
+		taskExecution.addResultFile(resultFile);
+		
+		taskExecutionRepository.save(taskExecution);
+		
+	}
 }

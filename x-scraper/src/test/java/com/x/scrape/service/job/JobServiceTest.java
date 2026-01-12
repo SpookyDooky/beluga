@@ -46,7 +46,9 @@ class JobServiceTest {
 	void shouldCreateJobByDefinitionId() {
 		initializeJobService(Optional.of(entityManager), Optional.empty());
 		
-		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
+		final TaskDefinition taskDefinition = Instancio.of(TaskDefinition.class)
+				.set(field(TaskDefinition::isActive), true)
+				.create();
 		final JobDefinition jobDefinition = spy(
 				Instancio.of(JobDefinition.class)
 						.ignore(field(JobDefinition::getExecutions))
