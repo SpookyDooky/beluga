@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.x.scrape.model.task.TaskStatus.PAUSED;
 
@@ -62,34 +61,36 @@ public class JobService {
 	
 	private List<Task> createTasks(final JobDefinition jobDefinition,
 	                               final Job job) {
-		return jobDefinition.getActiveTaskDefinitions()
-				.stream()
-				.map(taskDefinition -> createTask(jobDefinition, taskDefinition, job))
-				.collect(Collectors.toList());
-	}
-	
-	/**
-	 * Creates a task and links it to a task execution to set the correct id for the task/
-	 *
-	 * @param jobDefinition  the job definition this task belongs to.
-	 * @param taskDefinition the task definition of this  task.
-	 * @param job            the job this task belongs to.
-	 * @return task for the {@link TaskDefinition}.
-	 */
-	private Task createTask(final JobDefinition jobDefinition,
-	                        final TaskDefinition taskDefinition,
-	                        final Job job) {
 		final JobExecution jobExecution = jobDefinition.getMostRecentExecution()
 				.get();
 		
+		final List<TaskExecution> taskExecutions = taskExecutionService.saveAll(
+				jobDefinition.getTaskDefinitions()
+						.stream()
+						.map(taskDefinition -> createTaskExecution(taskDefinition, jobExecution))
+						.toList()
+		);
+		jobExecution.setTasks(taskExecutions);
+		
+		return taskExecutions.stream()
+				.map(taskExecution -> createTask(taskExecution, job, jobDefinition))
+				.toList();
+	}
+	
+	private TaskExecution createTaskExecution(final TaskDefinition taskDefinition,
+	                                          final JobExecution jobExecution) {
 		final TaskExecution taskExecution = new TaskExecution();
+		
 		taskExecution.setTaskDefinition(taskDefinition);
+		taskExecution.setJobExecution(jobExecution);
 		
-		jobExecution.addTask(taskExecution);
-		
-		taskExecutionService.save(taskExecution);
-		
-		final Task task = taskMapper.map(jobDefinition, taskDefinition);
+		return taskExecution;
+	}
+	
+	private Task createTask(final TaskExecution taskExecution,
+	                        final Job job,
+	                        final JobDefinition jobDefinition) {
+		final Task task = taskMapper.map(jobDefinition, taskExecution.getTaskDefinition());
 		
 		task.setId(taskExecution.getId());
 		task.setJob(job);

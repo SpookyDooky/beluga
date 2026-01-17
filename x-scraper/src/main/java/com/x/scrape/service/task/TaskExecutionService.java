@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
@@ -38,6 +39,11 @@ public class TaskExecutionService {
 	@Transactional(propagation = MANDATORY)
 	public TaskExecution save(final TaskExecution taskExecution) {
 		return taskExecutionRepository.save(taskExecution);
+	}
+	
+	@Transactional(propagation = MANDATORY)
+	public List<TaskExecution> saveAll(final List<TaskExecution> taskExecutions) {
+		return taskExecutionRepository.saveAll(taskExecutions);
 	}
 	
 	@Transactional

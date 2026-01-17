@@ -60,6 +60,8 @@ class JobServiceTest {
 		final Task task = Instancio.create(Task.class);
 		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
 		
+		when(taskExecutionService.saveAll(any())).thenAnswer(answer -> answer.getArguments()[0]);
+		
 		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
 		
 		assertEquals(jobDefinition.getMostRecentExecution().get().getId(), result.getId());
@@ -86,6 +88,8 @@ class JobServiceTest {
 		
 		final Task task = Instancio.create(Task.class);
 		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
+		
+		when(taskExecutionService.saveAll(any())).thenAnswer(answer -> answer.getArguments()[0]);
 		
 		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
 		

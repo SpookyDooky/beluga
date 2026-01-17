@@ -30,7 +30,7 @@ public class TaskControllerPerformanceIntegrationTest extends BaseIntegrationTes
 	private ObjectMapper objectMapper;
 	
 	@TestTemplate
-	@Timeout(10_000)
+	@Timeout(5_000)
 	void shouldUpdateTasks() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
 		Thread.sleep(250);
