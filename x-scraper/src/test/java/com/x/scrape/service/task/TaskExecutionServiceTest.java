@@ -14,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static com.x.scrape.model.task.TaskStatus.COMPLETED;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +25,26 @@ class TaskExecutionServiceTest {
 	
 	@InjectMocks
 	private TaskExecutionService taskExecutionService;
+	
+	@Test
+	void shouldFindById() {
+		final Long id = 123L;
+		final TaskExecution taskExecution = mock();
+		when(taskExecutionRepository.findById(id)).thenReturn(Optional.of(taskExecution));
+		
+		final TaskExecution result = taskExecutionService.findById(id)
+				.get();
+		
+		assertSame(taskExecution, result);
+	}
+	
+	@Test
+	void shouldNotFindById() {
+		final Long id = 123L;
+		when(taskExecutionRepository.findById(id)).thenReturn(Optional.empty());
+		
+		assertTrue(taskExecutionService.findById(id).isEmpty());
+	}
 	
 	@Test
 	void shouldGetById() {

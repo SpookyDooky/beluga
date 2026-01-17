@@ -180,4 +180,9 @@ public class JobDefinition implements HasId {
 		return findExecutionById(executionId)
 				.orElseThrow(() -> new EntityNotFoundException("Could not find execution with specified id " + executionId + "."));
 	}
+	
+	public boolean hasExecutionById(final Long executionId) {
+		return findExecutionById(executionId)
+				.isPresent();
+	}
 }

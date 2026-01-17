@@ -50,5 +50,10 @@ class ResultDataStoreProviderTest {
 		public void save(final Path filePath, final byte[] fileContent) {
 		
 		}
+		
+		@Override
+		public byte[] retrieve(final Path filePath) {
+			return new byte[0];
+		}
 	}
 }

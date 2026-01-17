@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.nio.file.Path;
@@ -42,11 +43,35 @@ public class S3Service {
 		logger.info("Uploading file to S3.");
 		final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
 				.bucket(bucket)
-				.key(filePath.toString().replaceAll("\\\\", "/"))
+				.key(formatKey(filePath))
 				.contentType("application/json")
 				.build();
 		
 		final RequestBody requestBody = RequestBody.fromBytes(fileContent);
 		s3Client.putObject(putObjectRequest, requestBody);
+	}
+	
+	private String formatKey(final Path filePath) {
+		return filePath.toString().replaceAll("\\\\", "/");
+	}
+	
+	/**
+	 * Retrieves a document from an S3-compatible object-store.
+	 *
+	 * @param filePath location of the document.
+	 * @param bucket   bucket the document is stored in.
+	 * @return returns the document's content as raw bytes.
+	 */
+	public byte[] getObject(final Path filePath,
+	                        final String bucket) {
+		final GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+				.key(formatKey(filePath))
+				.bucket(bucket)
+				.build();
+		
+		final String getObjectResponse = s3Client.getObjectAsBytes(getObjectRequest)
+				.toString();
+		
+		return getObjectResponse.getBytes();
 	}
 }

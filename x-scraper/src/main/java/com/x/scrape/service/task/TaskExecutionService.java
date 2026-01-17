@@ -8,6 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
@@ -17,6 +19,11 @@ public class TaskExecutionService {
 	
 	public TaskExecutionService(final TaskExecutionRepository taskExecutionRepository) {
 		this.taskExecutionRepository = taskExecutionRepository;
+	}
+	
+	@Transactional
+	public Optional<TaskExecution> findById(final Long id) {
+		return taskExecutionRepository.findById(id);
 	}
 	
 	@Transactional(propagation = MANDATORY)
