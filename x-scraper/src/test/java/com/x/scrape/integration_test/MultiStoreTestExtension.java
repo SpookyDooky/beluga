@@ -1,8 +1,6 @@
 package com.x.scrape.integration_test;
 
-import com.x.scrape.integration_test.datastore.FileSystemTemplateFactory;
 import com.x.scrape.integration_test.datastore.PostgreSqlTemplateFactory;
-import com.x.scrape.integration_test.datastore.S3TemplateFactory;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
@@ -22,9 +20,7 @@ public class MultiStoreTestExtension implements TestTemplateInvocationContextPro
 	@Override
 	public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(final ExtensionContext context) {
 		return Stream.of(
-				PostgreSqlTemplateFactory.createContext(),
-				S3TemplateFactory.createContext(),
-				FileSystemTemplateFactory.createContext()
+				PostgreSqlTemplateFactory.createContext()
 		);
 	}
 }

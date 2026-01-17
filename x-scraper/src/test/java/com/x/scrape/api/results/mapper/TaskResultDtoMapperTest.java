@@ -54,9 +54,7 @@ class TaskResultDtoMapperTest {
 	
 	@Test
 	void shouldThrowTaskResultNotFoundException() {
-		final Long taskExecutionId = 1L;
 		final TaskExecution taskExecution = mock(RETURNS_DEEP_STUBS);
-		when(taskExecution.getId()).thenReturn(taskExecutionId);
 		when(taskExecution.getResultFiles()).thenReturn(List.of());
 		
 		assertThrows(TaskResultNotFoundException.class, () -> taskResultDtoMapper.map(taskExecution));

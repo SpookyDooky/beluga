@@ -9,6 +9,7 @@ import com.x.scrape.model.job_definition.JobStatus;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +25,16 @@ public class JobService {
 	private final JobDefinitionService jobDefinitionService;
 	private final JobMapper jobMapper;
 	private final TaskMapper taskMapper;
-
+	private final TaskExecutionService taskExecutionService;
+	
 	public JobService(final JobDefinitionService jobDefinitionService,
 	                  final JobMapper jobMapper,
-	                  final TaskMapper taskMapper) {
+	                  final TaskMapper taskMapper,
+	                  final TaskExecutionService taskExecutionService) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.jobMapper = jobMapper;
 		this.taskMapper = taskMapper;
+		this.taskExecutionService = taskExecutionService;
 	}
 	
 	/**
@@ -83,7 +87,10 @@ public class JobService {
 		
 		jobExecution.addTask(taskExecution);
 		
+		taskExecutionService.save(taskExecution);
+		
 		final Task task = taskMapper.map(jobDefinition, taskDefinition);
+		
 		task.setId(taskExecution.getId());
 		task.setJob(job);
 		

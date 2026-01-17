@@ -3,6 +3,7 @@ package com.x.scrape.service.job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.persistence.repository.JobDefinitionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
