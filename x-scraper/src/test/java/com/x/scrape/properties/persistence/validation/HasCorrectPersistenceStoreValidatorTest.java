@@ -35,9 +35,7 @@ class HasCorrectPersistenceStoreValidatorTest {
 	
 	static Stream<Arguments> shouldBeValid() {
 		return Stream.of(
-				Instancio.of(PersistenceProperties.class)
-						.ignore(field(PersistenceProperties::getPostgresql))
-						.create()
+				Instancio.create(PersistenceProperties.class)
 		).map(Arguments::of);
 	}
 	
