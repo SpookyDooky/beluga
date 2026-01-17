@@ -29,6 +29,8 @@ public class JobService {
 	
 	// TODO -These two dependencies should maybe be abstracted away so that the entity id setter service
 	// TODO - has a different implementation for s3/filesystem and postgresql
+	// TODO - rewrite after S3/FS have been removed
+	
 	private final EntityManager entityManager;
 	private final EntityIdSetterService entityIdSetterService;
 	

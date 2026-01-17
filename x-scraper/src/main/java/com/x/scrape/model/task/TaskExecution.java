@@ -106,4 +106,11 @@ public class TaskExecution implements HasId {
 		resultFiles.add(resultFile);
 		resultFile.setTaskExecution(this);
 	}
+	
+	public ResultFile getResultFileByFileName(final String fileName) {
+		return resultFiles.stream()
+				.filter(resultFile -> resultFile.getFileName().equals(fileName))
+				.findFirst()
+				.orElseThrow(EntityNotFoundException::new);
+	}
 }

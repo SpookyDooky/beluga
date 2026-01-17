@@ -9,10 +9,11 @@ import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.model.TaskExecutionIndex;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 
 @IsS3
@@ -118,7 +119,7 @@ public class TaskExecutionS3Repository implements TaskExecutionRepository {
 	}
 	
 	@Override
-	public List<Long> findIdsByJobExecutionId(final Long jobExecutionId) {
-		throw new IllegalStateException("Not implemented");
+	public Page<TaskExecution> findByJobExecution(final JobExecution jobExecution, final Pageable pageable) {
+		return null;
 	}
 }

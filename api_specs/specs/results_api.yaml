@@ -111,7 +111,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TaskFiles"
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskResultFile"
         404:
           description: Not found
   /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results/files/download:
@@ -258,25 +260,13 @@ components:
           type: integer
           example: 123
         data:
-          type: object
-          description: JSON object representing the scraped data
+          type: array
+          items:
+            type: object
+            description: JSON object representing the scraped data
       required:
         - taskId
         - data
-
-    TaskFiles:
-      type: object
-      properties:
-        taskId:
-          type: integer
-          example: 123
-        files:
-          type: array
-          items:
-            $ref: "#/components/schemas/TaskResultFile"
-      required:
-        - taskId
-        - files
 
     TaskResultFile:
       type: object

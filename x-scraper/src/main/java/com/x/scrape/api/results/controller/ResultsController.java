@@ -1,15 +1,19 @@
 package com.x.scrape.api.results.controller;
 
 import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
+import com.x.scrape.api.results.dto.ResultFileInfoDto;
 import com.x.scrape.api.results.dto.TaskResultDto;
 import com.x.scrape.api.results.service.ResultService;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskExecution;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/jobs/{jobId}/executions/{executionId}")
@@ -40,8 +44,11 @@ public class ResultsController {
 		);
 	}
 	
-	@ExceptionHandler(TaskResultNotFoundException.class)
-	public ResponseEntity<Void> handleTaskNotFoundException(final TaskResultNotFoundException exception) {
+	@ExceptionHandler({
+			TaskResultNotFoundException.class,
+			EntityNotFoundException.class
+	})
+	public ResponseEntity<Void> handleTaskNotFoundException(final RuntimeException exception) {
 		return ResponseEntity.notFound()
 				.build();
 	}
@@ -51,6 +58,35 @@ public class ResultsController {
 	                                                      @PathVariable("executionId") final Long jobExecutionId,
 	                                                      @RequestParam("page") final int page,
 	                                                      @RequestParam("size") final int pageSize) {
-		return null;
+		return resultService.getResults(
+				jobDefinitionId,
+				jobExecutionId,
+				page,
+				pageSize
+		);
+	}
+	
+	@GetMapping("/tasks/{taskId}/results/files")
+	public List<ResultFileInfoDto> getResultFileInfo(@PathVariable("jobId") final Long jobDefinitionId,
+	                                                 @PathVariable("executionId") final Long jobExecutionId,
+	                                                 @PathVariable("taskId") final Long taskExecutionId) {
+		return resultService.getResultFileInfo(
+				jobDefinitionId,
+				jobExecutionId,
+				taskExecutionId
+		);
+	}
+	
+	@GetMapping("/tasks/{taskId}/results/files/download")
+	public byte[] downloadFile(@PathVariable("jobId") final Long jobDefinitionId,
+	                           @PathVariable("executionId") final Long jobExecutionId,
+	                           @PathVariable("taskId") final Long taskExecutionId,
+	                           @RequestParam("fileName") final String fileName) {
+		return resultService.getResultFileContent(
+				jobDefinitionId,
+				jobExecutionId,
+				taskExecutionId,
+				fileName
+		);
 	}
 }

@@ -1,9 +1,12 @@
 package com.x.scrape.api.results.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
+import com.x.scrape.api.results.dto.ResultFileInfoDto;
 import com.x.scrape.api.results.dto.TaskResultDto;
+import com.x.scrape.api.results.mapper.ResultFileInfoMapper;
+import com.x.scrape.api.results.mapper.TaskResultDtoMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.result_storage.StorageService;
@@ -11,9 +14,14 @@ import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -30,15 +38,20 @@ class ResultServiceTest {
 	@Mock
 	private TaskExecutionService taskExecutionService;
 	@Mock
-	private StorageService storageService;
+	private TaskResultDtoMapper taskResultDtoMapper;
 	@Mock
-	private ObjectMapper objectMapper;
+	private ResultFileInfoMapper resultFileInfoMapper;
+	@Mock
+	private StorageService storageService;
 	
 	@InjectMocks
 	private ResultService resultService;
 	
+	@Captor
+	private ArgumentCaptor<Pageable> pageableArgumentCaptor;
+	
 	@Test
-	void shouldGetTaskResult() throws Exception {
+	void shouldGetTaskResult() {
 		final Long jobDefinitionId = 1L;
 		final Long jobExecutionId = 2L;
 		final Long taskExecutionId = 3L;
@@ -52,23 +65,14 @@ class ResultServiceTest {
 		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
 		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
 		
-		final ResultFile resultFile = mock();
-		when(resultFile.getFileName()).thenReturn("data.json");
-		when(resultFile.getPath()).thenReturn("path");
-		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
-		
-		final byte[] rawData = new byte[1];
-		when(storageService.retrieve(Path.of(resultFile.getPath()))).thenReturn(rawData);
-		
-		final List<Object> data = mock();
-		when(objectMapper.readValue(rawData, List.class)).thenReturn(data);
+		final TaskResultDto taskResultDto = mock();
+		when(taskResultDtoMapper.map(taskExecution)).thenReturn(taskResultDto);
 		
 		final TaskResultDto result = resultService.getTaskResult(
 				jobDefinitionId, jobExecutionId, taskExecutionId
 		);
-		
-		assertEquals(taskExecutionId, result.getTaskId());
-		assertSame(data, result.getData());
+
+		assertSame(taskResultDto, result);
 	}
 	
 	/**
@@ -163,11 +167,40 @@ class ResultServiceTest {
 		);
 	}
 	
-	/**
-	 * Should throw an exception when task execution does not have a result file by the name of "data.json"
-	 */
 	@Test
-	void shouldGetTaskResultNotFoundExceptionForGetTaskResult5() {
+	void shouldGetResults() {
+		final Long jobDefinitionId = 1L;
+		final Long jobExecutionId = 1L;
+		final int page = 0;
+		final int pageSize = 1;
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+		
+		final JobExecution jobExecution = mock();
+		when(jobDefinition.getExecutionById(jobExecutionId)).thenReturn(jobExecution);
+		
+		final TaskExecution taskExecution = mock();
+		final Page<TaskExecution> taskExecutionPage = new PageImpl<>(List.of(taskExecution));
+		when(taskExecutionService.findByJobExecutionPaged(eq(jobExecution), pageableArgumentCaptor.capture())).thenReturn(taskExecutionPage);
+		
+		final TaskResultDto taskResultDto = mock();
+		when(taskResultDtoMapper.map(taskExecution)).thenReturn(taskResultDto);
+		
+		final Page<TaskResultDto> result = resultService.getResults(
+				jobDefinitionId,
+				jobExecutionId,
+				page,
+				pageSize
+		);
+		
+		final List<TaskResultDto> taskResults = result.stream().toList();
+		assertEquals(1, taskResults.size());
+		assertTrue(taskResults.contains(taskResultDto));
+	}
+	
+	@Test
+	void shouldGetResultFileInfo() {
 		final Long jobDefinitionId = 1L;
 		final Long jobExecutionId = 2L;
 		final Long taskExecutionId = 3L;
@@ -178,17 +211,56 @@ class ResultServiceTest {
 		
 		final TaskExecution taskExecution = mock(RETURNS_DEEP_STUBS);
 		when(taskExecutionService.findById(taskExecutionId)).thenReturn(Optional.of(taskExecution));
-		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
 		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
+		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
 		
 		final ResultFile resultFile = mock();
-		when(resultFile.getFileName()).thenReturn("data2.json");
 		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
 		
-		assertThrowsTaskResultNotFoundExceptionForGetTaskResult(
+		final ResultFileInfoDto resultFileInfoDto = mock();
+		when(resultFileInfoMapper.map(resultFile)).thenReturn(resultFileInfoDto);
+		
+		final List<ResultFileInfoDto> result = resultService.getResultFileInfo(
 				jobDefinitionId,
 				jobExecutionId,
 				taskExecutionId
 		);
+		
+		assertEquals(1, result.size());
+		assertTrue(result.contains(resultFileInfoDto));
+	}
+	
+	@Test
+	void shouldGetResultFileContent() {
+		final Long jobDefinitionId = 1L;
+		final Long jobExecutionId = 2L;
+		final Long taskExecutionId = 3L;
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
+		when(jobDefinition.hasExecutionById(jobExecutionId)).thenReturn(true);
+		
+		final TaskExecution taskExecution = mock(RETURNS_DEEP_STUBS);
+		when(taskExecutionService.findById(taskExecutionId)).thenReturn(Optional.of(taskExecution));
+		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
+		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
+		
+		final String fileName = "fileName";
+		final String filePath = "path";
+		final ResultFile resultFile = mock();
+		when(taskExecution.getResultFileByFileName(fileName)).thenReturn(resultFile);
+		when(resultFile.getPath()).thenReturn(filePath);
+		
+		final byte[] content = new byte[1];
+		when(storageService.retrieve(Path.of(filePath))).thenReturn(content);
+		
+		final byte[] result = resultService.getResultFileContent(
+				jobDefinitionId,
+				jobExecutionId,
+				taskExecutionId,
+				fileName
+		);
+		
+		assertSame(content, result);
 	}
 }

@@ -1,10 +1,13 @@
 package com.x.scrape.service.task;
 
+import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
 import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,11 @@ public class TaskExecutionService {
 		taskExecution.addResultFile(resultFile);
 		
 		taskExecutionRepository.save(taskExecution);
-		
+	}
+	
+	@Transactional(propagation = MANDATORY)
+	public Page<TaskExecution> findByJobExecutionPaged(final JobExecution jobExecution,
+	                                                   final Pageable pageable) {
+		return taskExecutionRepository.findByJobExecution(jobExecution, pageable);
 	}
 }
