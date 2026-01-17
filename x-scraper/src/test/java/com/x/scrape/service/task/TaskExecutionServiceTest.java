@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.x.scrape.model.task.TaskStatus.COMPLETED;
@@ -99,5 +100,15 @@ class TaskExecutionServiceTest {
 		
 		verify(taskExecution).addResultFile(resultFile);
 		verify(taskExecutionRepository).save(taskExecution);
+	}
+	
+	@Test
+	void shouldSaveAll() {
+		final List<TaskExecution> taskExecutions = mock();
+		when(taskExecutionRepository.saveAll(taskExecutions)).thenReturn(taskExecutions);
+		
+		final List<TaskExecution> result = taskExecutionService.saveAll(taskExecutions);
+		
+		assertSame(taskExecutions, result);
 	}
 }
