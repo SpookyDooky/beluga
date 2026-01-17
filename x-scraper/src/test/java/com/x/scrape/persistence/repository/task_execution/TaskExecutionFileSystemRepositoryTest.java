@@ -55,7 +55,7 @@ class TaskExecutionFileSystemRepositoryTest {
 		taskExecutionFileSystemRepository = spy(taskExecutionFileSystemRepository);
 		
 		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
-		doNothing().when(taskExecutionFileSystemRepository).updateIndex(taskExecution);
+		doNothing().when(taskExecutionFileSystemRepository).updateJobDefinitionTaskExecutionIndex(taskExecution);
 		
 		final Path taskExecutionPath = Path.of(
 				persistenceProperties.getFileSystem().getFolder() +
@@ -133,7 +133,7 @@ class TaskExecutionFileSystemRepositoryTest {
 		);
 		when(fileSystemService.get(taskExecutionIndexPath)).thenReturn(Optional.empty());
 		
-		taskExecutionFileSystemRepository.updateIndex(taskExecution);
+		taskExecutionFileSystemRepository.updateJobDefinitionTaskExecutionIndex(taskExecution);
 		
 		verify(fileSystemService).save(taskExecutionIndexArgumentCaptor.capture(), eq(taskExecutionIndexPath));
 		
@@ -156,7 +156,7 @@ class TaskExecutionFileSystemRepositoryTest {
 		final TaskExecutionIndex taskExecutionIndex = mock(RETURNS_DEEP_STUBS);
 		when(fileSystemService.readFileAs(taskExecutionIndexFile, TaskExecutionIndex.class)).thenReturn(taskExecutionIndex);
 		
-		taskExecutionFileSystemRepository.updateIndex(taskExecution);
+		taskExecutionFileSystemRepository.updateJobDefinitionTaskExecutionIndex(taskExecution);
 		
 		verify(fileSystemService).save(taskExecutionIndex, taskExecutionIndexPath);
 		verify(taskExecutionIndex.getIds()).add(taskExecution.getId());

@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @IsFileSystem
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class FileSystemStateService implements StateService {
 	
 	public static final String STATE_FOLDER = "/state";

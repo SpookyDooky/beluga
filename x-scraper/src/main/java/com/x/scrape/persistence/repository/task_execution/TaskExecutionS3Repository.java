@@ -12,10 +12,12 @@ import com.x.scrape.properties.persistence.PersistenceProperties;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 @IsS3
 @Component
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class TaskExecutionS3Repository implements TaskExecutionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
@@ -113,5 +115,10 @@ public class TaskExecutionS3Repository implements TaskExecutionRepository {
 		
 		jobExecution.setJobDefinition(jobDefinition);
 		taskExecution.setJobExecution(jobExecution);
+	}
+	
+	@Override
+	public List<Long> findIdsByJobExecutionId(final Long jobExecutionId) {
+		throw new IllegalStateException("Not implemented");
 	}
 }

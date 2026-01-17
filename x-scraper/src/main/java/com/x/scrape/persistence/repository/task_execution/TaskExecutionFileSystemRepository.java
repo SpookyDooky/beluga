@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @IsFileSystem
 @Service
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class TaskExecutionFileSystemRepository implements TaskExecutionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
@@ -37,7 +38,8 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	@Override
 	public TaskExecution save(final TaskExecution taskExecution) {
 		entityIdSetterService.setIds(taskExecution);
-		updateIndex(taskExecution);
+		
+		updateJobDefinitionTaskExecutionIndex(taskExecution);
 		
 		final Path taskExecutionPath = createTaskExecutionPersistencePath(taskExecution);
 		
@@ -103,7 +105,7 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	 *
 	 * @param taskExecution the task execution to add to the index.
 	 */
-	void updateIndex(final TaskExecution taskExecution) {
+	void updateJobDefinitionTaskExecutionIndex(final TaskExecution taskExecution) {
 		final Path taskExecutionIndexPath = Path.of(
 				persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
 						+ "/" + taskExecution.getJobExecution().getJobDefinition().getId() + "/task-execution-index.json"
@@ -117,5 +119,17 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 		taskExecutionIndex.getIds().add(taskExecution.getId());
 		
 		fileSystemService.save(taskExecutionIndex, taskExecutionIndexPath);
+	}
+	
+	void updateJobExecutionTaskExecutionIndex(final TaskExecution taskExecution) {
+		final Path jobExecutionTaskExecutionIndex = Path.of(
+				persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
+						+ "/" + taskExecution.getJobExecution().getJobDefinition().getId() + "/job-execution-task-execution-index.json"
+		);
+	}
+	
+	@Override
+	public List<Long> findIdsByJobExecutionId(final Long jobExecutionId) {
+		throw new IllegalStateException("Not implemented");
 	}
 }

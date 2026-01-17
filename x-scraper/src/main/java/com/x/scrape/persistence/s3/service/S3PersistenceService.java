@@ -28,6 +28,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 @IsS3
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class S3PersistenceService {
 	
 	private final ContextLogger logger;

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
 import com.x.scrape.api.results.dto.TaskResultDto;
 import com.x.scrape.model.job_definition.JobDefinition;
+import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.result_storage.StorageService;
 import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.task.TaskExecutionService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +52,7 @@ public class ResultService {
 				.findFirst()
 				.orElseThrow(TaskResultNotFoundException::new);
 		
-		final TaskResultDto result = map(resultFile);
-		result.setTaskId(taskExecutionId);
-		
-		return result;
+		return map(resultFile, taskExecution);
 	}
 	
 	// TODO - Is there a better way for doing this?
@@ -82,13 +81,15 @@ public class ResultService {
 		}
 	}
 	
-	private TaskResultDto map(final ResultFile resultFile) {
+	private TaskResultDto map(final ResultFile resultFile,
+	                          final TaskExecution taskExecution) {
 		final byte[] rawResultData = storageService.retrieve(Path.of(resultFile.getPath()));
 		try {
 			final List<Object> data = objectMapper.readValue(rawResultData, List.class);
 			
 			final TaskResultDto taskResultDto = new TaskResultDto();
 			
+			taskResultDto.setTaskId(taskExecution.getId());
 			taskResultDto.setData(data);
 			
 			return taskResultDto;
@@ -96,5 +97,15 @@ public class ResultService {
 			throw new IllegalStateException(e);
 		}
 		
+	}
+	
+	public Page<TaskResultDto> getResults(final Long jobDefinitionId,
+	                                      final Long jobExecutionId,
+	                                      final int page,
+	                                      final int pageSize) {
+		final JobExecution jobExecution = jobDefinitionService.getById(jobDefinitionId)
+				.getExecutionById(jobExecutionId);
+		
+		return null;
 	}
 }

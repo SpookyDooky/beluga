@@ -14,6 +14,7 @@ import org.springframework.transaction.support.SimpleTransactionStatus;
 
 @IsFileSystem
 @Configuration
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class FileSystemPersistenceConfig {
 
 	@Bean
