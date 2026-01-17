@@ -3,9 +3,8 @@ package com.x.scrape.model.job_definition.configuration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
-import com.x.scrape.persistence.shared.model.HasId;
 
-public class JobConfiguration implements HasId {
+public class JobConfiguration {
 	
 	private Long id;
 	
@@ -16,12 +15,10 @@ public class JobConfiguration implements HasId {
 	
 	private ExecutionConfiguration executionConfiguration;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

@@ -9,8 +9,6 @@ import com.x.scrape.model.job_definition.JobStatus;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.model.task.TaskExecution;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
-import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,24 +24,13 @@ public class JobService {
 	private final JobDefinitionService jobDefinitionService;
 	private final JobMapper jobMapper;
 	private final TaskMapper taskMapper;
-	
-	// TODO -These two dependencies should maybe be abstracted away so that the entity id setter service
-	// TODO - has a different implementation for s3/filesystem and postgresql
-	// TODO - rewrite after S3/FS have been removed
-	
-	private final EntityManager entityManager;
-	private final EntityIdSetterService entityIdSetterService;
-	
+
 	public JobService(final JobDefinitionService jobDefinitionService,
 	                  final JobMapper jobMapper,
-	                  final TaskMapper taskMapper,
-	                  final Optional<EntityManager> entityManager,
-	                  final Optional<EntityIdSetterService> entityIdSetterService) {
+	                  final TaskMapper taskMapper) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.jobMapper = jobMapper;
 		this.taskMapper = taskMapper;
-		this.entityManager = entityManager.orElse(null);
-		this.entityIdSetterService = entityIdSetterService.orElse(null);
 	}
 	
 	/**
@@ -95,13 +82,6 @@ public class JobService {
 		taskExecution.setTaskDefinition(taskDefinition);
 		
 		jobExecution.addTask(taskExecution);
-		
-		// Maybe we need two services one for s3/fs and one for postgresql
-		if (entityManager != null) {
-			entityManager.persist(taskExecution);
-		} else if (entityIdSetterService != null) {
-			entityIdSetterService.setIds(taskExecution);
-		}
 		
 		final Task task = taskMapper.map(jobDefinition, taskDefinition);
 		task.setId(taskExecution.getId());

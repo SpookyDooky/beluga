@@ -1,7 +1,6 @@
 package com.x.scrape.persistence.repository.job;
 
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.persistence.repository.task_execution.TaskExecutionS3Repository;
 import com.x.scrape.persistence.s3.model.JobDefinitionIndex;
 import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;

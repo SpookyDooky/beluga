@@ -1,7 +1,9 @@
 package com.x.scrape.model.job_definition.configuration.scraping_configuration;
 
-import com.x.scrape.persistence.shared.model.HasId;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class ScrapingConfiguration implements HasId {
+public class ScrapingConfiguration {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -27,12 +29,10 @@ public class ScrapingConfiguration implements HasId {
 	)
 	private List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

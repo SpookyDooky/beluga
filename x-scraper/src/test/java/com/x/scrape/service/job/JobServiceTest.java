@@ -44,7 +44,7 @@ class JobServiceTest {
 	
 	@Test
 	void shouldCreateJobByDefinitionId() {
-		initializeJobService(Optional.of(entityManager), Optional.empty());
+		initializeJobService();
 		
 		final TaskDefinition taskDefinition = Instancio.of(TaskDefinition.class)
 				.set(field(TaskDefinition::isActive), true)
@@ -74,20 +74,17 @@ class JobServiceTest {
 		verify(jobDefinition).addExecution(any());
 	}
 	
-	void initializeJobService(final Optional<EntityManager> entityManager,
-	                          final Optional<EntityIdSetterService> entityIdSetterService) {
+	void initializeJobService() {
 		jobService = new JobService(
 				jobDefinitionService,
 				jobMapper,
-				taskMapper,
-				entityManager,
-				entityIdSetterService
+				taskMapper
 		);
 	}
 	
 	@Test
 	void shouldCreateJobByDefinitionIdWithoutEntityManager() {
-		initializeJobService(Optional.empty(), Optional.of(entityIdSetterService));
+		initializeJobService();
 		
 		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
 		final JobDefinition jobDefinition = spy(
@@ -116,7 +113,7 @@ class JobServiceTest {
 	
 	@Test
 	void shouldCreateResumedJob() {
-		initializeJobService(Optional.empty(), Optional.empty());
+		initializeJobService();
 		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
@@ -154,7 +151,7 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreateResumedJobForJobWithNoExecutions() {
-		initializeJobService(Optional.empty(), Optional.empty());
+		initializeJobService();
 		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
@@ -168,7 +165,7 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreateResumedJobForCompletedJob() {
-		initializeJobService(Optional.empty(), Optional.empty());
+		initializeJobService();
 		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
@@ -185,7 +182,7 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreatedResumedJobForPausedJobWithNoTasksLeft() {
-		initializeJobService(Optional.empty(), Optional.empty());
+		initializeJobService();
 		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();

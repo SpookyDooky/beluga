@@ -1,8 +1,6 @@
 package com.x.scrape.model.result;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.task.TaskExecution;
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import static com.x.scrape.model.result.CompressionType.NONE;
@@ -10,7 +8,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class ResultFile implements HasId {
+public class ResultFile {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -27,12 +25,10 @@ public class ResultFile implements HasId {
 	@JoinColumn(name = "task_execution_id")
 	private TaskExecution taskExecution;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}
@@ -69,7 +65,6 @@ public class ResultFile implements HasId {
 		this.compressionType = compressionType;
 	}
 	
-	@JsonIgnore
 	public TaskExecution getTaskExecution() {
 		return taskExecution;
 	}

@@ -4,7 +4,7 @@ import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
-import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
+import com.x.scrape.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

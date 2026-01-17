@@ -3,7 +3,7 @@ package com.x.scrape.service.task;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
-import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
+import com.x.scrape.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
