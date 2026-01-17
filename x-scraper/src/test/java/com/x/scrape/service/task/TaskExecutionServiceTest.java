@@ -3,7 +3,7 @@ package com.x.scrape.service.task;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
-import com.x.scrape.persistence.repository.task_execution.TaskExecutionRepository;
+import com.x.scrape.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.x.scrape.model.task.TaskStatus.COMPLETED;
@@ -99,5 +100,15 @@ class TaskExecutionServiceTest {
 		
 		verify(taskExecution).addResultFile(resultFile);
 		verify(taskExecutionRepository).save(taskExecution);
+	}
+	
+	@Test
+	void shouldSaveAll() {
+		final List<TaskExecution> taskExecutions = mock();
+		when(taskExecutionRepository.saveAll(taskExecutions)).thenReturn(taskExecutions);
+		
+		final List<TaskExecution> result = taskExecutionService.saveAll(taskExecutions);
+		
+		assertSame(taskExecutions, result);
 	}
 }

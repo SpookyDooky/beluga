@@ -1,7 +1,6 @@
 package com.x.scrape.model.job_definition.configuration.scraping_configuration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
@@ -9,7 +8,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class DataPointConfiguration implements HasId {
+public class DataPointConfiguration {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -27,12 +26,10 @@ public class DataPointConfiguration implements HasId {
 	@Enumerated(STRING)
 	private DataPointType type = TEXT;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

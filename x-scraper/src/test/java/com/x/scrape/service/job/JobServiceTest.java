@@ -9,11 +9,11 @@ import com.x.scrape.model.task.Task;
 import com.x.scrape.model.task.TaskDefinition;
 import com.x.scrape.model.task.TaskExecution;
 import com.x.scrape.model.task.TaskStatus;
-import com.x.scrape.persistence.shared.service.EntityIdSetterService;
-import jakarta.persistence.EntityManager;
+import com.x.scrape.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -36,16 +36,13 @@ class JobServiceTest {
 	@Mock
 	private TaskMapper taskMapper;
 	@Mock
-	private EntityManager entityManager;
-	@Mock
-	private EntityIdSetterService entityIdSetterService;
+	private TaskExecutionService taskExecutionService;
 	
+	@InjectMocks
 	private JobService jobService;
 	
 	@Test
 	void shouldCreateJobByDefinitionId() {
-		initializeJobService(Optional.of(entityManager), Optional.empty());
-		
 		final TaskDefinition taskDefinition = Instancio.of(TaskDefinition.class)
 				.set(field(TaskDefinition::isActive), true)
 				.create();
@@ -63,32 +60,20 @@ class JobServiceTest {
 		final Task task = Instancio.create(Task.class);
 		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
 		
+		when(taskExecutionService.saveAll(any())).thenAnswer(answer -> answer.getArguments()[0]);
+		
 		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
 		
 		assertEquals(jobDefinition.getMostRecentExecution().get().getId(), result.getId());
 		assertEquals(1, job.getTasks().size());
 		assertTrue(job.getTasks().contains(task));
 		
-		verify(entityManager).persist(jobDefinition.getMostRecentExecution().get().getTasks().get(0));
 		verify(jobDefinitionService, times(2)).save(jobDefinition);
 		verify(jobDefinition).addExecution(any());
 	}
 	
-	void initializeJobService(final Optional<EntityManager> entityManager,
-	                          final Optional<EntityIdSetterService> entityIdSetterService) {
-		jobService = new JobService(
-				jobDefinitionService,
-				jobMapper,
-				taskMapper,
-				entityManager,
-				entityIdSetterService
-		);
-	}
-	
 	@Test
 	void shouldCreateJobByDefinitionIdWithoutEntityManager() {
-		initializeJobService(Optional.empty(), Optional.of(entityIdSetterService));
-		
 		final TaskDefinition taskDefinition = Instancio.create(TaskDefinition.class);
 		final JobDefinition jobDefinition = spy(
 				Instancio.of(JobDefinition.class)
@@ -104,6 +89,8 @@ class JobServiceTest {
 		final Task task = Instancio.create(Task.class);
 		when(taskMapper.map(jobDefinition, taskDefinition)).thenReturn(task);
 		
+		when(taskExecutionService.saveAll(any())).thenAnswer(answer -> answer.getArguments()[0]);
+		
 		final Job result = jobService.createJobByJobDefinitionId(jobDefinition.getId());
 		
 		assertEquals(jobDefinition.getMostRecentExecution().get().getId(), result.getId());
@@ -116,8 +103,6 @@ class JobServiceTest {
 	
 	@Test
 	void shouldCreateResumedJob() {
-		initializeJobService(Optional.empty(), Optional.empty());
-		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
@@ -154,8 +139,6 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreateResumedJobForJobWithNoExecutions() {
-		initializeJobService(Optional.empty(), Optional.empty());
-		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
@@ -168,8 +151,6 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreateResumedJobForCompletedJob() {
-		initializeJobService(Optional.empty(), Optional.empty());
-		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
@@ -185,8 +166,6 @@ class JobServiceTest {
 	
 	@Test
 	void shouldNotCreatedResumedJobForPausedJobWithNoTasksLeft() {
-		initializeJobService(Optional.empty(), Optional.empty());
-		
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);

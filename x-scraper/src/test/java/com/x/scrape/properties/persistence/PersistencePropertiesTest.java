@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 
-import static com.x.scrape.properties.persistence.PersistenceType.FILE_SYSTEM;
+import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnClass;
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +21,7 @@ class PersistencePropertiesTest {
 	
 	@Test
 	void shouldHaveDefaultFileSystemAsType() {
-		assertEquals(FILE_SYSTEM, new PersistenceProperties().getType());
+		assertEquals(POSTGRESQL, new PersistenceProperties().getType());
 	}
 	
 	@ParameterizedTest

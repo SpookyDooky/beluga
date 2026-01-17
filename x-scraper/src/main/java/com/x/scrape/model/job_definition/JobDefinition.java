@@ -7,7 +7,6 @@ import com.x.scrape.model.job_definition.configuration.scraping_configuration.Sc
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.x.scrape.model.task.TaskDefinition;
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import java.net.URL;
@@ -18,7 +17,7 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class JobDefinition implements HasId {
+public class JobDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -54,12 +53,10 @@ public class JobDefinition implements HasId {
 	@OrderBy("executedAt DESC")
 	private List<JobExecution> executions = new ArrayList<>();
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

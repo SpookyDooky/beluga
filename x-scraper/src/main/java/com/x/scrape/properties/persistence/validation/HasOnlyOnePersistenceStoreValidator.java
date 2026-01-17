@@ -12,8 +12,6 @@ public class HasOnlyOnePersistenceStoreValidator
 	                       final ConstraintValidatorContext constraintValidatorContext) {
 		int count = 0;
 		
-		count += persistenceProperties.getFileSystem() != null ? 1 : 0;
-		count += persistenceProperties.getS3() != null ? 1 : 0;
 		count += persistenceProperties.getPostgresql() != null ? 1 : 0;
 		
 		return count == 1;

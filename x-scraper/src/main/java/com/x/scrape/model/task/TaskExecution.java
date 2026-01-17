@@ -2,7 +2,6 @@ package com.x.scrape.model.task;
 
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -15,7 +14,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class TaskExecution implements HasId {
+public class TaskExecution {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -40,12 +39,10 @@ public class TaskExecution implements HasId {
 	)
 	private final List<ResultFile> resultFiles = new ArrayList<>();
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

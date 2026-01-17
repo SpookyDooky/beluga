@@ -3,7 +3,7 @@ package com.x.scrape.service.job;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.job_definition.JobStatus;
-import com.x.scrape.persistence.repository.job.JobDefinitionRepository;
+import com.x.scrape.persistence.repository.JobDefinitionRepository;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

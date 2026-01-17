@@ -1,6 +1,5 @@
 package com.x.scrape.model.job_definition.configuration.execution_configuration;
 
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -8,7 +7,7 @@ import jakarta.persistence.Id;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class ExecutionConfiguration implements HasId {
+public class ExecutionConfiguration {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -17,12 +16,10 @@ public class ExecutionConfiguration implements HasId {
 	private int workers;
 	private double tasksPerSecond;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}

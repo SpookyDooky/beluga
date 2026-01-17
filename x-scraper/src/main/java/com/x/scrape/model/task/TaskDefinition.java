@@ -2,7 +2,6 @@ package com.x.scrape.model.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.persistence.shared.model.HasId;
 import jakarta.persistence.*;
 
 import java.net.URL;
@@ -10,7 +9,7 @@ import java.net.URL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class TaskDefinition implements HasId {
+public class TaskDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -23,12 +22,10 @@ public class TaskDefinition implements HasId {
 	@JoinColumn(name = "job_definition_id")
 	private JobDefinition jobDefinition;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(final Long id) {
 		this.id = id;
 	}
