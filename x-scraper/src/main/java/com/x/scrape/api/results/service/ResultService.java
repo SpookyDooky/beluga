@@ -39,8 +39,8 @@ public class ResultService {
 	
 	@Transactional
 	public TaskResultDto getTaskResult(final Long jobDefinitionId,
-	                          final Long executionId,
-	                          final Long taskExecutionId) {
+	                                   final Long executionId,
+	                                   final Long taskExecutionId) {
 		validateTaskResultExists(jobDefinitionId, executionId, taskExecutionId);
 		
 		// TODO - Should we validate whether the task execution is completed?
