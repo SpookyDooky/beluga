@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.x.scrape.model.task.TaskStatus.PAUSED;
 
@@ -74,7 +75,7 @@ public class JobService {
 		
 		return taskExecutions.stream()
 				.map(taskExecution -> createTask(taskExecution, job, jobDefinition))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	private TaskExecution createTaskExecution(final TaskDefinition taskDefinition,

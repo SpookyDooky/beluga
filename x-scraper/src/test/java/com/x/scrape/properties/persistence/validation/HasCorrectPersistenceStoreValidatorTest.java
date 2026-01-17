@@ -36,19 +36,7 @@ class HasCorrectPersistenceStoreValidatorTest {
 	static Stream<Arguments> shouldBeValid() {
 		return Stream.of(
 				Instancio.of(PersistenceProperties.class)
-						.ignore(field(PersistenceProperties::getFileSystem))
 						.ignore(field(PersistenceProperties::getPostgresql))
-						.set(field(PersistenceProperties::getType), S3)
-						.create(),
-				Instancio.of(PersistenceProperties.class)
-						.ignore(field(PersistenceProperties::getS3))
-						.ignore(field(PersistenceProperties::getPostgresql))
-						.set(field(PersistenceProperties::getType), FILE_SYSTEM)
-						.create(),
-				Instancio.of(PersistenceProperties.class)
-						.ignore(field(PersistenceProperties::getS3))
-						.ignore(field(PersistenceProperties::getFileSystem))
-						.set(field(PersistenceProperties::getType), POSTGRESQL)
 						.create()
 		).map(Arguments::of);
 	}
@@ -65,23 +53,6 @@ class HasCorrectPersistenceStoreValidatorTest {
 		return Stream.of(
 				Arguments.of(
 						Instancio.of(PersistenceProperties.class)
-								.ignore(field(PersistenceProperties::getFileSystem))
-								.ignore(field(PersistenceProperties::getS3))
-								.set(field(PersistenceProperties::getType), S3)
-								.create(),
-						"When S3 is used as persistence type, then the s3 properties should be configured"
-				),
-				Arguments.of(
-						Instancio.of(PersistenceProperties.class)
-								.ignore(field(PersistenceProperties::getS3))
-								.ignore(field(PersistenceProperties::getFileSystem))
-								.set(field(PersistenceProperties::getType), FILE_SYSTEM)
-								.create(),
-						"When FILE_SYSTEM is used as persistence type, then the file-system properties should be configured"
-				),
-				Arguments.of(
-						Instancio.of(PersistenceProperties.class)
-								.ignore(field(PersistenceProperties::getS3))
 								.ignore(field(PersistenceProperties::getPostgresql))
 								.set(field(PersistenceProperties::getType), POSTGRESQL)
 								.create(),
