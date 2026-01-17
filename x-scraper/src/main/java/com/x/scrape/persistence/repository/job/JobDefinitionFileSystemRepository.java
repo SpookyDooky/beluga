@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @IsFileSystem
 @Component
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class JobDefinitionFileSystemRepository implements JobDefinitionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";

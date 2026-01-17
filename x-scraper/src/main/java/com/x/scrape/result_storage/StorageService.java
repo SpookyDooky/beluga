@@ -13,6 +13,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+
 @Service
 public class StorageService {
 	
@@ -75,5 +77,9 @@ public class StorageService {
 				storageHint.getPath(),
 				stringPayload.getData().getBytes()
 		);
+	}
+	
+	public byte[] retrieve(final Path filePath) {
+		return resultDataStoreProvider.retrieve(filePath);
 	}
 }

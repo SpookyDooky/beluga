@@ -43,4 +43,12 @@ public abstract class ResultDataStoreProvider {
 	}
 	
 	public abstract void save(Path filePath, byte[] fileContent);
+	
+	/**
+	 * Retrieves a result file.
+	 *
+	 * @param filePath the {@link Path} of the file.
+	 * @return raw content of the file in bytes.
+	 */
+	public abstract byte[] retrieve(Path filePath);
 }

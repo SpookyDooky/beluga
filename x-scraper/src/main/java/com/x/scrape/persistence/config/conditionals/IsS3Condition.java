@@ -7,6 +7,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static com.x.scrape.properties.persistence.PersistenceType.S3;
 
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class IsS3Condition implements Condition {
 	
 	@Override

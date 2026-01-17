@@ -8,6 +8,8 @@ import com.x.scrape.persistence.file_system.service.FileSystemService;
 import com.x.scrape.persistence.shared.model.TaskExecutionIndex;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @IsFileSystem
 @Service
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class TaskExecutionFileSystemRepository implements TaskExecutionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
@@ -37,7 +40,8 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	@Override
 	public TaskExecution save(final TaskExecution taskExecution) {
 		entityIdSetterService.setIds(taskExecution);
-		updateIndex(taskExecution);
+		
+		updateJobDefinitionTaskExecutionIndex(taskExecution);
 		
 		final Path taskExecutionPath = createTaskExecutionPersistencePath(taskExecution);
 		
@@ -103,7 +107,7 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 	 *
 	 * @param taskExecution the task execution to add to the index.
 	 */
-	void updateIndex(final TaskExecution taskExecution) {
+	void updateJobDefinitionTaskExecutionIndex(final TaskExecution taskExecution) {
 		final Path taskExecutionIndexPath = Path.of(
 				persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
 						+ "/" + taskExecution.getJobExecution().getJobDefinition().getId() + "/task-execution-index.json"
@@ -117,5 +121,17 @@ public class TaskExecutionFileSystemRepository implements TaskExecutionRepositor
 		taskExecutionIndex.getIds().add(taskExecution.getId());
 		
 		fileSystemService.save(taskExecutionIndex, taskExecutionIndexPath);
+	}
+	
+	void updateJobExecutionTaskExecutionIndex(final TaskExecution taskExecution) {
+		final Path jobExecutionTaskExecutionIndex = Path.of(
+				persistenceProperties.getFileSystem().getFolder() + JOB_DEFINITION_PERSISTENCE_SUB_PATH
+						+ "/" + taskExecution.getJobExecution().getJobDefinition().getId() + "/job-execution-task-execution-index.json"
+		);
+	}
+	
+	@Override
+	public Page<TaskExecution> findByJobExecution(final JobExecution jobExecution, final Pageable pageable) {
+		return null;
 	}
 }

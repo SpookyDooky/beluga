@@ -39,4 +39,11 @@ public class S3ResultDataStoreProvider extends ResultDataStoreProvider {
 			s3Service.putObject(filePath, fileContent, bucket);
 		}
 	}
+	
+	@Override
+	public byte[] retrieve(final Path filePath) {
+		try (final CloseableContext ignored = logger.with(FILE_NAME, filePath.getFileName().toString())) {
+			return s3Service.getObject(filePath, bucket);
+		}
+	}
 }

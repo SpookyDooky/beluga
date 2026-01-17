@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.x.scrape.logging.ContextKeys.FILE_NAME;
 
 @Service
+// TODO MAKE custom annotation @IsResultStoreFileSystem
 @ConditionalOnProperty(
 		name = "x-scraper.result-datastore.type",
 		havingValue = "FILE_SYSTEM"
@@ -44,6 +46,15 @@ public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
 			fileOutputStream.write(bytes);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public byte[] retrieve(final Path filePath) {
+		try {
+			return Files.readAllBytes(filePath);
+		} catch (final IOException e) {
+			throw new IllegalStateException("Could not read file", e);
 		}
 	}
 }

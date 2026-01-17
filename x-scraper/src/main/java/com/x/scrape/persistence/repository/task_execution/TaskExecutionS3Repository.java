@@ -9,6 +9,8 @@ import com.x.scrape.persistence.s3.service.S3PersistenceService;
 import com.x.scrape.persistence.shared.model.TaskExecutionIndex;
 import com.x.scrape.persistence.shared.service.EntityIdSetterService;
 import com.x.scrape.properties.persistence.PersistenceProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @IsS3
 @Component
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class TaskExecutionS3Repository implements TaskExecutionRepository {
 	
 	private static final String JOB_DEFINITION_PERSISTENCE_SUB_PATH = "/job-definitions";
@@ -113,5 +116,10 @@ public class TaskExecutionS3Repository implements TaskExecutionRepository {
 		
 		jobExecution.setJobDefinition(jobDefinition);
 		taskExecution.setJobExecution(jobExecution);
+	}
+	
+	@Override
+	public Page<TaskExecution> findByJobExecution(final JobExecution jobExecution, final Pageable pageable) {
+		return null;
 	}
 }

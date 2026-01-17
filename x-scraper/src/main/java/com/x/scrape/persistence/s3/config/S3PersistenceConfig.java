@@ -20,6 +20,7 @@ import java.net.URI;
 
 @IsS3
 @Configuration
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class S3PersistenceConfig {
 	
 	@Bean("persistence-s3client")

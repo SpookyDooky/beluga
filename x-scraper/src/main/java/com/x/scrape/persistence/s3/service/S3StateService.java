@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @IsS3
 @Service
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class S3StateService implements StateService {
 	
 	public static final String STATE_FOLDER = "/state";

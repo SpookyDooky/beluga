@@ -143,7 +143,7 @@ public class Worker {
 				TaskResultEvent.of(
 						task,
 						StorageHint.of(
-								UUID.randomUUID() + ".json",
+								"data.json",
 								task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"
 						),
 						new JsonPayload(scrapingResult.getResult())

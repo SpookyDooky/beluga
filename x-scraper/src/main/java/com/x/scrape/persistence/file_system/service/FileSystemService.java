@@ -20,6 +20,7 @@ import java.util.Optional;
  */
 @Service
 @IsFileSystem
+@Deprecated(forRemoval = true) // Due to SQL lite being a much better alternative
 public class FileSystemService {
 	
 	private final ObjectMapper objectMapper;
