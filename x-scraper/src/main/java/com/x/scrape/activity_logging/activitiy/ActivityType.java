@@ -1,4 +1,4 @@
-package com.x.scrape.activity_logging.model;
+package com.x.scrape.activity_logging.activitiy;
 
 public enum ActivityType {
 	REQUEST,

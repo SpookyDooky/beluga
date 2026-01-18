@@ -18,15 +18,8 @@ public class TestContainerProperties {
 		System.setProperty("spring.profiles.active", currentProfile);
 	}
 	
-	public static void setCurrentProfile(final String profile) {
-		currentProfile = profile;
-		System.setProperty("spring.profiles.active", currentProfile);
-	}
-	
-	// Todo - See if this is still necessary
 	public static void overrideProperties(final DynamicPropertyRegistry registry) {
 		final GenericContainer<?> container = CONTAINERS.get(currentProfile);
-		
-		System.out.println("Currently not in use.");
+		// Currently not in use
 	}
 }

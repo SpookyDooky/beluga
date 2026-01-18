@@ -1,6 +1,6 @@
 package com.x.scrape.activity_logging.event;
 
-import com.x.scrape.activity_logging.model.Activity;
+import com.x.scrape.activity_logging.activitiy.Activity;
 import org.springframework.context.ApplicationEvent;
 
 /**

@@ -1,8 +1,8 @@
-package com.x.scrape.activity_logging.model;
+package com.x.scrape.activity_logging.activitiy;
 
 import java.net.URL;
 
-import static com.x.scrape.activity_logging.model.ActivityType.TASK_FAILED;
+import static com.x.scrape.activity_logging.activitiy.ActivityType.TASK_FAILED;
 
 public class TaskFailedActivity extends Activity {
 	

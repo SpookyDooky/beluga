@@ -21,7 +21,7 @@ import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
 @IsPostgreSql
 @Configuration
 @EnableJpaRepositories(
-		basePackages = "com.x.scrape.persistence.repository"
+		basePackages = "com.x.scrape"
 )
 public class PostgreSqlPersistenceConfig {
 	
@@ -63,7 +63,7 @@ public class PostgreSqlPersistenceConfig {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactory.setPackagesToScan("com.x.scrape.model");
+		entityManagerFactory.setPackagesToScan("com.x.scrape");
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");

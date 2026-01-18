@@ -61,7 +61,6 @@ public class TaskExecutionEventHandler {
 		}
 	}
 	
-	// TODO - Consider whether this should listen to an event produced by the storage service that is emitted when a file is successfully persisted
 	@EventListener
 	public void onTaskResult(final TaskResultEvent taskResultEvent) {
 		final ResultFile resultFile = resultFileMapper.map(taskResultEvent);

@@ -66,7 +66,7 @@ public class JobService {
 				.get();
 		
 		final List<TaskExecution> taskExecutions = taskExecutionService.saveAll(
-				jobDefinition.getTaskDefinitions()
+				jobDefinition.getActiveTaskDefinitions()
 						.stream()
 						.map(taskDefinition -> createTaskExecution(taskDefinition, jobExecution))
 						.toList()
