@@ -1,6 +1,6 @@
 package com.x.scrape.activity_logging.event;
 
-import com.x.scrape.activity_logging.model.Activity;
+import com.x.scrape.activity_logging.model.ActivityLog;
 import com.x.scrape.model.task.event.task_result.StorageHint;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class ActivityFlushEventTest {
 	@Test
 	void shouldCreateActivityFlushEvent() {
 		final StorageHint storageHint = mock();
-		final Collection<Activity> activities = mock();
+		final Collection<ActivityLog> activities = mock();
 		
 		final ActivityFlushEvent event = ActivityFlushEvent.of(storageHint, activities);
 		

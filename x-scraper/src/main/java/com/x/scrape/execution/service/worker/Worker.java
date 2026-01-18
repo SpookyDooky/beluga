@@ -2,7 +2,7 @@ package com.x.scrape.execution.service.worker;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.activity_logging.event.ActivityEvent;
-import com.x.scrape.activity_logging.model.TaskCompletedActivity;
+import com.x.scrape.activity_logging.activitiy.TaskCompletedActivity;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
 import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
@@ -73,7 +73,6 @@ public class Worker {
 	 *
 	 * @param jobId the id of the {@link JobDefinition}.
 	 */
-	// TODO - job id should be of the execution id, not the job definition id
 	public void init(final Long jobId,
 	                 final RateLimiter rateLimiter) {
 		this.jobId = jobId;

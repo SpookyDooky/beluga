@@ -1,6 +1,6 @@
 package com.x.scrape.activity_logging.event;
 
-import com.x.scrape.activity_logging.model.Activity;
+import com.x.scrape.activity_logging.model.ActivityLog;
 import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.task.event.task_result.StorageHint;
@@ -8,6 +8,8 @@ import com.x.scrape.model.task.event.task_result.StorageHint;
 import java.util.Collection;
 import java.util.Map;
 
+// Activities will be stored in the database
+@Deprecated(forRemoval = true)
 public class ActivityFlushEvent implements StorableEvent {
 	
 	/**
@@ -27,7 +29,7 @@ public class ActivityFlushEvent implements StorableEvent {
 	}
 	
 	public static ActivityFlushEvent of(final StorageHint storageHint,
-	                                    final Collection<Activity> activities) {
+	                                    final Collection<ActivityLog> activities) {
 		validateNotNull("storageHint", storageHint);
 		validateNotNull("activities", activities);
 		

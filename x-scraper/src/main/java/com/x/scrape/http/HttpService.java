@@ -1,7 +1,7 @@
 package com.x.scrape.http;
 
 import com.x.scrape.activity_logging.event.ActivityEvent;
-import com.x.scrape.activity_logging.model.RequestActivity;
+import com.x.scrape.activity_logging.activitiy.RequestActivity;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.util.TimingService;
 import org.jsoup.Jsoup;
