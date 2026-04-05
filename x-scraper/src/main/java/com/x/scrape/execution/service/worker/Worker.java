@@ -1,11 +1,11 @@
 package com.x.scrape.execution.service.worker;
 
-import com.google.common.util.concurrent.RateLimiter;
-import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.activity_logging.activitiy.TaskCompletedActivity;
+import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
 import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
+import com.x.scrape.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.logging.CloseableContext;
 import com.x.scrape.logging.ContextLogger;
@@ -54,7 +54,7 @@ public class Worker {
 	private Instant startTime;
 	private final UUID workerId = UUID.randomUUID();
 	
-	private RateLimiter rateLimiter;
+	private JitterRateLimiter rateLimiter;
 	
 	public Worker(final JobTaskQueue jobTaskQueue,
 	              final ScrapingService scrapingService,
@@ -74,7 +74,7 @@ public class Worker {
 	 * @param jobId the id of the {@link JobDefinition}.
 	 */
 	public void init(final Long jobId,
-	                 final RateLimiter rateLimiter) {
+	                 final JitterRateLimiter rateLimiter) {
 		this.jobId = jobId;
 		this.rateLimiter = rateLimiter;
 	}

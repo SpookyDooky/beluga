@@ -69,7 +69,7 @@ public class ResultFile {
 		return taskExecution;
 	}
 	
-	public void setTaskExecution(final TaskExecution taskExecution) {
+	public void setTaskExecution(final TaskExecution taskExecution)  {
 		this.taskExecution = taskExecution;
 	}
 }

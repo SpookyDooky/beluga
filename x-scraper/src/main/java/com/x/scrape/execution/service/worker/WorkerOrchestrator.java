@@ -1,8 +1,8 @@
 package com.x.scrape.execution.service.worker;
 
-import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
+import com.x.scrape.execution.service.worker.rate_limiting.JitterRateLimiter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -28,7 +28,7 @@ public class WorkerOrchestrator {
 	public void startWorkers(final Long jobId,
 	                         final double rateLimit,
 	                         final int workers) {
-		final RateLimiter rateLimiter = RateLimiter.create(rateLimit);
+		final JitterRateLimiter rateLimiter = new JitterRateLimiter(rateLimit);
 		activeWorkersPerJob.put(jobId, 0);
 		
 		for (int i = 0; i < workers; i++) {

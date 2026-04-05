@@ -1,9 +1,9 @@
 package com.x.scrape.execution.service.worker;
 
-import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
 import com.x.scrape.execution.service.worker.event.WorkerStartedEvent;
+import com.x.scrape.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.x.scrape.http.HttpService;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.task.Task;
@@ -53,7 +53,7 @@ class WorkerTest {
 	void shouldSendWorkerEvents() {
 		when(jobTaskQueue.isQueueEmpty(jobId)).thenReturn(true);
 		
-		worker.init(jobId, RateLimiter.create(0.5));
+		worker.init(jobId, new JitterRateLimiter(0.5));
 		worker.start();
 		
 		final ArgumentCaptor<WorkerStartedEvent> workerStartedEventArgumentCaptor = ArgumentCaptor.forClass(WorkerStartedEvent.class);
@@ -81,7 +81,7 @@ class WorkerTest {
 		when(scrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
 				.thenReturn(scrapingResult);
 		
-		worker.init(jobId, RateLimiter.create(0.5));
+		worker.init(jobId, new JitterRateLimiter(0.5));
 		worker.start();
 		
 		verify(applicationEventPublisher).publishEvent(any(WorkerStartedEvent.class));
@@ -105,7 +105,7 @@ class WorkerTest {
 		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
 		when(scrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
 		
-		worker.init(jobId, RateLimiter.create(0.5));
+		worker.init(jobId, new JitterRateLimiter(0.5));
 		assertDoesNotThrow((() -> worker.start()));
 		
 		final ArgumentCaptor<TaskFailedEvent> taskFailedEventArgumentCaptor = ArgumentCaptor.forClass(TaskFailedEvent.class);
