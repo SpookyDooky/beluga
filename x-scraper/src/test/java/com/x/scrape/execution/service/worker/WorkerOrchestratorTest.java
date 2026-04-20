@@ -1,8 +1,8 @@
 package com.x.scrape.execution.service.worker;
 
-import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
+import com.x.scrape.execution.service.worker.rate_limiting.JitterRateLimiter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class WorkerOrchestratorTest {
 	private WorkerOrchestrator workerOrchestrator;
 	
 	@Captor
-	private ArgumentCaptor<RateLimiter> rateLimiterArgumentCaptor;
+	private ArgumentCaptor<JitterRateLimiter> rateLimiterArgumentCaptor;
 	@Captor
 	private ArgumentCaptor<JobWorkersFinishedEvent> jobWorkersFinishedEventArgumentCaptor;
 	
@@ -46,7 +46,7 @@ class WorkerOrchestratorTest {
 		
 		verify(worker, times(workers)).init(eq(jobId), rateLimiterArgumentCaptor.capture());
 		
-		for (final RateLimiter rateLimiter : rateLimiterArgumentCaptor.getAllValues()) {
+		for (final JitterRateLimiter rateLimiter : rateLimiterArgumentCaptor.getAllValues()) {
 			assertEquals(rateLimit, rateLimiter.getRate());
 		}
 	}
