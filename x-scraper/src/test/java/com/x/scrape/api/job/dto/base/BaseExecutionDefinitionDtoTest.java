@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 
-class BaseExecutionConfigurationDtoTest {
+class BaseExecutionDefinitionDtoTest {
 	
 	@ParameterizedTest
 	@ValueSource(

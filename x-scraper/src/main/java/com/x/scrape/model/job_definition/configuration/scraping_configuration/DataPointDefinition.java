@@ -1,6 +1,5 @@
 package com.x.scrape.model.job_definition.configuration.scraping_configuration;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
@@ -8,15 +7,15 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class DataPointConfiguration {
+public class DataPointDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "scraping_configuration_id")
-	private ScrapingConfiguration scrapingConfiguration;
+	@JoinColumn(name = "scraping_definition_id")
+	private ScrapingDefinition scrapingDefinition;
 	
 	private String selector;
 	private String propertyName;
@@ -34,13 +33,12 @@ public class DataPointConfiguration {
 		this.id = id;
 	}
 	
-	@JsonIgnore
-	public ScrapingConfiguration getScrapingConfiguration() {
-		return scrapingConfiguration;
+	public ScrapingDefinition getScrapingDefinition() {
+		return scrapingDefinition;
 	}
 	
-	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
-		this.scrapingConfiguration = scrapingConfiguration;
+	public void setScrapingDefinition(final ScrapingDefinition scrapingDefinition) {
+		this.scrapingDefinition = scrapingDefinition;
 	}
 	
 	public String getSelector() {

@@ -3,7 +3,7 @@ package com.x.scrape.api.execution.controller;
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.service.ExecutionApiService;
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
 import org.springframework.http.ResponseEntity;

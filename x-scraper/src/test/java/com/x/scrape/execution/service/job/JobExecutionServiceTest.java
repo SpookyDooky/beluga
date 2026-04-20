@@ -2,12 +2,12 @@ package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.execution.event.job.JobStartedEvent;
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.execution.service.worker.WorkerOrchestrator;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
+import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.instancio.Instancio;
@@ -61,8 +61,8 @@ class JobExecutionServiceTest {
 		final Job job = spy(Instancio.of(Job.class)
 				.set(
 						field(Job::getExecutionConfiguration),
-						Instancio.of(ExecutionConfiguration.class)
-								.set(field(ExecutionConfiguration::getWorkers), 1)
+						Instancio.of(ExecutionDefinition.class)
+								.set(field(ExecutionDefinition::getWorkers), 1)
 								.create()
 				).create());
 		

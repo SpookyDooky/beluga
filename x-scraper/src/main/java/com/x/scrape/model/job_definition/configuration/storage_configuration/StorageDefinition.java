@@ -7,7 +7,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class StorageConfiguration {
+public class StorageDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

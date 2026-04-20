@@ -2,14 +2,14 @@ package com.x.scrape.mapper.job.execution;
 
 import com.x.scrape.api.job.dto.read.ReadExecutionConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteExecutionConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
+import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.properties.scraping.execution.ExecutionProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ExecutionConfigurationMapperTest {
+class ExecutionDefinitionMapperTest {
 	
 	private final ExecutionConfigurationMapper mapper = new ExecutionConfigurationMapperImpl();
 	
@@ -17,17 +17,17 @@ class ExecutionConfigurationMapperTest {
 	void shouldMap() {
 		final ExecutionProperties executionProperties = Instancio.create(ExecutionProperties.class);
 		
-		final ExecutionConfiguration executionConfiguration = mapper.map(executionProperties);
+		final ExecutionDefinition executionDefinition = mapper.map(executionProperties);
 		
-		assertEquals(executionProperties.getWorkers(), executionConfiguration.getWorkers());
-		assertEquals(executionProperties.getTasksPerSecond(), executionConfiguration.getTasksPerSecond());
+		assertEquals(executionProperties.getWorkers(), executionDefinition.getWorkers());
+		assertEquals(executionProperties.getTasksPerSecond(), executionDefinition.getTasksPerSecond());
 	}
 	
 	@Test
 	void shouldMapFromWriteExecutionConfigurationDto() {
 		final WriteExecutionConfigurationDto dto = Instancio.create(WriteExecutionConfigurationDto.class);
 		
-		final ExecutionConfiguration entity = mapper.map(dto);
+		final ExecutionDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getWorkers(), entity.getWorkers());
 		assertEquals(dto.getTasksPerSecond(), entity.getTasksPerSecond());
@@ -35,7 +35,7 @@ class ExecutionConfigurationMapperTest {
 	
 	@Test
 	void shouldMapToDto() {
-		final ExecutionConfiguration entity = Instancio.create(ExecutionConfiguration.class);
+		final ExecutionDefinition entity = Instancio.create(ExecutionDefinition.class);
 		
 		final ReadExecutionConfigurationDto dto = mapper.map(entity);
 		
@@ -47,7 +47,7 @@ class ExecutionConfigurationMapperTest {
 	@Test
 	void shouldUpdate() {
 		final WriteExecutionConfigurationDto dto = Instancio.create(WriteExecutionConfigurationDto.class);
-		final ExecutionConfiguration entity = Instancio.create(ExecutionConfiguration.class);
+		final ExecutionDefinition entity = Instancio.create(ExecutionDefinition.class);
 		
 		mapper.update(dto, entity);
 		

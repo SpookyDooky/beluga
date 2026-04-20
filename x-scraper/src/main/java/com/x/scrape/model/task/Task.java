@@ -1,9 +1,7 @@
 package com.x.scrape.model.task;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.logging.ContextLoggable;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
-import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,8 +18,8 @@ public class Task implements ContextLoggable {
 	private Job job;
 	
 	private URL url;
-	private ScrapingConfiguration scrapingConfiguration;
-	private StorageConfiguration storageConfiguration;
+	private TaskScrapingConfiguration scrapingConfiguration;
+	private TaskStorageConfiguration storageConfiguration;
 	
 	public Long getId() {
 		return id;
@@ -47,19 +45,19 @@ public class Task implements ContextLoggable {
 		this.url = url;
 	}
 	
-	public ScrapingConfiguration getScrapingConfiguration() {
+	public TaskScrapingConfiguration getScrapingConfiguration() {
 		return scrapingConfiguration;
 	}
 	
-	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
+	public void setScrapingConfiguration(final TaskScrapingConfiguration scrapingConfiguration) {
 		this.scrapingConfiguration = scrapingConfiguration;
 	}
 	
-	public StorageConfiguration getStorageConfiguration() {
+	public TaskStorageConfiguration getStorageConfiguration() {
 		return storageConfiguration;
 	}
 	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
+	public void setStorageConfiguration(final TaskStorageConfiguration storageConfiguration) {
 		this.storageConfiguration = storageConfiguration;
 	}
 	

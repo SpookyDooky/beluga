@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 
-class WriteScrapingConfigurationDtoTest {
+class WriteScrapingDefinitionDtoTest {
 	
 	@Test
 	void shouldHaveNotEmptyOnDataPoints() {

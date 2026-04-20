@@ -2,9 +2,9 @@ package com.x.scrape.model.job_definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
-import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.x.scrape.model.task.TaskDefinition;
 import jakarta.persistence.*;
@@ -30,15 +30,15 @@ public class JobDefinition {
 	
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "scraping_configuration_id")
-	private ScrapingConfiguration scrapingConfiguration;
+	private ScrapingDefinition scrapingDefinition;
 	
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "storage_configuration_id")
-	private StorageConfiguration storageConfiguration;
+	private StorageDefinition storageDefinition;
 	
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "execution_configuration_id")
-	private ExecutionConfiguration executionConfiguration;
+	private ExecutionDefinition executionDefinition;
 	
 	@OneToMany(
 			cascade = ALL,
@@ -77,28 +77,28 @@ public class JobDefinition {
 		this.urlConfiguration = urlConfiguration;
 	}
 	
-	public ScrapingConfiguration getScrapingConfiguration() {
-		return scrapingConfiguration;
+	public ScrapingDefinition getScrapingDefinition() {
+		return scrapingDefinition;
 	}
 	
-	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
-		this.scrapingConfiguration = scrapingConfiguration;
+	public void setScrapingDefinition(final ScrapingDefinition scrapingDefinition) {
+		this.scrapingDefinition = scrapingDefinition;
 	}
 	
-	public StorageConfiguration getStorageConfiguration() {
-		return storageConfiguration;
+	public StorageDefinition getStorageConfiguration() {
+		return storageDefinition;
 	}
 	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
-		this.storageConfiguration = storageConfiguration;
+	public void setStorageConfiguration(final StorageDefinition storageDefinition) {
+		this.storageDefinition = storageDefinition;
 	}
 	
-	public ExecutionConfiguration getExecutionConfiguration() {
-		return executionConfiguration;
+	public ExecutionDefinition getExecutionDefinition() {
+		return executionDefinition;
 	}
 	
-	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
-		this.executionConfiguration = executionConfiguration;
+	public void setExecutionDefinition(final ExecutionDefinition executionDefinition) {
+		this.executionDefinition = executionDefinition;
 	}
 	
 	public List<TaskDefinition> getTaskDefinitions() {

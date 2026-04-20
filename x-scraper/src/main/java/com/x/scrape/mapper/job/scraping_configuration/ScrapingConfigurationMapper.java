@@ -2,7 +2,7 @@ package com.x.scrape.mapper.job.scraping_configuration;
 
 import com.x.scrape.api.job.dto.read.ReadScrapingConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteScrapingConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.properties.scraping.ScrapingProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,14 +23,14 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface ScrapingConfigurationMapper {
 	
 	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
-	ScrapingConfiguration map(ScrapingProperties scrapingProperties);
+	ScrapingDefinition map(ScrapingProperties scrapingProperties);
 	
 	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
-	ScrapingConfiguration map(WriteScrapingConfigurationDto dto);
+	ScrapingDefinition map(WriteScrapingConfigurationDto dto);
 	
 	@Mapping(target = "dataPoints", source = "dataPointConfigurations")
-	ReadScrapingConfigurationDto map(ScrapingConfiguration scrapingConfiguration);
+	ReadScrapingConfigurationDto map(ScrapingDefinition scrapingDefinition);
 	
 	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
-	void update(WriteScrapingConfigurationDto dto, @MappingTarget ScrapingConfiguration scrapingConfiguration);
+	void update(WriteScrapingConfigurationDto dto, @MappingTarget ScrapingDefinition scrapingDefinition);
 }

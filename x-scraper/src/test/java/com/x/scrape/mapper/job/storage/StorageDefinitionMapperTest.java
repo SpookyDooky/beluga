@@ -2,14 +2,14 @@ package com.x.scrape.mapper.job.storage;
 
 import com.x.scrape.api.job.dto.read.ReadStorageConfigurationDto;
 import com.x.scrape.api.job.dto.write.WriteStorageConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
+import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StorageConfigurationMapperTest {
+class StorageDefinitionMapperTest {
 
 	private final StorageConfigurationMapperImpl mapper = new StorageConfigurationMapperImpl();
 	
@@ -17,24 +17,24 @@ class StorageConfigurationMapperTest {
 	void shouldMap() {
 		final StorageProperties storageProperties = Instancio.create(StorageProperties.class);
 		
-		final StorageConfiguration storageConfiguration = mapper.map(storageProperties);
+		final StorageDefinition storageDefinition = mapper.map(storageProperties);
 		
-		assertEquals(storageProperties.getFormat(), storageConfiguration.getFormat());
-		assertEquals(storageProperties.getFolder(), storageConfiguration.getFolder());
+		assertEquals(storageProperties.getFormat(), storageDefinition.getFormat());
+		assertEquals(storageProperties.getFolder(), storageDefinition.getFolder());
 	}
 	
 	@Test
 	void shouldMapFromWriteStorageConfigurationDto() {
 		final WriteStorageConfigurationDto dto = Instancio.create(WriteStorageConfigurationDto.class);
 		
-		final StorageConfiguration entity = mapper.map(dto);
+		final StorageDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getFolder(), entity.getFolder());
 	}
 	
 	@Test
 	void shouldMapToDto() {
-		final StorageConfiguration entity = Instancio.create(StorageConfiguration.class);
+		final StorageDefinition entity = Instancio.create(StorageDefinition.class);
 		
 		final ReadStorageConfigurationDto dto = mapper.map(entity);
 		
@@ -45,7 +45,7 @@ class StorageConfigurationMapperTest {
 	@Test
 	void shouldUpdate() {
 		final WriteStorageConfigurationDto dto = Instancio.create(WriteStorageConfigurationDto.class);
-		final StorageConfiguration entity = Instancio.create(StorageConfiguration.class);
+		final StorageDefinition entity = Instancio.create(StorageDefinition.class);
 		
 		mapper.update(dto, entity);
 		

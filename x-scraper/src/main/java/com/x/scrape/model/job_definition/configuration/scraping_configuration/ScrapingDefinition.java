@@ -13,7 +13,7 @@ import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class ScrapingConfiguration {
+public class ScrapingDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -23,11 +23,11 @@ public class ScrapingConfiguration {
 	
 	@OneToMany(
 			cascade = ALL,
-			mappedBy = "scrapingConfiguration",
+			mappedBy = "scrapingDefinition",
 			fetch = EAGER,
 			orphanRemoval = true
 	)
-	private List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
+	private List<DataPointDefinition> dataPointDefinitions = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -45,15 +45,15 @@ public class ScrapingConfiguration {
 		this.elementSelector = elementSelector;
 	}
 	
-	public List<DataPointConfiguration> getDataPointConfigurations() {
-		return dataPointConfigurations;
+	public List<DataPointDefinition> getDataPointDefinitions() {
+		return dataPointDefinitions;
 	}
 	
-	public void setDataPointConfigurations(final List<DataPointConfiguration> dataPointConfigurations) {
-		this.dataPointConfigurations.clear();
-		this.dataPointConfigurations.addAll(dataPointConfigurations);
-		this.dataPointConfigurations.forEach(dataPointConfiguration -> {
-			dataPointConfiguration.setScrapingConfiguration(this);
+	public void setDataPointDefinitions(final List<DataPointDefinition> dataPointDefinitions) {
+		this.dataPointDefinitions.clear();
+		this.dataPointDefinitions.addAll(dataPointDefinitions);
+		this.dataPointDefinitions.forEach(dataPointConfiguration -> {
+			dataPointConfiguration.setScrapingDefinition(this);
 		});
 	}
 }

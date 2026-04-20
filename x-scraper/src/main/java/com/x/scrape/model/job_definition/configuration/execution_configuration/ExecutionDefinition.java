@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class ExecutionConfiguration {
+public class ExecutionDefinition {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

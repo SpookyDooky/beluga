@@ -2,14 +2,14 @@ package com.x.scrape.execution.service.job;
 
 import com.x.scrape.execution.event.job.JobFinishedEvent;
 import com.x.scrape.execution.event.job.JobStartedEvent;
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
+import com.x.scrape.execution.model.job.JobExecutionConfiguration;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.execution.service.worker.WorkerOrchestrator;
 import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
 import com.x.scrape.model.task.Task;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -55,7 +55,7 @@ public class JobExecutionService {
 		job.getTasks().forEach(jobTaskQueue::offerTask);
 		job.getTasks().clear();
 		
-		final ExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
+		final JobExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
 		
 		workerOrchestrator.startWorkers(
 				job.getId(),

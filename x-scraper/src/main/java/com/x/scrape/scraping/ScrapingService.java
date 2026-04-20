@@ -1,8 +1,8 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.http.HttpService;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
+import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class ScrapingService {
 	}
 	
 	public ScrapingResult scrape(final URL url,
-	                             final ScrapingConfiguration scrapingProperties) {
+	                             final ScrapingDefinition scrapingProperties) {
 		final Document document = httpService.retrievePageAsDocument(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
@@ -36,7 +36,7 @@ public class ScrapingService {
 		logger.info("Found " + elements.size() + " in document");
 		
 		final List<Map<String, Object>> result =  elements.stream()
-				.map(element -> extractData(element, scrapingProperties.getDataPointConfigurations()))
+				.map(element -> extractData(element, scrapingProperties.getDataPointDefinitions()))
 				.toList();
 		
 		return new ScrapingResult(
@@ -52,20 +52,20 @@ public class ScrapingService {
 	}
 	
 	private Map<String, Object> extractData(final Element element,
-	                                        final List<DataPointConfiguration> dataPointConfigurations) {
-		return dataPointConfigurations.stream()
+	                                        final List<DataPointDefinition> dataPointDefinitions) {
+		return dataPointDefinitions.stream()
 				.collect(Collectors.toMap(
-						DataPointConfiguration::getPropertyName,
+						DataPointDefinition::getPropertyName,
 						dataPointConfiguration -> extractData(element, dataPointConfiguration)
 				));
 	}
 	
 	private Object extractData(final Element element,
-	                           final DataPointConfiguration dataPointConfiguration) {
-		final Elements selectedElement = element.select(dataPointConfiguration.getSelector());
+	                           final DataPointDefinition dataPointDefinition) {
+		final Elements selectedElement = element.select(dataPointDefinition.getSelector());
 
-		if (dataPointConfiguration.getAttribute() != null) {
-			return selectedElement.attr(dataPointConfiguration.getAttribute());
+		if (dataPointDefinition.getAttribute() != null) {
+			return selectedElement.attr(dataPointDefinition.getAttribute());
 		}
 		
 		return selectedElement.text();

@@ -1,13 +1,11 @@
-package com.x.scrape.execution.model;
+package com.x.scrape.execution.model.job;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
-import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageConfiguration;
 import com.x.scrape.model.task.Task;
+import com.x.scrape.model.task.TaskStorageConfiguration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +22,8 @@ public class Job {
 	private Long jobDefinitionId;
 	private String jobName;
 	
-	private StorageConfiguration storageConfiguration;
-	private ExecutionConfiguration executionConfiguration;
+	private TaskStorageConfiguration storageConfiguration;
+	private JobExecutionConfiguration executionConfiguration;
 	
 	private List<Task> tasks = new ArrayList<>();
 	
@@ -53,26 +51,20 @@ public class Job {
 		this.jobName = jobName;
 	}
 	
-	public StorageConfiguration getStorageConfiguration() {
+	public TaskStorageConfiguration getStorageConfiguration() {
 		return storageConfiguration;
 	}
 	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
+	public void setStorageConfiguration(final TaskStorageConfiguration storageConfiguration) {
 		this.storageConfiguration = storageConfiguration;
 	}
 	
-	public ExecutionConfiguration getExecutionConfiguration() {
+	public JobExecutionConfiguration getExecutionConfiguration() {
 		return executionConfiguration;
 	}
 	
-	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
+	public void setExecutionConfiguration(final JobExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
-	}
-	
-	@JsonIgnore
-	public void createJobFolders() {
-		final File file = new File(getJobTaskResultsFolder());
-		file.mkdirs();
 	}
 	
 	@JsonIgnore

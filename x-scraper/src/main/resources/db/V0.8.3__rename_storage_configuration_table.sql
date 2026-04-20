@@ -1,0 +1,2 @@
+alter table storage_configuration rename to storage_definition;
+alter table job_definition alter column storage_configuration_id rename to storage_definition_id;

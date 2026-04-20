@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 
-class BaseStorageConfigurationDtoTest {
+class BaseStorageDefinitionDtoTest {
 	
 	@Test
 	void shouldHavePathAnnotationOnFolderField() {
