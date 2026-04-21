@@ -29,15 +29,15 @@ public class JobDefinition {
 	private UrlConfiguration urlConfiguration;
 	
 	@OneToOne(cascade = ALL)
-	@JoinColumn(name = "scraping_configuration_id")
+	@JoinColumn(name = "scraping_definition_id")
 	private ScrapingDefinition scrapingDefinition;
 	
 	@OneToOne(cascade = ALL)
-	@JoinColumn(name = "storage_configuration_id")
+	@JoinColumn(name = "storage_definition_id")
 	private StorageDefinition storageDefinition;
 	
 	@OneToOne(cascade = ALL)
-	@JoinColumn(name = "execution_configuration_id")
+	@JoinColumn(name = "execution_definition_id")
 	private ExecutionDefinition executionDefinition;
 	
 	@OneToMany(
@@ -85,11 +85,11 @@ public class JobDefinition {
 		this.scrapingDefinition = scrapingDefinition;
 	}
 	
-	public StorageDefinition getStorageConfiguration() {
+	public StorageDefinition getStorageDefinition() {
 		return storageDefinition;
 	}
 	
-	public void setStorageConfiguration(final StorageDefinition storageDefinition) {
+	public void setStorageDefinition(final StorageDefinition storageDefinition) {
 		this.storageDefinition = storageDefinition;
 	}
 	

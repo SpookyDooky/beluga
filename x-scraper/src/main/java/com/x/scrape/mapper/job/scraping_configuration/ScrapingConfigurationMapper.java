@@ -22,15 +22,15 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface ScrapingConfigurationMapper {
 	
-	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
+	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
 	ScrapingDefinition map(ScrapingProperties scrapingProperties);
 	
-	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
+	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
 	ScrapingDefinition map(WriteScrapingConfigurationDto dto);
 	
-	@Mapping(target = "dataPoints", source = "dataPointConfigurations")
+	@Mapping(target = "dataPoints", source = "dataPointDefinitions")
 	ReadScrapingConfigurationDto map(ScrapingDefinition scrapingDefinition);
 	
-	@Mapping(target = "dataPointConfigurations", source = "dataPoints")
+	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
 	void update(WriteScrapingConfigurationDto dto, @MappingTarget ScrapingDefinition scrapingDefinition);
 }

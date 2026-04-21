@@ -3,8 +3,8 @@ package com.x.scrape.execution.model.job;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
+import com.x.scrape.model.task.StorageConfiguration;
 import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.TaskStorageConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,8 @@ public class Job {
 	private Long jobDefinitionId;
 	private String jobName;
 	
-	private TaskStorageConfiguration storageConfiguration;
-	private JobExecutionConfiguration executionConfiguration;
+	private StorageConfiguration storageConfiguration;
+	private ExecutionConfiguration executionConfiguration;
 	
 	private List<Task> tasks = new ArrayList<>();
 	
@@ -51,19 +51,19 @@ public class Job {
 		this.jobName = jobName;
 	}
 	
-	public TaskStorageConfiguration getStorageConfiguration() {
+	public StorageConfiguration getStorageConfiguration() {
 		return storageConfiguration;
 	}
 	
-	public void setStorageConfiguration(final TaskStorageConfiguration storageConfiguration) {
+	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
 		this.storageConfiguration = storageConfiguration;
 	}
 	
-	public JobExecutionConfiguration getExecutionConfiguration() {
+	public ExecutionConfiguration getExecutionConfiguration() {
 		return executionConfiguration;
 	}
 	
-	public void setExecutionConfiguration(final JobExecutionConfiguration executionConfiguration) {
+	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
 	}
 	

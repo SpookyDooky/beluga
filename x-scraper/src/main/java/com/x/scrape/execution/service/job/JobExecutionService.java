@@ -2,8 +2,8 @@ package com.x.scrape.execution.service.job;
 
 import com.x.scrape.execution.event.job.JobFinishedEvent;
 import com.x.scrape.execution.event.job.JobStartedEvent;
+import com.x.scrape.execution.model.job.ExecutionConfiguration;
 import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.execution.model.job.JobExecutionConfiguration;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.execution.service.worker.WorkerOrchestrator;
@@ -55,7 +55,7 @@ public class JobExecutionService {
 		job.getTasks().forEach(jobTaskQueue::offerTask);
 		job.getTasks().clear();
 		
-		final JobExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
+		final ExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
 		
 		workerOrchestrator.startWorkers(
 				job.getId(),

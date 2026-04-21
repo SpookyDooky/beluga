@@ -69,7 +69,7 @@ class JobDefinitionConfigurationMapperTest {
 		
 		assertSame(urlConfiguration, jobDefinition.getUrlConfiguration());
 		assertSame(scrapingDefinition, jobDefinition.getScrapingDefinition());
-		assertSame(storageDefinition, jobDefinition.getStorageConfiguration());
+		assertSame(storageDefinition, jobDefinition.getStorageDefinition());
 		assertSame(executionDefinition, jobDefinition.getExecutionDefinition());
 		assertSame(taskDefinitions, jobDefinition.getTaskDefinitions());
 		assertEquals(jobProperties.getName(), jobDefinition.getName());
@@ -91,7 +91,7 @@ class JobDefinitionConfigurationMapperTest {
 		final JobDefinition entity = mapper.map(dto);
 		
 		assertSame(scrapingDefinition, entity.getScrapingDefinition());
-		assertSame(storageDefinition, entity.getStorageConfiguration());
+		assertSame(storageDefinition, entity.getStorageDefinition());
 		assertSame(executionDefinition, entity.getExecutionDefinition());
 	}
 	
@@ -103,7 +103,7 @@ class JobDefinitionConfigurationMapperTest {
 		when(scrapingConfigurationMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(readScrapingConfigurationDto);
 		
 		final ReadStorageConfigurationDto readStorageConfigurationDto = mock();
-		when(storageConfigurationMapper.map(jobDefinition.getStorageConfiguration())).thenReturn(readStorageConfigurationDto);
+		when(storageConfigurationMapper.map(jobDefinition.getStorageDefinition())).thenReturn(readStorageConfigurationDto);
 		
 		final ReadExecutionConfigurationDto readExecutionConfigurationDto = mock();
 		when(executionConfigurationMapper.map(jobDefinition.getExecutionDefinition())).thenReturn(readExecutionConfigurationDto);
@@ -124,7 +124,7 @@ class JobDefinitionConfigurationMapperTest {
 		mapper.update(dto, entity);
 		
 		verify(scrapingConfigurationMapper).update(dto.getScraping(), entity.getScrapingDefinition());
-		verify(storageConfigurationMapper).update(dto.getStorage(), entity.getStorageConfiguration());
+		verify(storageConfigurationMapper).update(dto.getStorage(), entity.getStorageDefinition());
 		verify(executionConfigurationMapper).update(dto.getExecution(), entity.getExecutionDefinition());
 	}
 }

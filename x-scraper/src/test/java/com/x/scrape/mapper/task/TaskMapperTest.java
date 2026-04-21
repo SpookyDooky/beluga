@@ -20,8 +20,9 @@ class TaskMapperTest {
 		final Task task = mapper.map(jobDefinition, taskDefinition);
 		
 		assertEquals(taskDefinition.getUrl(), task.getUrl());
-		assertSame(jobDefinition.getScrapingDefinition(), task.getScrapingConfiguration());
-		assertSame(jobDefinition.getStorageConfiguration(), task.getStorageConfiguration());
+		assertEquals(jobDefinition.getStorageDefinition().getFolder(), task.getStorageConfiguration().getFolder());
+		assertEquals(jobDefinition.getStorageDefinition().getFormat(), task.getStorageConfiguration().getFormat());
+		assertEquals(jobDefinition.getScrapingDefinition().getElementSelector(), task.getScrapingConfiguration().getElementSelector());
 	}
 	
 }

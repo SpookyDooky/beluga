@@ -2,7 +2,7 @@ package com.x.scrape.model.task;
 
 import com.x.scrape.model.types.StorageFormat;
 
-public class TaskStorageConfiguration {
+public class StorageConfiguration {
 
 	private StorageFormat format;
 	private String folder;

@@ -1,2 +1,2 @@
 alter table data_point_configuration rename to data_point_definition;
-alter table data_point_definition alter column scraping_configuration_id rename to scraping_definition_id;
+alter table data_point_definition rename column scraping_configuration_id to scraping_definition_id;

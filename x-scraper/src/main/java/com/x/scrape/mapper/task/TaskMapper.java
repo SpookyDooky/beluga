@@ -14,8 +14,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface TaskMapper {
 	
 	@Mapping(target = "url", source = "taskDefinition.url")
-	@Mapping(target = "scrapingConfiguration", source = "jobDefinition.scrapingConfiguration")
-	@Mapping(target = "storageConfiguration", source = "jobDefinition.storageConfiguration")
+	@Mapping(target = "scrapingConfiguration", source = "jobDefinition.scrapingDefinition")
+	@Mapping(target = "storageConfiguration", source = "jobDefinition.storageDefinition")
 	@Mapping(target = "id", ignore = true)
 	Task map(JobDefinition jobDefinition, TaskDefinition taskDefinition);
 }

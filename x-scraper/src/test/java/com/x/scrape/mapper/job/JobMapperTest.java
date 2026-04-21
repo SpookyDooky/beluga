@@ -19,6 +19,7 @@ class JobMapperTest {
 		
 		assertEquals(jobDefinition.getId(), job.getJobDefinitionId());
 		assertEquals(jobDefinition.getName(), job.getJobName());
-		assertEquals(jobDefinition.getExecutionDefinition(), job.getExecutionConfiguration());
+		assertEquals(jobDefinition.getExecutionDefinition().getWorkers(), job.getExecutionConfiguration().getWorkers());
+		assertEquals(jobDefinition.getExecutionDefinition().getTasksPerSecond(), job.getExecutionConfiguration().getTasksPerSecond());
 	}
 }

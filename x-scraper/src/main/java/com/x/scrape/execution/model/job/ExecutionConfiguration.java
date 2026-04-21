@@ -1,6 +1,6 @@
 package com.x.scrape.execution.model.job;
 
-public class JobExecutionConfiguration {
+public class ExecutionConfiguration {
 	
 	private int workers;
 	private double tasksPerSecond;

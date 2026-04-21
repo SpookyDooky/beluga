@@ -1,2 +1,2 @@
 alter table execution_configuration rename to execution_definition;
-alter table job_definition alter column execution_configuration_id rename to execution_definition_id;
+alter table job_definition rename column execution_configuration_id to execution_definition_id;

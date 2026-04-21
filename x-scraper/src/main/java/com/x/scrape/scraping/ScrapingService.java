@@ -1,8 +1,8 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.http.HttpService;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.x.scrape.model.task.TaskDataPointConfiguration;
+import com.x.scrape.model.task.TaskScrapingConfiguration;
 import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class ScrapingService {
 	}
 	
 	public ScrapingResult scrape(final URL url,
-	                             final ScrapingDefinition scrapingProperties) {
+	                             final TaskScrapingConfiguration scrapingProperties) {
 		final Document document = httpService.retrievePageAsDocument(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
@@ -36,7 +36,7 @@ public class ScrapingService {
 		logger.info("Found " + elements.size() + " in document");
 		
 		final List<Map<String, Object>> result =  elements.stream()
-				.map(element -> extractData(element, scrapingProperties.getDataPointDefinitions()))
+				.map(element -> extractData(element, scrapingProperties.getDataPointConfigurations()))
 				.toList();
 		
 		return new ScrapingResult(
@@ -52,16 +52,16 @@ public class ScrapingService {
 	}
 	
 	private Map<String, Object> extractData(final Element element,
-	                                        final List<DataPointDefinition> dataPointDefinitions) {
-		return dataPointDefinitions.stream()
+	                                        final List<TaskDataPointConfiguration> dataPointConfigurations) {
+		return dataPointConfigurations.stream()
 				.collect(Collectors.toMap(
-						DataPointDefinition::getPropertyName,
+						TaskDataPointConfiguration::getPropertyName,
 						dataPointConfiguration -> extractData(element, dataPointConfiguration)
 				));
 	}
 	
 	private Object extractData(final Element element,
-	                           final DataPointDefinition dataPointDefinition) {
+	                           final TaskDataPointConfiguration dataPointDefinition) {
 		final Elements selectedElement = element.select(dataPointDefinition.getSelector());
 
 		if (dataPointDefinition.getAttribute() != null) {
