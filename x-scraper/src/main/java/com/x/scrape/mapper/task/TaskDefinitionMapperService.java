@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.task;
 
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import com.x.scrape.properties.scraping.url.UrlProperties;
 import org.springframework.stereotype.Service;
 

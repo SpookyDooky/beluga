@@ -6,7 +6,7 @@ import com.x.scrape.model.job_definition.configuration.execution_configuration.E
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import jakarta.persistence.*;
 
 import java.net.URL;

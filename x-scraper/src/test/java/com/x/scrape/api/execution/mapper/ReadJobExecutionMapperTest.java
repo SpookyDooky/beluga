@@ -4,7 +4,7 @@ import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.x.scrape.api.execution.dto.ReadTaskExecutionDto;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

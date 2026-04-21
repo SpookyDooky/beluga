@@ -4,7 +4,7 @@ import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
 import com.x.scrape.result_storage.json.JsonService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

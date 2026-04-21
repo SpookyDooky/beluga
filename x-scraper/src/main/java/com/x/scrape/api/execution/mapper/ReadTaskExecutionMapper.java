@@ -1,7 +1,7 @@
 package com.x.scrape.api.execution.mapper;
 
 import com.x.scrape.api.execution.dto.ReadTaskExecutionDto;
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

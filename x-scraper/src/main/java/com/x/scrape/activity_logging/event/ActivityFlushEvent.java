@@ -3,7 +3,7 @@ package com.x.scrape.activity_logging.event;
 import com.x.scrape.activity_logging.model.ActivityLog;
 import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
-import com.x.scrape.model.task.event.task_result.StorageHint;
+import com.x.scrape.execution.event.task.task_result.StorageHint;
 
 import java.util.Collection;
 import java.util.Map;

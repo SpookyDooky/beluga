@@ -1,5 +1,6 @@
 package com.x.scrape.model.task;
 
+import com.x.scrape.execution.model.task.TaskExecution;
 import com.x.scrape.model.result.ResultFile;
 import jakarta.persistence.EntityNotFoundException;
 import org.instancio.Instancio;

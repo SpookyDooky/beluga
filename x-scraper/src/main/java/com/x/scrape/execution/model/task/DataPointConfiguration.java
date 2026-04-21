@@ -1,10 +1,10 @@
-package com.x.scrape.model.task;
+package com.x.scrape.execution.model.task;
 
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
 
 import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
-public class TaskDataPointConfiguration {
+public class DataPointConfiguration {
 	
 	private String selector;
 	private String propertyName;

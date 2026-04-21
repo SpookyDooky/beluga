@@ -1,13 +1,13 @@
-package com.x.scrape.model.task;
+package com.x.scrape.execution.model.task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskScrapingConfiguration {
+public class ScrapingConfiguration {
 
 	private Long id;
 	private String elementSelector;
-	private final List<TaskDataPointConfiguration> dataPointConfigurations = new ArrayList<>();
+	private final List<DataPointConfiguration> dataPointConfigurations = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -25,11 +25,11 @@ public class TaskScrapingConfiguration {
 		this.elementSelector = elementSelector;
 	}
 	
-	public List<TaskDataPointConfiguration> getDataPointConfigurations() {
+	public List<DataPointConfiguration> getDataPointConfigurations() {
 		return dataPointConfigurations;
 	}
 	
-	public void setDataPointConfigurations(final List<TaskDataPointConfiguration> dataPointConfigurations) {
+	public void setDataPointConfigurations(final List<DataPointConfiguration> dataPointConfigurations) {
 		this.dataPointConfigurations.clear();
 		this.dataPointConfigurations.addAll(dataPointConfigurations);
 	}

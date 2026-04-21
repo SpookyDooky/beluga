@@ -7,7 +7,7 @@ import com.x.scrape.model.event.storable.payload.ImagePayload;
 import com.x.scrape.model.event.storable.payload.JsonPayload;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.event.storable.payload.StringPayload;
-import com.x.scrape.model.task.event.task_result.StorageHint;
+import com.x.scrape.execution.event.task.task_result.StorageHint;
 import com.x.scrape.result_storage.json.JsonService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

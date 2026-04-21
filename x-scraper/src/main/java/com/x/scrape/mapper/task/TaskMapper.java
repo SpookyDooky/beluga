@@ -1,8 +1,8 @@
 package com.x.scrape.mapper.task;
 
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.Task;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

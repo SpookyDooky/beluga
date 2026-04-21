@@ -1,13 +1,13 @@
 package com.x.scrape.model.job_definition;
 
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.x.scrape.model.task.TaskStatus.COMPLETED;
-import static com.x.scrape.model.task.TaskStatus.PAUSED;
+import static com.x.scrape.execution.model.task.TaskStatus.COMPLETED;
+import static com.x.scrape.execution.model.task.TaskStatus.PAUSED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 

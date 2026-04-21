@@ -1,8 +1,8 @@
 package com.x.scrape.model.job_definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.x.scrape.model.task.TaskExecution;
-import com.x.scrape.model.task.TaskStatus;
+import com.x.scrape.execution.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;

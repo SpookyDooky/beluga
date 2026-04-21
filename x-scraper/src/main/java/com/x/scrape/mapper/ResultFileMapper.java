@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

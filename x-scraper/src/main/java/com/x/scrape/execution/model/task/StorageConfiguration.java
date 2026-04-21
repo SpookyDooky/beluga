@@ -1,4 +1,4 @@
-package com.x.scrape.model.task;
+package com.x.scrape.execution.model.task;
 
 import com.x.scrape.model.types.StorageFormat;
 

@@ -3,8 +3,8 @@ package com.x.scrape.execution.model.job;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.task.StorageConfiguration;
-import com.x.scrape.model.task.Task;
+import com.x.scrape.execution.model.task.StorageConfiguration;
+import com.x.scrape.execution.model.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;

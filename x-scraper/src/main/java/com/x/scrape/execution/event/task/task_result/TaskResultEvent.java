@@ -1,9 +1,9 @@
-package com.x.scrape.model.task.event.task_result;
+package com.x.scrape.execution.event.task.task_result;
 
 import com.x.scrape.model.event.storable.StorableEvent;
 import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.event.TaskEvent;
+import com.x.scrape.execution.model.task.Task;
+import com.x.scrape.execution.event.task.TaskEvent;
 
 /**
  * Event that represents some piece of data coming from task execution.

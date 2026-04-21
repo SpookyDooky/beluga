@@ -14,7 +14,7 @@ import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import com.x.scrape.properties.scraping.JobProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

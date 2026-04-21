@@ -1,8 +1,8 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.http.HttpService;
-import com.x.scrape.model.task.TaskDataPointConfiguration;
-import com.x.scrape.model.task.TaskScrapingConfiguration;
+import com.x.scrape.execution.model.task.ScrapingConfiguration;
+import com.x.scrape.execution.model.task.DataPointConfiguration;
 import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class ScrapingService {
 	}
 	
 	public ScrapingResult scrape(final URL url,
-	                             final TaskScrapingConfiguration scrapingProperties) {
+	                             final ScrapingConfiguration scrapingProperties) {
 		final Document document = httpService.retrievePageAsDocument(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
@@ -52,16 +52,16 @@ public class ScrapingService {
 	}
 	
 	private Map<String, Object> extractData(final Element element,
-	                                        final List<TaskDataPointConfiguration> dataPointConfigurations) {
+	                                        final List<DataPointConfiguration> dataPointConfigurations) {
 		return dataPointConfigurations.stream()
 				.collect(Collectors.toMap(
-						TaskDataPointConfiguration::getPropertyName,
+						DataPointConfiguration::getPropertyName,
 						dataPointConfiguration -> extractData(element, dataPointConfiguration)
 				));
 	}
 	
 	private Object extractData(final Element element,
-	                           final TaskDataPointConfiguration dataPointDefinition) {
+	                           final DataPointConfiguration dataPointDefinition) {
 		final Elements selectedElement = element.select(dataPointDefinition.getSelector());
 
 		if (dataPointDefinition.getAttribute() != null) {

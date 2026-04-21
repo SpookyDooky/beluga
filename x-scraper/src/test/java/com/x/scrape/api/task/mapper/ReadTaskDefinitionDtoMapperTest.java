@@ -1,7 +1,7 @@
 package com.x.scrape.api.task.mapper;
 
 import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

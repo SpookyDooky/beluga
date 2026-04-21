@@ -1,4 +1,4 @@
-package com.x.scrape.model.task.event.task_result;
+package com.x.scrape.execution.event.task.task_result;
 
 import org.junit.jupiter.api.Test;
 
