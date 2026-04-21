@@ -1,8 +1,8 @@
 package com.x.scrape.scraping;
 
 import com.x.scrape.http.HttpService;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointConfiguration;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingConfiguration;
+import com.x.scrape.execution.model.task.ScrapingConfiguration;
+import com.x.scrape.execution.model.task.DataPointConfiguration;
 import com.x.scrape.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,11 +61,11 @@ public class ScrapingService {
 	}
 	
 	private Object extractData(final Element element,
-	                           final DataPointConfiguration dataPointConfiguration) {
-		final Elements selectedElement = element.select(dataPointConfiguration.getSelector());
+	                           final DataPointConfiguration dataPointDefinition) {
+		final Elements selectedElement = element.select(dataPointDefinition.getSelector());
 
-		if (dataPointConfiguration.getAttribute() != null) {
-			return selectedElement.attr(dataPointConfiguration.getAttribute());
+		if (dataPointDefinition.getAttribute() != null) {
+			return selectedElement.attr(dataPointDefinition.getAttribute());
 		}
 		
 		return selectedElement.text();

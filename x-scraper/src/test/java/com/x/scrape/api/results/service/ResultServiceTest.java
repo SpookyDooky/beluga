@@ -8,7 +8,7 @@ import com.x.scrape.api.results.mapper.TaskResultDtoMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import com.x.scrape.result_storage.StorageService;
 import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.task.TaskExecutionService;

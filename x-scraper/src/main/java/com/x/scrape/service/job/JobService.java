@@ -1,14 +1,14 @@
 package com.x.scrape.service.job;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.mapper.task.TaskMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.model.job_definition.JobStatus;
-import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.TaskDefinition;
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.Task;
+import com.x.scrape.execution.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskExecution;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.x.scrape.model.task.TaskStatus.PAUSED;
+import static com.x.scrape.execution.model.task.TaskStatus.PAUSED;
 
 @Service
 public class JobService {
@@ -91,7 +91,10 @@ public class JobService {
 	private Task createTask(final TaskExecution taskExecution,
 	                        final Job job,
 	                        final JobDefinition jobDefinition) {
-		final Task task = taskMapper.map(jobDefinition, taskExecution.getTaskDefinition());
+		final Task task = taskMapper.map(
+				jobDefinition,
+				taskExecution.getTaskDefinition()
+		);
 		
 		task.setId(taskExecution.getId());
 		task.setJob(job);

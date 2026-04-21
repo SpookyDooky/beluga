@@ -2,7 +2,7 @@ package com.x.scrape.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

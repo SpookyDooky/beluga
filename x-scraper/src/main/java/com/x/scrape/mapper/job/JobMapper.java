@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.model.job_definition.JobDefinition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +14,7 @@ public interface JobMapper {
 	
 	@Mapping(target = "jobDefinitionId", source = "id")
 	@Mapping(target = "jobName", source = "name")
-	@Mapping(target = "storageConfiguration", source = "storageConfiguration")
-	@Mapping(target = "executionConfiguration", source = "executionConfiguration")
+	@Mapping(target = "storageConfiguration", source = "storageDefinition")
+	@Mapping(target = "executionConfiguration", source = "executionDefinition")
 	Job map(JobDefinition jobDefinition);
 }

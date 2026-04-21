@@ -2,18 +2,18 @@ package com.x.scrape.service.task;
 
 import com.x.scrape.mapper.ResultFileMapper;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.model.task.TaskExecution;
-import com.x.scrape.model.task.event.TaskCompletedEvent;
-import com.x.scrape.model.task.event.TaskFailedEvent;
-import com.x.scrape.model.task.event.TaskStartedEvent;
-import com.x.scrape.model.task.event.task_result.TaskResultEvent;
+import com.x.scrape.execution.model.task.TaskExecution;
+import com.x.scrape.execution.event.task.TaskCompletedEvent;
+import com.x.scrape.execution.event.task.TaskFailedEvent;
+import com.x.scrape.execution.event.task.TaskStartedEvent;
+import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
-import static com.x.scrape.model.task.TaskStatus.*;
+import static com.x.scrape.execution.model.task.TaskStatus.*;
 
 // Todo move to event package -> which contains a package for all the event handlers
 @Component

@@ -1,7 +1,7 @@
 package com.x.scrape.execution.service.task;
 
-import com.x.scrape.execution.model.Job;
-import com.x.scrape.model.task.Task;
+import com.x.scrape.execution.model.job.Job;
+import com.x.scrape.execution.model.task.Task;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

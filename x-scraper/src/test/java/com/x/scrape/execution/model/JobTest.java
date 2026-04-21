@@ -1,5 +1,6 @@
 package com.x.scrape.execution.model;
 
+import com.x.scrape.execution.model.job.Job;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

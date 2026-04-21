@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
 import com.x.scrape.api.results.dto.TaskResultDto;
 import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import com.x.scrape.result_storage.StorageService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

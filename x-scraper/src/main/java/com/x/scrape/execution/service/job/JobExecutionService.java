@@ -2,15 +2,15 @@ package com.x.scrape.execution.service.job;
 
 import com.x.scrape.execution.event.job.JobFinishedEvent;
 import com.x.scrape.execution.event.job.JobStartedEvent;
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.ExecutionConfiguration;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.execution.service.worker.WorkerOrchestrator;
 import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionConfiguration;
-import com.x.scrape.model.task.Task;
+import com.x.scrape.execution.model.task.Task;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.x.scrape.model.task.TaskStatus.PAUSED;
-import static com.x.scrape.model.task.TaskStatus.STOPPED;
+import static com.x.scrape.execution.model.task.TaskStatus.PAUSED;
+import static com.x.scrape.execution.model.task.TaskStatus.STOPPED;
 
 /**
  * This service takes care of starting the correct amount of {@link Worker}'s for each {@link JobDefinition}.

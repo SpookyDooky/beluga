@@ -1,14 +1,14 @@
 package com.x.scrape.service.job;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.mapper.job.JobMapper;
 import com.x.scrape.mapper.task.TaskMapper;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.TaskDefinition;
-import com.x.scrape.model.task.TaskExecution;
-import com.x.scrape.model.task.TaskStatus;
+import com.x.scrape.execution.model.task.Task;
+import com.x.scrape.execution.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskStatus;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -82,6 +82,7 @@ class JobServiceTest {
 						.create()
 		);
 		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(List.of(taskDefinition));
 		
 		final Job job = Instancio.create(Job.class);
 		when(jobMapper.map(jobDefinition)).thenReturn(job);

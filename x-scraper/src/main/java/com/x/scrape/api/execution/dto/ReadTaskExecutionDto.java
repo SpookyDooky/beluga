@@ -1,6 +1,6 @@
 package com.x.scrape.api.execution.dto;
 
-import com.x.scrape.model.task.TaskStatus;
+import com.x.scrape.execution.model.task.TaskStatus;
 import jakarta.validation.constraints.NotNull;
 
 import java.net.URL;

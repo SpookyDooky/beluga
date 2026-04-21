@@ -1,6 +1,6 @@
 package com.x.scrape.mapper.job;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.model.job_definition.JobDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ class JobMapperTest {
 		
 		assertEquals(jobDefinition.getId(), job.getJobDefinitionId());
 		assertEquals(jobDefinition.getName(), job.getJobName());
-		assertEquals(jobDefinition.getExecutionConfiguration(), job.getExecutionConfiguration());
+		assertEquals(jobDefinition.getExecutionDefinition().getWorkers(), job.getExecutionConfiguration().getWorkers());
+		assertEquals(jobDefinition.getExecutionDefinition().getTasksPerSecond(), job.getExecutionConfiguration().getTasksPerSecond());
 	}
 }

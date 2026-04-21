@@ -1,8 +1,8 @@
 package com.x.scrape.mapper.task;
 
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.task.Task;
-import com.x.scrape.model.task.TaskDefinition;
+import com.x.scrape.execution.model.task.Task;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +20,9 @@ class TaskMapperTest {
 		final Task task = mapper.map(jobDefinition, taskDefinition);
 		
 		assertEquals(taskDefinition.getUrl(), task.getUrl());
-		assertSame(jobDefinition.getScrapingConfiguration(), task.getScrapingConfiguration());
-		assertSame(jobDefinition.getStorageConfiguration(), task.getStorageConfiguration());
+		assertEquals(jobDefinition.getStorageDefinition().getFolder(), task.getStorageConfiguration().getFolder());
+		assertEquals(jobDefinition.getStorageDefinition().getFormat(), task.getStorageConfiguration().getFormat());
+		assertEquals(jobDefinition.getScrapingDefinition().getElementSelector(), task.getScrapingConfiguration().getElementSelector());
 	}
 	
 }

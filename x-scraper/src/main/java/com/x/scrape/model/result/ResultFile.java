@@ -1,6 +1,6 @@
 package com.x.scrape.model.result;
 
-import com.x.scrape.model.task.TaskExecution;
+import com.x.scrape.execution.model.task.TaskExecution;
 import jakarta.persistence.*;
 
 import static com.x.scrape.model.result.CompressionType.NONE;

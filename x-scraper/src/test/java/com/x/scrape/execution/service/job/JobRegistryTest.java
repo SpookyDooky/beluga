@@ -1,6 +1,6 @@
 package com.x.scrape.execution.service.job;
 
-import com.x.scrape.execution.model.Job;
+import com.x.scrape.execution.model.job.Job;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.job.JobDefinitionMapper;
 import com.x.scrape.model.job_definition.JobDefinition;

@@ -29,24 +29,24 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface JobDefinitionMapper {
 	
 	@Mapping(target = "urlConfiguration", source = "url")
-	@Mapping(target = "scrapingConfiguration", source = "scraping")
-	@Mapping(target = "storageConfiguration", source = "storage")
-	@Mapping(target = "executionConfiguration", source = "execution")
+	@Mapping(target = "scrapingDefinition", source = "scraping")
+	@Mapping(target = "storageDefinition", source = "storage")
+	@Mapping(target = "executionDefinition", source = "execution")
 	@Mapping(target = "taskDefinitions", source = "url")
 	JobDefinition map(JobProperties jobProperties);
 	
-	@Mapping(target = "scrapingConfiguration", source = "scraping")
-	@Mapping(target = "storageConfiguration", source = "storage")
-	@Mapping(target = "executionConfiguration", source = "execution")
+	@Mapping(target = "scrapingDefinition", source = "scraping")
+	@Mapping(target = "storageDefinition", source = "storage")
+	@Mapping(target = "executionDefinition", source = "execution")
 	JobDefinition map(WriteJobDefinitionDto dto);
 	
-	@Mapping(target = "scraping", source = "scrapingConfiguration")
-	@Mapping(target = "storage", source = "storageConfiguration")
-	@Mapping(target = "execution", source = "executionConfiguration")
+	@Mapping(target = "scraping", source = "scrapingDefinition")
+	@Mapping(target = "storage", source = "storageDefinition")
+	@Mapping(target = "execution", source = "executionDefinition")
 	ReadJobDefinitionDto map(JobDefinition jobDefinition);
 	
-	@Mapping(target = "scrapingConfiguration", source = "scraping")
-	@Mapping(target = "storageConfiguration", source = "storage")
-	@Mapping(target = "executionConfiguration", source = "execution")
+	@Mapping(target = "scrapingDefinition", source = "scraping")
+	@Mapping(target = "storageDefinition", source = "storage")
+	@Mapping(target = "executionDefinition", source = "execution")
 	void update(WriteJobDefinitionDto dto, @MappingTarget JobDefinition jobDefinition);
 }
