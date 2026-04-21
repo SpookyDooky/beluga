@@ -91,7 +91,10 @@ public class JobService {
 	private Task createTask(final TaskExecution taskExecution,
 	                        final Job job,
 	                        final JobDefinition jobDefinition) {
-		final Task task = taskMapper.map(jobDefinition, taskExecution.getTaskDefinition());
+		final Task task = taskMapper.map(
+				jobDefinition,
+				taskExecution.getTaskDefinition()
+		);
 		
 		task.setId(taskExecution.getId());
 		task.setJob(job);

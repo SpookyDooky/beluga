@@ -82,6 +82,7 @@ class JobServiceTest {
 						.create()
 		);
 		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(List.of(taskDefinition));
 		
 		final Job job = Instancio.create(Job.class);
 		when(jobMapper.map(jobDefinition)).thenReturn(job);

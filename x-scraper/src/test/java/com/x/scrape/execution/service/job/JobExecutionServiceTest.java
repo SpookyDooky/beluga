@@ -2,13 +2,13 @@ package com.x.scrape.execution.service.job;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.x.scrape.execution.event.job.JobStartedEvent;
+import com.x.scrape.execution.model.job.ExecutionConfiguration;
 import com.x.scrape.execution.model.job.Job;
+import com.x.scrape.execution.model.task.Task;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.Worker;
 import com.x.scrape.execution.service.worker.WorkerOrchestrator;
 import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
-import com.x.scrape.execution.model.task.Task;
 import com.x.scrape.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -58,13 +58,15 @@ class JobExecutionServiceTest {
 	
 	@Test
 	void shouldStartJob() {
-		final Job job = spy(Instancio.of(Job.class)
-				.set(
-						field(Job::getExecutionConfiguration),
-						Instancio.of(ExecutionDefinition.class)
-								.set(field(ExecutionDefinition::getWorkers), 1)
-								.create()
-				).create());
+		final Job job = spy(
+				Instancio.of(Job.class)
+						.set(
+								field(Job::getExecutionConfiguration),
+								Instancio.of(ExecutionConfiguration.class)
+										.set(field(ExecutionConfiguration::getWorkers), 1)
+										.create()
+						).create()
+		);
 		
 		final List<Task> tasks = new ArrayList<>(job.getTasks());
 		
