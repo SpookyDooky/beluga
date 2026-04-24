@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,9 +38,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	@TestTemplate
 	void shouldGetTasks() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		
 		Thread.sleep(250);
-		
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
 		
 		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
@@ -190,5 +189,35 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 				.content(objectMapper.writeValueAsString(patchTaskDto))
 				.contentType(APPLICATION_JSON)
 		).andExpect(status().isNotFound());
+	}
+	
+	@TestTemplate
+	void shouldReturn200WithSameTaskDefinitionIdForDuplicateTasks() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+		
+		final URL someUrl = URI.create("https://some.host.com").toURL();
+		final PatchTaskDto patchTask1 = new PatchTaskDto();
+		patchTask1.setAdd(Set.of(someUrl));
+		
+		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
+						.content(objectMapper.writeValueAsString(patchTask1))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
+		
+		final PatchTaskDto patchTask2 = new PatchTaskDto();
+		patchTask2.setAdd(Set.of(someUrl));
+		
+		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
+						.content(objectMapper.writeValueAsString(patchTask2))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
+		
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
 	}
 }
