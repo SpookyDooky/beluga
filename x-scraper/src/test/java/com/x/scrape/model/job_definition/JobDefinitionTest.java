@@ -153,18 +153,6 @@ class JobDefinitionTest {
 	}
 	
 	@Test
-	void shouldSetExistingTaskDefinitionsToInactive() {
-		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
-		jobDefinition.getTaskDefinitions().forEach(taskDefinition -> taskDefinition.setActive(true));
-		
-//		jobDefinition.setExistingTaskDefinitionsToInactive();
-		
-		jobDefinition.getTaskDefinitions().forEach(taskDefinition -> {
-			assertFalse(taskDefinition.isActive());
-		});
-	}
-	
-	@Test
 	void shouldHasExecutionId() {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		final Long executionId = jobDefinition.getExecutions().getFirst().getId();

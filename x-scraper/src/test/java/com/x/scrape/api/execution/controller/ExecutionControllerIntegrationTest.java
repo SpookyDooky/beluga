@@ -70,7 +70,7 @@ class ExecutionControllerIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForStart() throws Exception {
-		mvc.perform(post("/jobs/123/start"))
+		mvc.perform(post("/jobs/99999999/start"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -109,7 +109,7 @@ class ExecutionControllerIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForPause() throws Exception{
-		mvc.perform(post("/jobs/123/pause"))
+		mvc.perform(post("/jobs/999999/pause"))
 				.andExpect(status().isNotFound());
 	}
 	

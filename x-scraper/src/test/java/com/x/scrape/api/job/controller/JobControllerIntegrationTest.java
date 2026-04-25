@@ -63,7 +63,7 @@ public class JobControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGetJobReturn404() throws Exception {
-		final Long jobId = 123L;
+		final Long jobId = 99999999L;
 		
 		mvc.perform(get("/jobs/" + jobId))
 				.andExpect(status().isNotFound());

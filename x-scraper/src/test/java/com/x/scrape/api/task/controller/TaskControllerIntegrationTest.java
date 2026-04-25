@@ -56,7 +56,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGetTasks404() throws Exception {
-		mvc.perform(get("/jobs/123/tasks"))
+		mvc.perform(get("/jobs/999999999/tasks"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -132,7 +132,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	void shouldReturn404WhenUpdatingTasksForNonExistingJob() throws Exception {
 		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
 		
-		mvc.perform(put("/jobs/123/tasks")
+		mvc.perform(put("/jobs/99999999/tasks")
 				.content(objectMapper.writeValueAsString(updateTaskDto))
 				.contentType(APPLICATION_JSON)
 		).andExpect(status().isNotFound());
@@ -186,7 +186,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 	void shouldReturn404WhenPatchingTasksForNonExistingJob() throws Exception {
 		final PatchTaskDto patchTaskDto = new PatchTaskDto();
 		
-		mvc.perform(patch("/jobs/123/tasks")
+		mvc.perform(patch("/jobs/1323747424/tasks")
 				.content(objectMapper.writeValueAsString(patchTaskDto))
 				.contentType(APPLICATION_JSON)
 		).andExpect(status().isNotFound());

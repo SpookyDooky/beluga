@@ -5,7 +5,7 @@ info:
 paths:
   /jobs/{jobId}/tasks:
     put:
-      description: Update the tasks for a job.
+      description: Update the tasks for a job. This only guarantees that a given url exists for a job as a task, if it already existed no new task is created.
       tags:
         - Task
       parameters:
@@ -56,7 +56,9 @@ paths:
         404:
           description: Job not found
     patch:
-      description: Update the tasks for a job by adding and/or removing tasks.
+      description: """
+          Update the tasks for a job by adding and/or removing tasks. Add only guarantees that the url will exist as a task, if it already existed that one is used. The same for remove, if it was already removed it won't do anything. 
+      """
       tags:
         - Task
       parameters:
