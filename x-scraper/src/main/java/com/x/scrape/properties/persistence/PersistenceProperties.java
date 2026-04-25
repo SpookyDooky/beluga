@@ -23,6 +23,7 @@ public class PersistenceProperties {
 	private PersistenceType type = POSTGRESQL;
 	
 	private PostgreSqlPersistenceProperties postgresql;
+	private SqlLitePersistenceProperties sqlLite;
 	
 	public PersistenceType getType() {
 		return type;
@@ -38,5 +39,13 @@ public class PersistenceProperties {
 	
 	public void setPostgresql(final PostgreSqlPersistenceProperties postgresql) {
 		this.postgresql = postgresql;
+	}
+	
+	public SqlLitePersistenceProperties getSqlLite() {
+		return sqlLite;
+	}
+	
+	public void setSqlLite(final SqlLitePersistenceProperties sqlLite) {
+		this.sqlLite = sqlLite;
 	}
 }
