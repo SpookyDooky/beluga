@@ -1,5 +1,5 @@
 CREATE TABLE task_execution (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	job_execution_id integer NOT NULL,
 	task_definition_id integer NOT NULL,
 	executed_at text NULL,

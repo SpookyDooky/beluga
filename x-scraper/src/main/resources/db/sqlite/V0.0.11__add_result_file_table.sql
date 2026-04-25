@@ -1,5 +1,5 @@
 CREATE TABLE result_file (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	"path" varchar NOT NULL,
 	size_in_bytes integer NOT NULL,
 	compression_type varchar NOT NULL,

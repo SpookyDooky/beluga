@@ -1,4 +1,4 @@
 create table scraping_definition (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	element_selector varchar not null
 );

@@ -1,5 +1,5 @@
 CREATE TABLE job_execution (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	job_definition_id integer NOT NULL,
 	executed_at text NOT NULL,
 	status varchar DEFAULT 'PLANNED' NOT NULL,

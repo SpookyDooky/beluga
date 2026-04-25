@@ -1,5 +1,5 @@
 CREATE TABLE data_point_definition (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	scraping_definition_id integer NOT NULL,
 	selector varchar NOT NULL,
 	property_name varchar NOT NULL,

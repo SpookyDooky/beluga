@@ -1,5 +1,5 @@
 CREATE TABLE task_definition (
-	id integer primary key autoincrement not null,
+	id integer primary key autoincrement,
 	job_definition_id integer NOT NULL,
 	url varchar NOT NULL,
 	active integer DEFAULT 1 NULL,

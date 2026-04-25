@@ -1,5 +1,5 @@
 CREATE TABLE storage_definition (
-	id integer primary key autoincrement not null,
+	id INTEGER PRIMARY KEY,
 	format varchar NULL,
 	folder varchar NOT NULL
 );

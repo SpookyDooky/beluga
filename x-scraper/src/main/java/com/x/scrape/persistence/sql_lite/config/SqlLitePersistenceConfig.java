@@ -2,12 +2,15 @@ package com.x.scrape.persistence.sql_lite.config;
 
 import com.x.scrape.persistence.config.conditionals.annotation.IsSqlLite;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -19,11 +22,17 @@ public class SqlLitePersistenceConfig {
 	private static final String DATABASE_LOCATION = "/app/db/sqlite.db";
 	
 	@Bean
+	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
+		return new JpaTransactionManager(emf);
+	}
+	
+	@Bean
 	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
 		
 		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION + "?foreign_keys=on");
 		dataSource.setDriverClassName("org.sqlite.JDBC");
+		dataSource.setMaximumPoolSize(1);
 		
 		return dataSource;
 	}
@@ -34,6 +43,7 @@ public class SqlLitePersistenceConfig {
 		
 		adapter.setShowSql(false);
 		adapter.setGenerateDdl(false);
+		adapter.setDatabasePlatform("org.hibernate.community.dialect.SQLiteDialect");
 		
 		return adapter;
 	}
