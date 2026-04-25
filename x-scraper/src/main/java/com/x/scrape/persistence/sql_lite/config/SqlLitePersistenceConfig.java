@@ -1,44 +1,29 @@
-package com.x.scrape.persistence.postgresql.config;
+package com.x.scrape.persistence.sql_lite.config;
 
-import com.x.scrape.persistence.config.conditionals.annotation.IsPostgreSql;
-import com.x.scrape.properties.persistence.PostgreSqlPersistenceProperties;
+import com.x.scrape.persistence.config.conditionals.annotation.IsSqlLite;
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
-
-@IsPostgreSql
 @Configuration
-public class PostgreSqlPersistenceConfig {
+@IsSqlLite
+public class SqlLitePersistenceConfig {
 	
-	// TODO - Set connection pool size
-	// Isolation level
-	// Autocommit mode
-	
-	@Bean
-	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
-		return new JpaTransactionManager(emf);
-	}
+	private static final String DATABASE_LOCATION = "/app/db/sqlite.db";
 	
 	@Bean
-	public DataSource dataSource(final PostgreSqlPersistenceProperties properties) {
+	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
 		
-		dataSource.setJdbcUrl(properties.getUrl());
-		dataSource.setUsername(properties.getUsername());
-		dataSource.setPassword(properties.getPassword());
-		dataSource.setDriverClassName(properties.getDriverClassName());
+		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION);
+		dataSource.setDriverClassName("org.sqlite.JDBC");
 		
 		return dataSource;
 	}
@@ -49,7 +34,6 @@ public class PostgreSqlPersistenceConfig {
 		
 		adapter.setShowSql(false);
 		adapter.setGenerateDdl(false);
-		adapter.setDatabase(POSTGRESQL);
 		
 		return adapter;
 	}
@@ -73,9 +57,9 @@ public class PostgreSqlPersistenceConfig {
 	@Bean
 	public FlywayConfigurationCustomizer flywayCustomizer() {
 		return configuration -> {
-			configuration.createSchemas(true);
-			configuration.schemas("x_scraper");
-			configuration.locations("classpath:db/postgresql");
+			configuration.createSchemas(false);
+			configuration.schemas();
+			configuration.defaultSchema(null);
 		};
 	}
 }

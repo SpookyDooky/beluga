@@ -29,4 +29,4 @@ To configure PostgreSQL as persistence data store the following properties have 
 ### SQL Lite
 
 Per default SQL Lite is included in the docker image, nothing has to be configured for this. The file can be found inside the 
-container at /db/db.sqlite3. Do not forget to mount it, otherwise it won't survive restarts. 
+container at /app/db/sqlite.db, do not forget to mount it, otherwise it won't survive restarts. 
