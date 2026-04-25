@@ -8,6 +8,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @MultiStoreTest
 @SpringBootTest
+//@Transactional
+//@Rollback
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BaseIntegrationTest {
 	

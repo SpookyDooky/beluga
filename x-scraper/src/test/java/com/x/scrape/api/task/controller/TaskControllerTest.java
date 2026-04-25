@@ -4,13 +4,14 @@ import com.x.scrape.api.task.dto.PatchTaskDto;
 import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
 import com.x.scrape.api.task.mapper.ReadTaskDefinitionDtoMapper;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import com.x.scrape.logging.ContextLogger;
 import com.x.scrape.mapper.task.TaskDefinitionMapperService;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.service.job.JobDefinitionService;
 import com.x.scrape.service.exception.JobDefinitionNotFoundException;
+import com.x.scrape.service.job.JobDefinitionService;
+import com.x.scrape.service.task.TaskDefinitionService;
 import com.x.scrape.test_utils.TestReflectionUtility;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
@@ -38,6 +41,8 @@ class TaskControllerTest {
 	private JobDefinitionService jobDefinitionService;
 	@Mock
 	private ReadTaskDefinitionDtoMapper readTaskDefinitionDtoMapper;
+	@Mock
+	private TaskDefinitionService taskDefinitionService;
 	
 	@InjectMocks
 	private TaskController taskController;
@@ -98,25 +103,35 @@ class TaskControllerTest {
 	
 	@Test
 	void shouldUpdateTasks() {
-		final Long jobId = 123L;
-		final UpdateTaskDto updateTaskDto = Instancio.create(UpdateTaskDto.class);
+		final Long jobDefinitionId = 123L;
 		
-		final List<TaskDefinition> taskDefinitions = List.of(mock(TaskDefinition.class));
-		when(taskDefinitionMapperService.map(updateTaskDto.getUrls())).thenReturn(taskDefinitions);
+		final URL newUrl = Instancio.create(URL.class);
+		final URL existingUrl = Instancio.create(URL.class);
+		when(taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
+				Set.of(newUrl, existingUrl),
+				jobDefinitionId
+		)).thenReturn(Set.of(existingUrl));
+		
+		final List<TaskDefinition> newTaskDefinitions = List.of(mock(TaskDefinition.class));
+		when(taskDefinitionMapperService.map(Set.of(newUrl))).thenReturn(newTaskDefinitions);
 		
 		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobId)).thenReturn(jobDefinition);
-		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(taskDefinitions);
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
 		
-		final ReadTaskDefinitionDto expectedTaskDefinition = mock();
-		when(readTaskDefinitionDtoMapper.map(taskDefinitions.get(0))).thenReturn(expectedTaskDefinition);
+		final List<ReadTaskDefinitionDto> expected = List.of(mock(ReadTaskDefinitionDto.class));
+		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(newTaskDefinitions);
+		when(readTaskDefinitionDtoMapper.map(newTaskDefinitions.getFirst())).thenReturn(expected.getFirst());
 		
-		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobId, updateTaskDto);
+		final UpdateTaskDto updateTaskDto = new UpdateTaskDto();
+		updateTaskDto.getUrls().addAll(Set.of(newUrl, existingUrl));
 		
+		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobDefinitionId, updateTaskDto);
+		
+		verify(taskDefinitionService).setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(jobDefinitionId, Set.of(existingUrl));
+		verify(jobDefinition).addTaskDefinitions(newTaskDefinitions);
 		verify(jobDefinitionService).save(jobDefinition);
 		
-		assertEquals(1, result.size());
-		assertTrue(result.contains(expectedTaskDefinition));
+		assertEquals(expected, result);
 	}
 	
 	@Test
@@ -127,12 +142,10 @@ class TaskControllerTest {
 		final List<TaskDefinition> taskDefinitions = List.of(mock(TaskDefinition.class));
 		when(taskDefinitionMapperService.map(patchTaskDto.getAdd())).thenReturn(taskDefinitions);
 		
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobId)).thenReturn(jobDefinition);
-		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(taskDefinitions);
-		
 		final ReadTaskDefinitionDto readTaskDefinitionDto = mock();
 		when(readTaskDefinitionDtoMapper.map(taskDefinitions.getFirst())).thenReturn(readTaskDefinitionDto);
+		
+		when(jobDefinitionService.getActiveTaskDefinitionsById(jobId)).thenReturn(taskDefinitions);
 		
 		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobId, patchTaskDto);
 		
@@ -140,7 +153,9 @@ class TaskControllerTest {
 		assertTrue(result.contains(readTaskDefinitionDto));
 		
 		verify(jobDefinitionService).setTaskDefinitionsInactiveByUrl(jobId, patchTaskDto.getRemove());
-		verify(jobDefinition).addTaskDefinitions(taskDefinitions);
-		verify(jobDefinitionService).save(jobDefinition);
+		verify(jobDefinitionService).addTaskDefinitionsById(
+				taskDefinitions,
+				jobId
+		);
 	}
 }

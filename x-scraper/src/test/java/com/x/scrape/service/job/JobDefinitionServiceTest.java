@@ -1,10 +1,12 @@
 package com.x.scrape.service.job;
 
-import com.x.scrape.mapper.job.JobMapper;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.persistence.repository.JobDefinitionRepository;
+import com.x.scrape.service.task.TaskDefinitionService;
 import jakarta.persistence.EntityNotFoundException;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,12 +14,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
 import static com.x.scrape.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -28,7 +33,7 @@ class JobDefinitionServiceTest {
 	@Mock
 	private JobDefinitionRepository repository;
 	@Mock
-	private JobMapper jobMapper;
+	private TaskDefinitionService taskDefinitionService;
 	
 	@InjectMocks
 	private JobDefinitionService jobDefinitionService;
@@ -132,5 +137,44 @@ class JobDefinitionServiceTest {
 		
 		verify(jobExecution).setStatus(COMPLETED);
 		verify(repository).save(jobDefinition);
+	}
+	
+	@Test
+	void shouldAddTaskDefinitionsById() throws Exception {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
+		
+		final URL existingUrl = URI.create("http://localhost:1234").toURL();
+		final Set<URL> existingUrls = Set.of(existingUrl);
+		when(taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId)).thenReturn(existingUrls);
+		
+		final URL newUrl = URI.create("http://localhost:12345").toURL();
+		
+		final TaskDefinition existingTask = Instancio.of(TaskDefinition.class)
+				.set(field(TaskDefinition::getUrl), existingUrl)
+				.create();
+		final TaskDefinition newTask = Instancio.of(TaskDefinition.class)
+				.set(field(TaskDefinition::getUrl), newUrl)
+				.create();
+		
+		jobDefinitionService.addTaskDefinitionsById(
+				List.of(existingTask, newTask),
+				jobDefinitionId
+		);
+		
+		verify(jobDefinition).addTaskDefinitions(List.of(newTask));
+		verify(repository).save(jobDefinition);
+	}
+	
+	@Test
+	void shouldGetActiveTaskDefinitionsById() {
+		final Long id = 123L;
+		final List<TaskDefinition> expected = List.of();
+		when(taskDefinitionService.getAllActiveByJobDefinitionId(id)).thenReturn(expected);
+		
+		final List<TaskDefinition> result = jobDefinitionService.getActiveTaskDefinitionsById(id);
+		
+		assertSame(expected, result);
 	}
 }
