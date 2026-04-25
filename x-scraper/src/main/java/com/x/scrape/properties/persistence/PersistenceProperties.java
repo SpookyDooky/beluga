@@ -5,7 +5,7 @@ import com.x.scrape.properties.persistence.validation.HasOnlyOnePersistenceStore
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static com.x.scrape.properties.persistence.PersistenceType.SQL_LITE;
 
 /**
  * Used for configuring how the scraper should store things such as jobs, tasks and execution of these things.
@@ -17,13 +17,12 @@ public class PersistenceProperties {
 	
 	/**
 	 * What type of persistence store to use.
-	 * The default is {@link PersistenceType#POSTGRESQL}.
+	 * The default is {@link PersistenceType#SQL_LITE}.
 	 */
 	@NotEmpty
-	private PersistenceType type = POSTGRESQL;
+	private PersistenceType type = SQL_LITE;
 	
 	private PostgreSqlPersistenceProperties postgresql;
-	private SqlLitePersistenceProperties sqlLite;
 	
 	public PersistenceType getType() {
 		return type;
@@ -39,13 +38,5 @@ public class PersistenceProperties {
 	
 	public void setPostgresql(final PostgreSqlPersistenceProperties postgresql) {
 		this.postgresql = postgresql;
-	}
-	
-	public SqlLitePersistenceProperties getSqlLite() {
-		return sqlLite;
-	}
-	
-	public void setSqlLite(final SqlLitePersistenceProperties sqlLite) {
-		this.sqlLite = sqlLite;
 	}
 }

@@ -12,9 +12,9 @@ is only one property that should be set that is not specific for a specific data
 <br>
 <br>
 
-| property                   | required | default    | options    |
-|:---------------------------|:---------|:-----------|:-----------|
-| x-scraper.persistence.type | true     | POSTGRESQL | POSTGRESQL |
+| property                   | required | default  | options              |
+|:---------------------------|:---------|:---------|:---------------------|
+| x-scraper.persistence.type | true     | SQL_LITE | SQL_LITE, POSTGRESQL |
 
 ### PostgreSQL
 
@@ -25,3 +25,8 @@ To configure PostgreSQL as persistence data store the following properties have 
 | x-scraper.persistence.postgresql.url      | true     | -       | jdbc:postgresql://host:5432/database | Database url |
 | x-scraper.persistence.postgresql.username | true     | -       | Username                             | -            | 
 | x-scraper.persistence.postgresql.password | true     | -       | Password                             | -            |
+
+### SQL Lite
+
+Per default SQL Lite is included in the docker image, nothing has to be configured for this. The file can be found inside the 
+container at /db/db.sqlite3. Do not forget to mount it, otherwise it won't survive restarts. 
