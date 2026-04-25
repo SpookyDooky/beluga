@@ -22,7 +22,7 @@ public class SqlLitePersistenceConfig {
 	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
 		
-		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION);
+		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION + "?foreign_keys=on");
 		dataSource.setDriverClassName("org.sqlite.JDBC");
 		
 		return dataSource;
@@ -48,7 +48,7 @@ public class SqlLitePersistenceConfig {
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
-		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+		jpaProperties.put("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect");
 		entityManagerFactory.setJpaProperties(jpaProperties);
 		
 		return entityManagerFactory;
@@ -60,6 +60,7 @@ public class SqlLitePersistenceConfig {
 			configuration.createSchemas(false);
 			configuration.schemas();
 			configuration.defaultSchema(null);
+			configuration.locations("classpath:db/sqlite");
 		};
 	}
 }

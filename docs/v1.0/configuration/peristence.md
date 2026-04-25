@@ -4,6 +4,9 @@ Persistence is used for persisting jobDefinition execution and jobDefinition con
 reuse existing configurations. There are three types of persistence that are currently supported:
 
 - PostgreSQL
+- SQLite
+
+Note that PostgreSQL is the only persistence type that supports full migrations.
 
 ## Configuration
 
@@ -29,4 +32,6 @@ To configure PostgreSQL as persistence data store the following properties have 
 ### SQL Lite
 
 Per default SQL Lite is included in the docker image, nothing has to be configured for this. The file can be found inside the 
-container at /app/db/sqlite.db, do not forget to mount it, otherwise it won't survive restarts. 
+container at /app/db/sqlite.db, do not forget to mount it, otherwise it won't survive restarts. Note that SQLite only makes sure
+that the database is correctly created on startup, it does not handle migrations. This means that between versions things can break
+when using SQLite. Therefore, it is highly recommended to use PostgreSQL in production environments. 
