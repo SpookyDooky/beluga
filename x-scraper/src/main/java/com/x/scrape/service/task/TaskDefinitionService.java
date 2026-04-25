@@ -16,7 +16,7 @@ import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
 public class TaskDefinitionService {
-
+	
 	private final TaskDefinitionRepository taskDefinitionRepository;
 	
 	public TaskDefinitionService(final TaskDefinitionRepository taskDefinitionRepository) {
@@ -24,22 +24,42 @@ public class TaskDefinitionService {
 	}
 	
 	@Transactional
-	public Set<URL> getActiveTaskDefinitionUrlsByJobDefinitionId(final Long jobDefinitionId) {
+	public Set<URL> getActiveUrlsByJobDefinitionId(final Long jobDefinitionId) {
 		return taskDefinitionRepository.findAllActiveTaskDefinitionUrlsByJobDefinitionId(jobDefinitionId)
 				.stream()
-				.map(URI::create)
-				.map(uri -> {
-					try {
-						return uri.toURL();
-					} catch (final MalformedURLException e) {
-						throw new IllegalArgumentException(e);
-					}
-				})
+				.map(this::mapToUrl)
 				.collect(Collectors.toSet());
+	}
+	
+	private URL mapToUrl(final String url) {
+		try {
+			return URI.create(url)
+					.toURL();
+		} catch (final MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 	
 	@Transactional(propagation = MANDATORY)
 	public List<TaskDefinition> getAllActiveByJobDefinitionId(final Long jobDefinitionId) {
 		return taskDefinitionRepository.findAllByActiveAndJobDefinitionId(jobDefinitionId);
+	}
+	
+	@Transactional
+	public Set<URL> getAllActiveUrlsByJobDefinitionIdAndUrlIn(final Set<URL> urls,
+	                                                          final Long jobDefinitionId) {
+		return taskDefinitionRepository.getAllActiveUrlsByJobDefinitionIdAndInUrls(jobDefinitionId, urls)
+				.stream()
+				.map(this::mapToUrl)
+				.collect(Collectors.toSet());
+	}
+	
+	@Transactional
+	public void setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(final Long jobDefinitionId,
+	                                                             final Set<URL> urls) {
+		taskDefinitionRepository.setActiveFalseByJobDefinitionIdAndUrlNotInUrls(
+				jobDefinitionId,
+				urls
+		);
 	}
 }

@@ -157,7 +157,7 @@ class JobDefinitionTest {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		jobDefinition.getTaskDefinitions().forEach(taskDefinition -> taskDefinition.setActive(true));
 		
-		jobDefinition.setExistingTaskDefinitionsToInactive();
+//		jobDefinition.setExistingTaskDefinitionsToInactive();
 		
 		jobDefinition.getTaskDefinitions().forEach(taskDefinition -> {
 			assertFalse(taskDefinition.isActive());

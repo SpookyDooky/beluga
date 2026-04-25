@@ -118,9 +118,9 @@ public class JobDefinition {
 				.collect(Collectors.toList());
 	}
 	
-	public void setExistingTaskDefinitionsToInactive() {
-		taskDefinitions.forEach(taskDefinition -> taskDefinition.setActive(false));
-	}
+//	public void setExistingTaskDefinitionsToInactive() {
+//		taskDefinitions.forEach(taskDefinition -> taskDefinition.setActive(false));
+//	}
 	
 	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
 		final Set<URL> urlSet = new HashSet<>(urls);

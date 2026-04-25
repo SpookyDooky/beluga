@@ -73,7 +73,7 @@ public class JobDefinitionService {
 	                                   final Long jobDefinitionId) {
 		final JobDefinition jobDefinition = getById(jobDefinitionId);
 		
-		final Set<URL> activeTaskDefinitionUrls = taskDefinitionService.getActiveTaskDefinitionUrlsByJobDefinitionId(jobDefinitionId);
+		final Set<URL> activeTaskDefinitionUrls = taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId);
 		jobDefinition.addTaskDefinitions(
 				taskDefinitions.stream()
 						.filter(not(taskDefinition -> activeTaskDefinitionUrls.contains(taskDefinition.getUrl())))
