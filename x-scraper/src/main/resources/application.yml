@@ -8,6 +8,9 @@ spring:
       - local
   flyway:
     enabled: true
-    locations: classpath:db
     baseline-version: 0
-    default-schema: x_scraper
+
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE

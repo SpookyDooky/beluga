@@ -1,7 +1,7 @@
-package com.x.scrape.persistence.postgresql.config;
+package com.x.scrape.persistence.sql_lite.config;
 
-import com.x.scrape.persistence.config.conditionals.annotation.IsPostgreSql;
-import com.x.scrape.properties.persistence.PostgreSqlPersistenceProperties;
+import com.x.scrape.persistence.config.conditionals.annotation.IsSqlLite;
+import com.x.scrape.persistence.sql_lite.converter.InstantConverter;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
@@ -16,15 +16,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
-
-@IsPostgreSql
 @Configuration
-public class PostgreSqlPersistenceConfig {
+@IsSqlLite
+public class SqlLitePersistenceConfig {
 	
-	// TODO - Set connection pool size
-	// Isolation level
-	// Autocommit mode
+	private static final String DATABASE_LOCATION = "/app/db/sqlite.db";
 	
 	@Bean
 	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
@@ -32,13 +28,12 @@ public class PostgreSqlPersistenceConfig {
 	}
 	
 	@Bean
-	public DataSource dataSource(final PostgreSqlPersistenceProperties properties) {
+	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
 		
-		dataSource.setJdbcUrl(properties.getUrl());
-		dataSource.setUsername(properties.getUsername());
-		dataSource.setPassword(properties.getPassword());
-		dataSource.setDriverClassName(properties.getDriverClassName());
+		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION + "?foreign_keys=on");
+		dataSource.setDriverClassName("org.sqlite.JDBC");
+		dataSource.setMaximumPoolSize(1);
 		
 		return dataSource;
 	}
@@ -49,7 +44,7 @@ public class PostgreSqlPersistenceConfig {
 		
 		adapter.setShowSql(false);
 		adapter.setGenerateDdl(false);
-		adapter.setDatabase(POSTGRESQL);
+		adapter.setDatabasePlatform("org.hibernate.community.dialect.SQLiteDialect");
 		
 		return adapter;
 	}
@@ -64,7 +59,7 @@ public class PostgreSqlPersistenceConfig {
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
-		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+		jpaProperties.put("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect");
 		entityManagerFactory.setJpaProperties(jpaProperties);
 		
 		return entityManagerFactory;
@@ -73,9 +68,15 @@ public class PostgreSqlPersistenceConfig {
 	@Bean
 	public FlywayConfigurationCustomizer flywayCustomizer() {
 		return configuration -> {
-			configuration.createSchemas(true);
-			configuration.schemas("x_scraper");
-			configuration.locations("classpath:db/postgresql");
+			configuration.createSchemas(false);
+			configuration.schemas();
+			configuration.defaultSchema(null);
+			configuration.locations("classpath:db/sqlite");
 		};
+	}
+	
+	@Bean
+	public InstantConverter instantConverter() {
+		return new InstantConverter();
 	}
 }

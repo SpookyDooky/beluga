@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
+import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,7 +33,13 @@ class HasOnlyOnePersistenceStoreValidatorTest {
 	
 	static Stream<Arguments> shouldBeValid() {
 		return Stream.of(
-				Instancio.create(PersistenceProperties.class)
+				Instancio.of(PersistenceProperties.class)
+						.ignore(field(PersistenceProperties::getType))
+						.ignore(field(PersistenceProperties::getPostgresql))
+						.create(),
+				Instancio.of(PersistenceProperties.class)
+						.set(field(PersistenceProperties::getType), POSTGRESQL)
+						.create()
 		).map(Arguments::of);
 	}
 	
@@ -43,7 +51,9 @@ class HasOnlyOnePersistenceStoreValidatorTest {
 	
 	static Stream<Arguments> shouldBeInvalid() {
 		return Stream.of(
-				new PersistenceProperties()
+				Instancio.of(PersistenceProperties.class)
+						.ignore(field(PersistenceProperties::getType))
+						.create()
 		).map(Arguments::of);
 	}
 }
