@@ -1,6 +1,5 @@
 package com.x.scrape.api.task.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
 import com.x.scrape.api.task.dto.UpdateTaskDto;
@@ -9,9 +8,10 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
 
 import java.net.URL;
 import java.util.UUID;

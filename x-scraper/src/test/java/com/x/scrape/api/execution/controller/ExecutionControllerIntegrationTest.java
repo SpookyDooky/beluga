@@ -1,6 +1,5 @@
 package com.x.scrape.api.execution.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
 import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
 import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
@@ -10,11 +9,12 @@ import com.x.scrape.result_storage.file_system.FileSystemResultDataStoreProvider
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

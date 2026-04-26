@@ -1,10 +1,9 @@
 package com.x.scrape.activity_logging.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.x.scrape.activity_logging.activitiy.Activity;
 import com.x.scrape.activity_logging.model.ActivityLog;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 
@@ -15,8 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ActivityLogMapperTest {
 
-	private final ActivityLogMapper activityLogMapper = new ActivityLogMapper(new ObjectMapper()
-			.registerModule(new JavaTimeModule()));
+	private final ActivityLogMapper activityLogMapper = new ActivityLogMapper(
+			JsonMapper.builder()
+					.findAndAddModules()
+					.build()
+	);
 	
 	@Test
 	void shouldMap() {

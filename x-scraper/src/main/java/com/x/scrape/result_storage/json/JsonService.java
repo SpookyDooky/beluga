@@ -1,8 +1,8 @@
 package com.x.scrape.result_storage.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +47,7 @@ public class JsonService {
 	private String toRawJsonString(final Object object) {
 		try {
 			return objectMapper.writeValueAsString(object);
-		} catch (final JsonProcessingException e) {
+		} catch (final JacksonException e) {
 			throw new IllegalStateException("Failed to convert object to JSON.", e);
 		}
 	}
@@ -63,7 +63,7 @@ public class JsonService {
 		
 		try {
 			return objectMapper.writeValueAsString(nestedContent);
-		} catch (final JsonProcessingException e) {
+		} catch (final JacksonException e) {
 			throw new IllegalStateException("Failed to convert object to JSON.", e);
 		}
 	}
