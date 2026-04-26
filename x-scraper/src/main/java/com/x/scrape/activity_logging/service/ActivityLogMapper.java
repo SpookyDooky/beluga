@@ -1,10 +1,10 @@
 package com.x.scrape.activity_logging.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.activity_logging.activitiy.Activity;
 import com.x.scrape.activity_logging.model.ActivityContext;
 import com.x.scrape.activity_logging.model.ActivityLog;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class ActivityLogMapper {

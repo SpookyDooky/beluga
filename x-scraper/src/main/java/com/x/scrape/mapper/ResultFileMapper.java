@@ -1,7 +1,5 @@
 package com.x.scrape.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.model.event.storable.payload.Payload;
 import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
@@ -9,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public abstract class ResultFileMapper {
 			} else {
 				return objectMapper.writeValueAsBytes(payload.getData()).length;
 			}
-		} catch (final JsonProcessingException e) {
+		} catch (final JacksonException e) {
 			throw new IllegalStateException("Could not transform data to bytes.", e);
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not read InputStream", e);

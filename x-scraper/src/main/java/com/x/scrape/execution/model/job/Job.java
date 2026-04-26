@@ -1,6 +1,5 @@
 package com.x.scrape.execution.model.job;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import com.x.scrape.model.job_definition.JobExecution;
 import com.x.scrape.execution.model.task.StorageConfiguration;
@@ -67,13 +66,11 @@ public class Job {
 		this.executionConfiguration = executionConfiguration;
 	}
 	
-	@JsonIgnore
 	public String getJobFolder() {
 		return storageConfiguration.getFolder() + "/"
 				+ jobName;
 	}
 	
-	@JsonIgnore
 	public String getJobTaskResultsFolder() {
 		return getJobFolder() + "/job-executions/" + id + "/results/tasks";
 	}

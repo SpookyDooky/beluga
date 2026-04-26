@@ -1,6 +1,5 @@
 package com.x.scrape.execution.model.task;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.x.scrape.model.job_definition.JobDefinition;
 import jakarta.persistence.*;
 
@@ -46,7 +45,6 @@ public class TaskDefinition {
 		this.active = active;
 	}
 	
-	@JsonIgnore
 	public JobDefinition getJobDefinition() {
 		return jobDefinition;
 	}

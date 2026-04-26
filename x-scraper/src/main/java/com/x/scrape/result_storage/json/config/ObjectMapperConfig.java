@@ -1,10 +1,9 @@
 package com.x.scrape.result_storage.json.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class ObjectMapperConfig {
@@ -14,8 +13,8 @@ public class ObjectMapperConfig {
 	 */
 	@Bean
 	public ObjectMapper objectMapper() {
-		return new ObjectMapper()
-				.findAndRegisterModules()
-				.enable(INDENT_OUTPUT);
+		return JsonMapper.builder()
+				.findAndAddModules()
+				.build();
 	}
 }

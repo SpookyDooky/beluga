@@ -4,7 +4,7 @@ import com.x.scrape.persistence.config.conditionals.annotation.IsPostgreSql;
 import com.x.scrape.properties.persistence.PostgreSqlPersistenceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
-import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
+import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaTransactionManager;

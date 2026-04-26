@@ -1,15 +1,15 @@
 package com.x.scrape.api.results.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
 import com.x.scrape.api.results.dto.TaskResultDto;
-import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.execution.model.task.TaskExecution;
+import com.x.scrape.model.result.ResultFile;
 import com.x.scrape.result_storage.StorageService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class TaskResultDtoMapper {
 	private List<Object> mapData(final byte[] rawData) {
 		try {
 			return objectMapper.readValue(rawData, List.class);
-		} catch (final IOException e) {
+		} catch (final JacksonException e) {
 			throw new IllegalStateException(e);
 		}
 	}
