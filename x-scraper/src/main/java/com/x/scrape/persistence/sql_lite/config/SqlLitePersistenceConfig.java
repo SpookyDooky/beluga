@@ -1,6 +1,7 @@
 package com.x.scrape.persistence.sql_lite.config;
 
 import com.x.scrape.persistence.config.conditionals.annotation.IsSqlLite;
+import com.x.scrape.persistence.sql_lite.converter.InstantConverter;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
@@ -72,5 +73,10 @@ public class SqlLitePersistenceConfig {
 			configuration.defaultSchema(null);
 			configuration.locations("classpath:db/sqlite");
 		};
+	}
+	
+	@Bean
+	public InstantConverter instantConverter() {
+		return new InstantConverter();
 	}
 }

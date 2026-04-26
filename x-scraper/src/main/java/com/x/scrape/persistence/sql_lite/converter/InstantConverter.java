@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 
 import java.time.Instant;
 
-@Converter(autoApply = true)
+@Converter(autoApply = false)
 public class InstantConverter implements AttributeConverter<Instant, String> {
 	
 	@Override

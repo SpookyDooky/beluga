@@ -9,7 +9,7 @@ CREATE TABLE job_definition (
 	scraping_definition_id integer NOT NULL,
 	storage_definition_id integer NOT NULL,
 	execution_definition_id integer NOT NULL,
-	url_configuration_id integer not null,
+	url_configuration_id integer,
 	CONSTRAINT job_definition_name_key UNIQUE (name),
 	FOREIGN KEY (execution_definition_id) REFERENCES execution_definition(id),
 	FOREIGN KEY (scraping_definition_id) REFERENCES scraping_definition(id),

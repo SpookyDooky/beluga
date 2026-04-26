@@ -1,12 +1,11 @@
 package com.x.scrape.model.job_definition;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.x.scrape.execution.model.task.TaskDefinition;
 import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
-import com.x.scrape.execution.model.task.TaskDefinition;
 import jakarta.persistence.*;
 
 import java.net.URL;
@@ -118,10 +117,6 @@ public class JobDefinition {
 				.collect(Collectors.toList());
 	}
 	
-//	public void setExistingTaskDefinitionsToInactive() {
-//		taskDefinitions.forEach(taskDefinition -> taskDefinition.setActive(false));
-//	}
-	
 	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
 		final Set<URL> urlSet = new HashSet<>(urls);
 		
@@ -157,7 +152,6 @@ public class JobDefinition {
 		jobExecution.setJobDefinition(this);
 	}
 	
-	@JsonIgnore
 	public Optional<JobExecution> getMostRecentExecution() {
 		if (executions.isEmpty()) {
 			return Optional.empty();
@@ -172,7 +166,6 @@ public class JobDefinition {
 				.findFirst();
 	}
 	
-	@JsonIgnore
 	public JobExecution getExecutionById(final Long executionId) {
 		return findExecutionById(executionId)
 				.orElseThrow(() -> new EntityNotFoundException("Could not find execution with specified id " + executionId + "."));

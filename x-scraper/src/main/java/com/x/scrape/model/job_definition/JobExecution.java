@@ -20,6 +20,7 @@ public class JobExecution {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
+	
 	private Instant executedAt = Instant.now();
 	
 	@Enumerated(STRING)
