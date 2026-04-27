@@ -12,8 +12,6 @@ public class PostgreSqlPersistenceProperties {
 	private String username;
 	@NotEmpty
 	private String password;
-	@NotEmpty
-	private String driverClassName;
 	
 	public String getUrl() {
 		return url;
@@ -37,13 +35,5 @@ public class PostgreSqlPersistenceProperties {
 	
 	public void setPassword(final String password) {
 		this.password = password;
-	}
-	
-	public String getDriverClassName() {
-		return driverClassName;
-	}
-	
-	public void setDriverClassName(final String driverClassName) {
-		this.driverClassName = driverClassName;
 	}
 }
