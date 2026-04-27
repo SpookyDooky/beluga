@@ -38,7 +38,7 @@ public class PostgreSqlPersistenceConfig {
 		dataSource.setJdbcUrl(properties.getUrl());
 		dataSource.setUsername(properties.getUsername());
 		dataSource.setPassword(properties.getPassword());
-		dataSource.setDriverClassName(properties.getDriverClassName());
+		dataSource.setDriverClassName("org.postgresql.Driver");
 		
 		return dataSource;
 	}
