@@ -1,10 +1,8 @@
 package com.x.scrape.properties.datastore;
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import software.amazon.awssdk.regions.Region;
 
-@ConfigurationProperties("x-scraper.datastore.s3")
 public class S3Properties {
 	
 	@NotNull

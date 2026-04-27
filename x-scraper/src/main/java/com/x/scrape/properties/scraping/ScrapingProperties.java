@@ -1,16 +1,17 @@
 package com.x.scrape.properties.scraping;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public class ScrapingProperties {
 	
-	@NotNull
+	@NotBlank
 	private String elementSelector;
 	@NotEmpty
-	private List<DataPointProperties> dataPoints;
+	private List<@Valid DataPointProperties> dataPoints;
 	
 	public String getElementSelector() {
 		return elementSelector;

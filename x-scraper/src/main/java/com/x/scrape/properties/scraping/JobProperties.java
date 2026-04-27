@@ -3,16 +3,25 @@ package com.x.scrape.properties.scraping;
 import com.x.scrape.properties.scraping.execution.ExecutionProperties;
 import com.x.scrape.properties.scraping.storage.StorageProperties;
 import com.x.scrape.properties.scraping.url.UrlProperties;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class JobProperties {
 	
+	@NotBlank
 	private String name;
 	private UrlProperties url;
 	
+	@NotNull
+	@Valid
 	private ScrapingProperties scraping;
+	@NotNull
+	@Valid
 	private StorageProperties storage;
-	
-	private ExecutionProperties execution;
+	@NotNull
+	@Valid
+	private ExecutionProperties execution = new ExecutionProperties();
 	
 	public String getName() {
 		return name;

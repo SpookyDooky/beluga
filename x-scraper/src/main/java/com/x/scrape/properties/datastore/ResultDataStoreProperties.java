@@ -1,14 +1,16 @@
 package com.x.scrape.properties.datastore;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 
 import static com.x.scrape.properties.datastore.DataStoreType.FILE_SYSTEM;
 
-@ConfigurationProperties("x-scraper.result-datastore")
 public class ResultDataStoreProperties {
 
 	private DataStoreType type = FILE_SYSTEM;
 	
+	@Valid
+	@Nullable
 	private S3Properties s3;
 	
 	public DataStoreType getType() {

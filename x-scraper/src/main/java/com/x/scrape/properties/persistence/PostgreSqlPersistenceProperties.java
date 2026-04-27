@@ -1,16 +1,16 @@
 package com.x.scrape.properties.persistence;
 
-import jakarta.validation.constraints.NotEmpty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@ConfigurationProperties("x-scraper.persistence.postgresql")
 public class PostgreSqlPersistenceProperties {
 	
-	@NotEmpty
+	@NotBlank
 	private String url;
-	@NotEmpty
+	@NotBlank
 	private String username;
-	@NotEmpty
+	@NotBlank
+	@NotNull
 	private String password;
 	
 	public String getUrl() {

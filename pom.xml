@@ -43,6 +43,7 @@
         <testcontainers.version>2.0.2</testcontainers.version>
         <sql-lite-jdbc.version>3.41.2.2</sql-lite-jdbc.version>
         <hibernate.version>7.0.10.Final</hibernate.version>
+        <assertj.version>3.27.7</assertj.version>
     </properties>
 
     <dependencyManagement>
@@ -201,6 +202,12 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-minio</artifactId>
                 <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

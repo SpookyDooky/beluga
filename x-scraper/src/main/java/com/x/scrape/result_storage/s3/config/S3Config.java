@@ -1,5 +1,6 @@
 package com.x.scrape.result_storage.s3.config;
 
+import com.x.scrape.properties.XScraperProperties;
 import com.x.scrape.properties.datastore.S3Properties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,9 @@ public class S3Config {
 	
 	@Bean("results-s3client")
 	@ConditionalOnProperty("x-scraper.result-datastore.s3.host")
-	public S3Client s3Client(final S3Properties s3Properties) {
+	public S3Client s3Client(final XScraperProperties properties) {
+		final S3Properties s3Properties = properties.getResultDatastore().getS3();
+		
 		final AwsBasicCredentials credentials = AwsBasicCredentials.create(
 				s3Properties.getAccessKey(), s3Properties.getSecretKey()
 		);

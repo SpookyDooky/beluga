@@ -1,12 +1,17 @@
 package com.x.scrape.properties.scraping.storage;
 
 import com.x.scrape.model.types.StorageFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class StorageProperties {
 	
+	@NotNull
 	private StorageFormat format;
 	
+	@NotBlank
 	private String folder;
+	@NotBlank
 	private String file;
 	
 	public StorageFormat getFormat() {
