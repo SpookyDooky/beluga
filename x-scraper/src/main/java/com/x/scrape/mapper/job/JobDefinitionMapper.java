@@ -19,7 +19,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		componentModel = SPRING,
 		injectionStrategy = CONSTRUCTOR,
 		uses = {
-				UrlConfigurationMapper.class,
 				ScrapingConfigurationMapper.class,
 				StorageConfigurationMapper.class,
 				ExecutionConfigurationMapper.class,
@@ -28,7 +27,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface JobDefinitionMapper {
 	
-	@Mapping(target = "urlConfiguration", source = "url")
 	@Mapping(target = "scrapingDefinition", source = "scraping")
 	@Mapping(target = "storageDefinition", source = "storage")
 	@Mapping(target = "executionDefinition", source = "execution")

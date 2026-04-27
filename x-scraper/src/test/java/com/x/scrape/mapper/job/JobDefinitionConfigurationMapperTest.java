@@ -10,7 +10,6 @@ import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMappe
 import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
 import com.x.scrape.mapper.task.TaskDefinitionMapperService;
 import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
@@ -33,8 +32,6 @@ import static org.mockito.Mockito.*;
 class JobDefinitionConfigurationMapperTest {
 	
 	@Mock
-	private UrlConfigurationMapper urlConfigurationMapper;
-	@Mock
 	private ScrapingConfigurationMapper scrapingConfigurationMapper;
 	@Mock
 	private StorageConfigurationMapper storageConfigurationMapper;
@@ -50,9 +47,6 @@ class JobDefinitionConfigurationMapperTest {
 	void shouldMap() {
 		final JobProperties jobProperties = Instancio.create(JobProperties.class);
 		
-		final UrlConfiguration urlConfiguration = mock();
-		when(urlConfigurationMapper.map(jobProperties.getUrl())).thenReturn(urlConfiguration);
-		
 		final ScrapingDefinition scrapingDefinition = mock();
 		when(scrapingConfigurationMapper.map(jobProperties.getScraping())).thenReturn(scrapingDefinition);
 		
@@ -67,7 +61,6 @@ class JobDefinitionConfigurationMapperTest {
 		
 		final JobDefinition jobDefinition = mapper.map(jobProperties);
 		
-		assertSame(urlConfiguration, jobDefinition.getUrlConfiguration());
 		assertSame(scrapingDefinition, jobDefinition.getScrapingDefinition());
 		assertSame(storageDefinition, jobDefinition.getStorageDefinition());
 		assertSame(executionDefinition, jobDefinition.getExecutionDefinition());
