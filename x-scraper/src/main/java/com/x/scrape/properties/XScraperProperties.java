@@ -2,6 +2,7 @@ package com.x.scrape.properties;
 
 import com.x.scrape.properties.persistence.PersistenceProperties;
 import com.x.scrape.properties.scraping.JobProperties;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -13,9 +14,10 @@ import java.util.List;
 public class XScraperProperties {
 	
 	@NotNull
+	@Valid
 	private PersistenceProperties persistence;
 	
-	private List<JobProperties> jobs;
+	private List<@NotNull @Valid JobProperties> jobs;
 	
 	public PersistenceProperties getPersistence() {
 		return persistence;

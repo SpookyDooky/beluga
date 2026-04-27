@@ -1,15 +1,20 @@
 package com.x.scrape.properties.scraping;
 
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public class DataPointProperties {
 	
+	@NotBlank
 	private String selector;
+	@NotBlank
 	private String propertyName;
 	
 	private String attribute;
+	@NotNull
 	private DataPointType type = TEXT;
 	
 	public String getSelector() {
