@@ -1,5 +1,6 @@
 package com.x.scrape.properties;
 
+import com.x.scrape.properties.datastore.ResultDataStoreProperties;
 import com.x.scrape.properties.persistence.PersistenceProperties;
 import com.x.scrape.properties.scraping.JobProperties;
 import jakarta.validation.Valid;
@@ -17,6 +18,9 @@ public class XScraperProperties {
 	@Valid
 	private PersistenceProperties persistence;
 	
+	@Valid
+	private ResultDataStoreProperties resultDatastore = new ResultDataStoreProperties();
+	
 	private List<@NotNull @Valid JobProperties> jobs;
 	
 	public PersistenceProperties getPersistence() {
@@ -25,6 +29,14 @@ public class XScraperProperties {
 	
 	public void setPersistence(final PersistenceProperties persistence) {
 		this.persistence = persistence;
+	}
+	
+	public ResultDataStoreProperties getResultDatastore() {
+		return resultDatastore;
+	}
+	
+	public void setResultDatastore(final ResultDataStoreProperties resultDatastore) {
+		this.resultDatastore = resultDatastore;
 	}
 	
 	public List<JobProperties> getJobs() {
