@@ -1,7 +1,6 @@
 package com.x.scrape.model.job_definition;
 
 import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.model.job_definition.configuration.UrlConfiguration;
 import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
@@ -22,10 +21,6 @@ public class JobDefinition {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	private String name;
-	
-	@OneToOne(cascade = ALL)
-	@JoinColumn(name = "url_configuration_id")
-	private UrlConfiguration urlConfiguration;
 	
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "scraping_definition_id")
@@ -66,14 +61,6 @@ public class JobDefinition {
 	
 	public void setName(final String name) {
 		this.name = name;
-	}
-	
-	public UrlConfiguration getUrlConfiguration() {
-		return urlConfiguration;
-	}
-	
-	public void setUrlConfiguration(final UrlConfiguration urlConfiguration) {
-		this.urlConfiguration = urlConfiguration;
 	}
 	
 	public ScrapingDefinition getScrapingDefinition() {
