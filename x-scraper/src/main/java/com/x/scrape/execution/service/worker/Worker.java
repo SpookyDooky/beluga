@@ -1,6 +1,7 @@
 package com.x.scrape.execution.service.worker;
 
 import com.x.scrape.activity_logging.activitiy.TaskCompletedActivity;
+import com.x.scrape.activity_logging.activitiy.TaskStartedActivity;
 import com.x.scrape.activity_logging.event.ActivityEvent;
 import com.x.scrape.execution.service.task.JobTaskQueue;
 import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
@@ -100,6 +101,7 @@ public class Worker {
 	private void executeTask(final Task task) {
 		try (final CloseableContext ignored = logger.with(task)) {
 			applicationEventPublisher.publishEvent(new TaskStartedEvent(task));
+			applicationEventPublisher.publishEvent(new ActivityEvent(new TaskStartedActivity(task.getUrl())));
 			timingService.start(workerId);
 			
 			logger.info("Executing task.");
