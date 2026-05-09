@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.read;
+package com.beluga.api.job.dto.read;
 
-import com.x.scrape.api.job.dto.base.BaseStorageConfigurationDto;
+import com.beluga.api.job.dto.base.BaseStorageConfigurationDto;
 
 public class ReadStorageConfigurationDto extends BaseStorageConfigurationDto  {
 	

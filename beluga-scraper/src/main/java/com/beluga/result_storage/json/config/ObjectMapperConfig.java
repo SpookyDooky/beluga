@@ -1,4 +1,4 @@
-package com.x.scrape.result_storage.json.config;
+package com.beluga.result_storage.json.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

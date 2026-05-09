@@ -1,8 +1,8 @@
-package com.x.scrape.api.execution.mapper;
+package com.beluga.api.execution.mapper;
 
-import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
-import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
-import com.x.scrape.model.job_definition.JobExecution;
+import com.beluga.api.execution.dto.ReadJobExecutionDto;
+import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
+import com.beluga.model.job_definition.JobExecution;
 import org.mapstruct.Mapper;
 
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;

@@ -1,8 +1,8 @@
-package com.x.scrape.properties.scraping;
+package com.beluga.properties.scraping;
 
-import com.x.scrape.properties.scraping.execution.ExecutionProperties;
-import com.x.scrape.properties.scraping.storage.StorageProperties;
-import com.x.scrape.properties.scraping.url.UrlProperties;
+import com.beluga.properties.scraping.execution.ExecutionProperties;
+import com.beluga.properties.scraping.storage.StorageProperties;
+import com.beluga.properties.scraping.url.UrlProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

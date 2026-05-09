@@ -1,7 +1,7 @@
-package com.x.scrape.properties.persistence;
+package com.beluga.properties.persistence;
 
-import com.x.scrape.properties.persistence.validation.HasCorrectPersistenceStore;
-import com.x.scrape.properties.persistence.validation.HasOnlyOnePersistenceStore;
+import com.beluga.properties.persistence.validation.HasCorrectPersistenceStore;
+import com.beluga.properties.persistence.validation.HasOnlyOnePersistenceStore;
 import jakarta.validation.constraints.NotEmpty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 
-import static com.x.scrape.properties.persistence.PersistenceType.SQL_LITE;
+import static com.beluga.properties.persistence.PersistenceType.SQL_LITE;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnClass;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 import static org.junit.jupiter.api.Assertions.assertEquals;

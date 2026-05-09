@@ -1,15 +1,15 @@
-package com.x.scrape.service.job;
+package com.beluga.service.job;
 
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.mapper.job.JobMapper;
-import com.x.scrape.mapper.task.TaskMapper;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.execution.model.task.Task;
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.execution.model.task.TaskStatus;
-import com.x.scrape.service.task.TaskExecutionService;
+import com.beluga.execution.model.job.Job;
+import com.beluga.mapper.job.JobMapper;
+import com.beluga.mapper.task.TaskMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
-import static com.x.scrape.model.job_definition.JobStatus.PAUSED;
+import static com.beluga.model.job_definition.JobStatus.COMPLETED;
+import static com.beluga.model.job_definition.JobStatus.PAUSED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

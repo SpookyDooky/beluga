@@ -1,6 +1,6 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
-import com.x.scrape.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobDefinition;
 import jakarta.persistence.*;
 
 import java.net.URL;

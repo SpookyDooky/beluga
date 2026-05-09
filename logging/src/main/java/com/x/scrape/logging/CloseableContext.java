@@ -1,4 +1,4 @@
-package com.x.scrape.logging;
+package com.beluga.logging;
 
 import org.slf4j.MDC;
 

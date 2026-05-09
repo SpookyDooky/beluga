@@ -1,8 +1,8 @@
-package com.x.scrape.activity_logging.activitiy;
+package com.beluga.activity_logging.activitiy;
 
 import java.net.URL;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.TASK_COMPLETED;
+import static com.beluga.activity_logging.activitiy.ActivityType.TASK_COMPLETED;
 
 public class TaskCompletedActivity extends Activity {
 	

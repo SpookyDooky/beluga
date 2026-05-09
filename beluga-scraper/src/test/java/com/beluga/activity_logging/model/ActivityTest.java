@@ -1,12 +1,12 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
-import com.x.scrape.activity_logging.activitiy.Activity;
+import com.beluga.activity_logging.activitiy.Activity;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.time.Instant;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.REQUEST;
+import static com.beluga.activity_logging.activitiy.ActivityType.REQUEST;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mockStatic;
 

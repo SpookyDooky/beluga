@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
-import com.x.scrape.api.job.dto.base.BaseJobDefinitionDto;
+import com.beluga.api.job.dto.base.BaseJobDefinitionDto;
 import jakarta.validation.constraints.NotNull;
 
 public class WriteJobDefinitionDto extends BaseJobDefinitionDto {

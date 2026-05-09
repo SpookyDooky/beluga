@@ -1,6 +1,6 @@
-package com.x.scrape.model.job_definition.configuration.storage_configuration;
+package com.beluga.model.job_definition.configuration.storage_configuration;
 
-import com.x.scrape.model.types.StorageFormat;
+import com.beluga.model.types.StorageFormat;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.EnumType.STRING;

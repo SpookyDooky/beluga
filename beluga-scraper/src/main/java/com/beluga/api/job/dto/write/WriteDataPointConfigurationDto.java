@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
-import com.x.scrape.api.job.dto.base.BaseScrapingDataPointDto;
+import com.beluga.api.job.dto.base.BaseScrapingDataPointDto;
 
 public class WriteDataPointConfigurationDto extends BaseScrapingDataPointDto {
 

@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
-import com.x.scrape.api.job.dto.base.BaseExecutionConfigurationDto;
+import com.beluga.api.job.dto.base.BaseExecutionConfigurationDto;
 
 public class WriteExecutionConfigurationDto extends BaseExecutionConfigurationDto {
 }

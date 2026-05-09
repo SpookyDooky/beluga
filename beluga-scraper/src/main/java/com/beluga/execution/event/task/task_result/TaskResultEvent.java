@@ -1,9 +1,9 @@
-package com.x.scrape.execution.event.task.task_result;
+package com.beluga.execution.event.task.task_result;
 
-import com.x.scrape.model.event.storable.StorableEvent;
-import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.execution.model.task.Task;
-import com.x.scrape.execution.event.task.TaskEvent;
+import com.beluga.model.event.storable.StorableEvent;
+import com.beluga.model.event.storable.payload.Payload;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.event.task.TaskEvent;
 
 /**
  * Event that represents some piece of data coming from task execution.

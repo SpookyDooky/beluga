@@ -1,14 +1,14 @@
-package com.x.scrape.result_storage;
+package com.beluga.result_storage;
 
-import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.event.storable.StorableEvent;
-import com.x.scrape.model.event.storable.payload.ImagePayload;
-import com.x.scrape.model.event.storable.payload.JsonPayload;
-import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.model.event.storable.payload.StringPayload;
-import com.x.scrape.execution.event.task.task_result.StorageHint;
-import com.x.scrape.result_storage.json.JsonService;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextLogger;
+import com.beluga.model.event.storable.StorableEvent;
+import com.beluga.model.event.storable.payload.ImagePayload;
+import com.beluga.model.event.storable.payload.JsonPayload;
+import com.beluga.model.event.storable.payload.Payload;
+import com.beluga.model.event.storable.payload.StringPayload;
+import com.beluga.execution.event.task.task_result.StorageHint;
+import com.beluga.result_storage.json.JsonService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

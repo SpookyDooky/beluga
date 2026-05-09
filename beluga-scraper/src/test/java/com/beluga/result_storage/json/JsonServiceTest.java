@@ -1,4 +1,4 @@
-package com.x.scrape.result_storage.json;
+package com.beluga.result_storage.json;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

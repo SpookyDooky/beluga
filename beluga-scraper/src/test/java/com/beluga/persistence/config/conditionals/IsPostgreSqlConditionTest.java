@@ -1,4 +1,4 @@
-package com.x.scrape.persistence.config.conditionals;
+package com.beluga.persistence.config.conditionals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static com.beluga.properties.persistence.PersistenceType.POSTGRESQL;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 

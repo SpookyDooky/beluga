@@ -1,13 +1,13 @@
-package com.x.scrape.execution.event.task;
+package com.beluga.execution.event.task;
 
-import com.x.scrape.logging.ContextLoggable;
-import com.x.scrape.execution.model.task.Task;
+import com.beluga.logging.ContextLoggable;
+import com.beluga.execution.model.task.Task;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Map;
 
-import static com.x.scrape.logging.ContextKeys.JOB_EXECUTION_ID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.beluga.logging.ContextKeys.JOB_EXECUTION_ID;
+import static com.beluga.logging.ContextKeys.TASK_ID;
 
 public abstract class TaskEvent extends ApplicationEvent implements ContextLoggable {
 	

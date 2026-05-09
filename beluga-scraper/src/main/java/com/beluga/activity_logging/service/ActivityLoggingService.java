@@ -1,9 +1,9 @@
-package com.x.scrape.activity_logging.service;
+package com.beluga.activity_logging.service;
 
-import com.x.scrape.activity_logging.event.ActivityEvent;
-import com.x.scrape.activity_logging.model.ActivityLog;
-import com.x.scrape.activity_logging.repository.ActivityLogRepository;
-import com.x.scrape.logging.ContextLogger;
+import com.beluga.activity_logging.event.ActivityEvent;
+import com.beluga.activity_logging.model.ActivityLog;
+import com.beluga.activity_logging.repository.ActivityLogRepository;
+import com.beluga.logging.ContextLogger;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

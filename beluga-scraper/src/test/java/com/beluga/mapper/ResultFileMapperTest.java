@@ -1,7 +1,7 @@
-package com.x.scrape.mapper;
+package com.beluga.mapper;
 
-import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
-import com.x.scrape.model.result.ResultFile;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.model.result.ResultFile;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

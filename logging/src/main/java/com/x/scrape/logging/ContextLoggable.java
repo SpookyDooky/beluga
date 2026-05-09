@@ -1,4 +1,4 @@
-package com.x.scrape.logging;
+package com.beluga.logging;
 
 import java.util.Map;
 

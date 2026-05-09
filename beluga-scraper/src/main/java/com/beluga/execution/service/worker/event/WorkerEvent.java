@@ -1,4 +1,4 @@
-package com.x.scrape.execution.service.worker.event;
+package com.beluga.execution.service.worker.event;
 
 import org.springframework.context.ApplicationEvent;
 

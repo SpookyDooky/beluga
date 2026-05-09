@@ -1,4 +1,4 @@
-package com.x.scrape.api.task.dto;
+package com.beluga.api.task.dto;
 
 import java.net.URL;
 import java.util.HashSet;

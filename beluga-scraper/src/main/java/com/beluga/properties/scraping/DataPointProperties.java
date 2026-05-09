@@ -1,10 +1,10 @@
-package com.x.scrape.properties.scraping;
+package com.beluga.properties.scraping;
 
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
+import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public class DataPointProperties {
 	

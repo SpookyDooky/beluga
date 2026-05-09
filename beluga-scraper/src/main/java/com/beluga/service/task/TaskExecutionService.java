@@ -1,10 +1,10 @@
-package com.x.scrape.service.task;
+package com.beluga.service.task;
 
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.execution.model.task.TaskStatus;
-import com.x.scrape.persistence.repository.TaskExecutionRepository;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.result.ResultFile;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

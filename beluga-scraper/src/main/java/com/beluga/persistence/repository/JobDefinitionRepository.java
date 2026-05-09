@@ -1,6 +1,6 @@
-package com.x.scrape.persistence.repository;
+package com.beluga.persistence.repository;
 
-import com.x.scrape.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobDefinition;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

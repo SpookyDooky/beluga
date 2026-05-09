@@ -1,11 +1,11 @@
-package com.x.scrape.result_storage;
+package com.beluga.result_storage;
 
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.model.event.storable.payload.ImagePayload;
-import com.x.scrape.model.event.storable.payload.JsonPayload;
-import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
-import com.x.scrape.result_storage.json.JsonService;
+import com.beluga.logging.ContextLogger;
+import com.beluga.model.event.storable.payload.ImagePayload;
+import com.beluga.model.event.storable.payload.JsonPayload;
+import com.beluga.model.event.storable.payload.Payload;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.result_storage.json.JsonService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,7 @@
-package com.x.scrape.model.task;
+package com.beluga.model.task;
 
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.model.result.ResultFile;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.model.result.ResultFile;
 import jakarta.persistence.EntityNotFoundException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

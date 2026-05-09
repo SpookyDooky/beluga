@@ -1,4 +1,4 @@
-package com.x.scrape.scraping.model;
+package com.beluga.scraping.model;
 
 import java.util.List;
 import java.util.Map;

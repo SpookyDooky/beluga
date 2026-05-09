@@ -1,7 +1,7 @@
-package com.x.scrape.api.execution.mapper;
+package com.beluga.api.execution.mapper;
 
-import com.x.scrape.api.execution.dto.ReadTaskExecutionDto;
-import com.x.scrape.execution.model.task.TaskExecution;
+import com.beluga.api.execution.dto.ReadTaskExecutionDto;
+import com.beluga.execution.model.task.TaskExecution;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

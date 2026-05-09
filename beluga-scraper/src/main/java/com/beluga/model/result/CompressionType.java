@@ -1,4 +1,4 @@
-package com.x.scrape.model.result;
+package com.beluga.model.result;
 
 public enum CompressionType {
 	NONE

@@ -1,7 +1,7 @@
-package com.x.scrape.mapper.job;
+package com.beluga.mapper.job;
 
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.model.job_definition.JobDefinition;
+import com.beluga.execution.model.job.Job;
+import com.beluga.model.job_definition.JobDefinition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

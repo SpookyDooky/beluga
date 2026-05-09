@@ -1,9 +1,9 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
-import com.x.scrape.activity_logging.activitiy.TaskCompletedActivity;
+import com.beluga.activity_logging.activitiy.TaskCompletedActivity;
 import org.junit.jupiter.api.Test;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.TASK_COMPLETED;
+import static com.beluga.activity_logging.activitiy.ActivityType.TASK_COMPLETED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 

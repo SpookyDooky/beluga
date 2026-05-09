@@ -1,4 +1,4 @@
-package com.x.scrape.model.job_definition;
+package com.beluga.model.job_definition;
 
 public enum JobStatus {
 	PLANNED,

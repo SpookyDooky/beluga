@@ -1,4 +1,4 @@
-package com.x.scrape.persistence.sql_lite.converter;
+package com.beluga.persistence.sql_lite.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

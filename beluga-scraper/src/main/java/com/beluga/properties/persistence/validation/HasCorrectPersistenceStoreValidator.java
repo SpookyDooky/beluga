@@ -1,7 +1,7 @@
-package com.x.scrape.properties.persistence.validation;
+package com.beluga.properties.persistence.validation;
 
-import com.x.scrape.properties.persistence.PersistenceProperties;
-import com.x.scrape.properties.persistence.PersistenceType;
+import com.beluga.properties.persistence.PersistenceProperties;
+import com.beluga.properties.persistence.PersistenceType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,11 +1,11 @@
-package com.x.scrape.api.job.dto.base;
+package com.beluga.api.job.dto.base;
 
 import jakarta.validation.constraints.NotEmpty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

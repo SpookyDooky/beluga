@@ -1,8 +1,8 @@
-package com.x.scrape.mapper.task;
+package com.beluga.mapper.task;
 
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.execution.model.task.Task;
-import com.x.scrape.execution.model.task.TaskDefinition;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.model.task.TaskDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

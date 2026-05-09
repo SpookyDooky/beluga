@@ -1,8 +1,8 @@
-package com.x.scrape.result_storage.file_system;
+package com.beluga.result_storage.file_system;
 
-import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.result_storage.ResultDataStoreProvider;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextLogger;
+import com.beluga.result_storage.ResultDataStoreProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.x.scrape.logging.ContextKeys.FILE_NAME;
+import static com.beluga.logging.ContextKeys.FILE_NAME;
 
 @Service
 // TODO MAKE custom annotation @IsResultStoreFileSystem

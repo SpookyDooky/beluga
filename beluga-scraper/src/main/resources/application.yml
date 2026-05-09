@@ -9,8 +9,3 @@ spring:
   flyway:
     enabled: true
     baseline-version: 0
-
-#logging:
-#  level:
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.orm.jdbc.bind: TRACE

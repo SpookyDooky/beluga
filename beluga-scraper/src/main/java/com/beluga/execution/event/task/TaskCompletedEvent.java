@@ -1,6 +1,6 @@
-package com.x.scrape.execution.event.task;
+package com.beluga.execution.event.task;
 
-import com.x.scrape.execution.model.task.Task;
+import com.beluga.execution.model.task.Task;
 
 public class TaskCompletedEvent extends TaskEvent {
 	

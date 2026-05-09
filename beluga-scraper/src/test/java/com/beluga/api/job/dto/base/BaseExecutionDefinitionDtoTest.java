@@ -1,4 +1,4 @@
-package com.x.scrape.api.job.dto.base;
+package com.beluga.api.job.dto.base;
 
 import jakarta.validation.constraints.Positive;
 import org.junit.jupiter.params.ParameterizedTest;

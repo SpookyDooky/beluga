@@ -1,7 +1,7 @@
-package com.x.scrape.persistence.postgresql.config;
+package com.beluga.persistence.postgresql.config;
 
-import com.x.scrape.persistence.config.conditionals.annotation.IsPostgreSql;
-import com.x.scrape.properties.persistence.PostgreSqlPersistenceProperties;
+import com.beluga.persistence.config.conditionals.annotation.IsPostgreSql;
+import com.beluga.properties.persistence.PostgreSqlPersistenceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
@@ -60,7 +60,7 @@ public class PostgreSqlPersistenceConfig {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactory.setPackagesToScan("com.x.scrape");
+		entityManagerFactory.setPackagesToScan("com.beluga.scrape");
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");

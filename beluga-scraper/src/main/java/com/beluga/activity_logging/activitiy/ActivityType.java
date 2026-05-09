@@ -1,4 +1,4 @@
-package com.x.scrape.activity_logging.activitiy;
+package com.beluga.activity_logging.activitiy;
 
 public enum ActivityType {
 	REQUEST,

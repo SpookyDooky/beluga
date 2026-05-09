@@ -1,4 +1,4 @@
-package com.x.scrape.api.execution.dto;
+package com.beluga.api.execution.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.x.scrape.activity_logging.activitiy;
+package com.beluga.activity_logging.activitiy;
 
 import java.net.URL;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.REQUEST;
+import static com.beluga.activity_logging.activitiy.ActivityType.REQUEST;
 
 /**
  * Represents the activity of requesting a page.

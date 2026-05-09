@@ -1,19 +1,19 @@
-package com.x.scrape.service.task;
+package com.beluga.service.task;
 
-import com.x.scrape.mapper.ResultFileMapper;
-import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.execution.event.task.TaskCompletedEvent;
-import com.x.scrape.execution.event.task.TaskFailedEvent;
-import com.x.scrape.execution.event.task.TaskStartedEvent;
-import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.mapper.ResultFileMapper;
+import com.beluga.model.result.ResultFile;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.event.task.TaskCompletedEvent;
+import com.beluga.execution.event.task.TaskFailedEvent;
+import com.beluga.execution.event.task.TaskStartedEvent;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
-import static com.x.scrape.execution.model.task.TaskStatus.*;
+import static com.beluga.execution.model.task.TaskStatus.*;
 
 // Todo move to event package -> which contains a package for all the event handlers
 @Component

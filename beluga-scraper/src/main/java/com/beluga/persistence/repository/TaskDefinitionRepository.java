@@ -1,6 +1,6 @@
-package com.x.scrape.persistence.repository;
+package com.beluga.persistence.repository;
 
-import com.x.scrape.execution.model.task.TaskDefinition;
+import com.beluga.execution.model.task.TaskDefinition;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

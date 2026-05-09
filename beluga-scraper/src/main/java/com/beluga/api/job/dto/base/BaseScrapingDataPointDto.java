@@ -1,9 +1,9 @@
-package com.x.scrape.api.job.dto.base;
+package com.beluga.api.job.dto.base;
 
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
+import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType;
 import jakarta.validation.constraints.NotEmpty;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public abstract class BaseScrapingDataPointDto {
 	

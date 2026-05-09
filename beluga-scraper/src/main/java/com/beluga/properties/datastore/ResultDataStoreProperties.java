@@ -1,9 +1,9 @@
-package com.x.scrape.properties.datastore;
+package com.beluga.properties.datastore;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 
-import static com.x.scrape.properties.datastore.DataStoreType.FILE_SYSTEM;
+import static com.beluga.properties.datastore.DataStoreType.FILE_SYSTEM;
 
 public class ResultDataStoreProperties {
 

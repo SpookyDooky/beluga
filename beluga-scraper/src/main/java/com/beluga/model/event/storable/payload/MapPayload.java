@@ -1,4 +1,4 @@
-package com.x.scrape.model.event.storable.payload;
+package com.beluga.model.event.storable.payload;
 
 import java.util.List;
 import java.util.Map;

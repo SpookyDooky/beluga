@@ -1,11 +1,11 @@
-package com.x.scrape.persistence.config.conditionals;
+package com.beluga.persistence.config.conditionals;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static com.beluga.properties.persistence.PersistenceType.POSTGRESQL;
 
 public class IsPostgreSqlCondition implements Condition {
 	

@@ -1,4 +1,4 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
 import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;

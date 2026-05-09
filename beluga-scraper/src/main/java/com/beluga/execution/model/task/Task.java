@@ -1,16 +1,16 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.logging.ContextLoggable;
+import com.beluga.execution.model.job.Job;
+import com.beluga.logging.ContextLoggable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
-import static com.x.scrape.logging.ContextKeys.URL;
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.IMAGE;
+import static com.beluga.logging.ContextKeys.TASK_ID;
+import static com.beluga.logging.ContextKeys.URL;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.IMAGE;
 
 public class Task implements ContextLoggable {
 	

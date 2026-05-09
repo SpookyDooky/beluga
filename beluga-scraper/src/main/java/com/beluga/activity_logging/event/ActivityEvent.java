@@ -1,6 +1,6 @@
-package com.x.scrape.activity_logging.event;
+package com.beluga.activity_logging.event;
 
-import com.x.scrape.activity_logging.activitiy.Activity;
+import com.beluga.activity_logging.activitiy.Activity;
 import org.springframework.context.ApplicationEvent;
 
 /**

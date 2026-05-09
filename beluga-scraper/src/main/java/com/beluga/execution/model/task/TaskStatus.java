@@ -1,4 +1,4 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
 public enum TaskStatus {
 	PLANNED,

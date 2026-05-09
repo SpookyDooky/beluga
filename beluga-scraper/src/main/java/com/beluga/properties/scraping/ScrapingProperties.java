@@ -1,4 +1,4 @@
-package com.x.scrape.properties.scraping;
+package com.beluga.properties.scraping;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

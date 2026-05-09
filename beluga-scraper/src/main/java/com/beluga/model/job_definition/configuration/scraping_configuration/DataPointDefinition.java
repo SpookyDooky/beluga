@@ -1,8 +1,8 @@
-package com.x.scrape.model.job_definition.configuration.scraping_configuration;
+package com.beluga.model.job_definition.configuration.scraping_configuration;
 
 import jakarta.persistence.*;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 

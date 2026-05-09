@@ -1,8 +1,8 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType;
+import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType;
 
-import static com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public class DataPointConfiguration {
 	

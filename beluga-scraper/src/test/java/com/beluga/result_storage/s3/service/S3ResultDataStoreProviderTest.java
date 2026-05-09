@@ -1,7 +1,7 @@
-package com.x.scrape.result_storage.s3.service;
+package com.beluga.result_storage.s3.service;
 
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.properties.datastore.S3Properties;
+import com.beluga.logging.ContextLogger;
+import com.beluga.properties.datastore.S3Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

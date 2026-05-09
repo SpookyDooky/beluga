@@ -1,12 +1,12 @@
-package com.x.scrape.service.task;
+package com.beluga.service.task;
 
-import com.x.scrape.mapper.ResultFileMapper;
-import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.execution.event.task.TaskCompletedEvent;
-import com.x.scrape.execution.event.task.TaskFailedEvent;
-import com.x.scrape.execution.event.task.TaskStartedEvent;
-import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.mapper.ResultFileMapper;
+import com.beluga.model.result.ResultFile;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.event.task.TaskCompletedEvent;
+import com.beluga.execution.event.task.TaskFailedEvent;
+import com.beluga.execution.event.task.TaskStartedEvent;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.x.scrape.execution.model.task.TaskStatus.*;
+import static com.beluga.execution.model.task.TaskStatus.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;

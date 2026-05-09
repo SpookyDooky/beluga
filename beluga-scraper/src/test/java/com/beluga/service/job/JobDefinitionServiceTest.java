@@ -1,10 +1,10 @@
-package com.x.scrape.service.job;
+package com.beluga.service.job;
 
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.persistence.repository.JobDefinitionRepository;
-import com.x.scrape.service.task.TaskDefinitionService;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.persistence.repository.JobDefinitionRepository;
+import com.beluga.service.task.TaskDefinitionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
+import static com.beluga.model.job_definition.JobStatus.COMPLETED;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertSame;

@@ -1,4 +1,4 @@
-package com.x.scrape.logging;
+package com.beluga.logging;
 
 import org.apache.logging.log4j.Logger;
 import org.slf4j.MDC;

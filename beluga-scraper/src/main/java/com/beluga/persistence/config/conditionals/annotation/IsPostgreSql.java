@@ -1,6 +1,6 @@
-package com.x.scrape.persistence.config.conditionals.annotation;
+package com.beluga.persistence.config.conditionals.annotation;
 
-import com.x.scrape.persistence.config.conditionals.IsPostgreSqlCondition;
+import com.beluga.persistence.config.conditionals.IsPostgreSqlCondition;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.Documented;

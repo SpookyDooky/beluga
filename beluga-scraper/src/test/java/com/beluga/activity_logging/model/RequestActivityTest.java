@@ -1,11 +1,11 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
-import com.x.scrape.activity_logging.activitiy.RequestActivity;
+import com.beluga.activity_logging.activitiy.RequestActivity;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.REQUEST;
+import static com.beluga.activity_logging.activitiy.ActivityType.REQUEST;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 

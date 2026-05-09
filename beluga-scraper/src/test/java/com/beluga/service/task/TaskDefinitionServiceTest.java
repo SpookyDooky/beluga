@@ -1,7 +1,7 @@
-package com.x.scrape.service.task;
+package com.beluga.service.task;
 
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.persistence.repository.TaskDefinitionRepository;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.persistence.repository.TaskDefinitionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

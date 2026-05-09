@@ -1,4 +1,4 @@
-package com.x.scrape.properties.scraping.execution;
+package com.beluga.properties.scraping.execution;
 
 public class ExecutionProperties {
 	

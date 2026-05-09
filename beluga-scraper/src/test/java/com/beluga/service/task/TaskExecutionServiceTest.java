@@ -1,9 +1,9 @@
-package com.x.scrape.service.task;
+package com.beluga.service.task;
 
-import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.execution.model.task.TaskStatus;
-import com.x.scrape.persistence.repository.TaskExecutionRepository;
+import com.beluga.model.result.ResultFile;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.x.scrape.execution.model.task.TaskStatus.COMPLETED;
+import static com.beluga.execution.model.task.TaskStatus.COMPLETED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

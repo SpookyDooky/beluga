@@ -1,4 +1,4 @@
-package com.x.scrape.service.exception;
+package com.beluga.service.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 

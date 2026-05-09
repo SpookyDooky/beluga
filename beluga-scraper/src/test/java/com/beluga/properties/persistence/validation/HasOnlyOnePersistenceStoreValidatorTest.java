@@ -1,6 +1,6 @@
-package com.x.scrape.properties.persistence.validation;
+package com.beluga.properties.persistence.validation;
 
-import com.x.scrape.properties.persistence.PersistenceProperties;
+import com.beluga.properties.persistence.PersistenceProperties;
 import jakarta.validation.ConstraintValidatorContext;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
-import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static com.beluga.properties.persistence.PersistenceType.POSTGRESQL;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

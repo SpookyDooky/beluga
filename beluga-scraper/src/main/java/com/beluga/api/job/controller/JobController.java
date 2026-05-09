@@ -1,13 +1,13 @@
-package com.x.scrape.api.job.controller;
+package com.beluga.api.job.controller;
 
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
-import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextKeys;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobDefinitionMapper;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.service.job.JobDefinitionService;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextKeys;
+import com.beluga.logging.ContextLogger;
+import com.beluga.mapper.job.JobDefinitionMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.service.job.JobDefinitionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

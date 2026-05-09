@@ -1,9 +1,9 @@
-package com.x.scrape.mapper.job.storage;
+package com.beluga.mapper.job.storage;
 
-import com.x.scrape.api.job.dto.read.ReadStorageConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteStorageConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.storage_configuration.StorageDefinition;
-import com.x.scrape.properties.scraping.storage.StorageProperties;
+import com.beluga.api.job.dto.read.ReadStorageConfigurationDto;
+import com.beluga.api.job.dto.write.WriteStorageConfigurationDto;
+import com.beluga.model.job_definition.configuration.storage_configuration.StorageDefinition;
+import com.beluga.properties.scraping.storage.StorageProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

@@ -1,4 +1,4 @@
-package com.x.scrape.util;
+package com.beluga.util;
 
 import org.junit.jupiter.api.Test;
 

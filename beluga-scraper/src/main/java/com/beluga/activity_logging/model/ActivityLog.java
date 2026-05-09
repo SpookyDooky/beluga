@@ -1,6 +1,6 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
-import com.x.scrape.activity_logging.activitiy.ActivityType;
+import com.beluga.activity_logging.activitiy.ActivityType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;

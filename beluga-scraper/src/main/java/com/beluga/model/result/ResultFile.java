@@ -1,9 +1,9 @@
-package com.x.scrape.model.result;
+package com.beluga.model.result;
 
-import com.x.scrape.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskExecution;
 import jakarta.persistence.*;
 
-import static com.x.scrape.model.result.CompressionType.NONE;
+import static com.beluga.model.result.CompressionType.NONE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 

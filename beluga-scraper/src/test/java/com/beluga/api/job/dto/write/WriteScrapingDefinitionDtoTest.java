@@ -1,4 +1,4 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
 import jakarta.validation.constraints.NotEmpty;
 import org.junit.jupiter.api.Test;

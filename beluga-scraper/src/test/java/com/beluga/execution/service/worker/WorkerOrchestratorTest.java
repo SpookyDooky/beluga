@@ -1,8 +1,8 @@
-package com.x.scrape.execution.service.worker;
+package com.beluga.execution.service.worker;
 
-import com.x.scrape.execution.service.worker.event.JobWorkersFinishedEvent;
-import com.x.scrape.execution.service.worker.event.WorkerFinishedEvent;
-import com.x.scrape.execution.service.worker.rate_limiting.JitterRateLimiter;
+import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
+import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
+import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

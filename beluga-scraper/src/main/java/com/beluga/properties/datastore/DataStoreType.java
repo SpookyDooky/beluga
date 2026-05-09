@@ -1,4 +1,4 @@
-package com.x.scrape.properties.datastore;
+package com.beluga.properties.datastore;
 
 public enum DataStoreType {
 	S3,

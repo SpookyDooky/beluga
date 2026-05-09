@@ -1,18 +1,18 @@
-package com.x.scrape.api.task.controller;
+package com.beluga.api.task.controller;
 
-import com.x.scrape.api.task.dto.PatchTaskDto;
-import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
-import com.x.scrape.api.task.dto.UpdateTaskDto;
-import com.x.scrape.api.task.mapper.ReadTaskDefinitionDtoMapper;
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.task.TaskDefinitionMapperService;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.exception.TaskDefinitionNotFoundException;
-import com.x.scrape.service.exception.JobDefinitionNotFoundException;
-import com.x.scrape.service.job.JobDefinitionService;
-import com.x.scrape.service.task.TaskDefinitionService;
+import com.beluga.api.task.dto.PatchTaskDto;
+import com.beluga.api.task.dto.ReadTaskDefinitionDto;
+import com.beluga.api.task.dto.UpdateTaskDto;
+import com.beluga.api.task.mapper.ReadTaskDefinitionDtoMapper;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextLogger;
+import com.beluga.mapper.task.TaskDefinitionMapperService;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException;
+import com.beluga.service.exception.JobDefinitionNotFoundException;
+import com.beluga.service.job.JobDefinitionService;
+import com.beluga.service.task.TaskDefinitionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.x.scrape.logging.ContextKeys.JOB_ID;
-import static com.x.scrape.logging.ContextKeys.TASK_ID;
+import static com.beluga.logging.ContextKeys.JOB_ID;
+import static com.beluga.logging.ContextKeys.TASK_ID;
 
 @RestController
 @RequestMapping("/jobs/{jobDefinitionId}/tasks")

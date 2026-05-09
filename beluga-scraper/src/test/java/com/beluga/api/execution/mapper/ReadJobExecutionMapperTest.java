@@ -1,10 +1,10 @@
-package com.x.scrape.api.execution.mapper;
+package com.beluga.api.execution.mapper;
 
-import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
-import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
-import com.x.scrape.api.execution.dto.ReadTaskExecutionDto;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.execution.model.task.TaskExecution;
+import com.beluga.api.execution.dto.ReadJobExecutionDto;
+import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
+import com.beluga.api.execution.dto.ReadTaskExecutionDto;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.execution.model.task.TaskExecution;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.x.scrape.model.event.storable.payload;
+package com.beluga.model.event.storable.payload;
 
 /**
  * This payload supports a wide array of being able to store payload.

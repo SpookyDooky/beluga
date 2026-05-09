@@ -1,8 +1,8 @@
-package com.x.scrape.properties;
+package com.beluga.properties;
 
-import com.x.scrape.properties.datastore.ResultDataStoreProperties;
-import com.x.scrape.properties.persistence.PersistenceProperties;
-import com.x.scrape.properties.scraping.JobProperties;
+import com.beluga.properties.datastore.ResultDataStoreProperties;
+import com.beluga.properties.persistence.PersistenceProperties;
+import com.beluga.properties.scraping.JobProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,9 +10,9 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-@ConfigurationProperties("x-scraper")
+@ConfigurationProperties("beluga")
 @Validated
-public class XScraperProperties {
+public class BelugaScraperProperties {
 	
 	@NotNull
 	@Valid

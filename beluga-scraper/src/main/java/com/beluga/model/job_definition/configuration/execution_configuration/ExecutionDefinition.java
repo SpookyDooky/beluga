@@ -1,4 +1,4 @@
-package com.x.scrape.model.job_definition.configuration.execution_configuration;
+package com.beluga.model.job_definition.configuration.execution_configuration;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

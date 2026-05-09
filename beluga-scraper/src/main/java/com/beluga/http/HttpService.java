@@ -1,9 +1,9 @@
-package com.x.scrape.http;
+package com.beluga.http;
 
-import com.x.scrape.activity_logging.event.ActivityEvent;
-import com.x.scrape.activity_logging.activitiy.RequestActivity;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.util.TimingService;
+import com.beluga.activity_logging.event.ActivityEvent;
+import com.beluga.activity_logging.activitiy.RequestActivity;
+import com.beluga.logging.ContextLogger;
+import com.beluga.util.TimingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.context.ApplicationEventPublisher;

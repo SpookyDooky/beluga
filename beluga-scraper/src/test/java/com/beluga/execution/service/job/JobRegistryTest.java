@@ -1,14 +1,13 @@
-package com.x.scrape.execution.service.job;
+package com.beluga.execution.service.job;
 
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobDefinitionMapper;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.properties.XScraperProperties;
-import com.x.scrape.properties.scraping.JobProperties;
-import com.x.scrape.service.job.JobDefinitionService;
-import com.x.scrape.service.job.JobService;
-import com.x.scrape.util.TimingService;
+import com.beluga.execution.model.job.Job;
+import com.beluga.logging.ContextLogger;
+import com.beluga.mapper.job.JobDefinitionMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.properties.scraping.JobProperties;
+import com.beluga.service.job.JobDefinitionService;
+import com.beluga.service.job.JobService;
+import com.beluga.util.TimingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +28,7 @@ class JobRegistryTest {
 	@Mock
 	private ContextLogger contextLogger;
 	@Mock
-	private XScraperProperties xScraperProperties;
+	private com.beluga.properties.BelugaScraperProperties belugaScraperProperties;
 	@Mock
 	private JobDefinitionMapper jobDefinitionMapper;
 	@Mock
@@ -47,7 +46,7 @@ class JobRegistryTest {
 	@Test
 	void shouldRegisterJobs() {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
-		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
+		when(belugaScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
@@ -63,7 +62,7 @@ class JobRegistryTest {
 	@Test
 	void shouldGetJob() {
 		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
-		when(xScraperProperties.getJobs()).thenReturn(jobPropertiesList);
+		when(belugaScraperProperties.getJobs()).thenReturn(jobPropertiesList);
 		
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);

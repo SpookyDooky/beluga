@@ -1,13 +1,13 @@
-package com.x.scrape.mapper.job.scraping_configuration;
+package com.beluga.mapper.job.scraping_configuration;
 
-import com.x.scrape.api.job.dto.read.ReadDataPointConfigurationDto;
-import com.x.scrape.api.job.dto.read.ReadScrapingConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteDataPointConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteScrapingConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
-import com.x.scrape.properties.scraping.DataPointProperties;
-import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.beluga.api.job.dto.read.ReadDataPointConfigurationDto;
+import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
+import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
+import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
+import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.beluga.properties.scraping.DataPointProperties;
+import com.beluga.properties.scraping.ScrapingProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

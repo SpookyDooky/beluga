@@ -1,6 +1,6 @@
 package com.beluga.integration_test;
 
-import com.x.scrape.properties.persistence.PersistenceType;
+import com.beluga.properties.persistence.PersistenceType;
 import org.testcontainers.containers.GenericContainer;
 
 import java.util.HashMap;

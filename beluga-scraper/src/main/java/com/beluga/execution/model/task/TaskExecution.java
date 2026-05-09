@@ -1,14 +1,14 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.result.ResultFile;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.result.ResultFile;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.x.scrape.execution.model.task.TaskStatus.PLANNED;
+import static com.beluga.execution.model.task.TaskStatus.PLANNED;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;

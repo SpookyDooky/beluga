@@ -1,7 +1,7 @@
-package com.x.scrape.persistence.repository;
+package com.beluga.persistence.repository;
 
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.execution.model.task.TaskExecution;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.execution.model.task.TaskExecution;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

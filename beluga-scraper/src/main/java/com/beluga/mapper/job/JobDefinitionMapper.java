@@ -1,13 +1,13 @@
-package com.x.scrape.mapper.job;
+package com.beluga.mapper.job;
 
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
-import com.x.scrape.mapper.job.execution.ExecutionConfigurationMapper;
-import com.x.scrape.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
-import com.x.scrape.mapper.job.storage.StorageConfigurationMapper;
-import com.x.scrape.mapper.task.TaskDefinitionMapperService;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.properties.scraping.JobProperties;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.mapper.job.execution.ExecutionConfigurationMapper;
+import com.beluga.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
+import com.beluga.mapper.job.storage.StorageConfigurationMapper;
+import com.beluga.mapper.task.TaskDefinitionMapperService;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.properties.scraping.JobProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

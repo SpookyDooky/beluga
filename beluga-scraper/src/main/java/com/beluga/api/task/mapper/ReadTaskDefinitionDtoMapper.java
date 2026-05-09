@@ -1,7 +1,7 @@
-package com.x.scrape.api.task.mapper;
+package com.beluga.api.task.mapper;
 
-import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
-import com.x.scrape.execution.model.task.TaskDefinition;
+import com.beluga.api.task.dto.ReadTaskDefinitionDto;
+import com.beluga.execution.model.task.TaskDefinition;
 import org.mapstruct.Mapper;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;

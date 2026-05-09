@@ -1,4 +1,4 @@
-package com.x.scrape.config;
+package com.beluga.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

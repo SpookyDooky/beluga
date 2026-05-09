@@ -1,14 +1,14 @@
-package com.x.scrape.execution.service.job;
+package com.beluga.execution.service.job;
 
-import com.x.scrape.execution.event.job.JobEvent;
-import com.x.scrape.execution.event.job.JobFinishedEvent;
-import com.x.scrape.execution.event.job.JobStartedEvent;
-import com.x.scrape.service.job.JobDefinitionService;
+import com.beluga.execution.event.job.JobEvent;
+import com.beluga.execution.event.job.JobFinishedEvent;
+import com.beluga.execution.event.job.JobStartedEvent;
+import com.beluga.service.job.JobDefinitionService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import static com.x.scrape.model.job_definition.JobStatus.ACTIVE;
-import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
+import static com.beluga.model.job_definition.JobStatus.ACTIVE;
+import static com.beluga.model.job_definition.JobStatus.COMPLETED;
 
 /**
  * Handles {@link JobEvent}'s.

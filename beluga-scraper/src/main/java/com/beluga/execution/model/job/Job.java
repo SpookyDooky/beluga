@@ -1,9 +1,9 @@
-package com.x.scrape.execution.model.job;
+package com.beluga.execution.model.job;
 
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.execution.model.task.StorageConfiguration;
-import com.x.scrape.execution.model.task.Task;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.execution.model.task.StorageConfiguration;
+import com.beluga.execution.model.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;

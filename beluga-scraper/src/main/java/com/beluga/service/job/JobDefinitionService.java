@@ -1,12 +1,12 @@
-package com.x.scrape.service.job;
+package com.beluga.service.job;
 
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.job_definition.JobStatus;
-import com.x.scrape.persistence.repository.JobDefinitionRepository;
-import com.x.scrape.service.exception.JobDefinitionNotFoundException;
-import com.x.scrape.service.task.TaskDefinitionService;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.job_definition.JobStatus;
+import com.beluga.persistence.repository.JobDefinitionRepository;
+import com.beluga.service.exception.JobDefinitionNotFoundException;
+import com.beluga.service.task.TaskDefinitionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

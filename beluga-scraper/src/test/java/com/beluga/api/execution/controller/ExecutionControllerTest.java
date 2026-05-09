@@ -1,8 +1,8 @@
-package com.x.scrape.api.execution.controller;
+package com.beluga.api.execution.controller;
 
-import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
-import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
-import com.x.scrape.api.execution.service.ExecutionApiService;
+import com.beluga.api.execution.dto.ReadJobExecutionDto;
+import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
+import com.beluga.api.execution.service.ExecutionApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -63,7 +63,7 @@
 
         <!-- Logging -->
         <dependency>
-            <groupId>org.x-scraper</groupId>
+            <groupId>org.beluga</groupId>
             <artifactId>logging</artifactId>
         </dependency>
 

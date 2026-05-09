@@ -1,7 +1,7 @@
-package com.x.scrape.persistence.sql_lite.config;
+package com.beluga.persistence.sql_lite.config;
 
-import com.x.scrape.persistence.config.conditionals.annotation.IsSqlLite;
-import com.x.scrape.persistence.sql_lite.converter.InstantConverter;
+import com.beluga.persistence.config.conditionals.annotation.IsSqlLite;
+import com.beluga.persistence.sql_lite.converter.InstantConverter;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
@@ -55,7 +55,7 @@ public class SqlLitePersistenceConfig {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactory.setPackagesToScan("com.x.scrape");
+		entityManagerFactory.setPackagesToScan("com.beluga.scrape");
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");

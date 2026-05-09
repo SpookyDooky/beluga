@@ -1,4 +1,4 @@
-package com.x.scrape.properties.datastore;
+package com.beluga.properties.datastore;
 
 import jakarta.validation.constraints.NotNull;
 import software.amazon.awssdk.regions.Region;

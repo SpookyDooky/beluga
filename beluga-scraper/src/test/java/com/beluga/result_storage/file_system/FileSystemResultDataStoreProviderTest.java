@@ -1,6 +1,6 @@
-package com.x.scrape.result_storage.file_system;
+package com.beluga.result_storage.file_system;
 
-import com.x.scrape.logging.ContextLogger;
+import com.beluga.logging.ContextLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

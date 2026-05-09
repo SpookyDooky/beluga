@@ -1,4 +1,4 @@
-package com.x.scrape.properties.persistence;
+package com.beluga.properties.persistence;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

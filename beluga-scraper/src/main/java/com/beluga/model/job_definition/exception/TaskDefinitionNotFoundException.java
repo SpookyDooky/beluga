@@ -1,4 +1,4 @@
-package com.x.scrape.model.job_definition.exception;
+package com.beluga.model.job_definition.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 

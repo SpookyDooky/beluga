@@ -1,4 +1,4 @@
-package com.x.scrape.properties.persistence.validation;
+package com.beluga.properties.persistence.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

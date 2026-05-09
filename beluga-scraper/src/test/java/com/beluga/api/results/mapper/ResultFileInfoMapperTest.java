@@ -1,7 +1,7 @@
-package com.x.scrape.api.results.mapper;
+package com.beluga.api.results.mapper;
 
-import com.x.scrape.api.results.dto.ResultFileInfoDto;
-import com.x.scrape.model.result.ResultFile;
+import com.beluga.api.results.dto.ResultFileInfoDto;
+import com.beluga.model.result.ResultFile;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

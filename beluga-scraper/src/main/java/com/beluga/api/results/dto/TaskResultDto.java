@@ -1,4 +1,4 @@
-package com.x.scrape.api.results.dto;
+package com.beluga.api.results.dto;
 
 import java.util.List;
 

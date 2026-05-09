@@ -1,10 +1,10 @@
-package com.x.scrape.api.task.controller;
+package com.beluga.api.task.controller;
 
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
-import com.x.scrape.api.task.dto.PatchTaskDto;
-import com.x.scrape.api.task.dto.ReadTaskDefinitionDto;
-import com.x.scrape.api.task.dto.UpdateTaskDto;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.task.dto.PatchTaskDto;
+import com.beluga.api.task.dto.ReadTaskDefinitionDto;
+import com.beluga.api.task.dto.UpdateTaskDto;
 import com.beluga.integration_test.BaseIntegrationTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;

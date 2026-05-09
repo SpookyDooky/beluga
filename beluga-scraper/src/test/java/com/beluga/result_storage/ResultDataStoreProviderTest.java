@@ -1,6 +1,6 @@
-package com.x.scrape.result_storage;
+package com.beluga.result_storage;
 
-import com.x.scrape.logging.ContextLogger;
+import com.beluga.logging.ContextLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

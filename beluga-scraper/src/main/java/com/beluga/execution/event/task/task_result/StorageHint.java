@@ -1,4 +1,4 @@
-package com.x.scrape.execution.event.task.task_result;
+package com.beluga.execution.event.task.task_result;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package com.x.scrape.properties.scraping.url;
+package com.beluga.properties.scraping.url;
 
 import java.net.URL;
 import java.util.ArrayList;

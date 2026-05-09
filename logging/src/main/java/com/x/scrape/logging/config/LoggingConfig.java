@@ -1,6 +1,6 @@
-package com.x.scrape.logging.config;
+package com.beluga.logging.config;
 
-import com.x.scrape.logging.ContextLogger;
+import com.beluga.logging.ContextLogger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.context.annotation.Bean;

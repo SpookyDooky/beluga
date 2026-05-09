@@ -1,6 +1,6 @@
-package com.x.scrape.api.execution.dto;
+package com.beluga.api.execution.dto;
 
-import com.x.scrape.model.job_definition.JobStatus;
+import com.beluga.model.job_definition.JobStatus;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;

@@ -1,9 +1,9 @@
-package com.x.scrape.scraping;
+package com.beluga.scraping;
 
-import com.x.scrape.http.HttpService;
-import com.x.scrape.execution.model.task.ScrapingConfiguration;
-import com.x.scrape.execution.model.task.DataPointConfiguration;
-import com.x.scrape.scraping.model.ScrapingResult;
+import com.beluga.http.HttpService;
+import com.beluga.execution.model.task.ScrapingConfiguration;
+import com.beluga.execution.model.task.DataPointConfiguration;
+import com.beluga.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;

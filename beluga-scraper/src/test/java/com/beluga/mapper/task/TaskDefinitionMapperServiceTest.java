@@ -1,7 +1,7 @@
-package com.x.scrape.mapper.task;
+package com.beluga.mapper.task;
 
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.properties.scraping.url.UrlProperties;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.properties.scraping.url.UrlProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

@@ -1,11 +1,11 @@
-package com.x.scrape.api.job.controller;
+package com.beluga.api.job.controller;
 
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
-import com.x.scrape.logging.ContextLogger;
-import com.x.scrape.mapper.job.JobDefinitionMapper;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.service.job.JobDefinitionService;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.logging.ContextLogger;
+import com.beluga.mapper.job.JobDefinitionMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.service.job.JobDefinitionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

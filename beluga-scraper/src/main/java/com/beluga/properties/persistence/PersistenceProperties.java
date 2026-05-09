@@ -1,11 +1,11 @@
-package com.x.scrape.properties.persistence;
+package com.beluga.properties.persistence;
 
-import com.x.scrape.properties.persistence.validation.HasCorrectPersistenceStore;
-import com.x.scrape.properties.persistence.validation.HasOnlyOnePersistenceStore;
+import com.beluga.properties.persistence.validation.HasCorrectPersistenceStore;
+import com.beluga.properties.persistence.validation.HasOnlyOnePersistenceStore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import static com.x.scrape.properties.persistence.PersistenceType.SQL_LITE;
+import static com.beluga.properties.persistence.PersistenceType.SQL_LITE;
 
 /**
  * Used for configuring how the scraper should store things such as jobs, tasks and execution of these things.

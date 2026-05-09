@@ -1,4 +1,4 @@
-package com.x.scrape.result_storage.json;
+package com.beluga.result_storage.json;
 
 import org.springframework.stereotype.Service;
 

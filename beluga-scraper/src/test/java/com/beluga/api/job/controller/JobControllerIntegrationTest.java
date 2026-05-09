@@ -1,7 +1,7 @@
-package com.x.scrape.api.job.controller;
+package com.beluga.api.job.controller;
 
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.integration_test.BaseIntegrationTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;

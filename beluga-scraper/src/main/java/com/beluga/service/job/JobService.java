@@ -1,15 +1,15 @@
-package com.x.scrape.service.job;
+package com.beluga.service.job;
 
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.mapper.job.JobMapper;
-import com.x.scrape.mapper.task.TaskMapper;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.model.job_definition.JobStatus;
-import com.x.scrape.execution.model.task.Task;
-import com.x.scrape.execution.model.task.TaskDefinition;
-import com.x.scrape.execution.model.task.TaskExecution;
-import com.x.scrape.service.task.TaskExecutionService;
+import com.beluga.execution.model.job.Job;
+import com.beluga.mapper.job.JobMapper;
+import com.beluga.mapper.task.TaskMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.job_definition.JobStatus;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.x.scrape.execution.model.task.TaskStatus.PAUSED;
+import static com.beluga.execution.model.task.TaskStatus.PAUSED;
 
 @Service
 public class JobService {

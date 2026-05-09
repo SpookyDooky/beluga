@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.base;
+package com.beluga.api.job.dto.base;
 
-import com.x.scrape.api.job.dto.validation.Path;
+import com.beluga.api.job.dto.validation.Path;
 import org.junit.jupiter.api.Test;
 
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;

@@ -1,4 +1,4 @@
-package com.x.scrape.execution.service.worker.event;
+package com.beluga.execution.service.worker.event;
 
 public class WorkerStartedEvent extends WorkerEvent {
 	

@@ -1,4 +1,4 @@
-package com.x.scrape.execution.service.worker.rate_limiting;
+package com.beluga.execution.service.worker.rate_limiting;
 
 import org.junit.jupiter.api.Test;
 

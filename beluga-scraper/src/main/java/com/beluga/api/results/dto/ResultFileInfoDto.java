@@ -1,4 +1,4 @@
-package com.x.scrape.api.results.dto;
+package com.beluga.api.results.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

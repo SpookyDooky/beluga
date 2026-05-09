@@ -1,13 +1,13 @@
-package com.x.scrape.api.results.controller;
+package com.beluga.api.results.controller;
 
-import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
-import com.x.scrape.api.results.dto.ResultFileInfoDto;
-import com.x.scrape.api.results.dto.TaskResultDto;
-import com.x.scrape.api.results.service.ResultService;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.execution.model.task.Task;
-import com.x.scrape.execution.model.task.TaskExecution;
+import com.beluga.api.execution.exception.TaskResultNotFoundException;
+import com.beluga.api.results.dto.ResultFileInfoDto;
+import com.beluga.api.results.dto.TaskResultDto;
+import com.beluga.api.results.service.ResultService;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.model.task.TaskExecution;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

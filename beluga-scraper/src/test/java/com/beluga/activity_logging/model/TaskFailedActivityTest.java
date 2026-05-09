@@ -1,9 +1,9 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
-import com.x.scrape.activity_logging.activitiy.TaskFailedActivity;
+import com.beluga.activity_logging.activitiy.TaskFailedActivity;
 import org.junit.jupiter.api.Test;
 
-import static com.x.scrape.activity_logging.activitiy.ActivityType.TASK_FAILED;
+import static com.beluga.activity_logging.activitiy.ActivityType.TASK_FAILED;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskFailedActivityTest {

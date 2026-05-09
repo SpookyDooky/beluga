@@ -1,4 +1,4 @@
-package com.x.scrape.async;
+package com.beluga.async;
 
 import org.slf4j.MDC;
 import org.springframework.core.task.AsyncTaskExecutor;

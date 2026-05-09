@@ -1,6 +1,6 @@
-package com.x.scrape.api.job.dto.write;
+package com.beluga.api.job.dto.write;
 
-import com.x.scrape.api.job.dto.base.BaseScrapingConfigurationDto;
+import com.beluga.api.job.dto.base.BaseScrapingConfigurationDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 

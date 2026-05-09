@@ -1,14 +1,14 @@
-package com.x.scrape.result_storage;
+package com.beluga.result_storage;
 
-import com.x.scrape.logging.CloseableContext;
-import com.x.scrape.logging.ContextLogger;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-import static com.x.scrape.logging.ContextKeys.FILE_NAME;
+import static com.beluga.logging.ContextKeys.FILE_NAME;
 
 /**
  * Used for making more datastore implementations available as storage backend.

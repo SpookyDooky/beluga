@@ -1,14 +1,14 @@
-package com.x.scrape.api.results.controller;
+package com.beluga.api.results.controller;
 
-import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
-import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
-import com.x.scrape.api.job.dto.read.ReadJobDefinitionDto;
-import com.x.scrape.api.job.dto.write.WriteExecutionConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteJobDefinitionDto;
-import com.x.scrape.api.task.dto.UpdateTaskDto;
+import com.beluga.api.execution.dto.ReadJobExecutionDto;
+import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
+import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteExecutionConfigurationDto;
+import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.task.dto.UpdateTaskDto;
 import com.beluga.integration_test.MultiStoreTest;
-import com.x.scrape.result_storage.StorageService;
-import com.x.scrape.scraping.ScrapingService;
+import com.beluga.result_storage.StorageService;
+import com.beluga.scraping.ScrapingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

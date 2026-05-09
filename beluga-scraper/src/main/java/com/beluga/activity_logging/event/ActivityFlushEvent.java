@@ -1,9 +1,9 @@
-package com.x.scrape.activity_logging.event;
+package com.beluga.activity_logging.event;
 
-import com.x.scrape.activity_logging.model.ActivityLog;
-import com.x.scrape.model.event.storable.StorableEvent;
-import com.x.scrape.model.event.storable.payload.JsonPayload;
-import com.x.scrape.execution.event.task.task_result.StorageHint;
+import com.beluga.activity_logging.model.ActivityLog;
+import com.beluga.model.event.storable.StorableEvent;
+import com.beluga.model.event.storable.payload.JsonPayload;
+import com.beluga.execution.event.task.task_result.StorageHint;
 
 import java.util.Collection;
 import java.util.Map;

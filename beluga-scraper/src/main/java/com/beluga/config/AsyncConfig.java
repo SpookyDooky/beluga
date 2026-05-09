@@ -1,6 +1,6 @@
-package com.x.scrape.config;
+package com.beluga.config;
 
-import com.x.scrape.async.CustomAsyncTaskExecutor;
+import com.beluga.async.CustomAsyncTaskExecutor;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

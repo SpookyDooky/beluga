@@ -1,4 +1,4 @@
-package com.x.scrape.activity_logging.model;
+package com.beluga.activity_logging.model;
 
 import java.util.HashMap;
 

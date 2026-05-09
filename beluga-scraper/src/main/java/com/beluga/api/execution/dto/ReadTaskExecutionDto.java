@@ -1,6 +1,6 @@
-package com.x.scrape.api.execution.dto;
+package com.beluga.api.execution.dto;
 
-import com.x.scrape.execution.model.task.TaskStatus;
+import com.beluga.execution.model.task.TaskStatus;
 import jakarta.validation.constraints.NotNull;
 
 import java.net.URL;

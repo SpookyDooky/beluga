@@ -9,7 +9,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.x.scrape.properties.persistence.PersistenceType.POSTGRESQL;
+import static com.beluga.properties.persistence.PersistenceType.POSTGRESQL;
 
 public class PostgreSqlTemplateFactory {
 	

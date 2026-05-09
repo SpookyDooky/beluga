@@ -1,9 +1,9 @@
-package com.x.scrape.mapper.job.scraping_configuration;
+package com.beluga.mapper.job.scraping_configuration;
 
-import com.x.scrape.api.job.dto.read.ReadScrapingConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteScrapingConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
-import com.x.scrape.properties.scraping.ScrapingProperties;
+import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
+import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.beluga.properties.scraping.ScrapingProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

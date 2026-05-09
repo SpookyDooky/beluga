@@ -1,8 +1,8 @@
-package com.x.scrape.mapper;
+package com.beluga.mapper;
 
-import com.x.scrape.model.event.storable.payload.Payload;
-import com.x.scrape.model.result.ResultFile;
-import com.x.scrape.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.model.event.storable.payload.Payload;
+import com.beluga.model.result.ResultFile;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

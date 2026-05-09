@@ -1,14 +1,14 @@
-package com.x.scrape.api.execution.service;
+package com.beluga.api.execution.service;
 
-import com.x.scrape.api.execution.dto.ReadJobExecutionDto;
-import com.x.scrape.api.execution.dto.ReadJobExecutionWithTasksDto;
-import com.x.scrape.api.execution.mapper.ReadJobExecutionMapper;
-import com.x.scrape.execution.model.job.Job;
-import com.x.scrape.execution.service.job.JobExecutionService;
-import com.x.scrape.model.job_definition.JobDefinition;
-import com.x.scrape.model.job_definition.JobExecution;
-import com.x.scrape.service.job.JobDefinitionService;
-import com.x.scrape.service.job.JobService;
+import com.beluga.api.execution.dto.ReadJobExecutionDto;
+import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
+import com.beluga.api.execution.mapper.ReadJobExecutionMapper;
+import com.beluga.execution.model.job.Job;
+import com.beluga.execution.service.job.JobExecutionService;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.service.job.JobDefinitionService;
+import com.beluga.service.job.JobService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -17,7 +17,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.util.List;
 import java.util.Optional;
 
-import static com.x.scrape.model.job_definition.JobStatus.*;
+import static com.beluga.model.job_definition.JobStatus.*;
 
 // Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
 @Service

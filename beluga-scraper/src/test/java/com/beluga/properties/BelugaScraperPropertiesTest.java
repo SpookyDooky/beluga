@@ -1,4 +1,4 @@
-package com.x.scrape.properties;
+package com.beluga.properties;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

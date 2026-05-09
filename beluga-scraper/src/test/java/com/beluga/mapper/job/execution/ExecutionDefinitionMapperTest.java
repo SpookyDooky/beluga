@@ -1,9 +1,9 @@
-package com.x.scrape.mapper.job.execution;
+package com.beluga.mapper.job.execution;
 
-import com.x.scrape.api.job.dto.read.ReadExecutionConfigurationDto;
-import com.x.scrape.api.job.dto.write.WriteExecutionConfigurationDto;
-import com.x.scrape.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
-import com.x.scrape.properties.scraping.execution.ExecutionProperties;
+import com.beluga.api.job.dto.read.ReadExecutionConfigurationDto;
+import com.beluga.api.job.dto.write.WriteExecutionConfigurationDto;
+import com.beluga.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
+import com.beluga.properties.scraping.execution.ExecutionProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

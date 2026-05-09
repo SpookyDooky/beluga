@@ -1,4 +1,4 @@
-package com.x.scrape.api.job.dto.validation;
+package com.beluga.api.job.dto.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.x.scrape.api.job.dto.read;
+package com.beluga.api.job.dto.read;
 
 public class ReadJobDefinitionDto {
 	

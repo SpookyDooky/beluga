@@ -1,4 +1,4 @@
-package com.x.scrape.execution.model.job;
+package com.beluga.execution.model.job;
 
 public class ExecutionConfiguration {
 	

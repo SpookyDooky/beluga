@@ -1,4 +1,4 @@
-package com.x.scrape.model.types;
+package com.beluga.model.types;
 
 public enum StorageFormat {
 	JSON

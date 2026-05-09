@@ -1,6 +1,6 @@
-package com.x.scrape.properties.scraping.storage;
+package com.beluga.properties.scraping.storage;
 
-import com.x.scrape.model.types.StorageFormat;
+import com.beluga.model.types.StorageFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

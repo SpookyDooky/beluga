@@ -1,8 +1,8 @@
-package com.x.scrape.execution.service.job;
+package com.beluga.execution.service.job;
 
-import com.x.scrape.execution.event.job.JobFinishedEvent;
-import com.x.scrape.execution.event.job.JobStartedEvent;
-import com.x.scrape.service.job.JobDefinitionService;
+import com.beluga.execution.event.job.JobFinishedEvent;
+import com.beluga.execution.event.job.JobStartedEvent;
+import com.beluga.service.job.JobDefinitionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.x.scrape.model.job_definition.JobStatus.ACTIVE;
-import static com.x.scrape.model.job_definition.JobStatus.COMPLETED;
+import static com.beluga.model.job_definition.JobStatus.ACTIVE;
+import static com.beluga.model.job_definition.JobStatus.COMPLETED;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,9 +1,9 @@
-package com.x.scrape.api.results.controller;
+package com.beluga.api.results.controller;
 
-import com.x.scrape.api.execution.exception.TaskResultNotFoundException;
-import com.x.scrape.api.results.dto.ResultFileInfoDto;
-import com.x.scrape.api.results.dto.TaskResultDto;
-import com.x.scrape.api.results.service.ResultService;
+import com.beluga.api.execution.exception.TaskResultNotFoundException;
+import com.beluga.api.results.dto.ResultFileInfoDto;
+import com.beluga.api.results.dto.TaskResultDto;
+import com.beluga.api.results.service.ResultService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,6 +1,6 @@
-package com.x.scrape.execution.model.task;
+package com.beluga.execution.model.task;
 
-import com.x.scrape.model.types.StorageFormat;
+import com.beluga.model.types.StorageFormat;
 
 public class StorageConfiguration {
 
