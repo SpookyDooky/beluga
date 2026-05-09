@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: x-scraper
+  main:
+    web-application-type: servlet
+  profiles:
+    active:
+      - local
+  flyway:
+    enabled: true
+    baseline-version: 0
+
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
