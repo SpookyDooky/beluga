@@ -32,7 +32,7 @@ class IsPostgreSqlConditionTest {
 	
 	@Test
 	void shouldMatch() {
-		when(environment.getProperty("x-scraper.persistence.type")).thenReturn(POSTGRESQL.name());
+		when(environment.getProperty("beluga.persistence.type")).thenReturn(POSTGRESQL.name());
 		assertTrue(condition.matches(context, metadata));
 	}
 	

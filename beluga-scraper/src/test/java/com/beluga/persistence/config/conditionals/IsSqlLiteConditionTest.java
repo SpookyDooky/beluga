@@ -32,7 +32,7 @@ class IsSqlLiteConditionTest {
 	
 	@Test
 	void shouldMatch() {
-		when(environment.getProperty("x-scraper.persistence.type")).thenReturn(SQL_LITE.name());
+		when(environment.getProperty("beluga.persistence.type")).thenReturn(SQL_LITE.name());
 		assertTrue(condition.matches(context, metadata));
 	}
 	

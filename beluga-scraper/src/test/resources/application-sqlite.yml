@@ -1,5 +1,5 @@
 # For integration tests that use SQLite but do not create jobs from spring properties
-x-scraper:
+beluga:
   persistence:
     type: SQL_LITE
   result-datastore:

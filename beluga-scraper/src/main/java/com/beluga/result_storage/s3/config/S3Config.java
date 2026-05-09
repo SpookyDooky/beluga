@@ -12,13 +12,13 @@ import java.net.URI;
 
 @Configuration
 @ConditionalOnProperty(
-		name = "x-scraper.result-datastore.type",
+		name = "beluga.result-datastore.type",
 		havingValue = "S3"
 )
 public class S3Config {
 	
 	@Bean("results-s3client")
-	@ConditionalOnProperty("x-scraper.result-datastore.s3.host")
+	@ConditionalOnProperty("beluga.result-datastore.s3.host")
 	public S3Client s3Client(final com.beluga.properties.BelugaScraperProperties properties) {
 		final S3Properties s3Properties = properties.getResultDatastore().getS3();
 		

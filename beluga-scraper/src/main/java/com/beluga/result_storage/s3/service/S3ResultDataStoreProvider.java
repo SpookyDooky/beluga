@@ -16,7 +16,7 @@ import static com.beluga.logging.ContextKeys.FILE_NAME;
  */
 @Component
 @ConditionalOnProperty(
-		name = "x-scraper.result-datastore.type",
+		name = "beluga.result-datastore.type",
 		havingValue = "S3"
 )
 public class S3ResultDataStoreProvider extends ResultDataStoreProvider {

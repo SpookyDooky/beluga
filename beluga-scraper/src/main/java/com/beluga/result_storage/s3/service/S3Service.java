@@ -16,7 +16,7 @@ import java.nio.file.Path;
  */
 @Service
 @ConditionalOnProperty(
-		name = "x-scraper.result-datastore.type",
+		name = "beluga.result-datastore.type",
 		havingValue = "S3"
 )
 public class S3Service {

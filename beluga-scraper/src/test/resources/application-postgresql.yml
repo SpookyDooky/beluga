@@ -1,5 +1,5 @@
 # For integration tests that use PostgreSQL but do not create jobs from spring properties
-x-scraper:
+beluga:
   persistence:
     type: POSTGRESQL
     postgresql:

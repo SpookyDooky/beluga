@@ -21,9 +21,9 @@ class BelugaScraperPropertiesTest {
 	@Test
 	void shouldBeValidated() {
 		contextRunner.withPropertyValues(
-				"x-scraper.jobs[0].name=name",
-				"x-scraper.jobs[0].storage.format=JSON",
-				"x-scraper.jobs[0].storage.folder=/scraping/"
+				"beluga.jobs[0].name=name",
+				"beluga.jobs[0].storage.format=JSON",
+				"beluga.jobs[0].storage.folder=/scraping/"
 		).run(context -> {
 			assertThat(context).hasFailed();
 		});
@@ -32,8 +32,8 @@ class BelugaScraperPropertiesTest {
 	@Test
 	void shouldValidateInnerPersistenceProperties() {
 		contextRunner.withPropertyValues(
-				"x-scraper.persistence.type=POSTGRESQL",
-				"x-scraper.persistence.postgresql.username=username"
+				"beluga.persistence.type=POSTGRESQL",
+				"beluga.persistence.postgresql.username=username"
 		).run(context -> {
 			assertThat(context).hasFailed();
 		});
@@ -51,55 +51,55 @@ class BelugaScraperPropertiesTest {
 	
 	static Stream<Arguments> shouldBeInvalidForMisconfiguredJobProperties() {
 		final List<String> persistenceProperties = List.of(
-				"x-scraper.persistence.type=POSTGRESQL",
-				"x-scraper.persistence.postgresql.username=username",
-				"x-scraper.persistence.postgresql.password=password",
-				"x-scraper.persistence.postgresql.url=http://localhost:1234"
+				"beluga.persistence.type=POSTGRESQL",
+				"beluga.persistence.postgresql.username=username",
+				"beluga.persistence.postgresql.password=password",
+				"beluga.persistence.postgresql.url=http://localhost:1234"
 		);
 		
 		return Stream.of(
 						List.of(
-								"x-scraper.jobs[0].name=name",
-								"x-scraper.jobs[0].scraping.element-selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].selector=",
-								"x-scraper.jobs[0].scraping.data-points[0].property-name=property-name",
-								"x-scraper.jobs[0].storage.format=JSON",
-								"x-scraper.jobs[0].storage.folder=folder",
-								"x-scraper.jobs[0].storage.file=file"
+								"beluga.jobs[0].name=name",
+								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].selector=",
+								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].storage.format=JSON",
+								"beluga.jobs[0].storage.folder=folder",
+								"beluga.jobs[0].storage.file=file"
 						),
 						List.of(
-								"x-scraper.jobs[0].name=",
-								"x-scraper.jobs[0].scraping.element-selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].property-name=property-name",
-								"x-scraper.jobs[0].storage.format=JSON",
-								"x-scraper.jobs[0].storage.folder=folder",
-								"x-scraper.jobs[0].storage.file=file"
+								"beluga.jobs[0].name=",
+								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].storage.format=JSON",
+								"beluga.jobs[0].storage.folder=folder",
+								"beluga.jobs[0].storage.file=file"
 						),
 						List.of(
-								"x-scraper.jobs[0].name=name",
-								"x-scraper.jobs[0].scraping.element-selector=",
-								"x-scraper.jobs[0].scraping.data-points[0].selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].property-name=property-name",
-								"x-scraper.jobs[0].storage.format=JSON",
-								"x-scraper.jobs[0].storage.folder=folder",
-								"x-scraper.jobs[0].storage.file=file"
+								"beluga.jobs[0].name=name",
+								"beluga.jobs[0].scraping.element-selector=",
+								"beluga.jobs[0].scraping.data-points[0].selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].storage.format=JSON",
+								"beluga.jobs[0].storage.folder=folder",
+								"beluga.jobs[0].storage.file=file"
 						),
 						List.of(
-								"x-scraper.jobs[0].name=name",
-								"x-scraper.jobs[0].scraping.element-selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].selector=selector",
-								"x-scraper.jobs[0].scraping.data-points[0].property-name=property-name",
-								"x-scraper.jobs[0].storage.format=JSON",
-								"x-scraper.jobs[0].storage.folder=",
-								"x-scraper.jobs[0].storage.file=file"
+								"beluga.jobs[0].name=name",
+								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].selector=selector",
+								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].storage.format=JSON",
+								"beluga.jobs[0].storage.folder=",
+								"beluga.jobs[0].storage.file=file"
 						)
 				).map(ArrayList::new)
 				.peek(properties -> properties.addAll(persistenceProperties))
 				.map(Arguments::of);
 	}
 	
-	@EnableConfigurationProperties(XScraperProperties.class)
+	@EnableConfigurationProperties(BelugaScraperProperties.class)
 	static class TestConfig {
 	
 	}
