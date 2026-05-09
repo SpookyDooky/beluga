@@ -70,7 +70,7 @@ public class PostgreSqlTemplateFactory {
 			                                           final ReflectiveInvocationContext<Constructor<T>> invocationContext,
 			                                           final ExtensionContext extensionContext) throws Throwable {
 				TestContainerProperties.setCurrentProfile(PROFILE, container);
-				System.setProperty("POSTGRE_HOST", container.getJdbcUrl() + "&currentSchema=x_scraper");
+				System.setProperty("POSTGRE_HOST", container.getJdbcUrl() + "&currentSchema=beluga");
 				
 				return InvocationInterceptor.super.interceptTestClassConstructor(invocation, invocationContext, extensionContext);
 			}

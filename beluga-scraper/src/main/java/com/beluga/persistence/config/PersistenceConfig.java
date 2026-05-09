@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableJpaRepositories(
-		basePackages = "com.beluga.scrape"
+		basePackages = "com.beluga"
 )
 public class PersistenceConfig {
 }

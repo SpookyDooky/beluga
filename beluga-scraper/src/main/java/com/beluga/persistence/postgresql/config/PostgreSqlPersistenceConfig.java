@@ -1,6 +1,7 @@
 package com.beluga.persistence.postgresql.config;
 
 import com.beluga.persistence.config.conditionals.annotation.IsPostgreSql;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.persistence.PostgreSqlPersistenceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
@@ -26,13 +27,19 @@ public class PostgreSqlPersistenceConfig {
 	// Isolation level
 	// Autocommit mode
 	
+	private final PostgreSqlPersistenceProperties properties;
+	
+	public PostgreSqlPersistenceConfig(final BelugaScraperProperties belugaScraperProperties) {
+		this.properties = belugaScraperProperties.getPersistence().getPostgresql();
+	}
+	
 	@Bean
 	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
 		return new JpaTransactionManager(emf);
 	}
 	
 	@Bean
-	public DataSource dataSource(final PostgreSqlPersistenceProperties properties) {
+	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
 		
 		dataSource.setJdbcUrl(properties.getUrl());
@@ -60,7 +67,7 @@ public class PostgreSqlPersistenceConfig {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactory.setPackagesToScan("com.beluga.scrape");
+		entityManagerFactory.setPackagesToScan("com.beluga");
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
@@ -74,7 +81,7 @@ public class PostgreSqlPersistenceConfig {
 	public FlywayConfigurationCustomizer flywayCustomizer() {
 		return configuration -> {
 			configuration.createSchemas(true);
-			configuration.schemas("x_scraper");
+			configuration.schemas("beluga");
 			configuration.locations("classpath:db/postgresql");
 		};
 	}
