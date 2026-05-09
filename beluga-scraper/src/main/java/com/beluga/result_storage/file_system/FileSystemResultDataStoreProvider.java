@@ -17,7 +17,7 @@ import static com.beluga.logging.ContextKeys.FILE_NAME;
 @Service
 // TODO MAKE custom annotation @IsResultStoreFileSystem
 @ConditionalOnProperty(
-		name = "x-scraper.result-datastore.type",
+		name = "beluga.result-datastore.type",
 		havingValue = "FILE_SYSTEM"
 )
 public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {

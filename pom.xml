@@ -23,7 +23,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <x-scrape.version>1.0-SNAPSHOT</x-scrape.version>
+        <beluga.version>1.0-SNAPSHOT</beluga.version>
 
         <!-- Dependency versions -->
         <jsoup.version>1.17.2</jsoup.version>
@@ -50,9 +50,9 @@
         <dependencies>
             <!-- Project modules -->
             <dependency>
-                <groupId>org.x-scraper</groupId>
+                <groupId>org.beluga</groupId>
                 <artifactId>logging</artifactId>
-                <version>${x-scrape.version}</version>
+                <version>${beluga.version}</version>
             </dependency>
 
             <!-- Spring dependencies -->

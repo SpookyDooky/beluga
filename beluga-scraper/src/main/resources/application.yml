@@ -1,6 +1,6 @@
 spring:
   application:
-    name: x-scraper
+    name: beluga
   main:
     web-application-type: servlet
   profiles:

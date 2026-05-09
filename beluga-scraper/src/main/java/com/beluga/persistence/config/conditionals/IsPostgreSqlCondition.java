@@ -13,7 +13,7 @@ public class IsPostgreSqlCondition implements Condition {
 	public boolean matches(final ConditionContext context,
 	                       final AnnotatedTypeMetadata metadata) {
 		final Environment environment = context.getEnvironment();
-		final String persistenceType = environment.getProperty("x-scraper.persistence.type");
+		final String persistenceType = environment.getProperty("beluga.persistence.type");
 		
 		return POSTGRESQL.name().equals(persistenceType);
 	}
