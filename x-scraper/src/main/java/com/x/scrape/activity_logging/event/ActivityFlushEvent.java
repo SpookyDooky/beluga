@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 
 // Activities will be stored in the database
+// TODO - Remove
 @Deprecated(forRemoval = true)
 public class ActivityFlushEvent implements StorableEvent {
 	
