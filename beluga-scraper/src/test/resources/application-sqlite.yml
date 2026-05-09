@@ -1,0 +1,6 @@
+# For integration tests that use SQLite but do not create jobs from spring properties
+beluga:
+  persistence:
+    type: SQL_LITE
+  result-datastore:
+    type: FILE_SYSTEM

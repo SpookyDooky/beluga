@@ -15,19 +15,19 @@ is only one property that should be set that is not specific for a specific data
 <br>
 <br>
 
-| property                   | required | default  | options              |
-|:---------------------------|:---------|:---------|:---------------------|
-| x-scraper.persistence.type | true     | SQL_LITE | SQL_LITE, POSTGRESQL |
+| property                | required | default  | options              |
+|:------------------------|:---------|:---------|:---------------------|
+| beluga.persistence.type | true     | SQL_LITE | SQL_LITE, POSTGRESQL |
 
 ### PostgreSQL
 
 To configure PostgreSQL as persistence data store the following properties have to be configured.
 
-| property                                  | required | default | example                              | description  |
-|:------------------------------------------|:---------|:--------|:-------------------------------------|:-------------|
-| x-scraper.persistence.postgresql.url      | true     | -       | jdbc:postgresql://host:5432/database | Database url |
-| x-scraper.persistence.postgresql.username | true     | -       | Username                             | -            | 
-| x-scraper.persistence.postgresql.password | true     | -       | Password                             | -            |
+| property                               | required | default | example                              | description  |
+|:---------------------------------------|:---------|:--------|:-------------------------------------|:-------------|
+| beluga.persistence.postgresql.url      | true     | -       | jdbc:postgresql://host:5432/database | Database url |
+| beluga.persistence.postgresql.username | true     | -       | Username                             | -            | 
+| beluga.persistence.postgresql.password | true     | -       | Password                             | -            |
 
 ### SQL Lite
 

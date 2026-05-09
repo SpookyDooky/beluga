@@ -1,0 +1,81 @@
+package com.beluga.persistence.postgresql.config;
+
+import com.beluga.persistence.config.conditionals.annotation.IsPostgreSql;
+import com.beluga.properties.persistence.PostgreSqlPersistenceProperties;
+import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
+import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
+import java.util.Properties;
+
+import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
+
+@IsPostgreSql
+@Configuration
+public class PostgreSqlPersistenceConfig {
+	
+	// TODO - Set connection pool size
+	// Isolation level
+	// Autocommit mode
+	
+	@Bean
+	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
+		return new JpaTransactionManager(emf);
+	}
+	
+	@Bean
+	public DataSource dataSource(final PostgreSqlPersistenceProperties properties) {
+		final HikariDataSource dataSource = new HikariDataSource();
+		
+		dataSource.setJdbcUrl(properties.getUrl());
+		dataSource.setUsername(properties.getUsername());
+		dataSource.setPassword(properties.getPassword());
+		dataSource.setDriverClassName("org.postgresql.Driver");
+		
+		return dataSource;
+	}
+	
+	@Bean
+	public JpaVendorAdapter jpaVendorAdapter() {
+		final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		
+		adapter.setShowSql(false);
+		adapter.setGenerateDdl(false);
+		adapter.setDatabase(POSTGRESQL);
+		
+		return adapter;
+	}
+	
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(final DataSource dataSource,
+	                                                                   final JpaVendorAdapter jpaVendorAdapter) {
+		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+		entityManagerFactory.setDataSource(dataSource);
+		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
+		entityManagerFactory.setPackagesToScan("com.beluga.scrape");
+		
+		final Properties jpaProperties = new Properties();
+		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+		entityManagerFactory.setJpaProperties(jpaProperties);
+		
+		return entityManagerFactory;
+	}
+	
+	@Bean
+	public FlywayConfigurationCustomizer flywayCustomizer() {
+		return configuration -> {
+			configuration.createSchemas(true);
+			configuration.schemas("x_scraper");
+			configuration.locations("classpath:db/postgresql");
+		};
+	}
+}

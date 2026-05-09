@@ -1,0 +1,88 @@
+package com.beluga.model.job_definition;
+
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskStatus;
+import jakarta.persistence.*;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.beluga.model.job_definition.JobStatus.PLANNED;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
+public class JobExecution {
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private Long id;
+	
+	private Instant executedAt = Instant.now();
+	
+	@Enumerated(STRING)
+	private JobStatus status = PLANNED;
+	
+	@ManyToOne
+	@JoinColumn(name = "job_definition_id")
+	private JobDefinition jobDefinition;
+	
+	@OneToMany(
+			cascade = ALL,
+			mappedBy = "jobExecution"
+	)
+	private List<TaskExecution> tasks = new ArrayList<>();
+	
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(final Long id) {
+		this.id = id;
+	}
+	
+	public Instant getExecutedAt() {
+		return executedAt;
+	}
+	
+	public void setExecutedAt(final Instant executedAt) {
+		this.executedAt = executedAt;
+	}
+	
+	public JobStatus getStatus() {
+		return status;
+	}
+	
+	public void setStatus(final JobStatus status) {
+		this.status = status;
+	}
+	
+	public JobDefinition getJobDefinition() {
+		return jobDefinition;
+	}
+	
+	public void setJobDefinition(final JobDefinition jobDefinition) {
+		this.jobDefinition = jobDefinition;
+	}
+	
+	public List<TaskExecution> getTasks() {
+		return tasks;
+	}
+	
+	public List<TaskExecution> getTasksByStatus(final TaskStatus status) {
+		return tasks.stream()
+				.filter(task -> task.getStatus() == status)
+				.toList();
+	}
+	
+	public void setTasks(final List<TaskExecution> tasks) {
+		tasks.forEach(this::addTask);
+	}
+	
+	public void addTask(final TaskExecution task) {
+		task.setJobExecution(this);
+		tasks.add(task);
+	}
+}

@@ -1,4 +1,4 @@
-# X-Scraper
+# Beluga
 This is an open-source scraping engine that is currently in development. Currently, I am working on 
 version v1.0 which will be the initial released version after which it will be open sourced and free
 for anyone to use. I started this project as a passion project, I like anything that has to do with

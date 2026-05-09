@@ -1,0 +1,118 @@
+package com.beluga.execution.service.worker;
+
+import com.beluga.execution.service.task.JobTaskQueue;
+import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
+import com.beluga.execution.service.worker.event.WorkerStartedEvent;
+import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
+import com.beluga.http.HttpService;
+import com.beluga.model.event.storable.payload.JsonPayload;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.event.task.TaskFailedEvent;
+import com.beluga.execution.event.task.TaskStartedEvent;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.scraping.ScrapingService;
+import com.beluga.scraping.model.ScrapingResult;
+import com.beluga.util.TimingService;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class WorkerTest {
+	
+	@Mock
+	private JobTaskQueue jobTaskQueue;
+	@Mock
+	private ScrapingService scrapingService;
+	@Mock
+	private HttpService httpService;
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
+	@Mock
+	private TimingService timingService;
+	
+	@InjectMocks
+	private Worker worker;
+	
+	private final Long jobId = 123L;
+	
+	@Test
+	void shouldSendWorkerEvents() {
+		when(jobTaskQueue.isQueueEmpty(jobId)).thenReturn(true);
+		
+		worker.init(jobId, new JitterRateLimiter(0.5));
+		worker.start();
+		
+		final ArgumentCaptor<WorkerStartedEvent> workerStartedEventArgumentCaptor = ArgumentCaptor.forClass(WorkerStartedEvent.class);
+		verify(applicationEventPublisher).publishEvent(workerStartedEventArgumentCaptor.capture());
+		final WorkerStartedEvent workerStartedEvent = workerStartedEventArgumentCaptor.getValue();
+		assertSame(jobId, workerStartedEvent.getJobId());
+		
+		final ArgumentCaptor<WorkerFinishedEvent> workerFinishedEventArgumentCaptor = ArgumentCaptor.forClass(WorkerFinishedEvent.class);
+		verify(applicationEventPublisher).publishEvent(workerFinishedEventArgumentCaptor.capture());
+		final WorkerFinishedEvent workerFinishedEvent = workerFinishedEventArgumentCaptor.getValue();
+		assertSame(jobId, workerFinishedEvent.getJobId());
+	}
+	
+	@Test
+	void shouldExecuteTask() throws Exception {
+		when(jobTaskQueue.isQueueEmpty(jobId))
+				.thenReturn(false)
+				.thenReturn(true);
+		
+		final Task task = Instancio.create(Task.class);
+		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
+		
+		final List<Map<String, Object>> scrapeResult = mock();
+		final ScrapingResult scrapingResult = new ScrapingResult("raw", scrapeResult);
+		when(scrapingService.scrape(task.getUrl(), task.getScrapingConfiguration()))
+				.thenReturn(scrapingResult);
+		
+		worker.init(jobId, new JitterRateLimiter(0.5));
+		worker.start();
+		
+		verify(applicationEventPublisher).publishEvent(any(WorkerStartedEvent.class));
+		verify(applicationEventPublisher).publishEvent(any(TaskStartedEvent.class));
+		final ArgumentCaptor<TaskResultEvent> taskCompletedEventArgumentCaptor = ArgumentCaptor.forClass(TaskResultEvent.class);
+		verify(applicationEventPublisher, times(2)).publishEvent(taskCompletedEventArgumentCaptor.capture());
+		verify(applicationEventPublisher).publishEvent(any(WorkerFinishedEvent.class));
+		
+		final TaskResultEvent taskResultEvent = taskCompletedEventArgumentCaptor.getAllValues().getFirst();
+		final JsonPayload mapPayload = (JsonPayload) taskResultEvent.getPayload();
+		assertSame(scrapeResult, mapPayload.getData());
+	}
+	
+	@Test
+	void shouldNotThrowExceptionWhenTaskExecutionFails() {
+		when(jobTaskQueue.isQueueEmpty(jobId))
+				.thenReturn(false)
+				.thenReturn(true);
+		
+		final Task task = Instancio.create(Task.class);
+		when(jobTaskQueue.pollTask(jobId)).thenReturn(Optional.of(task));
+		when(scrapingService.scrape(eq(task.getUrl()), any())).thenThrow(IllegalArgumentException.class);
+		
+		worker.init(jobId, new JitterRateLimiter(0.5));
+		assertDoesNotThrow((() -> worker.start()));
+		
+		final ArgumentCaptor<TaskFailedEvent> taskFailedEventArgumentCaptor = ArgumentCaptor.forClass(TaskFailedEvent.class);
+		verify(applicationEventPublisher).publishEvent(taskFailedEventArgumentCaptor.capture());
+		
+		final TaskFailedEvent taskFailedEvent = taskFailedEventArgumentCaptor.getValue();
+		assertSame(task.getJob().getId(), taskFailedEvent.getJobId());
+		assertSame(task.getId(), taskFailedEvent.getTaskId());
+	}
+}
