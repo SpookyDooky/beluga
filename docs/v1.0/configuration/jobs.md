@@ -8,9 +8,10 @@ beluga:
   jobs:
     - name: job_name
       url:
-        url-file: "C:/file_containing_urls.txt"
+        url-file: "/mounted/file_containing_urls.txt"
       storage:
         format: JSON
+        folder: "/mounted_folder/job_name_results"
       execution:
         workers: 1
         tasks-per-second: 1
@@ -40,7 +41,7 @@ beluga:
 - **Type:** string
 - **Required:** true
 - **Description:** Path to file containing URLs
-- **Constraints:** Each URL must be put on a separate line
+- **Constraints:** Each URL must on a separate line
 
 ## Storage configuration
 
@@ -49,6 +50,11 @@ beluga:
 - **Required:** true
 - **Allowed values:** JSON
 - **Description:** Format in which the results will be stored
+
+### `beluga.jobs[].storage.folder`
+- **Type:** string
+- **Required:** true
+- **Description:** Location in which the job results will be stored
 
 ## Execution configuration
 
