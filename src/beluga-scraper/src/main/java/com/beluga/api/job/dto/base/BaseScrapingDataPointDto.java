@@ -10,7 +10,7 @@ public abstract class BaseScrapingDataPointDto {
 	@NotEmpty
 	private String selector;
 	@NotEmpty
-	private String propertyName;
+	private String field;
 	private String attribute;
 	private DataPointType type = TEXT;
 	
@@ -22,12 +22,12 @@ public abstract class BaseScrapingDataPointDto {
 		this.selector = selector;
 	}
 	
-	public String getPropertyName() {
-		return propertyName;
+	public String getField() {
+		return field;
 	}
 	
-	public void setPropertyName(final String propertyName) {
-		this.propertyName = propertyName;
+	public void setField(final String field) {
+		this.field = field;
 	}
 	
 	public String getAttribute() {

@@ -20,7 +20,7 @@ class DataPointDefinitionMapperTest {
 		final DataPointDefinition dataPointDefinition = mapper.map(dataPointProperties);
 		
 		assertEquals(dataPointProperties.getSelector(), dataPointDefinition.getSelector());
-		assertEquals(dataPointProperties.getPropertyName(), dataPointDefinition.getPropertyName());
+		assertEquals(dataPointProperties.getField(), dataPointDefinition.getField());
 		assertEquals(dataPointProperties.getAttribute(), dataPointDefinition.getAttribute());
 	}
 	
@@ -31,7 +31,7 @@ class DataPointDefinitionMapperTest {
 		final DataPointDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getSelector(), entity.getSelector());
-		assertEquals(dto.getPropertyName(), entity.getPropertyName());
+		assertEquals(dto.getField(), entity.getField());
 		assertEquals(dto.getAttribute(), entity.getAttribute());
 		assertEquals(dto.getType(), entity.getType());
 	}

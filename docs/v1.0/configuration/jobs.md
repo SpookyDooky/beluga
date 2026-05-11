@@ -27,7 +27,7 @@ for managing jobs which is more suited for a production environment. You can fin
   * [Scraping configuration](#scraping-configuration)
     * [beluga.jobs[].scraping.element-selector](#belugajobsscrapingelement-selector)
     * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].property-name](#belugajobsscrapingdata-pointsproperty-name)
+    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsproperty-name)
     * [beluga.jobs[].scraping.data-points[].attribute](#belugajobsscrapingdata-pointsattribute)
     * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
 * [Example](#example)
@@ -88,7 +88,7 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Required:** true
 - **Description:** CSS selector for which data should be retrieved from an element
 
-### `beluga.jobs[].scraping.data-points[].property-name`
+### `beluga.jobs[].scraping.data-points[].field`
 - **Type:** string
 - **Required:** true
 - **Description:** Name of the property in the results
@@ -122,6 +122,6 @@ beluga:
         element-selector: "repeated#field"
         data-points:
           - selector: "span.something"
-            property-name: "regularPrice"
+            field: "regularPrice"
             attribute: content
 ```
