@@ -216,7 +216,7 @@ components:
           type: string
           example: main#content
           description: Css selector
-        propertyName:
+        field:
           type: string
           example: name
           description: the name under which to store the scraped value
@@ -231,7 +231,7 @@ components:
           default: TEXT
       required:
         - selector
-        - propertyName
+        - field
 
     scrapingDataPoint:
       type: object
