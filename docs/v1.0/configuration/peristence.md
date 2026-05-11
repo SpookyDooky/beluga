@@ -1,37 +1,69 @@
 # Persistence
+Jobs can be persisted in either PostgreSQL or SQLite. The configuration for either is listed down below.
 
-Persistence is used for persisting jobDefinition execution and jobDefinition configuration. This makes it easier to
-reuse existing configurations. There are three types of persistence that are currently supported:
+# Contents
+* [Configuration](#configuration)
+  * [Persistence backend](#persistence-backend)
+    * [beluga.persistence.type](#belugapersistencetype)
+  * [SQLite](#sqlite)
+  * [PostgreSQL](#postgresql)
+    * [beluga.persistence.postgresql.url](#belugapersistencepostgresqlurl)
+    * [beluga.persistence.postgresql.username](#belugapersistencepostgresqlusername)
+    * [beluga.persistence.postgresql.password](#belugapersistencepostgresqlpassword)
+* [Example](#examples)
+  * [SQLite](#sqlite-1)
+  * [PostgreSQL](#postgresql-1)
+# Configuration
 
-- PostgreSQL
-- SQLite
+## Persistence backend
 
-Note that PostgreSQL is the only persistence type that supports full migrations.
+### `beluga.persistence.type`
+- **Type:** string
+- **Required:** false
+- **Default:** SQLITE
+- **Allowed values:** SQLITE, POSTGRESQL
+- **Description:** Persistence backend used for storing Beluga data.
 
-## Configuration
+## SQLite
+This is the default, nothing has to be configured for this. The SQLite file is in the following location:
+/app/db/sqlite.db. When running Beluga in Docker, it is recommended to mount this directory as a volume to ensure persistence across container restarts.
 
-To configure which data store should be used for persistence, configuration properties can be used. There
-is only one property that should be set that is not specific for a specific data store.
-<br>
-<br>
+It is not recommended to use SQLite for production systems, this is mainly offered
+to make it run out of the box.
 
-| property                | required | default  | options              |
-|:------------------------|:---------|:---------|:---------------------|
-| beluga.persistence.type | true     | SQL_LITE | SQL_LITE, POSTGRESQL |
+## PostgreSQL
 
-### PostgreSQL
+### `beluga.persistence.postgresql.url`
+- **Type:** string
+- **Required:** true
+- **Description:** JDBC URL including the database.
 
-To configure PostgreSQL as persistence data store the following properties have to be configured.
+### `beluga.persistence.postgresql.username`
+- **Type:** string
+- **Required:** true
+- **Description:** Username for PostgreSQL
 
-| property                               | required | default | example                              | description  |
-|:---------------------------------------|:---------|:--------|:-------------------------------------|:-------------|
-| beluga.persistence.postgresql.url      | true     | -       | jdbc:postgresql://host:5432/database | Database url |
-| beluga.persistence.postgresql.username | true     | -       | Username                             | -            | 
-| beluga.persistence.postgresql.password | true     | -       | Password                             | -            |
+### `beluga.persistence.postgresql.password`
+- **Type:** string
+- **Required:** true
+- **Description:** Password for PostgreSQL
 
-### SQL Lite
+# Examples
+Below are some example configurations.
 
-Per default SQL Lite is included in the docker image, nothing has to be configured for this. The file can be found inside the 
-container at /app/db/sqlite.db, do not forget to mount it, otherwise it won't survive restarts. Note that SQLite only makes sure
-that the database is correctly created on startup, it does not handle migrations. This means that between versions things can break
-when using SQLite. Therefore, it is highly recommended to use PostgreSQL in production environments. 
+## SQLite
+```yaml
+beluga:
+  persistence:
+    type: SQLITE
+```
+## PostgreSQL
+```yaml
+beluga:
+  persistence:
+    type: POSTGRESQL
+    postgresql:
+      url: jdbc:postgresql://host:1234/database_name
+      username: username
+      password: password
+```

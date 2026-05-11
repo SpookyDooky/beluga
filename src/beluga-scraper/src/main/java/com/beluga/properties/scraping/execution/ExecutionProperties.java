@@ -3,7 +3,7 @@ package com.beluga.properties.scraping.execution;
 public class ExecutionProperties {
 	
 	private int workers = 1;
-	private int tasksPerSecond = Integer.MAX_VALUE;
+	private int tasksPerSecond = 1;
 	
 	public int getWorkers() {
 		return workers;
