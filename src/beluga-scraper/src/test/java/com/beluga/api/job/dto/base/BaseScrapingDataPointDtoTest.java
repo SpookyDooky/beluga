@@ -15,7 +15,7 @@ class BaseScrapingDataPointDtoTest {
 	@ValueSource(
 			strings = {
 					"selector",
-					"propertyName"
+					"field"
 			}
 	)
 	void shouldHaveNotEmptyOnFields(final String fieldName) {
