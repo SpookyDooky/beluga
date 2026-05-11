@@ -31,7 +31,7 @@ class DataPointDefinitionMapperTest {
 		final DataPointDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getSelector(), entity.getSelector());
-		assertEquals(dto.getPropertyName(), entity.getField());
+		assertEquals(dto.getField(), entity.getField());
 		assertEquals(dto.getAttribute(), entity.getAttribute());
 		assertEquals(dto.getType(), entity.getType());
 	}
