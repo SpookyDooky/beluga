@@ -18,7 +18,7 @@ public class DataPointDefinition {
 	private ScrapingDefinition scrapingDefinition;
 	
 	private String selector;
-	private String propertyName;
+	private String field;
 	
 	private String attribute;
 	
@@ -49,12 +49,12 @@ public class DataPointDefinition {
 		this.selector = selector;
 	}
 	
-	public String getPropertyName() {
-		return propertyName;
+	public String getField() {
+		return field;
 	}
 	
-	public void setPropertyName(final String propertyName) {
-		this.propertyName = propertyName;
+	public void setField(final String field) {
+		this.field = field;
 	}
 	
 	public String getAttribute() {
