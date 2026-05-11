@@ -1,41 +1,47 @@
 # Jobs
 
 Jobs contain the scraping configuration for all tasks that belong to that job. Per job the configuration is the same for
-all tasks. Below is a simple example of a full job configuration.
+all tasks. A job defines:
+- what URLs should be scraped
+- how pages should be scraped
+- how results should be stored
+- how execution should be configured
 
-```yaml
-beluga:
-  jobs:
-    - name: job_name
-      url:
-        url-file: "/mounted/file_containing_urls.txt"
-      storage:
-        format: JSON
-        folder: "/mounted_folder/job_name_results"
-      execution:
-        workers: 1
-        tasks-per-second: 1
-      scraping:
-        element-selector: "repeated#field"
-        data-points:
-          - selector: "span.something"
-            property-name: "regularPrice"
-            attribute: content
-```
-## Configuration
-- [Name](#belugajobsname)
-- [Urls](#belugajobsurlurl-file)
-- [Configuration](#configuration)
-- [Storage configuration](#storage-configuration)
-- [Execution configuration](#execution-configuration)
-- [Scraping configuration](#scraping-configuration)
+Each URL in the configured URL file becomes an individual scraping task during execution.
 
+This way of configuring jobs is mainly offered for ease of use, there is also a complete REST API 
+for managing jobs which is more suited for a production environment. You can find the documentation here.
 
+# Contents
+* [Configuration](#configuration)
+  * [Name](#belugajobsname)
+    * [beluga.jobs[].name](#belugajobsname)
+  * [Urls](#belugajobsurlurl-file)
+    * [beluga.jobs[].url.url-file](#belugajobsurlurl-file)
+  * [Storage configuration](#storage-configuration)
+      * [beluga.jobs[].storage.format](#belugajobsstorageformat)
+      * [beluga.jobs[].storage.folder](#belugajobsstoragefolder)
+  * [Execution configuration](#execution-configuration)
+    * [beluga.jobs[].execution.workers](#belugajobsexecutionworkers)
+    * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
+  * [Scraping configuration](#scraping-configuration)
+    * [beluga.jobs[].scraping.element-selector](#belugajobsscrapingelement-selector)
+    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
+    * [beluga.jobs[].scraping.data-points[].property-name](#belugajobsscrapingdata-pointsproperty-name)
+    * [beluga.jobs[].scraping.data-points[].attribute](#belugajobsscrapingdata-pointsattribute)
+    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+* [Example](#example)
+
+# Configuration
+
+## Name
 ### `beluga.jobs[].name`
 - **Type:** string
 - **Required:** true
 - **Description:** The name of the job
 - **Constraints:** Must be unique across all jobs
+
+## Urls
 
 ### `beluga.jobs[].url.url-file`
 - **Type:** string
@@ -98,3 +104,24 @@ beluga:
 - **Default:** TEXT
 - **Allowed values:** TEXT, IMAGE
 - **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+
+# Example
+```yaml
+beluga:
+  jobs:
+    - name: job_name
+      url:
+        url-file: "/mounted/file_containing_urls.txt"
+      storage:
+        format: JSON
+        folder: "/mounted_folder/job_name_results"
+      execution:
+        workers: 1
+        tasks-per-second: 1
+      scraping:
+        element-selector: "repeated#field"
+        data-points:
+          - selector: "span.something"
+            property-name: "regularPrice"
+            attribute: content
+```

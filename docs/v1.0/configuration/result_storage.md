@@ -58,10 +58,10 @@ Below is a list of all properties that have to be configured for S3 compatible s
 - **Required:** true
 - **Description:** S3 bucket in which to store the results.
 
-## Examples
+# Examples
 Below are some example configurations.
 
-### S3 Compatible
+## S3 Compatible
 ```yaml
 beluga:
   result-datastore:
