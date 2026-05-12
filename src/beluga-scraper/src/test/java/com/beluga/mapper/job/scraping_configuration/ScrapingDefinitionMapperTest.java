@@ -43,7 +43,7 @@ class ScrapingDefinitionMapperTest {
 		
 		final ScrapingDefinition scrapingDefinition = mapper.map(dataScrapingProperties);
 		
-		assertEquals(dataScrapingProperties.getElementSelector(), scrapingDefinition.getElementSelector());
+		assertEquals(dataScrapingProperties.getItemSelector(), scrapingDefinition.getItemSelector());
 		assertEquals(1, scrapingDefinition.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, scrapingDefinition.getDataPointDefinitions().getFirst());
 	}
@@ -59,7 +59,7 @@ class ScrapingDefinitionMapperTest {
 		
 		final ScrapingDefinition entity = mapper.map(dto);
 		
-		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+		assertEquals(dto.getElementSelector(), entity.getItemSelector());
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
 	}
@@ -76,7 +76,7 @@ class ScrapingDefinitionMapperTest {
 		final ReadScrapingConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getElementSelector(), dto.getElementSelector());
+		assertEquals(entity.getItemSelector(), dto.getElementSelector());
 		assertEquals(1, dto.getDataPoints().size());
 		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
 	}
@@ -96,6 +96,6 @@ class ScrapingDefinitionMapperTest {
 		
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
-		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+		assertEquals(dto.getElementSelector(), entity.getItemSelector());
 	}
 }
