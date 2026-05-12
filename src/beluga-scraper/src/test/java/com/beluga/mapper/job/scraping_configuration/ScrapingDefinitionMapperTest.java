@@ -59,7 +59,7 @@ class ScrapingDefinitionMapperTest {
 		
 		final ScrapingDefinition entity = mapper.map(dto);
 		
-		assertEquals(dto.getElementSelector(), entity.getItemSelector());
+		assertEquals(dto.getItemSelector(), entity.getItemSelector());
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
 	}
@@ -76,7 +76,7 @@ class ScrapingDefinitionMapperTest {
 		final ReadScrapingConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getItemSelector(), dto.getElementSelector());
+		assertEquals(entity.getItemSelector(), dto.getItemSelector());
 		assertEquals(1, dto.getDataPoints().size());
 		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
 	}
@@ -96,6 +96,6 @@ class ScrapingDefinitionMapperTest {
 		
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
-		assertEquals(dto.getElementSelector(), entity.getItemSelector());
+		assertEquals(dto.getItemSelector(), entity.getItemSelector());
 	}
 }
