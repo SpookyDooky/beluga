@@ -22,7 +22,7 @@ class TaskMapperTest {
 		assertEquals(taskDefinition.getUrl(), task.getUrl());
 		assertEquals(jobDefinition.getStorageDefinition().getFolder(), task.getStorageConfiguration().getFolder());
 		assertEquals(jobDefinition.getStorageDefinition().getFormat(), task.getStorageConfiguration().getFormat());
-		assertEquals(jobDefinition.getScrapingDefinition().getItemSelector(), task.getScrapingConfiguration().getElementSelector());
+		assertEquals(jobDefinition.getScrapingDefinition().getItemSelector(), task.getScrapingConfiguration().getItemSelector());
 	}
 	
 }

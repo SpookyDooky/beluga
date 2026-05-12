@@ -32,7 +32,7 @@ public class ScrapingService {
 		final Document document = httpService.retrievePageAsDocument(url)
 				.orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
 		
-		final List<Element> elements = selectElements(document, scrapingProperties.getElementSelector());
+		final List<Element> elements = selectElements(document, scrapingProperties.getItemSelector());
 		logger.info("Found " + elements.size() + " in document");
 		
 		final List<Map<String, Object>> result =  elements.stream()
