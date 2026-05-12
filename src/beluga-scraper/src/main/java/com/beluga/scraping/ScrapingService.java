@@ -55,7 +55,7 @@ public class ScrapingService {
 	                                        final List<DataPointConfiguration> dataPointConfigurations) {
 		return dataPointConfigurations.stream()
 				.collect(Collectors.toMap(
-						DataPointConfiguration::getPropertyName,
+						DataPointConfiguration::getField,
 						dataPointConfiguration -> extractData(element, dataPointConfiguration)
 				));
 	}

@@ -65,7 +65,7 @@ public class Task implements ContextLoggable {
 		return scrapingConfiguration.getDataPointConfigurations()
 				.stream()
 				.filter(dataPointConfiguration -> IMAGE.equals(dataPointConfiguration.getType()))
-				.map(imageConfiguration -> createImageDownloadTask(scrapedData, imageConfiguration.getPropertyName()))
+				.map(imageConfiguration -> createImageDownloadTask(scrapedData, imageConfiguration.getField()))
 				.toList();
 	}
 	

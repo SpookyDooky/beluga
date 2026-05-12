@@ -23,6 +23,11 @@ class TaskMapperTest {
 		assertEquals(jobDefinition.getStorageDefinition().getFolder(), task.getStorageConfiguration().getFolder());
 		assertEquals(jobDefinition.getStorageDefinition().getFormat(), task.getStorageConfiguration().getFormat());
 		assertEquals(jobDefinition.getScrapingDefinition().getItemSelector(), task.getScrapingConfiguration().getItemSelector());
+
+		assertEquals(
+				jobDefinition.getScrapingDefinition().getDataPointDefinitions().getFirst().getField(),
+				task.getScrapingConfiguration().getDataPointConfigurations().getFirst().getField()
+		);
 	}
 	
 }

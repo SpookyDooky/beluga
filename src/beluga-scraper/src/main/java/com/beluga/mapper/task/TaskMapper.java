@@ -12,7 +12,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		componentModel = SPRING
 )
 public interface TaskMapper {
-	
+
+	// Create separate mappers for this for better testability
 	@Mapping(target = "url", source = "taskDefinition.url")
 	@Mapping(target = "scrapingConfiguration", source = "jobDefinition.scrapingDefinition")
 	@Mapping(target = "storageConfiguration", source = "jobDefinition.storageDefinition")
