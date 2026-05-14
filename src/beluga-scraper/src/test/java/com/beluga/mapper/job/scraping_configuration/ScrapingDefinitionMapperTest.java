@@ -27,10 +27,10 @@ import static org.mockito.Mockito.when;
 class ScrapingDefinitionMapperTest {
 
 	@Mock
-	private DataPointConfigurationMapper dataPointConfigurationMapper;
+	private DataPointDefinitionMapper dataPointDefinitionMapper;
 	
 	@InjectMocks
-	private ScrapingConfigurationMapperImpl mapper;
+	private ScrapingDefinitionMapperImpl mapper;
 	
 	@Test
 	void shouldMap() {
@@ -39,7 +39,7 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dataScrapingProperties.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dataScrapingProperties.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition scrapingDefinition = mapper.map(dataScrapingProperties);
 		
@@ -55,7 +55,7 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition entity = mapper.map(dto);
 		
@@ -71,7 +71,7 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final ReadDataPointConfigurationDto dataPointConfigurationDto = mock();
-		when(dataPointConfigurationMapper.map(entity.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfigurationDto);
+		when(dataPointDefinitionMapper.map(entity.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfigurationDto);
 		
 		final ReadScrapingConfigurationDto dto = mapper.map(entity);
 		
@@ -88,7 +88,7 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition entity = Instancio.create(ScrapingDefinition.class);
 		

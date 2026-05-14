@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ExecutionDefinitionMapperTest {
 	
-	private final ExecutionConfigurationMapper mapper = new ExecutionConfigurationMapperImpl();
+	private final ExecutionDefinitionMapper mapper = new ExecutionDefinitionMapperImpl();
 	
 	@Test
 	void shouldMap() {
