@@ -20,7 +20,7 @@ public class S3Config {
 	@Bean("results-s3client")
 	@ConditionalOnProperty("beluga.result-datastore.s3.host")
 	public S3Client s3Client(final com.beluga.properties.BelugaScraperProperties properties) {
-		final S3Properties s3Properties = properties.getResultDatastore().getS3();
+		final S3Properties s3Properties = properties.getResultStorage().getS3();
 		
 		final AwsBasicCredentials credentials = AwsBasicCredentials.create(
 				s3Properties.getAccessKey(), s3Properties.getSecretKey()

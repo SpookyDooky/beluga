@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 
 import static com.beluga.properties.datastore.DataStoreType.FILE_SYSTEM;
 
-public class ResultDataStoreProperties {
+public class ResultStorageProperties {
 
 	private DataStoreType type = FILE_SYSTEM;
 	
