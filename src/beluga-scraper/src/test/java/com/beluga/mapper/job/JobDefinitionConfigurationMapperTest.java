@@ -5,9 +5,9 @@ import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
 import com.beluga.api.job.dto.read.ReadStorageConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
-import com.beluga.mapper.job.execution.ExecutionConfigurationMapper;
-import com.beluga.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
-import com.beluga.mapper.job.storage.StorageConfigurationMapper;
+import com.beluga.mapper.job.execution.ExecutionDefinitionMapper;
+import com.beluga.mapper.job.scraping_configuration.ScrapingDefinitionMapper;
+import com.beluga.mapper.job.storage.StorageDefinitionMapper;
 import com.beluga.mapper.task.TaskDefinitionMapperService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
@@ -32,11 +32,11 @@ import static org.mockito.Mockito.*;
 class JobDefinitionConfigurationMapperTest {
 	
 	@Mock
-	private ScrapingConfigurationMapper scrapingConfigurationMapper;
+	private ScrapingDefinitionMapper scrapingDefinitionMapper;
 	@Mock
-	private StorageConfigurationMapper storageConfigurationMapper;
+	private StorageDefinitionMapper storageDefinitionMapper;
 	@Mock
-	private ExecutionConfigurationMapper executionConfigurationMapper;
+	private ExecutionDefinitionMapper executionDefinitionMapper;
 	@Mock
 	private TaskDefinitionMapperService taskDefinitionMapperService;
 	
@@ -48,13 +48,13 @@ class JobDefinitionConfigurationMapperTest {
 		final JobProperties jobProperties = Instancio.create(JobProperties.class);
 		
 		final ScrapingDefinition scrapingDefinition = mock();
-		when(scrapingConfigurationMapper.map(jobProperties.getScraping())).thenReturn(scrapingDefinition);
+		when(scrapingDefinitionMapper.map(jobProperties.getScraping())).thenReturn(scrapingDefinition);
 		
 		final StorageDefinition storageDefinition = mock();
-		when(storageConfigurationMapper.map(jobProperties.getStorage())).thenReturn(storageDefinition);
+		when(storageDefinitionMapper.map(jobProperties.getStorage())).thenReturn(storageDefinition);
 		
 		final ExecutionDefinition executionDefinition = mock();
-		when(executionConfigurationMapper.map(jobProperties.getExecution())).thenReturn(executionDefinition);
+		when(executionDefinitionMapper.map(jobProperties.getExecution())).thenReturn(executionDefinition);
 		
 		final List<TaskDefinition> taskDefinitions = List.of();
 		when(taskDefinitionMapperService.map(jobProperties.getUrl())).thenReturn(taskDefinitions);
@@ -73,13 +73,13 @@ class JobDefinitionConfigurationMapperTest {
 		final WriteJobDefinitionDto dto = Instancio.create(WriteJobDefinitionDto.class);
 		
 		final ScrapingDefinition scrapingDefinition = mock();
-		when(scrapingConfigurationMapper.map(dto.getScraping())).thenReturn(scrapingDefinition);
+		when(scrapingDefinitionMapper.map(dto.getScraping())).thenReturn(scrapingDefinition);
 		
 		final StorageDefinition storageDefinition = mock();
-		when(storageConfigurationMapper.map(dto.getStorage())).thenReturn(storageDefinition);
+		when(storageDefinitionMapper.map(dto.getStorage())).thenReturn(storageDefinition);
 		
 		final ExecutionDefinition executionDefinition = mock();
-		when(executionConfigurationMapper.map(dto.getExecution())).thenReturn(executionDefinition);
+		when(executionDefinitionMapper.map(dto.getExecution())).thenReturn(executionDefinition);
 		
 		final JobDefinition entity = mapper.map(dto);
 		
@@ -93,13 +93,13 @@ class JobDefinitionConfigurationMapperTest {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
 		
 		final ReadScrapingConfigurationDto readScrapingConfigurationDto = mock();
-		when(scrapingConfigurationMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(readScrapingConfigurationDto);
+		when(scrapingDefinitionMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(readScrapingConfigurationDto);
 		
 		final ReadStorageConfigurationDto readStorageConfigurationDto = mock();
-		when(storageConfigurationMapper.map(jobDefinition.getStorageDefinition())).thenReturn(readStorageConfigurationDto);
+		when(storageDefinitionMapper.map(jobDefinition.getStorageDefinition())).thenReturn(readStorageConfigurationDto);
 		
 		final ReadExecutionConfigurationDto readExecutionConfigurationDto = mock();
-		when(executionConfigurationMapper.map(jobDefinition.getExecutionDefinition())).thenReturn(readExecutionConfigurationDto);
+		when(executionDefinitionMapper.map(jobDefinition.getExecutionDefinition())).thenReturn(readExecutionConfigurationDto);
 		
 		final ReadJobDefinitionDto dto = mapper.map(jobDefinition);
 		
@@ -116,8 +116,8 @@ class JobDefinitionConfigurationMapperTest {
 		
 		mapper.update(dto, entity);
 		
-		verify(scrapingConfigurationMapper).update(dto.getScraping(), entity.getScrapingDefinition());
-		verify(storageConfigurationMapper).update(dto.getStorage(), entity.getStorageDefinition());
-		verify(executionConfigurationMapper).update(dto.getExecution(), entity.getExecutionDefinition());
+		verify(scrapingDefinitionMapper).update(dto.getScraping(), entity.getScrapingDefinition());
+		verify(storageDefinitionMapper).update(dto.getStorage(), entity.getStorageDefinition());
+		verify(executionDefinitionMapper).update(dto.getExecution(), entity.getExecutionDefinition());
 	}
 }

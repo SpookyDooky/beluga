@@ -25,7 +25,7 @@ for managing jobs which is more suited for a production environment. You can fin
     * [beluga.jobs[].execution.workers](#belugajobsexecutionworkers)
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
   * [Scraping configuration](#scraping-configuration)
-    * [beluga.jobs[].scraping.element-selector](#belugajobsscrapingelement-selector)
+    * [beluga.jobs[].scraping.item-selector](#belugajobsscrapingitem-selector)
     * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
     * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsproperty-name)
     * [beluga.jobs[].scraping.data-points[].attribute](#belugajobsscrapingdata-pointsattribute)
@@ -78,7 +78,7 @@ for managing jobs which is more suited for a production environment. You can fin
 
 ## Scraping configuration
 
-### `beluga.jobs[].scraping.element-selector`
+### `beluga.jobs[].scraping.item-selector`
 - **Type:** string
 - **Required:** true
 - **Description:** CSS selector for an element

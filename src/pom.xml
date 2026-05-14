@@ -44,6 +44,7 @@
         <sql-lite-jdbc.version>3.41.2.2</sql-lite-jdbc.version>
         <hibernate.version>7.0.10.Final</hibernate.version>
         <assertj.version>3.27.7</assertj.version>
+        <maven.compiler-plugin.version>3.13.0</maven.compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -214,6 +215,26 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugin.version}</version>
+
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>

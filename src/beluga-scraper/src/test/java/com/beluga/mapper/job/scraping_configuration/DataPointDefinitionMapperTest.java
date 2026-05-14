@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DataPointDefinitionMapperTest {
 	
-	private final DataPointConfigurationMapperImpl mapper = new DataPointConfigurationMapperImpl();
+	private final DataPointDefinitionMapperImpl mapper = new DataPointDefinitionMapperImpl();
 	
 	@Test
 	void shouldMap() {

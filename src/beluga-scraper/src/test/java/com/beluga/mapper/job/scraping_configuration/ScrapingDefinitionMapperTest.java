@@ -27,10 +27,10 @@ import static org.mockito.Mockito.when;
 class ScrapingDefinitionMapperTest {
 
 	@Mock
-	private DataPointConfigurationMapper dataPointConfigurationMapper;
+	private DataPointDefinitionMapper dataPointDefinitionMapper;
 	
 	@InjectMocks
-	private ScrapingConfigurationMapperImpl mapper;
+	private ScrapingDefinitionMapperImpl mapper;
 	
 	@Test
 	void shouldMap() {
@@ -39,11 +39,11 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dataScrapingProperties.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dataScrapingProperties.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition scrapingDefinition = mapper.map(dataScrapingProperties);
 		
-		assertEquals(dataScrapingProperties.getElementSelector(), scrapingDefinition.getElementSelector());
+		assertEquals(dataScrapingProperties.getItemSelector(), scrapingDefinition.getItemSelector());
 		assertEquals(1, scrapingDefinition.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, scrapingDefinition.getDataPointDefinitions().getFirst());
 	}
@@ -55,11 +55,11 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition entity = mapper.map(dto);
 		
-		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+		assertEquals(dto.getItemSelector(), entity.getItemSelector());
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
 	}
@@ -71,12 +71,12 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final ReadDataPointConfigurationDto dataPointConfigurationDto = mock();
-		when(dataPointConfigurationMapper.map(entity.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfigurationDto);
+		when(dataPointDefinitionMapper.map(entity.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfigurationDto);
 		
 		final ReadScrapingConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getElementSelector(), dto.getElementSelector());
+		assertEquals(entity.getItemSelector(), dto.getItemSelector());
 		assertEquals(1, dto.getDataPoints().size());
 		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
 	}
@@ -88,7 +88,7 @@ class ScrapingDefinitionMapperTest {
 				.create();
 		
 		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointConfigurationMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
 		
 		final ScrapingDefinition entity = Instancio.create(ScrapingDefinition.class);
 		
@@ -96,6 +96,6 @@ class ScrapingDefinitionMapperTest {
 		
 		assertEquals(1, entity.getDataPointDefinitions().size());
 		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
-		assertEquals(dto.getElementSelector(), entity.getElementSelector());
+		assertEquals(dto.getItemSelector(), entity.getItemSelector());
 	}
 }

@@ -2,9 +2,9 @@ package com.beluga.mapper.job;
 
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
-import com.beluga.mapper.job.execution.ExecutionConfigurationMapper;
-import com.beluga.mapper.job.scraping_configuration.ScrapingConfigurationMapper;
-import com.beluga.mapper.job.storage.StorageConfigurationMapper;
+import com.beluga.mapper.job.execution.ExecutionDefinitionMapper;
+import com.beluga.mapper.job.scraping_configuration.ScrapingDefinitionMapper;
+import com.beluga.mapper.job.storage.StorageDefinitionMapper;
 import com.beluga.mapper.task.TaskDefinitionMapperService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.properties.scraping.JobProperties;
@@ -19,9 +19,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		componentModel = SPRING,
 		injectionStrategy = CONSTRUCTOR,
 		uses = {
-				ScrapingConfigurationMapper.class,
-				StorageConfigurationMapper.class,
-				ExecutionConfigurationMapper.class,
+				ScrapingDefinitionMapper.class,
+				StorageDefinitionMapper.class,
+				ExecutionDefinitionMapper.class,
 				TaskDefinitionMapperService.class
 		}
 )

@@ -176,7 +176,7 @@ components:
     createScrapingConfiguration:
       type: object
       properties:
-        elementSelector:
+        itemSelector:
           type: string
           example: main#content
           description: Css selector
@@ -186,7 +186,7 @@ components:
             $ref: "#/components/schemas/createScrapingDataPoint"
           minLength: 1
       required:
-        - elementSelector
+        - itemSelector
         - dataPoints
 
     scrapingConfiguration:
@@ -195,7 +195,7 @@ components:
         id:
           type: integer
           example: 123
-        elementSelector:
+        itemSelector:
           type: string
           example: main#content
           description: Css selector
@@ -206,7 +206,7 @@ components:
           minLength: 1
       required:
         - id
-        - elementSelector
+        - itemSelector
         - dataPoints
 
     createScrapingDataPoint:

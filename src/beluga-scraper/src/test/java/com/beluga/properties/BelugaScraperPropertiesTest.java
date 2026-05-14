@@ -60,16 +60,16 @@ class BelugaScraperPropertiesTest {
 		return Stream.of(
 						List.of(
 								"beluga.jobs[0].name=name",
-								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=",
-								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].scraping.data-points[0].field=field",
 								"beluga.jobs[0].storage.format=JSON",
 								"beluga.jobs[0].storage.folder=folder",
 								"beluga.jobs[0].storage.file=file"
 						),
 						List.of(
 								"beluga.jobs[0].name=",
-								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
 								"beluga.jobs[0].storage.format=JSON",
@@ -78,18 +78,18 @@ class BelugaScraperPropertiesTest {
 						),
 						List.of(
 								"beluga.jobs[0].name=name",
-								"beluga.jobs[0].scraping.element-selector=",
+								"beluga.jobs[0].scraping.item-selector=",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
-								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].scraping.data-points[0].field=field",
 								"beluga.jobs[0].storage.format=JSON",
 								"beluga.jobs[0].storage.folder=folder",
 								"beluga.jobs[0].storage.file=file"
 						),
 						List.of(
 								"beluga.jobs[0].name=name",
-								"beluga.jobs[0].scraping.element-selector=selector",
+								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
-								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
+								"beluga.jobs[0].scraping.data-points[0].field=field",
 								"beluga.jobs[0].storage.format=JSON",
 								"beluga.jobs[0].storage.folder=",
 								"beluga.jobs[0].storage.file=file"

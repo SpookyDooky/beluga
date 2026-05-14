@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
-public interface StorageConfigurationMapper {
+public interface StorageDefinitionMapper {
 	
 	StorageDefinition map(StorageProperties storageProperties);
 	

@@ -9,16 +9,16 @@ import java.util.List;
 public class ScrapingProperties {
 	
 	@NotBlank
-	private String elementSelector;
+	private String itemSelector;
 	@NotEmpty
 	private List<@Valid DataPointProperties> dataPoints;
 	
-	public String getElementSelector() {
-		return elementSelector;
+	public String getItemSelector() {
+		return itemSelector;
 	}
 	
-	public void setElementSelector(final String elementSelector) {
-		this.elementSelector = elementSelector;
+	public void setItemSelector(final String itemSelector) {
+		this.itemSelector = itemSelector;
 	}
 	
 	public List<DataPointProperties> getDataPoints() {

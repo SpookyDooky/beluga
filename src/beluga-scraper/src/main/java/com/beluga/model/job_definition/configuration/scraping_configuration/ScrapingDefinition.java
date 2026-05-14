@@ -19,7 +19,7 @@ public class ScrapingDefinition {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
-	private String elementSelector;
+	private String itemSelector;
 	
 	@OneToMany(
 			cascade = ALL,
@@ -37,12 +37,12 @@ public class ScrapingDefinition {
 		this.id = id;
 	}
 	
-	public String getElementSelector() {
-		return elementSelector;
+	public String getItemSelector() {
+		return itemSelector;
 	}
 	
-	public void setElementSelector(final String elementSelector) {
-		this.elementSelector = elementSelector;
+	public void setItemSelector(final String itemSelector) {
+		this.itemSelector = itemSelector;
 	}
 	
 	public List<DataPointDefinition> getDataPointDefinitions() {

@@ -17,10 +17,10 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		injectionStrategy = CONSTRUCTOR,
 		collectionMappingStrategy = TARGET_IMMUTABLE,
 		uses = {
-				DataPointConfigurationMapper.class
+				DataPointDefinitionMapper.class
 		}
 )
-public interface ScrapingConfigurationMapper {
+public interface ScrapingDefinitionMapper {
 	
 	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
 	ScrapingDefinition map(ScrapingProperties scrapingProperties);

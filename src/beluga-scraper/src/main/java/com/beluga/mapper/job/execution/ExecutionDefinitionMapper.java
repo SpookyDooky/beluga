@@ -12,7 +12,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(
 		componentModel = SPRING
 )
-public interface ExecutionConfigurationMapper {
+public interface ExecutionDefinitionMapper {
 	
 	ExecutionDefinition map(ExecutionProperties executionProperties);
 	

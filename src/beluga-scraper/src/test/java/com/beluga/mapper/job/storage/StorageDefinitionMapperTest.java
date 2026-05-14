@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StorageDefinitionMapperTest {
 
-	private final StorageConfigurationMapperImpl mapper = new StorageConfigurationMapperImpl();
+	private final StorageDefinitionMapperImpl mapper = new StorageDefinitionMapperImpl();
 	
 	@Test
 	void shouldMap() {
