@@ -1,6 +1,6 @@
 package com.beluga.properties;
 
-import com.beluga.properties.datastore.ResultDataStoreProperties;
+import com.beluga.properties.datastore.ResultStorageProperties;
 import com.beluga.properties.persistence.PersistenceProperties;
 import com.beluga.properties.scraping.JobProperties;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ public class BelugaScraperProperties {
 	private PersistenceProperties persistence;
 	
 	@Valid
-	private ResultDataStoreProperties resultDatastore = new ResultDataStoreProperties();
+	private ResultStorageProperties resultStorage = new ResultStorageProperties();
 	
 	private List<@NotNull @Valid JobProperties> jobs;
 	
@@ -31,12 +31,12 @@ public class BelugaScraperProperties {
 		this.persistence = persistence;
 	}
 	
-	public ResultDataStoreProperties getResultDatastore() {
-		return resultDatastore;
+	public ResultStorageProperties getResultStorage() {
+		return resultStorage;
 	}
 	
-	public void setResultDatastore(final ResultDataStoreProperties resultDatastore) {
-		this.resultDatastore = resultDatastore;
+	public void setResultStorage(final ResultStorageProperties resultStorage) {
+		this.resultStorage = resultStorage;
 	}
 	
 	public List<JobProperties> getJobs() {
