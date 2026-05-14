@@ -52,7 +52,7 @@ public class S3Properties {
 		return region;
 	}
 	
-	public void setRegion(final Region region) {
-		this.region = region;
+	public void setRegion(final String region) {
+		this.region = Region.of(region);
 	}
 }
