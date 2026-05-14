@@ -1,7 +1,9 @@
 package com.beluga.mapper.task;
 
 import com.beluga.execution.model.task.ScrapingConfiguration;
+import com.beluga.execution.model.task.StorageConfiguration;
 import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
+import com.beluga.mapper.task.configuration.StorageConfigurationMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
@@ -24,6 +26,8 @@ class TaskMapperTest {
 
 	@Mock
 	private ScrapingConfigurationMapper scrapingConfigurationMapper;
+	@Mock
+	private StorageConfigurationMapper storageConfigurationMapper;
 
 	@InjectMocks
 	private TaskMapperImpl mapper;
@@ -37,14 +41,15 @@ class TaskMapperTest {
 
 		final ScrapingConfiguration scrapingConfiguration = mock();
 		when(scrapingConfigurationMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(scrapingConfiguration);
-		
+
+		final StorageConfiguration storageConfiguration = mock();
+		when(storageConfigurationMapper.map(jobDefinition.getStorageDefinition())).thenReturn(storageConfiguration);
+
 		final Task task = mapper.map(jobDefinition, taskDefinition);
 		
 		assertEquals(taskDefinition.getUrl(), task.getUrl());
-		assertEquals(jobDefinition.getStorageDefinition().getFolder(), task.getStorageConfiguration().getFolder());
-		assertEquals(jobDefinition.getStorageDefinition().getFormat(), task.getStorageConfiguration().getFormat());
-
 		assertSame(scrapingConfiguration, task.getScrapingConfiguration());
+		assertSame(storageConfiguration, task.getStorageConfiguration());
 	}
 	
 }

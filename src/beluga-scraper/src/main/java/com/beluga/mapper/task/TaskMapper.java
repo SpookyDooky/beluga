@@ -1,6 +1,7 @@
 package com.beluga.mapper.task;
 
 import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
+import com.beluga.mapper.task.configuration.StorageConfigurationMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
@@ -15,7 +16,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		componentModel = SPRING,
 		injectionStrategy = CONSTRUCTOR,
 		uses = {
-				ScrapingConfigurationMapper.class
+				ScrapingConfigurationMapper.class,
+				StorageConfigurationMapper.class
 		}
 )
 public interface TaskMapper {
