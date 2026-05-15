@@ -9,7 +9,7 @@ import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.execution.model.task.TaskExecution;
-import com.beluga.result_storage.StorageService;
+import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskExecutionService;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class ResultServiceTest {
 	@Mock
 	private ResultFileInfoMapper resultFileInfoMapper;
 	@Mock
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	
 	@InjectMocks
 	private ResultService resultService;
@@ -252,7 +252,7 @@ class ResultServiceTest {
 		when(resultFile.getPath()).thenReturn(filePath);
 		
 		final byte[] content = new byte[1];
-		when(storageService.retrieve(Path.of(filePath))).thenReturn(content);
+		when(resultStorageService.retrieve(Path.of(filePath))).thenReturn(content);
 		
 		final byte[] result = resultService.getResultFileContent(
 				jobDefinitionId,

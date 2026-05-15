@@ -10,17 +10,22 @@ import static com.beluga.logging.ContextKeys.JOB_EXECUTION_ID;
 import static com.beluga.logging.ContextKeys.TASK_ID;
 
 public abstract class TaskEvent extends ApplicationEvent implements ContextLoggable {
-	
+
+	private final Long jobDefinitionId;
 	private final Long jobId;
 	private final Long taskId;
 	
 	public TaskEvent(final Task task) {
 		super(task.getId());
-		
+		this.jobDefinitionId = task.getJob().getJobDefinitionId();
 		this.jobId = task.getJob().getId();
 		this.taskId = task.getId();
 	}
-	
+
+	public Long getJobDefinitionId() {
+		return jobDefinitionId;
+	}
+
 	public Long getJobId() {
 		return jobId;
 	}

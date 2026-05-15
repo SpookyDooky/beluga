@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Path;
 
 @Service
-public class StorageService {
+public class ResultStorageService {
 	
 	private final ContextLogger logger;
 	private final JsonService jsonService;
 	private final ResultDataStoreProvider resultDataStoreProvider;
 	
-	public StorageService(final ContextLogger logger,
-	                      final JsonService jsonService,
-	                      final ResultDataStoreProvider resultDataStoreProvider) {
+	public ResultStorageService(final ContextLogger logger,
+	                            final JsonService jsonService,
+	                            final ResultDataStoreProvider resultDataStoreProvider) {
 		this.logger = logger;
 		this.jsonService = jsonService;
 		this.resultDataStoreProvider = resultDataStoreProvider;

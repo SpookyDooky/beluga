@@ -22,7 +22,8 @@ class TaskResultEventTest {
 		final Payload<?> payload = mock();
 		
 		final TaskResultEvent event = TaskResultEvent.of(task, storageHint, payload);
-		
+
+		assertEquals(task.getJob().getJobDefinitionId(), event.getJobDefinitionId());
 		assertEquals(task.getJob().getId(), event.getJobId());
 		assertEquals(task.getId(), event.getTaskId());
 		assertSame(storageHint, event.getStorageHint());

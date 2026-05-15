@@ -10,7 +10,7 @@ import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskExecution;
-import com.beluga.result_storage.StorageService;
+import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.data.domain.Page;
@@ -29,18 +29,18 @@ public class ResultService {
 	private final TaskExecutionService taskExecutionService;
 	private final TaskResultDtoMapper taskResultDtoMapper;
 	private final ResultFileInfoMapper resultFileInfoMapper;
-	private final StorageService storageService;
+	private final ResultStorageService resultStorageService;
 	
 	public ResultService(final JobDefinitionService jobDefinitionService,
 	                     final TaskExecutionService taskExecutionService,
 	                     final TaskResultDtoMapper taskResultDtoMapper,
 	                     final ResultFileInfoMapper resultFileInfoMapper,
-	                     final StorageService storageService) {
+	                     final ResultStorageService resultStorageService) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.taskExecutionService = taskExecutionService;
 		this.taskResultDtoMapper = taskResultDtoMapper;
 		this.resultFileInfoMapper = resultFileInfoMapper;
-		this.storageService = storageService;
+		this.resultStorageService = resultStorageService;
 	}
 	
 	/**
@@ -127,6 +127,6 @@ public class ResultService {
 		final ResultFile resultFile = taskExecutionService.getById(taskExecutionId)
 				.getResultFileByFileName(fileName);
 		
-		return storageService.retrieve(Path.of(resultFile.getPath()));
+		return resultStorageService.retrieve(Path.of(resultFile.getPath()));
 	}
 }

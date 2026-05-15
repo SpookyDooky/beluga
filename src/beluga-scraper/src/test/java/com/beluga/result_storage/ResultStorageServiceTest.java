@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StorageServiceTest {
+class ResultStorageServiceTest {
 	
 	@Mock
 	private ContextLogger logger;
@@ -34,7 +34,7 @@ class StorageServiceTest {
 	private ResultDataStoreProvider resultDataStoreProvider;
 	
 	@InjectMocks
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	
 	@Test
 	void shouldSaveJsonResult() {
@@ -44,7 +44,7 @@ class StorageServiceTest {
 		final JsonPayload mapPayload = (JsonPayload) jsonTaskResultEvent.getPayload();
 		when(jsonService.toJson(mapPayload.getData())).thenReturn(json);
 		
-		storageService.onTaskResultEvent(jsonTaskResultEvent);
+		resultStorageService.onTaskResultEvent(jsonTaskResultEvent);
 		
 		verify(resultDataStoreProvider).save(
 				jsonTaskResultEvent.getStorageHint().getPath(),
@@ -63,7 +63,7 @@ class StorageServiceTest {
 		final TaskResultEvent imageTaskResultEvent = createTaskResultEvent(ImagePayload.class);
 		final ImagePayload imagePayload = (ImagePayload) imageTaskResultEvent.getPayload();
 		
-		storageService.onTaskResultEvent(imageTaskResultEvent);
+		resultStorageService.onTaskResultEvent(imageTaskResultEvent);
 		
 		verify(resultDataStoreProvider).save(
 				eq(imageTaskResultEvent.getStorageHint().getPath()),
@@ -77,7 +77,7 @@ class StorageServiceTest {
 		final byte[] expected = new byte[0];
 		when(resultDataStoreProvider.retrieve(pathToRetrieve)).thenReturn(expected);
 		
-		final byte[] result = storageService.retrieve(pathToRetrieve);
+		final byte[] result = resultStorageService.retrieve(pathToRetrieve);
 		
 		assertSame(expected, result);
 	}

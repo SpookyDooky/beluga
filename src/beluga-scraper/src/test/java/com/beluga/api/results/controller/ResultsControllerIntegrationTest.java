@@ -7,7 +7,7 @@ import com.beluga.api.job.dto.write.WriteExecutionConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.api.task.dto.UpdateTaskDto;
 import com.beluga.integration_test.MultiStoreTest;
-import com.beluga.result_storage.StorageService;
+import com.beluga.result_storage.ResultStorageService;
 import com.beluga.scraping.ScrapingService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ResultsControllerIntegrationTest {
 	
 	@MockitoBean
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	@MockitoBean(answers = RETURNS_DEEP_STUBS)
 	private ScrapingService scrapingService;
 	
@@ -92,7 +92,7 @@ class ResultsControllerIntegrationTest {
 		
 		final List<Object> expectedTaskResult = List.of(Map.of("property", "value"));
 		final byte[] rawExpectedTaskResultData = objectMapper.writeValueAsString(expectedTaskResult).getBytes();
-		when(storageService.retrieve(any())).thenReturn(rawExpectedTaskResultData);
+		when(resultStorageService.retrieve(any())).thenReturn(rawExpectedTaskResultData);
 		
 		mvc.perform(
 				get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId() + "/tasks/" + readJobExecutionWithTasksDto.getTasks().getFirst().getId() + "/results")
