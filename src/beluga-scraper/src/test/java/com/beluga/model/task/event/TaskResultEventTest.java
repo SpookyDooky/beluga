@@ -18,15 +18,15 @@ class TaskResultEventTest {
 	@Test
 	void shouldCreateTaskResultEvent() {
 		final Task task = Instancio.create(Task.class);
-		final StorageHint storageHint = mock();
+		final String fileName = "fileName";
 		final Payload<?> payload = mock();
 		
-		final TaskResultEvent event = TaskResultEvent.of(task, storageHint, payload);
+		final TaskResultEvent event = TaskResultEvent.of(task, fileName, payload);
 
 		assertEquals(task.getJob().getJobDefinitionId(), event.getJobDefinitionId());
 		assertEquals(task.getJob().getId(), event.getJobId());
 		assertEquals(task.getId(), event.getTaskId());
-		assertSame(storageHint, event.getStorageHint());
+		assertEquals(fileName, event.getFileName());
 		assertSame(payload, event.getPayload());
 	}
 	

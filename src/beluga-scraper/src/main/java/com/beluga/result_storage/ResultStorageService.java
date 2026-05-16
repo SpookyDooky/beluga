@@ -1,5 +1,6 @@
 package com.beluga.result_storage;
 
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.model.event.storable.StorableEvent;
@@ -9,10 +10,12 @@ import com.beluga.model.event.storable.payload.Payload;
 import com.beluga.model.event.storable.payload.StringPayload;
 import com.beluga.execution.event.task.task_result.StorageHint;
 import com.beluga.result_storage.json.JsonService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.xml.stream.events.Namespace;
 import java.nio.file.Path;
 
 @Service
@@ -20,14 +23,20 @@ public class ResultStorageService {
 	
 	private final ContextLogger logger;
 	private final JsonService jsonService;
+	private final NamespaceFactory namespaceFactory;
 	private final ResultDataStoreProvider resultDataStoreProvider;
-	
+	private final ApplicationEventPublisher eventPublisher;
+
 	public ResultStorageService(final ContextLogger logger,
 	                            final JsonService jsonService,
-	                            final ResultDataStoreProvider resultDataStoreProvider) {
+	                            final NamespaceFactory namespaceFactory,
+	                            final ResultDataStoreProvider resultDataStoreProvider,
+								final ApplicationEventPublisher applicationEventPublisher) {
 		this.logger = logger;
 		this.jsonService = jsonService;
+		this.namespaceFactory = namespaceFactory;
 		this.resultDataStoreProvider = resultDataStoreProvider;
+		this.eventPublisher = applicationEventPublisher;
 	}
 	
 	/**
@@ -37,14 +46,17 @@ public class ResultStorageService {
 	 */
 	@EventListener
 	@Async
-	public void onTaskResultEvent(final StorableEvent event) {
+	public void onTaskResultEvent(final TaskResultEvent event) {
 		try (final CloseableContext ignored = logger.with(event)) {
 			logger.info("Saving task result.");
+
+			final String namespace = namespaceFactory.create(event);
+
 			saveResult(event.getStorageHint(), event.getPayload());
 		}
 	}
 	
-	private void saveResult(final StorageHint storageHint,
+	private void saveResult(f,
 	                        final Payload<?> payload) {
 		switch (payload) {
 			case JsonPayload jsonPayload -> saveJsonResult(storageHint, jsonPayload);

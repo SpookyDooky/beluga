@@ -12,10 +12,7 @@ import com.beluga.execution.event.task.TaskEvent;
 public class TaskResultEvent extends TaskEvent
         implements StorableEvent {
 
-    /**
-     * Provides a hint on how this data should be stored.
-     */
-    private final StorageHint storageHint;
+    private final String fileName;
 
     /**
      * Payload holding the actual data of the event, payload can be anything.
@@ -25,29 +22,29 @@ public class TaskResultEvent extends TaskEvent
     /**
      * Creates a {@link TaskResultEvent}.
      *
-     * @param task        the task this result is for.
-     * @param storageHint a hint on how the data should be stored.
-     * @param payload     the payload.
+     * @param task     the task this result is for.
+     * @param fileName name of the file in which the results should be stored..
+     * @param payload  the payload.
      * @throws NullPointerException thrown when the payload is null.
      */
     private TaskResultEvent(final Task task,
-                            final StorageHint storageHint,
+                            final String fileName,
                             final Payload<?> payload) {
         super(task);
-        this.storageHint = storageHint;
+        this.fileName = fileName;
         this.payload = payload;
     }
 
     public static TaskResultEvent of(final Task task,
-                                     final StorageHint storageHint,
+                                     final String fileName,
                                      final Payload<?> payload) {
         validateNotNull("task", task);
-        validateNotNull("storageHint", storageHint);
+        validateNotNull("fileName", fileName);
         validateNotNull("payload", payload);
 
         return new TaskResultEvent(
                 task,
-                storageHint,
+                fileName,
                 payload
         );
     }
@@ -60,8 +57,8 @@ public class TaskResultEvent extends TaskEvent
     }
 
     @Override
-    public StorageHint getStorageHint() {
-        return storageHint;
+    public String getFileName() {
+        return fileName;
     }
 
     /**
