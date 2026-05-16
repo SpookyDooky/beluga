@@ -7,9 +7,7 @@ import com.beluga.result_storage.ResultDataStoreProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Path;
-
-import static com.beluga.logging.ContextKeys.FILE_NAME;
+import static com.beluga.logging.ContextKeys.RESOURCE_IDENTIFIER;
 
 /**
  * Data store provider for S3 compatible object-stores.
@@ -33,17 +31,21 @@ public class S3ResultDataStoreProvider extends ResultDataStoreProvider {
 	}
 	
 	@Override
-	public void save(final Path filePath,
+	public void save(final String resourceIdentifier,
 	                 final byte[] fileContent) {
-		try (final CloseableContext ignored = logger.with(FILE_NAME, filePath.getFileName().toString())) {
-			s3Service.putObject(filePath, fileContent, bucket);
+		try (final CloseableContext ignored = logger.with(RESOURCE_IDENTIFIER, resourceIdentifier)) {
+			s3Service.putObject(
+					resourceIdentifier,
+					fileContent,
+					bucket
+			);
 		}
 	}
 	
 	@Override
-	public byte[] retrieve(final Path filePath) {
-		try (final CloseableContext ignored = logger.with(FILE_NAME, filePath.getFileName().toString())) {
-			return s3Service.getObject(filePath, bucket);
+	public byte[] retrieve(final String resourceIdentifier) {
+		try (final CloseableContext ignored = logger.with(RESOURCE_IDENTIFIER, resourceIdentifier)) {
+			return s3Service.getObject(resourceIdentifier, bucket);
 		}
 	}
 }
