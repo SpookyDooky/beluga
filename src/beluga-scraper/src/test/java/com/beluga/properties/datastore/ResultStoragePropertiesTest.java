@@ -1,6 +1,5 @@
 package com.beluga.properties.datastore;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static com.beluga.properties.datastore.DataStoreType.FILE_SYSTEM;
@@ -14,7 +13,7 @@ class ResultStoragePropertiesTest {
         final ResultStorageProperties properties = new ResultStorageProperties();
 
         assertEquals(FILE_SYSTEM, properties.getType());
-        assertNotNull(properties.getFileSystemProperties());
+        assertNotNull(properties.getFileSystem());
     }
 
     @Test
@@ -22,6 +21,6 @@ class ResultStoragePropertiesTest {
         final ResultStorageProperties properties = new ResultStorageProperties();
         properties.setType(S3);
 
-        assertNull(properties.getFileSystemProperties());
+        assertNull(properties.getFileSystem());
     }
 }

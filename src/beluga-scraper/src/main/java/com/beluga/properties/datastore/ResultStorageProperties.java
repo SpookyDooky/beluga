@@ -11,7 +11,7 @@ public class ResultStorageProperties {
 
 	@Valid
 	@Nullable
-	private FileSystemProperties fileSystemProperties = new FileSystemProperties();
+	private FileSystemProperties fileSystem = new FileSystemProperties();
 
 	@Valid
 	@Nullable
@@ -25,16 +25,16 @@ public class ResultStorageProperties {
 		this.type = type;
 
 		if (type != FILE_SYSTEM) {
-			fileSystemProperties = null;
+			fileSystem = null;
 		}
 	}
 
-	public FileSystemProperties getFileSystemProperties() {
-		return fileSystemProperties;
+	public FileSystemProperties getFileSystem() {
+		return fileSystem;
 	}
 
-	public void setFileSystemProperties(final FileSystemProperties fileSystemProperties) {
-		this.fileSystemProperties = fileSystemProperties;
+	public void setFileSystem(final FileSystemProperties fileSystem) {
+		this.fileSystem = fileSystem;
 	}
 
 	public S3Properties getS3() {
