@@ -34,6 +34,6 @@ public class NamespaceFactory {
     public String create(final TaskResultEvent event) {
         return namespacePrefix + "/" + event.getJobDefinitionId() + "/"
                 + event.getJobId() + "/"
-                + event.getTaskId() + "/";
+                + event.getTaskId();
     }
 }

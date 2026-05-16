@@ -1,6 +1,5 @@
 package com.beluga.execution.event.task.task_result;
 
-import com.beluga.model.event.storable.StorableEvent;
 import com.beluga.model.event.storable.payload.Payload;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.event.task.TaskEvent;
@@ -9,29 +8,24 @@ import com.beluga.execution.event.task.TaskEvent;
  * Event that represents some piece of data coming from task execution.
  * This might not include all data, as not all data can always be retrieved at once.
  */
-public class TaskResultEvent extends TaskEvent
-        implements StorableEvent {
+public class TaskResultEvent extends TaskEvent {
 
-    private final String fileName;
-
-    /**
-     * Payload holding the actual data of the event, payload can be anything.
-     */
+    private final String key;
     private final Payload<?> payload;
 
     /**
      * Creates a {@link TaskResultEvent}.
      *
      * @param task     the task this result is for.
-     * @param fileName name of the file in which the results should be stored..
+     * @param key name of the file in which the results should be stored.
      * @param payload  the payload.
      * @throws NullPointerException thrown when the payload is null.
      */
     private TaskResultEvent(final Task task,
-                            final String fileName,
+                            final String key,
                             final Payload<?> payload) {
         super(task);
-        this.fileName = fileName;
+        this.key = key;
         this.payload = payload;
     }
 
@@ -39,7 +33,7 @@ public class TaskResultEvent extends TaskEvent
                                      final String fileName,
                                      final Payload<?> payload) {
         validateNotNull("task", task);
-        validateNotNull("fileName", fileName);
+        validateNotNull("key", fileName);
         validateNotNull("payload", payload);
 
         return new TaskResultEvent(
@@ -56,17 +50,10 @@ public class TaskResultEvent extends TaskEvent
         }
     }
 
-    @Override
-    public String getFileName() {
-        return fileName;
+    public String getKey() {
+        return key;
     }
 
-    /**
-     * Returns the payload containing the scraped data.
-     *
-     * @return the {@link Payload}
-     */
-    @Override
     public Payload<?> getPayload() {
         return payload;
     }

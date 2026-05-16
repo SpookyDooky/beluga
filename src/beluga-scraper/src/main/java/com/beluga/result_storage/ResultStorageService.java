@@ -51,42 +51,46 @@ public class ResultStorageService {
 			logger.info("Saving task result.");
 
 			final String namespace = namespaceFactory.create(event);
+			final String resourceIdentifier = namespace + "/" + event.getKey();
 
-			saveResult(event.getStorageHint(), event.getPayload());
+			saveResult(
+					resourceIdentifier,
+					event.getPayload()
+			);
 		}
 	}
 	
-	private void saveResult(f,
+	private void saveResult(final String resourceIdentifier,
 	                        final Payload<?> payload) {
 		switch (payload) {
-			case JsonPayload jsonPayload -> saveJsonResult(storageHint, jsonPayload);
-			case ImagePayload imagePayload -> saveImageResult(storageHint, imagePayload);
-			case StringPayload stringPayload -> saveRawResult(storageHint, stringPayload);
+			case JsonPayload jsonPayload -> saveJsonResult(resourceIdentifier, jsonPayload);
+			case ImagePayload imagePayload -> saveImageResult(resourceIdentifier, imagePayload);
+			case StringPayload stringPayload -> saveRawResult(resourceIdentifier, stringPayload);
 			default -> throw new IllegalStateException("Unsupported payload type: " + payload.getClass().getSimpleName());
 		}
 	}
 	
-	private void saveJsonResult(final StorageHint storageHint,
+	private void saveJsonResult(final String resourceIdentifier,
 	                            final JsonPayload payload) {
 		resultDataStoreProvider.save(
-				storageHint.getPath(),
+				resourceIdentifier,
 				jsonService.toJson(payload.getData()).getBytes()
 		);
 		
 	}
 	
-	private void saveImageResult(final StorageHint storageHint,
+	private void saveImageResult(final String resourceIdentifier,
 	                             final ImagePayload imagePayload) {
 		resultDataStoreProvider.save(
-				storageHint.getPath(),
+				resourceIdentifier,
 				imagePayload.getData()
 		);
 	}
 	
-	private void saveRawResult(final StorageHint storageHint,
+	private void saveRawResult(final String resourceIdentifier,
 	                           final StringPayload stringPayload) {
 		resultDataStoreProvider.save(
-				storageHint.getPath(),
+				resourceIdentifier,
 				stringPayload.getData().getBytes()
 		);
 	}
