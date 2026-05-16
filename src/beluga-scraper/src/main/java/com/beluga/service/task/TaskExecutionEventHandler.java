@@ -1,12 +1,12 @@
 package com.beluga.service.task;
 
-import com.beluga.mapper.ResultFileMapper;
-import com.beluga.model.result.ResultFile;
-import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.execution.event.task.TaskCompletedEvent;
 import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
-import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.mapper.ResultFileMapper;
+import com.beluga.model.result.ResultFile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,8 +62,8 @@ public class TaskExecutionEventHandler {
 	}
 	
 	@EventListener
-	public void onTaskResult(final TaskResultEvent taskResultEvent) {
-		final ResultFile resultFile = resultFileMapper.map(taskResultEvent);
-		taskExecutionService.addResultFile(taskResultEvent.getTaskId(), resultFile);
+	public void onTaskResultStored(final TaskResultStoredEvent event) {
+		final ResultFile resultFile = resultFileMapper.map(event);
+		taskExecutionService.addResultFile(event.getTaskId(), resultFile);
 	}
 }

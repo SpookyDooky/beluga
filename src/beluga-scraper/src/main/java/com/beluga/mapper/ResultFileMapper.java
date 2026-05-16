@@ -1,8 +1,8 @@
 package com.beluga.mapper;
 
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
 import com.beluga.model.event.storable.payload.Payload;
 import com.beluga.model.result.ResultFile;
-import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,10 @@ public abstract class ResultFileMapper {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	// This should probably happen only after a result has been safely saved.
-	// Anyways path & filename need to ne migrated to a combination called resource_identifier
-	@Mapping(target = "path", source = "storageHint.path")
+	@Mapping(target = "key", source = "key")
 	@Mapping(target = "sizeInBytes", source = "payload")
-	@Mapping(target = "fileName", source = "fileName")
-	public abstract ResultFile map(TaskResultEvent event);
+	@Mapping(target = "namespace", source = "namespace")
+	public abstract ResultFile map(TaskResultStoredEvent event);
 	
 	public long mapSizeInBytes(final Payload<?> payload) {
 		try {

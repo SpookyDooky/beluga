@@ -2,6 +2,7 @@ package com.beluga.result_storage;
 
 import com.beluga.execution.event.task.task_result.StorageHint;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.model.event.storable.payload.ImagePayload;
@@ -49,9 +50,17 @@ public class ResultStorageService {
 			final String namespace = namespaceFactory.create(event);
 			final String resourceIdentifier = namespace + "/" + event.getKey();
 
-			saveResult(
-					resourceIdentifier,
-					event.getPayload()
+			saveResult(resourceIdentifier, event.getPayload());
+
+			eventPublisher.publishEvent(
+					new TaskResultStoredEvent(
+							event.getJobDefinitionId(),
+							event.getJobId(),
+							event.getTaskId(),
+							namespace,
+							event.getKey(),
+							event.getPayload()
+					)
 			);
 		}
 	}

@@ -1,12 +1,12 @@
 package com.beluga.service.task;
 
-import com.beluga.mapper.ResultFileMapper;
-import com.beluga.model.result.ResultFile;
-import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.execution.event.task.TaskCompletedEvent;
 import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
-import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
+import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.mapper.ResultFileMapper;
+import com.beluga.model.result.ResultFile;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,13 +72,13 @@ class TaskExecutionEventHandlerTest {
 	}
 	
 	@Test
-	void onTaskResult() {
-		final TaskResultEvent taskResultEvent = Instancio.create(TaskResultEvent.class);
+	void onTaskResultStored() {
+		final TaskResultStoredEvent taskResultStoredEvent = Instancio.create(TaskResultStoredEvent.class);
 		final ResultFile resultFile = mock();
-		when(resultFileMapper.map(taskResultEvent)).thenReturn(resultFile);
+		when(resultFileMapper.map(taskResultStoredEvent)).thenReturn(resultFile);
 		
-		taskExecutionEventHandler.onTaskResult(taskResultEvent);
+		taskExecutionEventHandler.onTaskResultStored(taskResultStoredEvent);
 		
-		verify(taskExecutionService).addResultFile(taskResultEvent.getTaskId(), resultFile);
+		verify(taskExecutionService).addResultFile(taskResultStoredEvent.getTaskId(), resultFile);
 	}
 }

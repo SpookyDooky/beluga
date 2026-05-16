@@ -16,10 +16,20 @@ public abstract class TaskEvent extends ApplicationEvent implements ContextLogga
 	private final Long taskId;
 	
 	public TaskEvent(final Task task) {
-		super(task.getId());
-		this.jobDefinitionId = task.getJob().getJobDefinitionId();
-		this.jobId = task.getJob().getId();
-		this.taskId = task.getId();
+		this(
+				task.getJob().getJobDefinitionId(),
+				task.getJob().getId(),
+				task.getId()
+		);
+	}
+
+	public TaskEvent(final Long jobDefinitionId,
+					 final Long jobId,
+					 final Long taskId) {
+		super(taskId);
+		this.jobDefinitionId = jobDefinitionId;
+		this.jobId = jobId;
+		this.taskId = taskId;
 	}
 
 	public Long getJobDefinitionId() {
