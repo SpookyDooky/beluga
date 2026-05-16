@@ -1,7 +1,6 @@
 package com.beluga.properties.scraping.storage;
 
 import com.beluga.model.types.StorageFormat;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class StorageProperties {
@@ -9,9 +8,7 @@ public class StorageProperties {
 	@NotNull
 	private StorageFormat format;
 	
-	@NotBlank
 	private String folder;
-	@NotBlank
 	private String file;
 	
 	public StorageFormat getFormat() {

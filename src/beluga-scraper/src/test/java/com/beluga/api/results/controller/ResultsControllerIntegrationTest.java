@@ -93,7 +93,7 @@ class ResultsControllerIntegrationTest {
 		final List<Object> expectedTaskResult = List.of(Map.of("property", "value"));
 		final byte[] rawExpectedTaskResultData = objectMapper.writeValueAsString(expectedTaskResult).getBytes();
 		when(resultStorageService.retrieve(any())).thenReturn(rawExpectedTaskResultData);
-		
+
 		mvc.perform(
 				get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId() + "/tasks/" + readJobExecutionWithTasksDto.getTasks().getFirst().getId() + "/results")
 		).andExpect(status().isOk());

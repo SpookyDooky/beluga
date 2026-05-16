@@ -31,7 +31,7 @@ class TaskResultEventTest {
 	
 	@Test
 	void shouldThrowIllegalArgumentExceptionWhenTaskIsNull() {
-		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(null, mock(), mock()));
+		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(null, "key", mock()));
 	}
 	
 	@Test
@@ -41,7 +41,6 @@ class TaskResultEventTest {
 	
 	@Test
 	void shouldThrowIllegalArgumentExceptionWhenPayloadIsNull() {
-		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(mock(), mock(), null));
-		
+		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(mock(), "key", null));
 	}
 }

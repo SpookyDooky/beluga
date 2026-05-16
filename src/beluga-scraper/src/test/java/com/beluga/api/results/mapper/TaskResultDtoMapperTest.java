@@ -36,7 +36,7 @@ class TaskResultDtoMapperTest {
 		
 		final ResultFile resultFile = mock();
 		when(resultFile.getKey()).thenReturn("data.json");
-		when(resultFile.getNamespace()).thenReturn("path");
+		when(resultFile.getResourceIdentifier()).thenReturn("resourceIdentifier");
 		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
 		
 		final byte[] rawData = new byte[1];

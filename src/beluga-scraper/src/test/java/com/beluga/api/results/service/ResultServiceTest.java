@@ -244,11 +244,10 @@ class ResultServiceTest {
 		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
 		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
 		
-		final String fileName = "fileName";
-		final String filePath = "path";
+		final String fileKey = "fileKey";
 		final ResultFile resultFile = mock();
-		when(taskExecution.getResultFileByKey(fileName)).thenReturn(resultFile);
-		when(resultFile.getNamespace()).thenReturn(filePath);
+		when(taskExecution.getResultFileByKey(fileKey)).thenReturn(resultFile);
+		when(resultFile.getResourceIdentifier()).thenReturn("resourceIdentifier");
 		
 		final byte[] content = new byte[1];
 		when(resultStorageService.retrieve(resultFile.getResourceIdentifier())).thenReturn(content);
@@ -257,7 +256,7 @@ class ResultServiceTest {
 				jobDefinitionId,
 				jobExecutionId,
 				taskExecutionId,
-				fileName
+				fileKey
 		);
 		
 		assertSame(content, result);

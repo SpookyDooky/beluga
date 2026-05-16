@@ -12,7 +12,7 @@ import java.net.URI;
 
 @Configuration
 @ConditionalOnProperty(
-		name = "beluga.result-datastore.type",
+		name = "beluga.result-storage.type",
 		havingValue = "S3"
 )
 public class S3Config {
