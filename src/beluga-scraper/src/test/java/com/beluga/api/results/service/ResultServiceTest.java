@@ -5,10 +5,10 @@ import com.beluga.api.results.dto.ResultFileInfoDto;
 import com.beluga.api.results.dto.TaskResultDto;
 import com.beluga.api.results.mapper.ResultFileInfoMapper;
 import com.beluga.api.results.mapper.TaskResultDtoMapper;
+import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
-import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskExecutionService;
@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -248,11 +247,11 @@ class ResultServiceTest {
 		final String fileName = "fileName";
 		final String filePath = "path";
 		final ResultFile resultFile = mock();
-		when(taskExecution.getResultFileByFileName(fileName)).thenReturn(resultFile);
+		when(taskExecution.getResultFileByKey(fileName)).thenReturn(resultFile);
 		when(resultFile.getNamespace()).thenReturn(filePath);
 		
 		final byte[] content = new byte[1];
-		when(resultStorageService.retrieve(Path.of(filePath))).thenReturn(content);
+		when(resultStorageService.retrieve(resultFile.getResourceIdentifier())).thenReturn(content);
 		
 		final byte[] result = resultService.getResultFileContent(
 				jobDefinitionId,

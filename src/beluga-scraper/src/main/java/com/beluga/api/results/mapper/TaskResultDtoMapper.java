@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
@@ -36,7 +35,7 @@ public class TaskResultDtoMapper {
 				.findFirst()
 				.orElseThrow(TaskResultNotFoundException::new);
 		
-		final byte[] rawResultData = resultStorageService.retrieve(Path.of(resultFile.getNamespace()));
+		final byte[] rawResultData = resultStorageService.retrieve(resultFile.getResourceIdentifier());
 		final List<Object> data = mapData(rawResultData);
 		
 		final TaskResultDto taskResultDto = new TaskResultDto();

@@ -15,7 +15,6 @@ import java.time.Instant;
 
 import static com.beluga.execution.model.task.TaskStatus.*;
 
-// Todo move to event package -> which contains a package for all the event handlers
 @Component
 public class TaskExecutionEventHandler {
 	

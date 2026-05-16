@@ -104,9 +104,9 @@ public class TaskExecution {
 		resultFile.setTaskExecution(this);
 	}
 	
-	public ResultFile getResultFileByFileName(final String fileName) {
+	public ResultFile getResultFileByKey(final String key) {
 		return resultFiles.stream()
-				.filter(resultFile -> resultFile.getKey().equals(fileName))
+				.filter(resultFile -> resultFile.getKey().equals(key))
 				.findFirst()
 				.orElseThrow(EntityNotFoundException::new);
 	}

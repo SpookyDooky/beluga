@@ -16,9 +16,9 @@ public class TaskResultEvent extends TaskEvent {
     /**
      * Creates a {@link TaskResultEvent}.
      *
-     * @param task     the task this result is for.
-     * @param key name of the file in which the results should be stored.
-     * @param payload  the payload.
+     * @param task    the task this result is for.
+     * @param key     name of the file in which the results should be stored.
+     * @param payload the payload.
      * @throws NullPointerException thrown when the payload is null.
      */
     private TaskResultEvent(final Task task,
@@ -30,15 +30,15 @@ public class TaskResultEvent extends TaskEvent {
     }
 
     public static TaskResultEvent of(final Task task,
-                                     final String fileName,
+                                     final String key,
                                      final Payload<?> payload) {
         validateNotNull("task", task);
-        validateNotNull("key", fileName);
+        validateNotNull("key", key);
         validateNotNull("payload", payload);
 
         return new TaskResultEvent(
                 task,
-                fileName,
+                key,
                 payload
         );
     }

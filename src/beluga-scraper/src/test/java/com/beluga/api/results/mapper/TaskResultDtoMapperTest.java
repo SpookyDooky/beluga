@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.ObjectMapper;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +40,7 @@ class TaskResultDtoMapperTest {
 		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
 		
 		final byte[] rawData = new byte[1];
-		when(resultStorageService.retrieve(Path.of(resultFile.getNamespace()))).thenReturn(rawData);
+		when(resultStorageService.retrieve(resultFile.getResourceIdentifier())).thenReturn(rawData);
 		
 		final List<Object> data = mock();
 		when(objectMapper.readValue(rawData, List.class)).thenReturn(data);

@@ -22,21 +22,21 @@ class TaskExecutionTest {
 	}
 	
 	@Test
-	void shouldGetResultFileByFileName() {
+	void shouldGetResultFileByKey() {
 		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
 		final ResultFile resultFile = taskExecution.getResultFiles()
 				.getFirst();
 		
-		final ResultFile result = taskExecution.getResultFileByFileName(resultFile.getKey());
+		final ResultFile result = taskExecution.getResultFileByKey(resultFile.getKey());
 		
 		assertSame(resultFile, result);
 	}
 	
 	@Test
-	void shouldThrowEntityNotFoundExceptionForGetResultFileByFileName() {
+	void shouldThrowEntityNotFoundExceptionForGetResultFileByKey() {
 		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
 		
-		assertThrows(EntityNotFoundException.class, () -> taskExecution.getResultFileByFileName(""));
+		assertThrows(EntityNotFoundException.class, () -> taskExecution.getResultFileByKey(""));
 	}
 	
 }

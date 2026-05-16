@@ -1,16 +1,16 @@
 package com.beluga.result_storage.s3.service;
 
 import com.beluga.logging.ContextLogger;
-import com.beluga.properties.datastore.S3Properties;
+import com.beluga.properties.BelugaScraperProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Path;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Answers.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class S3ResultDataStoreProviderTest {
@@ -19,8 +19,8 @@ class S3ResultDataStoreProviderTest {
 	private ContextLogger logger;
 	@Mock
 	private S3Service s3Service;
-	@Mock
-	private S3Properties s3Properties;
+	@Mock(answer = RETURNS_DEEP_STUBS)
+	private BelugaScraperProperties belugaScraperProperties;
 	
 	private final String bucket = "bucket";
 	
@@ -28,13 +28,13 @@ class S3ResultDataStoreProviderTest {
 	
 	@BeforeEach
 	void setup() {
-		when(s3Properties.getBucket()).thenReturn(bucket);
-		s3DataStoreProvider = new S3ResultDataStoreProvider(logger, s3Service, s3Properties);
+		when(belugaScraperProperties.getResultStorage().getS3().getBucket()).thenReturn(bucket);
+		s3DataStoreProvider = new S3ResultDataStoreProvider(logger, s3Service, belugaScraperProperties);
 	}
 	
 	@Test
 	void shouldSave() {
-		final Path path = mock(RETURNS_DEEP_STUBS);
+		final String path = "path";
 		final byte[] fileContent = new byte[0];
 		
 		s3DataStoreProvider.save(path, fileContent);

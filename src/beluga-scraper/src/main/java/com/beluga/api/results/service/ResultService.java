@@ -5,11 +5,11 @@ import com.beluga.api.results.dto.ResultFileInfoDto;
 import com.beluga.api.results.dto.TaskResultDto;
 import com.beluga.api.results.mapper.ResultFileInfoMapper;
 import com.beluga.api.results.mapper.TaskResultDtoMapper;
+import com.beluga.execution.model.task.Task;
+import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
-import com.beluga.execution.model.task.Task;
-import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskExecutionService;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,8 +124,8 @@ public class ResultService {
 	                                   final String fileName) {
 		validateTaskResultExists(jobDefinitionId, executionId, taskExecutionId);
 		final ResultFile resultFile = taskExecutionService.getById(taskExecutionId)
-				.getResultFileByFileName(fileName);
+				.getResultFileByKey(fileName);
 		
-		return resultStorageService.retrieve(Path.of(resultFile.getNamespace()));
+		return resultStorageService.retrieve(resultFile.getResourceIdentifier());
 	}
 }

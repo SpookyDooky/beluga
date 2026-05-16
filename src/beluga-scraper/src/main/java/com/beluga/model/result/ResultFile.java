@@ -48,7 +48,12 @@ public class ResultFile {
 	public void setKey(final String fileName) {
 		this.key = fileName;
 	}
-	
+
+	@Transient
+	public String getResourceIdentifier() {
+		return namespace + "/" + key;
+	}
+
 	public Long getSizeInBytes() {
 		return sizeInBytes;
 	}

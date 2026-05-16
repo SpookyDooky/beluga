@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.FileOutputStream;
@@ -24,11 +25,17 @@ class FileSystemResultDataStoreProviderTest {
 	
 	@Test
 	void shouldSave() throws Exception {
-		final Path path = mock(RETURNS_DEEP_STUBS);
+		final String filePath = "path";
 		final byte[] fileContent = new byte[0];
-		
-		try (final MockedConstruction<FileOutputStream> fileOutputStreamMockedConstruction = mockConstruction(FileOutputStream.class)) {
-			dataStoreProvider.save(path, fileContent);
+
+		final Path path = mock(RETURNS_DEEP_STUBS);
+		try (
+				final MockedConstruction<FileOutputStream> fileOutputStreamMockedConstruction = mockConstruction(FileOutputStream.class);
+				final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class)
+		) {
+			pathMockedStatic.when(() -> Path.of(filePath)).thenReturn(path);
+
+			dataStoreProvider.save(filePath, fileContent);
 			
 			verify(path.toFile().getParentFile()).mkdirs();
 			
