@@ -8,9 +8,7 @@ public class ResultFileInfoDto {
 	@NotNull
 	private Long id;
 	@NotBlank
-	private String path;
-	@NotBlank
-	private String fileName;
+	private String resourceIdentifier;
 	@NotNull
 	private Long sizeInBytes;
 	
@@ -21,23 +19,15 @@ public class ResultFileInfoDto {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-	
-	public String getPath() {
-		return path;
+
+	public String getResourceIdentifier() {
+		return resourceIdentifier;
 	}
-	
-	public void setPath(final String path) {
-		this.path = path;
+
+	public void setResourceIdentifier(String resourceIdentifier) {
+		this.resourceIdentifier = resourceIdentifier;
 	}
-	
-	public String getFileName() {
-		return fileName;
-	}
-	
-	public void setFileName(final String fileName) {
-		this.fileName = fileName;
-	}
-	
+
 	public Long getSizeInBytes() {
 		return sizeInBytes;
 	}
