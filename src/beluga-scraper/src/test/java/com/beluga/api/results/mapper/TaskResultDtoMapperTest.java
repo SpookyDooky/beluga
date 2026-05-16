@@ -36,12 +36,12 @@ class TaskResultDtoMapperTest {
 		when(taskExecution.getId()).thenReturn(taskExecutionId);
 		
 		final ResultFile resultFile = mock();
-		when(resultFile.getFileName()).thenReturn("data.json");
-		when(resultFile.getPath()).thenReturn("path");
+		when(resultFile.getKey()).thenReturn("data.json");
+		when(resultFile.getNamespace()).thenReturn("path");
 		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
 		
 		final byte[] rawData = new byte[1];
-		when(resultStorageService.retrieve(Path.of(resultFile.getPath()))).thenReturn(rawData);
+		when(resultStorageService.retrieve(Path.of(resultFile.getNamespace()))).thenReturn(rawData);
 		
 		final List<Object> data = mock();
 		when(objectMapper.readValue(rawData, List.class)).thenReturn(data);

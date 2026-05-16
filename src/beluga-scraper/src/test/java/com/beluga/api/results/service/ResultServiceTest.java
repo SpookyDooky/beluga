@@ -249,7 +249,7 @@ class ResultServiceTest {
 		final String filePath = "path";
 		final ResultFile resultFile = mock();
 		when(taskExecution.getResultFileByFileName(fileName)).thenReturn(resultFile);
-		when(resultFile.getPath()).thenReturn(filePath);
+		when(resultFile.getNamespace()).thenReturn(filePath);
 		
 		final byte[] content = new byte[1];
 		when(resultStorageService.retrieve(Path.of(filePath))).thenReturn(content);

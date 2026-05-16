@@ -127,6 +127,6 @@ public class ResultService {
 		final ResultFile resultFile = taskExecutionService.getById(taskExecutionId)
 				.getResultFileByFileName(fileName);
 		
-		return resultStorageService.retrieve(Path.of(resultFile.getPath()));
+		return resultStorageService.retrieve(Path.of(resultFile.getNamespace()));
 	}
 }

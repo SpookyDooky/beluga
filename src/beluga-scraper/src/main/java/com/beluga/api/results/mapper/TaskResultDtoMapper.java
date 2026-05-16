@@ -32,11 +32,11 @@ public class TaskResultDtoMapper {
 	@Transactional(propagation = MANDATORY)
 	public TaskResultDto map(final TaskExecution taskExecution) {
 		final ResultFile resultFile = taskExecution.getResultFiles().stream()
-				.filter(taskResultFile -> taskResultFile.getFileName().equals(DATA_FILE_NAME))
+				.filter(taskResultFile -> taskResultFile.getKey().equals(DATA_FILE_NAME))
 				.findFirst()
 				.orElseThrow(TaskResultNotFoundException::new);
 		
-		final byte[] rawResultData = resultStorageService.retrieve(Path.of(resultFile.getPath()));
+		final byte[] rawResultData = resultStorageService.retrieve(Path.of(resultFile.getNamespace()));
 		final List<Object> data = mapData(rawResultData);
 		
 		final TaskResultDto taskResultDto = new TaskResultDto();

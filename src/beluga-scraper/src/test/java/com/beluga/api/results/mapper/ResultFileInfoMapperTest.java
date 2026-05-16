@@ -18,8 +18,8 @@ class ResultFileInfoMapperTest {
 		final ResultFileInfoDto result = mapper.map(resultFile);
 		
 		assertEquals(resultFile.getId(), result.getId());
-		assertEquals(resultFile.getFileName(), result.getFileName());
-		assertEquals(resultFile.getPath(), result.getPath());
+		assertEquals(resultFile.getKey(), result.getFileName());
+		assertEquals(resultFile.getNamespace(), result.getPath());
 		assertEquals(resultFile.getSizeInBytes(), result.getSizeInBytes());
 	}
 }

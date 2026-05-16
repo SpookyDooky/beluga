@@ -40,7 +40,7 @@ class ResultFileMapperTest {
 		
 		final ResultFile resultFile = mapper.map(taskResultEvent);
 		
-		assertEquals(taskResultEvent.getStorageHint().getPath().toString(), resultFile.getPath());
+		assertEquals(taskResultEvent.getStorageHint().getPath().toString(), resultFile.getNamespace());
 		assertEquals(expectedBytes.length, resultFile.getSizeInBytes());
 	}
 }

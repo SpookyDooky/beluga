@@ -1,22 +1,18 @@
 package com.beluga.result_storage;
 
+import com.beluga.execution.event.task.task_result.StorageHint;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
-import com.beluga.model.event.storable.StorableEvent;
 import com.beluga.model.event.storable.payload.ImagePayload;
 import com.beluga.model.event.storable.payload.JsonPayload;
 import com.beluga.model.event.storable.payload.Payload;
 import com.beluga.model.event.storable.payload.StringPayload;
-import com.beluga.execution.event.task.task_result.StorageHint;
 import com.beluga.result_storage.json.JsonService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import javax.xml.stream.events.Namespace;
-import java.nio.file.Path;
 
 @Service
 public class ResultStorageService {
@@ -95,7 +91,7 @@ public class ResultStorageService {
 		);
 	}
 	
-	public byte[] retrieve(final Path filePath) {
-		return resultDataStoreProvider.retrieve(filePath);
+	public byte[] retrieve(final String resourceIdentifier) {
+		return resultDataStoreProvider.retrieve(resourceIdentifier);
 	}
 }

@@ -14,8 +14,8 @@ public class ResultFile {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
-	private String path;
-	private String fileName;
+	private String namespace;
+	private String key;
 	private Long sizeInBytes;
 	
 	@Enumerated(STRING)
@@ -33,20 +33,20 @@ public class ResultFile {
 		this.id = id;
 	}
 	
-	public String getPath() {
-		return path;
+	public String getNamespace() {
+		return namespace;
 	}
 	
-	public void setPath(final String path) {
-		this.path = path;
+	public void setNamespace(final String path) {
+		this.namespace = path;
 	}
 	
-	public String getFileName() {
-		return fileName;
+	public String getKey() {
+		return key;
 	}
 	
-	public void setFileName(final String fileName) {
-		this.fileName = fileName;
+	public void setKey(final String fileName) {
+		this.key = fileName;
 	}
 	
 	public Long getSizeInBytes() {

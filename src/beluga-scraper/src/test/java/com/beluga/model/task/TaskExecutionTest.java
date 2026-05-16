@@ -27,7 +27,7 @@ class TaskExecutionTest {
 		final ResultFile resultFile = taskExecution.getResultFiles()
 				.getFirst();
 		
-		final ResultFile result = taskExecution.getResultFileByFileName(resultFile.getFileName());
+		final ResultFile result = taskExecution.getResultFileByFileName(resultFile.getKey());
 		
 		assertSame(resultFile, result);
 	}

@@ -2,7 +2,7 @@ package com.beluga.result_storage.s3.service;
 
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
-import com.beluga.properties.datastore.S3Properties;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.result_storage.ResultDataStoreProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -24,10 +24,11 @@ public class S3ResultDataStoreProvider extends ResultDataStoreProvider {
 	
 	public S3ResultDataStoreProvider(final ContextLogger logger,
 	                                 final S3Service s3Service,
-	                                 final S3Properties s3Properties) {
+	                                 final BelugaScraperProperties belugaScraperProperties) {
 		super(logger);
 		this.s3Service = s3Service;
-		this.bucket = s3Properties.getBucket();
+		this.bucket = belugaScraperProperties.getResultStorage().getS3()
+				.getBucket();
 	}
 	
 	@Override
