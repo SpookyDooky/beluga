@@ -53,7 +53,6 @@ class TaskExecutionEventHandlerTest {
 		taskExecutionEventHandler.onTaskCompleted(event);
 		
 		assertEquals(COMPLETED, taskExecution.getStatus());
-		assertEquals(event.getResultFolder(), taskExecution.getResultFolder());
 		
 		verify(taskExecutionService).save(taskExecution);
 	}

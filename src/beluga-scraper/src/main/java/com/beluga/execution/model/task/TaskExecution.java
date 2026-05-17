@@ -23,8 +23,7 @@ public class TaskExecution {
 	
 	@Enumerated(STRING)
 	private TaskStatus status = PLANNED;
-	private String resultFolder;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "task_definition_id")
 	private TaskDefinition taskDefinition;
@@ -61,14 +60,6 @@ public class TaskExecution {
 	
 	public void setStatus(final TaskStatus status) {
 		this.status = status;
-	}
-	
-	public String getResultFolder() {
-		return resultFolder;
-	}
-	
-	public void setResultFolder(final String resultFolder) {
-		this.resultFolder = resultFolder;
 	}
 	
 	public TaskDefinition getTaskDefinition() {
