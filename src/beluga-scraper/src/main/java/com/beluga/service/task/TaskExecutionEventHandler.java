@@ -42,6 +42,7 @@ public class TaskExecutionEventHandler {
 	public void onTaskCompleted(final TaskCompletedEvent event) {
 		final TaskExecution taskExecution = taskExecutionService.getById(event.getTaskId());
 		taskExecution.setStatus(COMPLETED);
+
 		taskExecution.setResultFolder(event.getResultFolder());
 		
 		taskExecutionService.save(taskExecution);

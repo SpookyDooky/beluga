@@ -74,16 +74,12 @@ class JobDefinitionConfigurationMapperTest {
 		final ScrapingDefinition scrapingDefinition = mock();
 		when(scrapingDefinitionMapper.map(dto.getScraping())).thenReturn(scrapingDefinition);
 		
-		final StorageDefinition storageDefinition = mock();
-		when(storageDefinitionMapper.map(dto.getStorage())).thenReturn(storageDefinition);
-		
 		final ExecutionDefinition executionDefinition = mock();
 		when(executionDefinitionMapper.map(dto.getExecution())).thenReturn(executionDefinition);
 		
 		final JobDefinition entity = mapper.map(dto);
 		
 		assertSame(scrapingDefinition, entity.getScrapingDefinition());
-		assertSame(storageDefinition, entity.getStorageDefinition());
 		assertSame(executionDefinition, entity.getExecutionDefinition());
 	}
 	
@@ -94,9 +90,6 @@ class JobDefinitionConfigurationMapperTest {
 		final ReadScrapingConfigurationDto readScrapingConfigurationDto = mock();
 		when(scrapingDefinitionMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(readScrapingConfigurationDto);
 		
-		final ReadStorageConfigurationDto readStorageConfigurationDto = mock();
-		when(storageDefinitionMapper.map(jobDefinition.getStorageDefinition())).thenReturn(readStorageConfigurationDto);
-		
 		final ReadExecutionConfigurationDto readExecutionConfigurationDto = mock();
 		when(executionDefinitionMapper.map(jobDefinition.getExecutionDefinition())).thenReturn(readExecutionConfigurationDto);
 		
@@ -104,7 +97,6 @@ class JobDefinitionConfigurationMapperTest {
 		
 		assertEquals(jobDefinition.getId(), dto.getId());
 		assertSame(readScrapingConfigurationDto, dto.getScraping());
-		assertSame(readStorageConfigurationDto, dto.getStorage());
 		assertSame(readExecutionConfigurationDto, dto.getExecution());
 	}
 	
@@ -116,7 +108,6 @@ class JobDefinitionConfigurationMapperTest {
 		mapper.update(dto, entity);
 		
 		verify(scrapingDefinitionMapper).update(dto.getScraping(), entity.getScrapingDefinition());
-		verify(storageDefinitionMapper).update(dto.getStorage(), entity.getStorageDefinition());
 		verify(executionDefinitionMapper).update(dto.getExecution(), entity.getExecutionDefinition());
 	}
 }
