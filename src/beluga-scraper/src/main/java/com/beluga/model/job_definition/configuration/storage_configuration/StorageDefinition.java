@@ -13,7 +13,6 @@ public class StorageDefinition {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	
-	// Todo - remove as this is not used for anything Only json will be offered as result storage format
 	@Enumerated(STRING)
 	private StorageFormat format;
 

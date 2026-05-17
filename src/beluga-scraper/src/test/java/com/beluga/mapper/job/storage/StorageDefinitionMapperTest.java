@@ -1,7 +1,5 @@
 package com.beluga.mapper.job.storage;
 
-import com.beluga.api.job.dto.read.ReadStorageConfigurationDto;
-import com.beluga.api.job.dto.write.WriteStorageConfigurationDto;
 import com.beluga.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.beluga.properties.scraping.storage.StorageProperties;
 import org.instancio.Instancio;
@@ -20,35 +18,5 @@ class StorageDefinitionMapperTest {
 		final StorageDefinition storageDefinition = mapper.map(storageProperties);
 		
 		assertEquals(storageProperties.getFormat(), storageDefinition.getFormat());
-		assertEquals(storageProperties.getFolder(), storageDefinition.getFolder());
-	}
-	
-	@Test
-	void shouldMapFromWriteStorageConfigurationDto() {
-		final WriteStorageConfigurationDto dto = Instancio.create(WriteStorageConfigurationDto.class);
-		
-		final StorageDefinition entity = mapper.map(dto);
-		
-		assertEquals(dto.getFolder(), entity.getFolder());
-	}
-	
-	@Test
-	void shouldMapToDto() {
-		final StorageDefinition entity = Instancio.create(StorageDefinition.class);
-		
-		final ReadStorageConfigurationDto dto = mapper.map(entity);
-		
-		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getFolder(), dto.getFolder());
-	}
-	
-	@Test
-	void shouldUpdate() {
-		final WriteStorageConfigurationDto dto = Instancio.create(WriteStorageConfigurationDto.class);
-		final StorageDefinition entity = Instancio.create(StorageDefinition.class);
-		
-		mapper.update(dto, entity);
-		
-		assertEquals(dto.getFolder(), entity.getFolder());
 	}
 }

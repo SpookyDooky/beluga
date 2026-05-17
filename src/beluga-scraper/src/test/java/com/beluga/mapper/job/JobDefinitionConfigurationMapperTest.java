@@ -3,7 +3,6 @@ package com.beluga.mapper.job;
 import com.beluga.api.job.dto.read.ReadExecutionConfigurationDto;
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
-import com.beluga.api.job.dto.read.ReadStorageConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.mapper.job.execution.ExecutionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.ScrapingDefinitionMapper;

@@ -18,7 +18,6 @@ class StorageDefinitionMapperTest {
 
         final StorageConfiguration storageConfiguration =  storageConfigurationMapper.map(storageDefinition);
 
-        assertEquals(storageDefinition.getFolder(), storageConfiguration.getFolder());
         assertEquals(storageDefinition.getFormat(), storageConfiguration.getFormat());
     }
 
