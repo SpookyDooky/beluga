@@ -115,7 +115,7 @@ public class Worker {
 
             logger.info("Task completed");
             applicationEventPublisher.publishEvent(new ActivityEvent(new TaskCompletedActivity(task.getUrl(), timingService.stop(workerId))));
-            applicationEventPublisher.publishEvent(new TaskCompletedEvent(task, task.getJob().getJobTaskResultsFolder() + "/" + task.getId() + "/"));
+            applicationEventPublisher.publishEvent(new TaskCompletedEvent(task));
         } catch (final Exception e) {
             logger.error("Task execution failed.", e);
             applicationEventPublisher.publishEvent(new TaskFailedEvent(task));

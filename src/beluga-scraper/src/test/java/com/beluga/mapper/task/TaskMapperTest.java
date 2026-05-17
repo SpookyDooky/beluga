@@ -1,7 +1,6 @@
 package com.beluga.mapper.task;
 
 import com.beluga.execution.model.task.ScrapingConfiguration;
-import com.beluga.execution.model.task.StorageConfiguration;
 import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
 import com.beluga.mapper.task.configuration.StorageConfigurationMapper;
 import com.beluga.model.job_definition.JobDefinition;
@@ -12,9 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.instancio.settings.Keys.COLLECTION_MAX_SIZE;
 import static org.junit.jupiter.api.Assertions.*;

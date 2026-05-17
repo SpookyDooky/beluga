@@ -18,9 +18,6 @@ for managing jobs which is more suited for a production environment. You can fin
     * [beluga.jobs[].name](#belugajobsname)
   * [Urls](#belugajobsurlurl-file)
     * [beluga.jobs[].url.url-file](#belugajobsurlurl-file)
-  * [Storage configuration](#storage-configuration)
-      * [beluga.jobs[].storage.format](#belugajobsstorageformat)
-      * [beluga.jobs[].storage.folder](#belugajobsstoragefolder)
   * [Execution configuration](#execution-configuration)
     * [beluga.jobs[].execution.workers](#belugajobsexecutionworkers)
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
@@ -112,9 +109,6 @@ beluga:
     - name: job_name
       url:
         url-file: "/mounted/file_containing_urls.txt"
-      storage:
-        format: JSON
-        folder: "/mounted_folder/job_name_results"
       execution:
         workers: 1
         tasks-per-second: 1
