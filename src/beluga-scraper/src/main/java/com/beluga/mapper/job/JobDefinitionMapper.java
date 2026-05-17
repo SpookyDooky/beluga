@@ -4,7 +4,6 @@ import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.mapper.job.execution.ExecutionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.ScrapingDefinitionMapper;
-import com.beluga.mapper.job.storage.StorageDefinitionMapper;
 import com.beluga.mapper.task.TaskDefinitionMapperService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.properties.scraping.JobProperties;

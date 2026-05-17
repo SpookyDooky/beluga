@@ -14,7 +14,6 @@ public interface JobMapper {
 	
 	@Mapping(target = "jobDefinitionId", source = "id")
 	@Mapping(target = "jobName", source = "name")
-	@Mapping(target = "storageConfiguration", source = "storageDefinition")
 	@Mapping(target = "executionConfiguration", source = "executionDefinition")
 	Job map(JobDefinition jobDefinition);
 }

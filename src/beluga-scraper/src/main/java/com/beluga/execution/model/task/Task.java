@@ -19,7 +19,6 @@ public class Task implements ContextLoggable {
 	
 	private URL url;
 	private ScrapingConfiguration scrapingConfiguration;
-	private StorageConfiguration storageConfiguration;
 	
 	public Long getId() {
 		return id;
@@ -51,14 +50,6 @@ public class Task implements ContextLoggable {
 	
 	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
 		this.scrapingConfiguration = scrapingConfiguration;
-	}
-	
-	public StorageConfiguration getStorageConfiguration() {
-		return storageConfiguration;
-	}
-	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
-		this.storageConfiguration = storageConfiguration;
 	}
 	
 	public List<ImageDownloadTask> getImageDownloadsTask(final Map<String, Object> scrapedData) {
