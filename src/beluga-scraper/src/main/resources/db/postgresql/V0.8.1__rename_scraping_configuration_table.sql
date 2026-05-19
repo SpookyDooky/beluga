@@ -1,2 +1,0 @@
-alter table scraping_configuration rename to scraping_definition;
-alter table job_definition rename column scraping_configuration_id to scraping_definition_id;
