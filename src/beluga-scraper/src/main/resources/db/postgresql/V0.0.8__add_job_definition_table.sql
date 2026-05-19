@@ -1,7 +1,7 @@
 create table job_definition(
     id bigint primary key not null default nextval('primary_sequence'),
     name varchar not null unique,
-    url_configuration_id bigint not null,
+    url_configuration_id bigint,
     scraping_definition_id bigint not null,
     execution_definition_id bigint not null,
     constraint fk_url_configuration_id
