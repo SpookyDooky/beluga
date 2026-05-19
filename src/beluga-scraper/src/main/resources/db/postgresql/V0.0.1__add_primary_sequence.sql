@@ -1,1 +1,0 @@
-create sequence primary_sequence increment 1 start 1;

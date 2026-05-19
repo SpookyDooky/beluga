@@ -1,1 +1,0 @@
-alter table task_definition add column active bool default true
