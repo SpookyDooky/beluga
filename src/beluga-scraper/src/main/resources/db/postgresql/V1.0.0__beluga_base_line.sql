@@ -1,18 +1,16 @@
-create sequence primary_sequence increment 1 start 1;
-
 create table execution_definition(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     workers bigint not null,
     tasks_per_second double precision not null
 );
 
 create table scraping_definition(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     item_selector varchar not null
 );
 
 create table data_point_definition(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     scraping_definition_id bigint not null,
     selector varchar not null,
     field varchar not null,
@@ -24,12 +22,12 @@ create table data_point_definition(
 );
 
 create table url_configuration(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     url_file varchar
 );
 
 create table urls(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     url_configuration_id bigint not null,
     url varchar not null,
     constraint fk_url_configuration_id
@@ -38,7 +36,7 @@ create table urls(
 );
 
 create table job_definition(
-    id bigint primary key not null default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     name varchar not null unique,
     url_configuration_id bigint,
     scraping_definition_id bigint not null,
@@ -55,7 +53,7 @@ create table job_definition(
 );
 
 create table job_execution(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     job_definition_id bigint not null,
     executed_at timestamp not null,
     status varchar not null default 'PLANNED',
@@ -65,7 +63,7 @@ create table job_execution(
 );
 
 create table task_definition(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     job_definition_id bigint not null,
     url varchar not null,
     active bool default true,
@@ -75,7 +73,7 @@ create table task_definition(
 );
 
 create table task_execution(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     job_execution_id bigint not null,
     task_definition_id bigint not null,
     executed_at timestamp,
@@ -89,7 +87,7 @@ create table task_execution(
 );
 
 create table result_file(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     namespace varchar not null,
     size_in_bytes bigint not null,
     compression_type varchar not null,
@@ -101,7 +99,7 @@ create table result_file(
 );
 
 create table activity_log(
-    id bigint not null primary key default nextval('primary_sequence'),
+    id bigint generated always as identity primary key,
     timestamp timestamp not null,
     type varchar not null,
     context jsonb not null
