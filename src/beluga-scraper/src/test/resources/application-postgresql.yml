@@ -7,5 +7,5 @@ beluga:
       username: username
       password: password
       driverClassName: org.postgresql.Driver
-  result-datastore:
+  result-storage:
     type: FILE_SYSTEM

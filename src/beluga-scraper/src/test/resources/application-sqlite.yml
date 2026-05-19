@@ -2,5 +2,5 @@
 beluga:
   persistence:
     type: SQL_LITE
-  result-datastore:
+  result-storage:
     type: FILE_SYSTEM
