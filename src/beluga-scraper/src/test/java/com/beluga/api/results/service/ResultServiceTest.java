@@ -5,11 +5,11 @@ import com.beluga.api.results.dto.ResultFileInfoDto;
 import com.beluga.api.results.dto.TaskResultDto;
 import com.beluga.api.results.mapper.ResultFileInfoMapper;
 import com.beluga.api.results.mapper.TaskResultDtoMapper;
+import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
-import com.beluga.execution.model.task.TaskExecution;
-import com.beluga.result_storage.StorageService;
+import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskExecutionService;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ class ResultServiceTest {
 	@Mock
 	private ResultFileInfoMapper resultFileInfoMapper;
 	@Mock
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	
 	@InjectMocks
 	private ResultService resultService;
@@ -245,20 +244,19 @@ class ResultServiceTest {
 		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
 		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
 		
-		final String fileName = "fileName";
-		final String filePath = "path";
+		final String fileKey = "fileKey";
 		final ResultFile resultFile = mock();
-		when(taskExecution.getResultFileByFileName(fileName)).thenReturn(resultFile);
-		when(resultFile.getPath()).thenReturn(filePath);
+		when(taskExecution.getResultFileByKey(fileKey)).thenReturn(resultFile);
+		when(resultFile.getResourceIdentifier()).thenReturn("resourceIdentifier");
 		
 		final byte[] content = new byte[1];
-		when(storageService.retrieve(Path.of(filePath))).thenReturn(content);
+		when(resultStorageService.retrieve(resultFile.getResourceIdentifier())).thenReturn(content);
 		
 		final byte[] result = resultService.getResultFileContent(
 				jobDefinitionId,
 				jobExecutionId,
 				taskExecutionId,
-				fileName
+				fileKey
 		);
 		
 		assertSame(content, result);

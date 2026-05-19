@@ -17,7 +17,7 @@ import static com.beluga.logging.ContextKeys.FILE_NAME;
 @Service
 // TODO MAKE custom annotation @IsResultStoreFileSystem
 @ConditionalOnProperty(
-		name = "beluga.result-datastore.type",
+		name = "beluga.result-storage.type",
 		havingValue = "FILE_SYSTEM"
 )
 public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
@@ -26,10 +26,11 @@ public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
 		super(logger);
 	}
 	
-	// TODO - Fix activity logging as it is broken, oops
 	@Override
-	public void save(final Path filePath,
+	public void save(final String resourceIdentifier,
 	                 final byte[] fileContent) {
+		final Path filePath = Path.of(resourceIdentifier);
+
 		try (final CloseableContext ignored = logger.with(FILE_NAME, filePath.getFileName().toString())) {
 			final File file = filePath.toFile();
 			write(file, fileContent);
@@ -50,9 +51,9 @@ public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
 	}
 	
 	@Override
-	public byte[] retrieve(final Path filePath) {
+	public byte[] retrieve(final String resourceIdentifier) {
 		try {
-			return Files.readAllBytes(filePath);
+			return Files.readAllBytes(Path.of(resourceIdentifier));
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not read file", e);
 		}

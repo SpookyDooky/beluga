@@ -17,7 +17,7 @@ class JitterRateLimiterTest {
 			final long startTime = System.currentTimeMillis();
 			jitterRateLimiter.acquire();
 			final long totalTime = System.currentTimeMillis() - startTime;
-			
+
 			assertTrue(totalTime >= 500);
 			assertTrue(totalTime <= 2000);
 		}

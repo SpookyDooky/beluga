@@ -271,16 +271,12 @@ components:
     TaskResultFile:
       type: object
       properties:
-        path:
+        resourceIdentifier:
           type: string
-          example: /path/to/file
-        fileName:
-          type: string
-          example: fileName
+          example: data/results/123/321/1/data.json
         sizeInBytes:
           type: integer
           example: 123
       required:
-        - path
-        - fileName
+        - resourceIdentifier
         - sizeInBytes

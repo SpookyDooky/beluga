@@ -4,7 +4,6 @@ create table task_execution(
     task_definition_id bigint not null,
     executed_at timestamp,
     status varchar,
-    result_folder varchar,
     constraint fk_job_execution_id
         foreign key (job_execution_id)
         references job_execution(id),

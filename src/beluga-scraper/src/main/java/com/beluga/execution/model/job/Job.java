@@ -2,7 +2,6 @@ package com.beluga.execution.model.job;
 
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
-import com.beluga.execution.model.task.StorageConfiguration;
 import com.beluga.execution.model.task.Task;
 
 import java.util.ArrayList;
@@ -20,8 +19,7 @@ public class Job {
 	
 	private Long jobDefinitionId;
 	private String jobName;
-	
-	private StorageConfiguration storageConfiguration;
+
 	private ExecutionConfiguration executionConfiguration;
 	
 	private List<Task> tasks = new ArrayList<>();
@@ -50,14 +48,6 @@ public class Job {
 		this.jobName = jobName;
 	}
 	
-	public StorageConfiguration getStorageConfiguration() {
-		return storageConfiguration;
-	}
-	
-	public void setStorageConfiguration(final StorageConfiguration storageConfiguration) {
-		this.storageConfiguration = storageConfiguration;
-	}
-	
 	public ExecutionConfiguration getExecutionConfiguration() {
 		return executionConfiguration;
 	}
@@ -65,16 +55,7 @@ public class Job {
 	public void setExecutionConfiguration(final ExecutionConfiguration executionConfiguration) {
 		this.executionConfiguration = executionConfiguration;
 	}
-	
-	public String getJobFolder() {
-		return storageConfiguration.getFolder() + "/"
-				+ jobName;
-	}
-	
-	public String getJobTaskResultsFolder() {
-		return getJobFolder() + "/job-executions/" + id + "/results/tasks";
-	}
-	
+
 	public List<Task> getTasks() {
 		return tasks;
 	}

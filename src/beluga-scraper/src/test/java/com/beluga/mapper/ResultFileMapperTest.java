@@ -1,6 +1,6 @@
 package com.beluga.mapper;
 
-import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
 import com.beluga.model.result.ResultFile;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,14 +33,15 @@ class ResultFileMapperTest {
 	
 	@Test
 	void shouldMap() throws Exception {
-		final TaskResultEvent taskResultEvent = Instancio.create(TaskResultEvent.class);
+		final TaskResultStoredEvent taskResultStoredEvent = Instancio.create(TaskResultStoredEvent.class);
 		
 		final byte[] expectedBytes = new byte[3];
-		when(objectMapper.writeValueAsBytes(taskResultEvent.getPayload().getData())).thenReturn(expectedBytes);
+		when(objectMapper.writeValueAsBytes(taskResultStoredEvent.getPayload().getData())).thenReturn(expectedBytes);
 		
-		final ResultFile resultFile = mapper.map(taskResultEvent);
+		final ResultFile resultFile = mapper.map(taskResultStoredEvent);
 		
-		assertEquals(taskResultEvent.getStorageHint().getPath().toString(), resultFile.getPath());
+		assertEquals(taskResultStoredEvent.getNamespace(), resultFile.getNamespace());
+		assertEquals(taskResultStoredEvent.getKey(), resultFile.getKey());
 		assertEquals(expectedBytes.length, resultFile.getSizeInBytes());
 	}
 }

@@ -4,7 +4,7 @@ import com.beluga.api.execution.exception.TaskResultNotFoundException;
 import com.beluga.api.results.dto.TaskResultDto;
 import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.model.result.ResultFile;
-import com.beluga.result_storage.StorageService;
+import com.beluga.result_storage.ResultStorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.ObjectMapper;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +23,7 @@ class TaskResultDtoMapperTest {
 	@Mock
 	private ObjectMapper objectMapper;
 	@Mock
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	
 	@InjectMocks
 	private TaskResultDtoMapper taskResultDtoMapper;
@@ -36,12 +35,12 @@ class TaskResultDtoMapperTest {
 		when(taskExecution.getId()).thenReturn(taskExecutionId);
 		
 		final ResultFile resultFile = mock();
-		when(resultFile.getFileName()).thenReturn("data.json");
-		when(resultFile.getPath()).thenReturn("path");
+		when(resultFile.getKey()).thenReturn("data.json");
+		when(resultFile.getResourceIdentifier()).thenReturn("resourceIdentifier");
 		when(taskExecution.getResultFiles()).thenReturn(List.of(resultFile));
 		
 		final byte[] rawData = new byte[1];
-		when(storageService.retrieve(Path.of(resultFile.getPath()))).thenReturn(rawData);
+		when(resultStorageService.retrieve(resultFile.getResourceIdentifier())).thenReturn(rawData);
 		
 		final List<Object> data = mock();
 		when(objectMapper.readValue(rawData, List.class)).thenReturn(data);

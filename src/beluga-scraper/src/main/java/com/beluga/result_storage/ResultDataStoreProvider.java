@@ -6,9 +6,8 @@ import com.beluga.logging.ContextLogger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 
-import static com.beluga.logging.ContextKeys.FILE_NAME;
+import static com.beluga.logging.ContextKeys.RESOURCE_IDENTIFIER;
 
 /**
  * Used for making more datastore implementations available as storage backend.
@@ -22,10 +21,10 @@ public abstract class ResultDataStoreProvider {
 		this.logger = logger;
 	}
 	
-	public void save(final Path filePath,
+	public void save(final String resourceIdentifier,
 	                 final InputStream fileContent) {
 		try (
-				final CloseableContext ignored = logger.with(FILE_NAME, filePath.toString());
+				final CloseableContext ignored = logger.with(RESOURCE_IDENTIFIER, resourceIdentifier);
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
 		) {
 			final byte[] buffer = new byte[8192];
@@ -36,19 +35,19 @@ public abstract class ResultDataStoreProvider {
 			}
 			
 			fileContent.close();
-			save(filePath, outputStream.toByteArray());
+			save(resourceIdentifier, outputStream.toByteArray());
 		} catch (final IOException e) {
 			throw new IllegalStateException("Could not read file content.", e);
 		}
 	}
 	
-	public abstract void save(Path filePath, byte[] fileContent);
+	public abstract void save(String resourceIdentifier, byte[] fileContent);
 	
 	/**
 	 * Retrieves a result file.
 	 *
-	 * @param filePath the {@link Path} of the file.
+	 * @param resourceIdentifier the identifier of a file.
 	 * @return raw content of the file in bytes.
 	 */
-	public abstract byte[] retrieve(Path filePath);
+	public abstract byte[] retrieve(String resourceIdentifier);
 }

@@ -9,8 +9,6 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.nio.file.Path;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +35,7 @@ class S3ServiceTest {
 		final RequestBody requestBody = mock();
 		try (final MockedStatic<RequestBody> requestBodyMockedStatic = Mockito.mockStatic(RequestBody.class)) {
 			requestBodyMockedStatic.when(() -> RequestBody.fromBytes(fileContent)).thenReturn(requestBody);
-			s3Service.putObject(Path.of(path), fileContent, bucket);
+			s3Service.putObject(path, fileContent, bucket);
 		}
 		
 		verify(s3Client).putObject(

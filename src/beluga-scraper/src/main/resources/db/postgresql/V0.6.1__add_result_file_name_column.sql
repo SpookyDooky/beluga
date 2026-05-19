@@ -1,1 +1,1 @@
-alter table result_file add column file_name varchar;
+alter table result_file add column key varchar;

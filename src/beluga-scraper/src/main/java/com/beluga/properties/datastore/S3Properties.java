@@ -13,9 +13,11 @@ public class S3Properties {
 	private String secretKey;
 	@NotNull
 	private String bucket;
-	
+	@NotNull
 	private Region region;
-	
+
+	private String prefix = "";
+
 	public String getHost() {
 		return host;
 	}
@@ -54,5 +56,13 @@ public class S3Properties {
 	
 	public void setRegion(final String region) {
 		this.region = Region.of(region);
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 }

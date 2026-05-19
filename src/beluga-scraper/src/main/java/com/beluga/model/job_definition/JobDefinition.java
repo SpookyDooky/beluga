@@ -3,7 +3,6 @@ package com.beluga.model.job_definition;
 import com.beluga.execution.model.task.TaskDefinition;
 import com.beluga.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
-import com.beluga.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException;
 import jakarta.persistence.*;
 
@@ -25,10 +24,6 @@ public class JobDefinition {
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "scraping_definition_id")
 	private ScrapingDefinition scrapingDefinition;
-	
-	@OneToOne(cascade = ALL)
-	@JoinColumn(name = "storage_definition_id")
-	private StorageDefinition storageDefinition;
 	
 	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "execution_definition_id")
@@ -69,14 +64,6 @@ public class JobDefinition {
 	
 	public void setScrapingDefinition(final ScrapingDefinition scrapingDefinition) {
 		this.scrapingDefinition = scrapingDefinition;
-	}
-	
-	public StorageDefinition getStorageDefinition() {
-		return storageDefinition;
-	}
-	
-	public void setStorageDefinition(final StorageDefinition storageDefinition) {
-		this.storageDefinition = storageDefinition;
 	}
 	
 	public ExecutionDefinition getExecutionDefinition() {

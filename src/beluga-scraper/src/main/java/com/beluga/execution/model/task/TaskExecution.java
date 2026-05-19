@@ -23,8 +23,7 @@ public class TaskExecution {
 	
 	@Enumerated(STRING)
 	private TaskStatus status = PLANNED;
-	private String resultFolder;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "task_definition_id")
 	private TaskDefinition taskDefinition;
@@ -63,14 +62,6 @@ public class TaskExecution {
 		this.status = status;
 	}
 	
-	public String getResultFolder() {
-		return resultFolder;
-	}
-	
-	public void setResultFolder(final String resultFolder) {
-		this.resultFolder = resultFolder;
-	}
-	
 	public TaskDefinition getTaskDefinition() {
 		return taskDefinition;
 	}
@@ -104,9 +95,9 @@ public class TaskExecution {
 		resultFile.setTaskExecution(this);
 	}
 	
-	public ResultFile getResultFileByFileName(final String fileName) {
+	public ResultFile getResultFileByKey(final String key) {
 		return resultFiles.stream()
-				.filter(resultFile -> resultFile.getFileName().equals(fileName))
+				.filter(resultFile -> resultFile.getKey().equals(key))
 				.findFirst()
 				.orElseThrow(EntityNotFoundException::new);
 	}

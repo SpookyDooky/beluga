@@ -1,7 +1,6 @@
 package com.beluga.model.task.event;
 
 import com.beluga.execution.model.task.Task;
-import com.beluga.execution.event.task.task_result.StorageHint;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.model.event.storable.payload.Payload;
 import org.instancio.Instancio;
@@ -18,20 +17,21 @@ class TaskResultEventTest {
 	@Test
 	void shouldCreateTaskResultEvent() {
 		final Task task = Instancio.create(Task.class);
-		final StorageHint storageHint = mock();
+		final String fileName = "fileName";
 		final Payload<?> payload = mock();
 		
-		final TaskResultEvent event = TaskResultEvent.of(task, storageHint, payload);
-		
+		final TaskResultEvent event = TaskResultEvent.of(task, fileName, payload);
+
+		assertEquals(task.getJob().getJobDefinitionId(), event.getJobDefinitionId());
 		assertEquals(task.getJob().getId(), event.getJobId());
 		assertEquals(task.getId(), event.getTaskId());
-		assertSame(storageHint, event.getStorageHint());
+		assertEquals(fileName, event.getKey());
 		assertSame(payload, event.getPayload());
 	}
 	
 	@Test
 	void shouldThrowIllegalArgumentExceptionWhenTaskIsNull() {
-		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(null, mock(), mock()));
+		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(null, "key", mock()));
 	}
 	
 	@Test
@@ -41,7 +41,6 @@ class TaskResultEventTest {
 	
 	@Test
 	void shouldThrowIllegalArgumentExceptionWhenPayloadIsNull() {
-		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(mock(), mock(), null));
-		
+		assertThrows(IllegalArgumentException.class, () -> TaskResultEvent.of(mock(), "key", null));
 	}
 }

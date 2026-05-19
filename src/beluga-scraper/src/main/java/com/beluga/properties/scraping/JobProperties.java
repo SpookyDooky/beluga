@@ -1,7 +1,6 @@
 package com.beluga.properties.scraping;
 
 import com.beluga.properties.scraping.execution.ExecutionProperties;
-import com.beluga.properties.scraping.storage.StorageProperties;
 import com.beluga.properties.scraping.url.UrlProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -16,9 +15,6 @@ public class JobProperties {
 	@NotNull
 	@Valid
 	private ScrapingProperties scraping;
-	@NotNull
-	@Valid
-	private StorageProperties storage;
 	@NotNull
 	@Valid
 	private ExecutionProperties execution = new ExecutionProperties();
@@ -45,14 +41,6 @@ public class JobProperties {
 	
 	public void setScraping(final ScrapingProperties scraping) {
 		this.scraping = scraping;
-	}
-	
-	public StorageProperties getStorage() {
-		return storage;
-	}
-	
-	public void setStorage(final StorageProperties storage) {
-		this.storage = storage;
 	}
 	
 	public ExecutionProperties getExecution() {

@@ -6,9 +6,12 @@ import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteExecutionConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.api.task.dto.UpdateTaskDto;
+import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
 import com.beluga.integration_test.MultiStoreTest;
-import com.beluga.result_storage.StorageService;
+import com.beluga.model.event.storable.payload.StringPayload;
+import com.beluga.result_storage.ResultStorageService;
 import com.beluga.scraping.ScrapingService;
+import com.beluga.service.task.TaskExecutionEventHandler;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ResultsControllerIntegrationTest {
 	
 	@MockitoBean
-	private StorageService storageService;
+	private ResultStorageService resultStorageService;
 	@MockitoBean(answers = RETURNS_DEEP_STUBS)
 	private ScrapingService scrapingService;
 	
@@ -44,7 +47,9 @@ class ResultsControllerIntegrationTest {
 	private MockMvc mvc;
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+	@Autowired
+	private TaskExecutionEventHandler taskExecutionEventHandler;
+
 	@TestTemplate
 	void shouldGetTaskResult() throws Exception {
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(
@@ -92,8 +97,18 @@ class ResultsControllerIntegrationTest {
 		
 		final List<Object> expectedTaskResult = List.of(Map.of("property", "value"));
 		final byte[] rawExpectedTaskResultData = objectMapper.writeValueAsString(expectedTaskResult).getBytes();
-		when(storageService.retrieve(any())).thenReturn(rawExpectedTaskResultData);
-		
+		when(resultStorageService.retrieve(any())).thenReturn(rawExpectedTaskResultData);
+
+		// Add a result file
+		taskExecutionEventHandler.onTaskResultStored(new TaskResultStoredEvent(
+				readJobDefinitionDto.getId(),
+				readJobExecutionDto.getId(),
+				readJobExecutionWithTasksDto.getTasks().getFirst().getId(),
+				"/data",
+				"data.json",
+				new StringPayload("a")
+		));
+
 		mvc.perform(
 				get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId() + "/tasks/" + readJobExecutionWithTasksDto.getTasks().getFirst().getId() + "/results")
 		).andExpect(status().isOk());

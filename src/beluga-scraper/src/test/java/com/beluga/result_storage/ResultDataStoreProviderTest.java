@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 import static org.mockito.Mockito.*;
 
@@ -30,13 +29,13 @@ class ResultDataStoreProviderTest {
 	
 	@Test
 	void shouldSave() throws Exception {
-		final Path path = mock();
+		final String resourceIdentifier = "resourceIdentifier";
 		final String fileContent = "string";
 		
 		try (final InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes())) {
-			dataStoreProvider.save(path, inputStream);
+			dataStoreProvider.save(resourceIdentifier, inputStream);
 			
-			verify(dataStoreProvider).save(path, fileContent.getBytes());
+			verify(dataStoreProvider).save(resourceIdentifier, fileContent.getBytes());
 		}
 	}
 	
@@ -47,12 +46,12 @@ class ResultDataStoreProviderTest {
 		}
 		
 		@Override
-		public void save(final Path filePath, final byte[] fileContent) {
+		public void save(final String resourceIdentifier, final byte[] fileContent) {
 		
 		}
 		
 		@Override
-		public byte[] retrieve(final Path filePath) {
+		public byte[] retrieve(final String resourceIdentifier) {
 			return new byte[0];
 		}
 	}

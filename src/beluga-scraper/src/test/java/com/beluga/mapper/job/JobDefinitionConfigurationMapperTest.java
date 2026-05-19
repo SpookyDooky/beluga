@@ -3,16 +3,13 @@ package com.beluga.mapper.job;
 import com.beluga.api.job.dto.read.ReadExecutionConfigurationDto;
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
-import com.beluga.api.job.dto.read.ReadStorageConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.mapper.job.execution.ExecutionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.ScrapingDefinitionMapper;
-import com.beluga.mapper.job.storage.StorageDefinitionMapper;
 import com.beluga.mapper.task.TaskDefinitionMapperService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.configuration.execution_configuration.ExecutionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
-import com.beluga.model.job_definition.configuration.storage_configuration.StorageDefinition;
 import com.beluga.execution.model.task.TaskDefinition;
 import com.beluga.properties.scraping.JobProperties;
 import org.instancio.Instancio;
@@ -34,8 +31,6 @@ class JobDefinitionConfigurationMapperTest {
 	@Mock
 	private ScrapingDefinitionMapper scrapingDefinitionMapper;
 	@Mock
-	private StorageDefinitionMapper storageDefinitionMapper;
-	@Mock
 	private ExecutionDefinitionMapper executionDefinitionMapper;
 	@Mock
 	private TaskDefinitionMapperService taskDefinitionMapperService;
@@ -50,9 +45,6 @@ class JobDefinitionConfigurationMapperTest {
 		final ScrapingDefinition scrapingDefinition = mock();
 		when(scrapingDefinitionMapper.map(jobProperties.getScraping())).thenReturn(scrapingDefinition);
 		
-		final StorageDefinition storageDefinition = mock();
-		when(storageDefinitionMapper.map(jobProperties.getStorage())).thenReturn(storageDefinition);
-		
 		final ExecutionDefinition executionDefinition = mock();
 		when(executionDefinitionMapper.map(jobProperties.getExecution())).thenReturn(executionDefinition);
 		
@@ -62,7 +54,6 @@ class JobDefinitionConfigurationMapperTest {
 		final JobDefinition jobDefinition = mapper.map(jobProperties);
 		
 		assertSame(scrapingDefinition, jobDefinition.getScrapingDefinition());
-		assertSame(storageDefinition, jobDefinition.getStorageDefinition());
 		assertSame(executionDefinition, jobDefinition.getExecutionDefinition());
 		assertSame(taskDefinitions, jobDefinition.getTaskDefinitions());
 		assertEquals(jobProperties.getName(), jobDefinition.getName());
@@ -75,16 +66,12 @@ class JobDefinitionConfigurationMapperTest {
 		final ScrapingDefinition scrapingDefinition = mock();
 		when(scrapingDefinitionMapper.map(dto.getScraping())).thenReturn(scrapingDefinition);
 		
-		final StorageDefinition storageDefinition = mock();
-		when(storageDefinitionMapper.map(dto.getStorage())).thenReturn(storageDefinition);
-		
 		final ExecutionDefinition executionDefinition = mock();
 		when(executionDefinitionMapper.map(dto.getExecution())).thenReturn(executionDefinition);
 		
 		final JobDefinition entity = mapper.map(dto);
 		
 		assertSame(scrapingDefinition, entity.getScrapingDefinition());
-		assertSame(storageDefinition, entity.getStorageDefinition());
 		assertSame(executionDefinition, entity.getExecutionDefinition());
 	}
 	
@@ -95,9 +82,6 @@ class JobDefinitionConfigurationMapperTest {
 		final ReadScrapingConfigurationDto readScrapingConfigurationDto = mock();
 		when(scrapingDefinitionMapper.map(jobDefinition.getScrapingDefinition())).thenReturn(readScrapingConfigurationDto);
 		
-		final ReadStorageConfigurationDto readStorageConfigurationDto = mock();
-		when(storageDefinitionMapper.map(jobDefinition.getStorageDefinition())).thenReturn(readStorageConfigurationDto);
-		
 		final ReadExecutionConfigurationDto readExecutionConfigurationDto = mock();
 		when(executionDefinitionMapper.map(jobDefinition.getExecutionDefinition())).thenReturn(readExecutionConfigurationDto);
 		
@@ -105,7 +89,6 @@ class JobDefinitionConfigurationMapperTest {
 		
 		assertEquals(jobDefinition.getId(), dto.getId());
 		assertSame(readScrapingConfigurationDto, dto.getScraping());
-		assertSame(readStorageConfigurationDto, dto.getStorage());
 		assertSame(readExecutionConfigurationDto, dto.getExecution());
 	}
 	
@@ -117,7 +100,6 @@ class JobDefinitionConfigurationMapperTest {
 		mapper.update(dto, entity);
 		
 		verify(scrapingDefinitionMapper).update(dto.getScraping(), entity.getScrapingDefinition());
-		verify(storageDefinitionMapper).update(dto.getStorage(), entity.getStorageDefinition());
 		verify(executionDefinitionMapper).update(dto.getExecution(), entity.getExecutionDefinition());
 	}
 }
