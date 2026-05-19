@@ -62,37 +62,25 @@ class BelugaScraperPropertiesTest {
 								"beluga.jobs[0].name=name",
 								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=",
-								"beluga.jobs[0].scraping.data-points[0].field=field",
-								"beluga.jobs[0].storage.format=JSON",
-								"beluga.jobs[0].storage.folder=folder",
-								"beluga.jobs[0].storage.file=file"
+								"beluga.jobs[0].scraping.data-points[0].field=field"
 						),
 						List.of(
 								"beluga.jobs[0].name=",
 								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
-								"beluga.jobs[0].scraping.data-points[0].property-name=property-name",
-								"beluga.jobs[0].storage.format=JSON",
-								"beluga.jobs[0].storage.folder=folder",
-								"beluga.jobs[0].storage.file=file"
+								"beluga.jobs[0].scraping.data-points[0].field=field"
 						),
 						List.of(
 								"beluga.jobs[0].name=name",
 								"beluga.jobs[0].scraping.item-selector=",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
-								"beluga.jobs[0].scraping.data-points[0].field=field",
-								"beluga.jobs[0].storage.format=JSON",
-								"beluga.jobs[0].storage.folder=folder",
-								"beluga.jobs[0].storage.file=file"
+								"beluga.jobs[0].scraping.data-points[0].field=field"
 						),
 						List.of(
 								"beluga.jobs[0].name=name",
 								"beluga.jobs[0].scraping.item-selector=selector",
 								"beluga.jobs[0].scraping.data-points[0].selector=selector",
-								"beluga.jobs[0].scraping.data-points[0].field=field",
-								"beluga.jobs[0].storage.format=JSON",
-								"beluga.jobs[0].storage.folder=",
-								"beluga.jobs[0].storage.file=file"
+								"beluga.jobs[0].scraping.data-points[0].field="
 						)
 				).map(ArrayList::new)
 				.peek(properties -> properties.addAll(persistenceProperties))

@@ -39,7 +39,7 @@ class NamespaceFactoryTest {
         final String namespace = namespaceFactory.create(event);
 
         assertEquals(
-                expectedPrefix + "/" + event.getJobDefinitionId() + "/" + event.getJobId() + "/" + event.getTaskId() + "/",
+                expectedPrefix + "/" + event.getJobDefinitionId() + "/" + event.getJobId() + "/" + event.getTaskId(),
                 namespace
         );
     }

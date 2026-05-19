@@ -11,7 +11,6 @@ class WriteJobDtoTest {
 	@ParameterizedTest
 	@ValueSource(
 			strings = {
-					"storage",
 					"execution",
 					"scraping"
 			}
