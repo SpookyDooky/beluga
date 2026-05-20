@@ -1,5 +1,6 @@
 package com.beluga.activity_logging.service;
 
+import com.beluga.activity_logging.activitiy.Activity;
 import com.beluga.activity_logging.event.ActivityEvent;
 import com.beluga.activity_logging.model.ActivityLog;
 import com.beluga.activity_logging.repository.ActivityLogRepository;
@@ -27,7 +28,11 @@ public class ActivityLoggingService {
 		this.activityLogMapper = activityLogMapper;
 		this.repository = repository;
 	}
-	
+
+	/**
+	 * Stores an {@link Activity} from the {@link ActivityEvent}.
+	 * @param event the {@link ActivityEvent} containing the activity to save.
+	 */
 	@Async
 	@EventListener
 	@Transactional

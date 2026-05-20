@@ -5,88 +5,119 @@ import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.service.ExecutionApiService;
 import com.beluga.execution.model.job.Job;
 import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
 import com.beluga.service.exception.JobDefinitionNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// TODO - Rename job id -> jobDefinitionId as that actually represents the id this is. Do not rename to jobDefinitionId in the API specs, users should not be bothered with underlying architecture.
 // Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
 // Because there should be support for multiple running jobs per job definition this should be included in V1.0
 @RestController
-@RequestMapping("/jobs/{jobId}")
+@RequestMapping("/jobs/{jobDefinitionId}")
 public class ExecutionController {
-	
-	private final ExecutionApiService executionApiService;
-	
-	public ExecutionController(final ExecutionApiService executionApiService) {
-		this.executionApiService = executionApiService;
-	}
-	
-	@PostMapping("/start")
-	public ResponseEntity<Void> start(@PathVariable("jobId") final Long jobId) {
-		executionApiService.start(jobId);
-		
-		return ResponseEntity.noContent()
-				.build();
-	}
-	
-	@ExceptionHandler(JobDefinitionNotFoundException.class)
-	public ResponseEntity<Void> handle() {
-		return ResponseEntity.notFound()
-				.build();
-	}
-	
-	@PostMapping("/stop")
-	public ResponseEntity<Void> stop(@PathVariable("jobId") final Long jobId) {
-		executionApiService.stop(jobId);
-		
-		return ResponseEntity.noContent()
-				.build();
-	}
-	
-	@PostMapping("/pause")
-	public ResponseEntity<Void> pause(@PathVariable("jobId") final Long jobId) {
-		executionApiService.pause(jobId);
-		
-		return ResponseEntity.noContent()
-				.build();
-	}
-	
-	@PostMapping("/resume")
-	public ResponseEntity<Void> resume(@PathVariable("jobId") final Long jobId) {
-		executionApiService.resume(jobId);
-		
-		return ResponseEntity.noContent()
-				.build();
-	}
-	
-	/**
-	 * Retrieves the latest execution of a specific {@link JobDefinition}.
-	 *
-	 * @param jobId the id of the {@link JobDefinition}
-	 * @return the latest execution.
-	 */
-	@GetMapping("/executions/latest")
-	public ResponseEntity<ReadJobExecutionDto> getLatestExecution(@PathVariable("jobId") final Long jobId) {
-		return ResponseEntity.of(executionApiService.getLatestJobExecution(jobId));
-	}
-	
-	/**
-	 * Retrieves all executions of a {@link Job}
-	 *
-	 * @param jobId the id of the {@link JobDefinition}
-	 * @return a list containing all executions of the job
-	 */
-	@GetMapping("/executions")
-	public List<ReadJobExecutionDto> getExecutions(@PathVariable("jobId") final Long jobId) {
-		return executionApiService.getExecutions(jobId);
-	}
-	
-	@GetMapping("/executions/{executionId}")
-	public ResponseEntity<ReadJobExecutionWithTasksDto> getExecution(@PathVariable("jobId") final Long jobId,
-	                                                                 @PathVariable("executionId") final Long executionId) {
-		return ResponseEntity.of(executionApiService.getExecution(jobId, executionId));
-	}
+
+    private final ExecutionApiService executionApiService;
+
+    public ExecutionController(final ExecutionApiService executionApiService) {
+        this.executionApiService = executionApiService;
+    }
+
+    /**
+     * Starts the execution of a {@link JobDefinition}
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return {@link ResponseEntity#noContent()}
+     */
+    @PostMapping("/start")
+    public ResponseEntity<Void> start(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        executionApiService.start(jobDefinitionId);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @ExceptionHandler(JobDefinitionNotFoundException.class)
+    public ResponseEntity<Void> handle() {
+        return ResponseEntity.notFound()
+                .build();
+    }
+
+    /**
+     * Stops the execution of a {@link JobDefinition}
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return {@link ResponseEntity#noContent()}
+     */
+    @PostMapping("/stop")
+    public ResponseEntity<Void> stop(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        executionApiService.stop(jobDefinitionId);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    /**
+     * Pauses the execution of a {@link JobDefinition}.
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return {@link ResponseEntity#noContent()}
+     */
+    @PostMapping("/pause")
+    public ResponseEntity<Void> pause(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        executionApiService.pause(jobDefinitionId);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    /**
+     * Resumes the execution of a {@link JobDefinition}
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return {@link ResponseEntity#noContent()}
+     */
+    @PostMapping("/resume")
+    public ResponseEntity<Void> resume(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        executionApiService.resume(jobDefinitionId);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    /**
+     * Retrieves the latest execution of a specific {@link JobDefinition}.
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return the latest execution.
+     */
+    @GetMapping("/executions/latest")
+    public ResponseEntity<ReadJobExecutionDto> getLatestExecution(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        return ResponseEntity.of(executionApiService.getLatestJobExecution(jobDefinitionId));
+    }
+
+    /**
+     * Retrieves all executions of a {@link JobDefinition}
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @return a list containing all executions of the job
+     */
+    @GetMapping("/executions")
+    public List<ReadJobExecutionDto> getExecutions(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
+        return executionApiService.getExecutions(jobDefinitionId);
+    }
+
+    /**
+     * Retrieves an execution of a {@link JobDefinition}.
+     *
+     * @param jobDefinitionId the id of the {@link JobDefinition}
+     * @param executionId     the id of the {@link JobExecution}
+     * @return {@link ResponseEntity#noContent()}
+     */
+    @GetMapping("/executions/{executionId}")
+    public ResponseEntity<ReadJobExecutionWithTasksDto> getExecution(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
+                                                                     @PathVariable("executionId") final Long executionId) {
+        return ResponseEntity.of(executionApiService.getExecution(jobDefinitionId, executionId));
+    }
 }
