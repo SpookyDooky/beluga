@@ -9,12 +9,12 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.beluga.properties.persistence.PersistenceType.SQL_LITE;
+import static com.beluga.properties.persistence.PersistenceType.SQLITE;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class IsSqlLiteConditionTest {
+class IsSqliteConditionTest {
 	
 	@Mock
 	private ConditionContext context;
@@ -23,7 +23,7 @@ class IsSqlLiteConditionTest {
 	@Mock
 	private Environment environment;
 	
-	private final IsSqlLiteCondition condition = new IsSqlLiteCondition();
+	private final IsSqliteCondition condition = new IsSqliteCondition();
 	
 	@BeforeEach
 	void setup() {
@@ -32,7 +32,7 @@ class IsSqlLiteConditionTest {
 	
 	@Test
 	void shouldMatch() {
-		when(environment.getProperty("beluga.persistence.type")).thenReturn(SQL_LITE.name());
+		when(environment.getProperty("beluga.persistence.type")).thenReturn(SQLITE.name());
 		assertTrue(condition.matches(context, metadata));
 	}
 	

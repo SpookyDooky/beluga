@@ -26,7 +26,7 @@ public class HasCorrectPersistenceStoreValidator
 
 				yield valid;
 			}
-			case SQL_LITE -> true;
+			case SQLITE -> true;
 		};
 	}
 }

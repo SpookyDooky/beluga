@@ -5,7 +5,7 @@ import com.beluga.properties.persistence.validation.HasOnlyOnePersistenceStore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import static com.beluga.properties.persistence.PersistenceType.SQL_LITE;
+import static com.beluga.properties.persistence.PersistenceType.SQLITE;
 
 /**
  * Used for configuring how the scraper should store things such as jobs, tasks and execution of these things.
@@ -16,14 +16,21 @@ public class PersistenceProperties {
 	
 	/**
 	 * What type of persistence store to use.
-	 * The default is {@link PersistenceType#SQL_LITE}.
+	 * The default is {@link PersistenceType#SQLITE}.
 	 */
 	@NotNull
-	private PersistenceType type = SQL_LITE;
-	
+	private PersistenceType type = SQLITE;
+
+	/**
+	 * PostgreSQL properties.
+	 */
 	@Valid
 	private PostgreSqlPersistenceProperties postgresql;
-	
+
+	/**
+	 * Returns the type of persistence used.
+	 * @return {@link PersistenceType}
+	 */
 	public PersistenceType getType() {
 		return type;
 	}

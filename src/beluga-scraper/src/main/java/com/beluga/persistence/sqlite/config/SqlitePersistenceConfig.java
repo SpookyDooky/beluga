@@ -1,7 +1,7 @@
-package com.beluga.persistence.sql_lite.config;
+package com.beluga.persistence.sqlite.config;
 
-import com.beluga.persistence.config.conditionals.annotation.IsSqlLite;
-import com.beluga.persistence.sql_lite.converter.InstantConverter;
+import com.beluga.persistence.config.conditionals.annotation.IsSqlite;
+import com.beluga.persistence.sqlite.converter.InstantConverter;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
@@ -17,8 +17,8 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@IsSqlLite
-public class SqlLitePersistenceConfig {
+@IsSqlite
+public class SqlitePersistenceConfig {
 	
 	private static final String DATABASE_LOCATION = "/app/db/sqlite.db";
 	
