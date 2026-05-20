@@ -5,5 +5,5 @@ package com.beluga.properties.persistence;
  */
 public enum PersistenceType {
 	POSTGRESQL,
-	SQL_LITE
+	SQLITE
 }

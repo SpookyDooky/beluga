@@ -15,7 +15,7 @@ public class HasOnlyOnePersistenceStoreValidator
 		
 		count += persistenceProperties.getPostgresql() != null ? 1 : 0;
 		
-		if (persistenceProperties.getType() == PersistenceType.SQL_LITE) {
+		if (persistenceProperties.getType() == PersistenceType.SQLITE) {
 			return count == 0;
 		}
 		

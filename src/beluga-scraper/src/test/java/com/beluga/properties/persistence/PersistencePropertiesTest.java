@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 
-import static com.beluga.properties.persistence.PersistenceType.SQL_LITE;
+import static com.beluga.properties.persistence.PersistenceType.SQLITE;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnClass;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PersistencePropertiesTest {
 	
 	@Test
-	void shouldHaveDefaultSqlLiteAsType() {
-		assertEquals(SQL_LITE, new PersistenceProperties().getType());
+	void shouldHaveDefaultSqliteAsType() {
+		assertEquals(SQLITE, new PersistenceProperties().getType());
 	}
 	
 	@ParameterizedTest

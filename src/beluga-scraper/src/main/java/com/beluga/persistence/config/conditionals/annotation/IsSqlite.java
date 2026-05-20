@@ -1,6 +1,6 @@
 package com.beluga.persistence.config.conditionals.annotation;
 
-import com.beluga.persistence.config.conditionals.IsSqlLiteCondition;
+import com.beluga.persistence.config.conditionals.IsSqliteCondition;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.Documented;
@@ -16,6 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(ElementType.TYPE)
 @Retention(RUNTIME)
 @Documented
-@Conditional(IsSqlLiteCondition.class)
-public @interface IsSqlLite {
+@Conditional(IsSqliteCondition.class)
+public @interface IsSqlite {
 }
