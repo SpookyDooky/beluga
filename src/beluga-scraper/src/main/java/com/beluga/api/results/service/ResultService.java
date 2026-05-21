@@ -63,7 +63,7 @@ public class ResultService {
 
 	/**
 	 * Validates that the ids are actually related to each other.
-	 * @throws TaskResultNotFoundException in case they are not related.
+	 * @throws TaskResultNotFoundException in case validation fails.
 	 */
 	private void validateTaskResultExists(final Long jobDefinitionId,
 	                                      final Long executionId,
