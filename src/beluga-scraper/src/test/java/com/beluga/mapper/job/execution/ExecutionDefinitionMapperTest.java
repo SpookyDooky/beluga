@@ -7,7 +7,7 @@ import com.beluga.properties.scraping.execution.ExecutionProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExecutionDefinitionMapperTest {
 	

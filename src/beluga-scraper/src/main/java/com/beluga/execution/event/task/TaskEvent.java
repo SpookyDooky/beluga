@@ -1,7 +1,7 @@
 package com.beluga.execution.event.task;
 
-import com.beluga.logging.ContextLoggable;
 import com.beluga.execution.model.task.Task;
+import com.beluga.logging.ContextLoggable;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Map;

@@ -1,7 +1,7 @@
 package com.beluga.model.task.event;
 
-import com.beluga.execution.model.task.Task;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.model.task.Task;
 import com.beluga.model.event.storable.payload.Payload;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

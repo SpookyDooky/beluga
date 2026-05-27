@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URL;
 
 import static com.beluga.activity_logging.activitiy.ActivityType.REQUEST;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 class RequestActivityTest {

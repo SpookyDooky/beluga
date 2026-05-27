@@ -1,8 +1,8 @@
 package com.beluga.execution.event.task.task_result;
 
-import com.beluga.model.event.storable.payload.Payload;
-import com.beluga.execution.model.task.Task;
 import com.beluga.execution.event.task.TaskEvent;
+import com.beluga.execution.model.task.Task;
+import com.beluga.model.event.storable.payload.Payload;
 
 /**
  * Event that represents some piece of data coming from task execution.

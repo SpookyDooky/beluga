@@ -1,15 +1,15 @@
 package com.beluga.execution.service.worker;
 
+import com.beluga.execution.event.task.TaskFailedEvent;
+import com.beluga.execution.event.task.TaskStartedEvent;
+import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.model.task.Task;
 import com.beluga.execution.service.task.JobTaskQueue;
 import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
 import com.beluga.execution.service.worker.event.WorkerStartedEvent;
 import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.http.HttpService;
 import com.beluga.model.event.storable.payload.JsonPayload;
-import com.beluga.execution.model.task.Task;
-import com.beluga.execution.event.task.TaskFailedEvent;
-import com.beluga.execution.event.task.TaskStartedEvent;
-import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.scraping.ScrapingService;
 import com.beluga.scraping.model.ScrapingResult;
 import com.beluga.util.TimingService;

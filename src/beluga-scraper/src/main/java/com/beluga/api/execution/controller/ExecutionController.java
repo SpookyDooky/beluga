@@ -3,7 +3,6 @@ package com.beluga.api.execution.controller;
 import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.service.ExecutionApiService;
-import com.beluga.execution.model.job.Job;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.service.exception.JobDefinitionNotFoundException;

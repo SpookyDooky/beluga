@@ -1,6 +1,5 @@
 package com.beluga.properties.scraping;
 
-import com.beluga.logging.ContextKeys;
 import com.beluga.logging.ContextLoggable;
 import com.beluga.properties.scraping.execution.ExecutionProperties;
 import com.beluga.properties.scraping.url.UrlProperties;

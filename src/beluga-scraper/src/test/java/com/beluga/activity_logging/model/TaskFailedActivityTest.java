@@ -4,7 +4,7 @@ import com.beluga.activity_logging.activitiy.TaskFailedActivity;
 import org.junit.jupiter.api.Test;
 
 import static com.beluga.activity_logging.activitiy.ActivityType.TASK_FAILED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskFailedActivityTest {
 	

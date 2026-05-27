@@ -1,7 +1,7 @@
 package com.beluga.model.job_definition;
 
-import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException;
 import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

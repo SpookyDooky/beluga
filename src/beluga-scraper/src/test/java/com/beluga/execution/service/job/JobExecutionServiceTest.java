@@ -1,6 +1,5 @@
 package com.beluga.execution.service.job;
 
-import com.google.common.util.concurrent.RateLimiter;
 import com.beluga.execution.event.job.JobStartedEvent;
 import com.beluga.execution.model.job.ExecutionConfiguration;
 import com.beluga.execution.model.job.Job;
@@ -10,6 +9,7 @@ import com.beluga.execution.service.worker.Worker;
 import com.beluga.execution.service.worker.WorkerOrchestrator;
 import com.beluga.logging.ContextLogger;
 import com.beluga.service.task.TaskExecutionService;
+import com.google.common.util.concurrent.RateLimiter;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

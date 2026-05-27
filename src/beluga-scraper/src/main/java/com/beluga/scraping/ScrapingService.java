@@ -1,8 +1,8 @@
 package com.beluga.scraping;
 
-import com.beluga.http.HttpService;
-import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.DataPointConfiguration;
+import com.beluga.execution.model.task.ScrapingConfiguration;
+import com.beluga.http.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

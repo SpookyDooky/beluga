@@ -1,14 +1,14 @@
 package com.beluga.service.job;
 
 import com.beluga.execution.model.job.Job;
-import com.beluga.mapper.job.JobMapper;
-import com.beluga.mapper.task.TaskMapper;
-import com.beluga.model.job_definition.JobDefinition;
-import com.beluga.model.job_definition.JobExecution;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
 import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.mapper.job.JobMapper;
+import com.beluga.mapper.task.TaskMapper;
+import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.model.job_definition.JobExecution;
 import com.beluga.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;

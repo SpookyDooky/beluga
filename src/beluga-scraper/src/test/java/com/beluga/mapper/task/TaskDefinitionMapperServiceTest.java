@@ -9,7 +9,8 @@ import java.net.URL;
 import java.util.List;
 
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 class TaskDefinitionMapperServiceTest {
