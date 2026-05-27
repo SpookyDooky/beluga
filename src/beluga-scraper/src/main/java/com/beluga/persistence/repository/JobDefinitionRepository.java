@@ -11,4 +11,7 @@ public interface JobDefinitionRepository extends CrudRepository<JobDefinition, L
 	
 	@Override
 	List<JobDefinition> findAll();
+
+	boolean existsByName(String name);
+	void deleteByName(String name);
 }

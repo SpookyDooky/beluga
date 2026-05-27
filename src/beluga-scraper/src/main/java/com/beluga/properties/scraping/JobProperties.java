@@ -1,12 +1,18 @@
 package com.beluga.properties.scraping;
 
+import com.beluga.logging.ContextKeys;
+import com.beluga.logging.ContextLoggable;
 import com.beluga.properties.scraping.execution.ExecutionProperties;
 import com.beluga.properties.scraping.url.UrlProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class JobProperties {
+import java.util.Map;
+
+import static com.beluga.logging.ContextKeys.JOB_NAME;
+
+public class JobProperties implements ContextLoggable {
 	
 	@NotBlank
 	private String name;
@@ -49,5 +55,12 @@ public class JobProperties {
 	
 	public void setExecution(final ExecutionProperties execution) {
 		this.execution = execution;
+	}
+
+	@Override
+	public Map<String, String> loggingContext() {
+		return Map.of(
+				JOB_NAME, name
+		);
 	}
 }

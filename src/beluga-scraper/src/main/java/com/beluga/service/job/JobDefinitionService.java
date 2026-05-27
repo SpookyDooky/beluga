@@ -119,4 +119,22 @@ public class JobDefinitionService {
     public List<TaskDefinition> getActiveTaskDefinitionsById(final Long jobDefinitionId) {
         return taskDefinitionService.getAllActiveByJobDefinitionId(jobDefinitionId);
     }
+
+    /**
+     * Checks whether a {@link JobDefinition} exists with a certain name.
+     * @param name the name to check for.
+     */
+    @Transactional
+    public boolean existsByName(final String name) {
+        return repository.existsByName(name);
+    }
+
+    /**
+     * Deletes a {@link JobDefinition} with a specified name.
+     * @param name the name.
+     */
+    @Transactional
+    public void deleteByName(final String name) {
+        repository.deleteByName(name);
+    }
 }

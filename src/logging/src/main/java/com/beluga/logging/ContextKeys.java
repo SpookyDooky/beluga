@@ -12,4 +12,5 @@ public class ContextKeys {
 	public static final String RESULTS = "results";
 	public static final String FILE_NAME = "fileName";
 	public static final String RESOURCE_IDENTIFIER = "resourceIdentifier";
+	public static final String JOB_NAME = "jobName";
 }
