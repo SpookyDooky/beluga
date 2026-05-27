@@ -23,8 +23,7 @@ import java.util.Set;
 import static com.beluga.model.job_definition.JobStatus.COMPLETED;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -176,5 +175,22 @@ class JobDefinitionServiceTest {
 		final List<TaskDefinition> result = jobDefinitionService.getActiveTaskDefinitionsById(id);
 		
 		assertSame(expected, result);
+	}
+
+	@Test
+	void shouldExistsByName() {
+		final String name = "name";
+		when(repository.existsByName(name)).thenReturn(true);
+
+		assertTrue(jobDefinitionService.existsByName(name));
+	}
+
+	@Test
+	void shouldDeleteByName() {
+		final String name = "name";
+
+		jobDefinitionService.deleteByName(name);
+
+		verify(repository).deleteByName(name);
 	}
 }

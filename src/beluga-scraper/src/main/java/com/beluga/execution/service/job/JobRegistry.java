@@ -4,6 +4,7 @@ import com.beluga.execution.model.job.Job;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.scraping.JobProperties;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.job.JobService;
@@ -21,7 +22,7 @@ public class JobRegistry {
 	private final Map<Long, Job> jobRegistry = new ConcurrentHashMap<>();
 	
 	private final ContextLogger logger;
-	private final com.beluga.properties.BelugaScraperProperties belugaScraperProperties;
+	private final BelugaScraperProperties belugaScraperProperties;
 	private final JobDefinitionMapper jobDefinitionMapper;
 	private final JobExecutionService jobExecutionService;
 	private final JobDefinitionService jobDefinitionService;
@@ -29,7 +30,7 @@ public class JobRegistry {
 	private final TimingService timingService;
 	
 	public JobRegistry(final ContextLogger logger,
-	                   final com.beluga.properties.BelugaScraperProperties belugaScraperProperties,
+	                   final BelugaScraperProperties belugaScraperProperties,
 	                   final JobDefinitionMapper jobDefinitionMapper,
 	                   final JobExecutionService jobExecutionService,
 	                   final JobDefinitionService jobDefinitionService,
@@ -43,7 +44,10 @@ public class JobRegistry {
 		this.jobService = jobService;
 		this.timingService = timingService;
 	}
-	
+
+	/**
+	 * This method only registers {@link JobDefinition}'s that are configured through {@link BelugaScraperProperties}
+	 */
 	@Scheduled(initialDelay = 0L)
 	public void registerJobs() {
 		if (belugaScraperProperties.getJobs() == null) {
@@ -62,6 +66,7 @@ public class JobRegistry {
 		
 		final UUID uuid = timingService.start();
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
+
 		jobDefinitionService.save(jobDefinition);
 		
 		final Job job = jobService.createJobByJobDefinitionId(jobDefinition.getId());
