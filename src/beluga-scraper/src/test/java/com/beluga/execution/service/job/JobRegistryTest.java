@@ -58,6 +58,25 @@ class JobRegistryTest {
 		
 		verify(jobExecutionService).executeJob(job);
 	}
+
+	@Test
+	void shouldOverwriteJob() {
+		final List<JobProperties> jobPropertiesList = List.of(Instancio.create(JobProperties.class));
+		when(belugaScraperProperties.getJobs()).thenReturn(jobPropertiesList);
+
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(jobDefinitionMapper.map(jobPropertiesList.getFirst())).thenReturn(jobDefinition);
+
+		when(jobDefinitionService.existsByName(jobDefinition.getName())).thenReturn(true);
+
+		final Job job = Instancio.create(Job.class);
+		when(jobService.createJobByJobDefinitionId(jobDefinition.getId())).thenReturn(job);
+
+		jobRegistry.registerJobs();
+
+		verify(jobDefinitionService).deleteByName(jobDefinition.getName());
+		verify(jobExecutionService).executeJob(job);
+	}
 	
 	@Test
 	void shouldGetJob() {

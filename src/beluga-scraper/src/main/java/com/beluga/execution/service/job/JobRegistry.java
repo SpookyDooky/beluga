@@ -67,6 +67,9 @@ public class JobRegistry {
 		final UUID uuid = timingService.start();
 		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
 
+		if (jobDefinitionService.existsByName(jobDefinition.getName())) {
+			jobDefinitionService.deleteByName(jobDefinition.getName());
+		}
 		jobDefinitionService.save(jobDefinition);
 		
 		final Job job = jobService.createJobByJobDefinitionId(jobDefinition.getId());
