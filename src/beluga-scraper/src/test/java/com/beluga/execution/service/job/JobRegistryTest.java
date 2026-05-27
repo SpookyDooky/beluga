@@ -4,6 +4,7 @@ import com.beluga.execution.model.job.Job;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.scraping.JobProperties;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.job.JobService;
@@ -28,7 +29,7 @@ class JobRegistryTest {
 	@Mock
 	private ContextLogger contextLogger;
 	@Mock
-	private com.beluga.properties.BelugaScraperProperties belugaScraperProperties;
+	private BelugaScraperProperties belugaScraperProperties;
 	@Mock
 	private JobDefinitionMapper jobDefinitionMapper;
 	@Mock

@@ -1,6 +1,7 @@
 package com.beluga.execution.service.job;
 
 import com.beluga.execution.model.job.Job;
+import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
@@ -62,20 +63,24 @@ public class JobRegistry {
 	}
 	
 	private void registerConfigurationJob(final JobProperties jobProperties) {
-		logger.info("Registering job");
-		
-		final UUID uuid = timingService.start();
-		final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
+		try (final CloseableContext ignored = logger.with(jobProperties)) {
+			logger.info("Registering job");
 
-		if (jobDefinitionService.existsByName(jobDefinition.getName())) {
-			jobDefinitionService.deleteByName(jobDefinition.getName());
+			final UUID uuid = timingService.start();
+			final JobDefinition jobDefinition = jobDefinitionMapper.map(jobProperties);
+
+			if (jobDefinitionService.existsByName(jobDefinition.getName())) {
+				logger.info("Job already existed with name, overwriting existing job");
+				jobDefinitionService.deleteByName(jobDefinition.getName());
+			}
+
+			jobDefinitionService.save(jobDefinition);
+
+			final Job job = jobService.createJobByJobDefinitionId(jobDefinition.getId());
+			logger.info("Saving job took: " + timingService.stop(uuid) + "ms");
+
+			jobRegistry.put(job.getId(), job);
 		}
-		jobDefinitionService.save(jobDefinition);
-		
-		final Job job = jobService.createJobByJobDefinitionId(jobDefinition.getId());
-		logger.info("Saving job took: " + timingService.stop(uuid) + "ms");
-		
-		jobRegistry.put(job.getId(), job);
 	}
 	
 	public Job get(final Long jobId) {
