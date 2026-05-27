@@ -18,6 +18,9 @@ public class NamespaceFactory {
         this.namespacePrefix = getNamespacePrefix(properties.getResultStorage());
     }
 
+    /**
+     * Retrieves the correct namespace prefix depending on the configured datastore for result storage.
+     */
     private String getNamespacePrefix(final ResultStorageProperties properties) {
         return switch (properties.getType()) {
             case FILE_SYSTEM -> properties.getFileSystem().getPath();

@@ -59,9 +59,12 @@ public class ResultService {
 		final TaskExecution taskExecution = taskExecutionService.getById(taskExecutionId);
 		return taskResultDtoMapper.map(taskExecution);
 	}
-	
-	// TODO - Is there a better way for doing this?
-	// Move to job definition service to improve testability
+
+
+	/**
+	 * Validates that the ids are actually related to each other.
+	 * @throws TaskResultNotFoundException in case validation fails.
+	 */
 	private void validateTaskResultExists(final Long jobDefinitionId,
 	                                      final Long executionId,
 	                                      final Long taskExecutionId) {
