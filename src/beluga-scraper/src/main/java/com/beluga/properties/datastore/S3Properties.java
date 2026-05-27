@@ -62,7 +62,7 @@ public class S3Properties {
 		return prefix;
 	}
 
-	public void setPrefix(String prefix) {
+	public void setPrefix(final String prefix) {
 		this.prefix = prefix;
 	}
 }

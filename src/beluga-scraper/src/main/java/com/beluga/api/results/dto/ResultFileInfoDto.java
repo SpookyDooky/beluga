@@ -24,7 +24,7 @@ public class ResultFileInfoDto {
 		return resourceIdentifier;
 	}
 
-	public void setResourceIdentifier(String resourceIdentifier) {
+	public void setResourceIdentifier(final String resourceIdentifier) {
 		this.resourceIdentifier = resourceIdentifier;
 	}
 

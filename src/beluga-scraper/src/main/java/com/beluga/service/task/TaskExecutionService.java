@@ -1,9 +1,9 @@
 package com.beluga.service.task;
 
-import com.beluga.model.job_definition.JobExecution;
-import com.beluga.model.result.ResultFile;
 import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.result.ResultFile;
 import com.beluga.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;

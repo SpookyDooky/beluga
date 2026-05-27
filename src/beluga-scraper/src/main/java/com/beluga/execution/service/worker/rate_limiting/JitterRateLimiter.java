@@ -25,7 +25,7 @@ public class JitterRateLimiter {
 	}
 	
 	private void configureJitterRange(final double rate) {
-		final double baseMs =  (1.0 / rate) * 1_000;
+		final double baseMs =  1.0 / rate * 1_000;
 		
 		minJitterMs = Math.min(MAX_NEGATIVE_JITTER_MS, (long) (0.3 * baseMs));
 		maxJitterMs = Math.min(MAX_POSITIVE_JITTER_MS, (long) (0.7 * baseMs));

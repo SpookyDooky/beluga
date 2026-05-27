@@ -1,7 +1,7 @@
 package com.beluga.http;
 
-import com.beluga.activity_logging.event.ActivityEvent;
 import com.beluga.activity_logging.activitiy.RequestActivity;
+import com.beluga.activity_logging.event.ActivityEvent;
 import com.beluga.logging.ContextLogger;
 import com.beluga.util.TimingService;
 import org.jsoup.Jsoup;

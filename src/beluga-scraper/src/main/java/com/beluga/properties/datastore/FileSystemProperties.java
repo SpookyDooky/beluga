@@ -13,7 +13,7 @@ public class FileSystemProperties {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 }

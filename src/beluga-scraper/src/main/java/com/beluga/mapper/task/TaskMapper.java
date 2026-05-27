@@ -1,9 +1,9 @@
 package com.beluga.mapper.task;
 
-import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
-import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
+import com.beluga.model.job_definition.JobDefinition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

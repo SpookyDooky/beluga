@@ -1,10 +1,10 @@
 package com.beluga.mapper.task;
 
 import com.beluga.execution.model.task.ScrapingConfiguration;
-import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
-import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
+import com.beluga.mapper.task.configuration.ScrapingConfigurationMapper;
+import com.beluga.model.job_definition.JobDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.instancio.settings.Keys.COLLECTION_MAX_SIZE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
