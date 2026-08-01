@@ -1,13 +1,14 @@
 package com.beluga.api.job.dto.base;
 
 import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
 import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
 
 public abstract class BaseScrapingDataPointDto {
 	
-	@NotEmpty
+	@NotBlank
 	private String selector;
 	@NotEmpty
 	private String field;
