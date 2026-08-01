@@ -9,10 +9,6 @@ import com.beluga.execution.event.task.TaskStartedEvent;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.execution.model.task.ImageDownloadTask;
 import com.beluga.execution.model.task.Task;
-import com.beluga.execution.service.task.JobTaskQueue;
-import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
-import com.beluga.execution.service.worker.event.WorkerStartedEvent;
-import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.http.HttpService;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
@@ -29,7 +25,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -44,24 +39,20 @@ public class Worker {
 
     private final ContextLogger logger = new ContextLogger(LogManager.getLogger());
 
-    private final JobTaskQueue jobTaskQueue;
     private final ScrapingService scrapingService;
     private final HttpService httpService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimingService timingService;
 
     private Long jobId;
-    private Instant startTime;
+    private WorkerTaskCompletedCallback completedCallback;
+
     private final UUID workerId = UUID.randomUUID();
 
-    private JitterRateLimiter rateLimiter;
-
-    public Worker(final JobTaskQueue jobTaskQueue,
-                  final ScrapingService scrapingService,
+    public Worker(final ScrapingService scrapingService,
                   final HttpService httpService,
                   final ApplicationEventPublisher applicationEventPublisher,
                   final TimingService timingService) {
-        this.jobTaskQueue = jobTaskQueue;
         this.scrapingService = scrapingService;
         this.httpService = httpService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -74,26 +65,18 @@ public class Worker {
      * @param jobId the id of the {@link JobDefinition}.
      */
     public void init(final Long jobId,
-                     final JitterRateLimiter rateLimiter) {
+                     final WorkerTaskCompletedCallback completedCallback) {
         this.jobId = jobId;
-        this.rateLimiter = rateLimiter;
+        this.completedCallback = completedCallback;
     }
 
-    public void start() {
-        try (final CloseableContext context = logger.with(JOB_EXECUTION_ID, jobId.toString())) {
-            context.put(WORKER_ID, workerId.toString());
-            logger.info("Worker starting.");
-
-            applicationEventPublisher.publishEvent(new WorkerStartedEvent(jobId));
-            startTime = Instant.now();
-
-            while (!jobTaskQueue.isQueueEmpty(jobId)) {
-                rateLimiter.acquire();
-                jobTaskQueue.pollTask(jobId)
-                        .ifPresent(this::executeTask);
-            }
-
-            finish();
+    public void execute(final Task task) {
+        try (final CloseableContext context = logger.with(
+                JOB_EXECUTION_ID, jobId.toString(),
+                WORKER_ID, workerId.toString()
+        )) {
+            executeTask(task);
+            completedCallback.complete(this);
         }
     }
 
@@ -139,21 +122,8 @@ public class Worker {
 
     private void publishScrapingResultEvents(final Task task,
                                              final ScrapingResult scrapingResult) {
-        applicationEventPublisher.publishEvent(
-                TaskResultEvent.of(
-                        task,
-                        "data.json",
-                        new JsonPayload(scrapingResult.getResult())
-                )
-        );
-
-        applicationEventPublisher.publishEvent(
-                TaskResultEvent.of(
-                        task,
-                        "source.html",
-                        new StringPayload(scrapingResult.getRawPage())
-                )
-        );
+        applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "data.json", new JsonPayload(scrapingResult.getResult())));
+        applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "source.html", new StringPayload(scrapingResult.getRawPage())));
     }
 
     /**
@@ -186,12 +156,5 @@ public class Worker {
 
         scrapedData.put(propertyName + "." + propertyName, urlValue);
         scrapedData.put(propertyName + ".fileName", fileName);
-    }
-
-    private void finish() {
-        final long totalTime = Instant.now().toEpochMilli() - startTime.toEpochMilli();
-        logger.info("Worker finished in: " + totalTime + "ms");
-
-        applicationEventPublisher.publishEvent(new WorkerFinishedEvent(jobId));
     }
 }
