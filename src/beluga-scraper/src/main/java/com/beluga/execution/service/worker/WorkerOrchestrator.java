@@ -1,5 +1,6 @@
 package com.beluga.execution.service.worker;
 
+import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.service.task.JobTaskQueue;
 import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
@@ -18,85 +19,98 @@ import static com.beluga.logging.ContextKeys.JOB_ID;
 @Component
 public class WorkerOrchestrator {
 
-	private final ContextLogger logger;
-	private final ApplicationContext applicationContext;
-	private final ApplicationEventPublisher applicationEventPublisher;
-	private final JobTaskQueue jobTaskQueue;
+    private final ContextLogger logger;
+    private final ApplicationContext applicationContext;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final JobTaskQueue jobTaskQueue;
 
-	private final Map<Long, List<Worker>> jobWorkers = new ConcurrentHashMap<>();
-	private final Map<Long, Queue<Worker>> jobIdleWorkers = new ConcurrentHashMap<>();
+    private final Map<Long, List<Worker>> jobWorkers = new ConcurrentHashMap<>();
+    private final Map<Long, Queue<Worker>> jobIdleWorkers = new ConcurrentHashMap<>();
 
-	public WorkerOrchestrator(final ContextLogger logger,
-							  final ApplicationContext applicationContext,
-	                          final ApplicationEventPublisher applicationEventPublisher,
-							  final JobTaskQueue jobTaskQueue) {
-		this.logger = logger;
-		this.applicationContext = applicationContext;
-		this.applicationEventPublisher = applicationEventPublisher;
-		this.jobTaskQueue = jobTaskQueue;
+    public WorkerOrchestrator(final ContextLogger logger,
+                              final ApplicationContext applicationContext,
+                              final ApplicationEventPublisher applicationEventPublisher,
+                              final JobTaskQueue jobTaskQueue) {
+        this.logger = logger;
+        this.applicationContext = applicationContext;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.jobTaskQueue = jobTaskQueue;
     }
-	
-	public void startWorkers(final Long jobId,
-	                         final double rateLimit,
-	                         final int workers) {
-		try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
-			registerWorkers(jobId, workers);
-			jobIdleWorkers.put(jobId, new LinkedList<>(jobWorkers.get(jobId)));
 
-			final JitterRateLimiter rateLimiter = new JitterRateLimiter(rateLimit);
-			new Thread(() -> {
-				manageWorkers(jobId, rateLimiter, workers);
-			}).start();
-		}
-	}
+    /**
+     * Starts and creates the workers for a {@link Job}.
+     *
+     * @param jobId     the id of the {@link Job}.
+     * @param rateLimit the rate limit in ms.
+     * @param workers   the amount of {@link Worker}'s to register.
+     */
+    public void startWorkers(final Long jobId,
+                             final double rateLimit,
+                             final int workers) {
+        try (final CloseableContext ignored = logger.with(JOB_ID, jobId.toString())) {
+            registerWorkers(jobId, workers);
+            jobIdleWorkers.put(jobId, new LinkedList<>(jobWorkers.get(jobId)));
 
-	private void registerWorkers(final Long jobId,
-								 final int workerCount) {
-		logger.info("Registering workers");
+            final JitterRateLimiter rateLimiter = new JitterRateLimiter(rateLimit);
+            new Thread(() -> {
+                manageWorkers(jobId, rateLimiter, workers);
+            }).start();
+        }
+    }
 
-		for (int i = 0; i < workerCount; i++) {
-			final Worker worker = applicationContext.getBean(Worker.class);
-			worker.init(jobId, completedCallback(jobId));
+    /**
+     * Registers the correct amount of workers for a {@link Job}.
+     *
+     * @param jobId       the id of the {@link Job}.
+     * @param workerCount amount of workers to register.
+     */
+    private void registerWorkers(final Long jobId,
+                                 final int workerCount) {
+        logger.info("Registering workers");
 
-			jobWorkers.compute(jobId, (jobIdKey, workers) -> {
-				if (workers == null) {
-					workers = new ArrayList<>();
-				}
+        for (int i = 0; i < workerCount; i++) {
+            final Worker worker = applicationContext.getBean(Worker.class);
+            worker.init(jobId, completedCallback(jobId));
 
-				workers.add(worker);
-				return workers;
-			});
-		}
-	}
+            jobWorkers.compute(jobId, (jobIdKey, workers) -> {
+                if (workers == null) {
+                    workers = new ArrayList<>();
+                }
 
-	private WorkerTaskCompletedCallback completedCallback(final Long jobId) {
-		return worker -> {
-			final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
-			idleWorkers.offer(worker);
-		};
-	}
+                workers.add(worker);
+                return workers;
+            });
+        }
+    }
 
-	private void manageWorkers(final Long jobId,
-	                           final JitterRateLimiter rateLimiter,
-							   final int workers) {
-		while (!jobTaskQueue.isQueueEmpty(jobId)) {
-			rateLimiter.acquire();
+    private WorkerTaskCompletedCallback completedCallback(final Long jobId) {
+        return worker -> {
+            final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
+            idleWorkers.offer(worker);
+        };
+    }
 
-			final Task task = jobTaskQueue.pollTask(jobId)
-					.orElseThrow();
-			final Worker worker = getIdleWorker(jobId);
-			worker.execute(task);
-		}
+    private void manageWorkers(final Long jobId,
+                               final JitterRateLimiter rateLimiter,
+                               final int workers) {
+        while (!jobTaskQueue.isQueueEmpty(jobId)) {
+            rateLimiter.acquire();
 
-		waitForWorkersToFinish(jobId, workers);
-		applicationEventPublisher.publishEvent(new JobWorkersFinishedEvent(jobId));
-		// Destroy beans
-	}
+            final Task task = jobTaskQueue.pollTask(jobId)
+                    .orElseThrow();
+            final Worker worker = getIdleWorker(jobId);
+            worker.execute(task);
+        }
 
-	private Worker getIdleWorker(final Long jobId) {
-		final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
+        waitForWorkersToFinish(jobId, workers);
+        applicationEventPublisher.publishEvent(new JobWorkersFinishedEvent(jobId));
+        // Destroy beans
+    }
 
-		while (idleWorkers.isEmpty()) {
+    private Worker getIdleWorker(final Long jobId) {
+        final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
+
+        while (idleWorkers.isEmpty()) {
             try {
                 Thread.sleep(50);
             } catch (final InterruptedException e) {
@@ -104,19 +118,19 @@ public class WorkerOrchestrator {
             }
         }
 
-		return idleWorkers.remove();
-	}
+        return idleWorkers.remove();
+    }
 
-	private void waitForWorkersToFinish(final Long jobId,
-										final int workers) {
-		final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
+    private void waitForWorkersToFinish(final Long jobId,
+                                        final int workers) {
+        final Queue<Worker> idleWorkers = jobIdleWorkers.get(jobId);
 
-		while (idleWorkers.size() != workers) {
-			try {
-				Thread.sleep(50);
-			} catch (final InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+        while (idleWorkers.size() != workers) {
+            try {
+                Thread.sleep(50);
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
