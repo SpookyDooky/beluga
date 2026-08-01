@@ -27,6 +27,7 @@ public class DataPointDefinition {
 	private DataPointType type = TEXT;
 
 	@OneToOne
+	@JoinColumn(name = "extraction_definition_id")
 	private ExtractionDefinition extractionDefinition;
 
 	public Long getId() {

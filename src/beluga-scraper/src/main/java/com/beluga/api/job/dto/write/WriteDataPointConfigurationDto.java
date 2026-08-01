@@ -15,7 +15,7 @@ public class WriteDataPointConfigurationDto {
         return selector;
     }
 
-    public void setSelector(String selector) {
+    public void setSelector(final String selector) {
         this.selector = selector;
     }
 
@@ -23,7 +23,7 @@ public class WriteDataPointConfigurationDto {
         return extraction;
     }
 
-    public void setExtraction(WriteExtractionConfigurationDto extraction) {
+    public void setExtraction(final WriteExtractionConfigurationDto extraction) {
         this.extraction = extraction;
     }
 }
