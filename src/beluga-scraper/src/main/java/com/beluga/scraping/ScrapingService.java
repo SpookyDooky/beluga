@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.HTML;
+
 @Service
 public class ScrapingService {
 	
@@ -66,6 +68,10 @@ public class ScrapingService {
 
 		if (dataPointDefinition.getAttribute() != null) {
 			return selectedElement.attr(dataPointDefinition.getAttribute());
+		}
+
+		if (dataPointDefinition.getType() == HTML) {
+			return selectedElement.html();
 		}
 		
 		return selectedElement.text();
