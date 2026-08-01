@@ -7,6 +7,7 @@ import com.beluga.execution.event.task.TaskCompletedEvent;
 import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.ImageDownloadTask;
 import com.beluga.execution.model.task.Task;
 import com.beluga.http.HttpService;
@@ -15,11 +16,9 @@ import com.beluga.logging.ContextLogger;
 import com.beluga.model.event.storable.payload.ImagePayload;
 import com.beluga.model.event.storable.payload.JsonPayload;
 import com.beluga.model.event.storable.payload.StringPayload;
-import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.scraping.ScrapingService;
 import com.beluga.scraping.model.ScrapingResult;
 import com.beluga.util.TimingService;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -37,8 +36,9 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 @Scope(SCOPE_PROTOTYPE)
 public class Worker {
 
-    private final ContextLogger logger = new ContextLogger(LogManager.getLogger());
+    private final UUID workerId = UUID.randomUUID();
 
+    private final ContextLogger logger;
     private final ScrapingService scrapingService;
     private final HttpService httpService;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -47,12 +47,12 @@ public class Worker {
     private Long jobId;
     private WorkerTaskCompletedCallback completedCallback;
 
-    private final UUID workerId = UUID.randomUUID();
-
-    public Worker(final ScrapingService scrapingService,
+    public Worker(final ContextLogger logger,
+                  final ScrapingService scrapingService,
                   final HttpService httpService,
                   final ApplicationEventPublisher applicationEventPublisher,
                   final TimingService timingService) {
+        this.logger = logger;
         this.scrapingService = scrapingService;
         this.httpService = httpService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -60,9 +60,10 @@ public class Worker {
     }
 
     /**
-     * Initializes the worker and configures it as a worker for a specific {@link JobDefinition}.
+     * Initializes the worker.
      *
-     * @param jobId the id of the {@link JobDefinition}.
+     * @param jobId             The id of the {@link Job} this worker is for.
+     * @param completedCallback callback to use when the {@link Worker} completes a {@link Task}.
      */
     public void init(final Long jobId,
                      final WorkerTaskCompletedCallback completedCallback) {
@@ -70,8 +71,13 @@ public class Worker {
         this.completedCallback = completedCallback;
     }
 
+    /**
+     * Executes a {@link Task}.
+     *
+     * @param task the {@link Task} to execute.
+     */
     public void execute(final Task task) {
-        try (final CloseableContext context = logger.with(
+        try (final CloseableContext ignored = logger.with(
                 JOB_EXECUTION_ID, jobId.toString(),
                 WORKER_ID, workerId.toString()
         )) {
