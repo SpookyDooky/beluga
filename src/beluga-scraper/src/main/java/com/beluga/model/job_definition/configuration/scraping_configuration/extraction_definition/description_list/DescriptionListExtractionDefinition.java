@@ -20,7 +20,7 @@ public class DescriptionListExtractionDefinition extends ExtractionDefinition {
     )
     private List<DescriptionListExtractionDataPointDefinition> dataPoints;
 
-    protected DescriptionListExtractionDefinition() {
+    public DescriptionListExtractionDefinition() {
         super(DESCRIPTION_LIST);
     }
 
@@ -28,7 +28,8 @@ public class DescriptionListExtractionDefinition extends ExtractionDefinition {
         return dataPoints;
     }
 
-    public void setDataPoints(List<DescriptionListExtractionDataPointDefinition> dataPoints) {
+    public void setDataPoints(final List<DescriptionListExtractionDataPointDefinition> dataPoints) {
         this.dataPoints = dataPoints;
+        dataPoints.forEach(dataPoint -> dataPoint.setDescriptionListExtractionDefinition(this));
     }
 }

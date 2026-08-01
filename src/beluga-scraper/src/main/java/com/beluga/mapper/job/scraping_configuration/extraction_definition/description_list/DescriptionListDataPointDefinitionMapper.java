@@ -1,0 +1,13 @@
+package com.beluga.mapper.job.scraping_configuration.extraction_definition.description_list;
+
+import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionDataPointConfigurationDto;
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDataPointDefinition;
+import org.mapstruct.Mapper;
+
+import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
+
+@Mapper(componentModel = SPRING)
+public interface DescriptionListDataPointDefinitionMapper {
+
+    DescriptionListExtractionDataPointDefinition map(WriteDescriptionListExtractionDataPointConfigurationDto dto);
+}
