@@ -4,10 +4,12 @@ import com.beluga.model.job_definition.configuration.scraping_configuration.Extr
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
+@MappedSuperclass
 public abstract class ExtractionDefinition {
 
     @Id

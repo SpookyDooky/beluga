@@ -1,6 +1,7 @@
 package com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list;
 
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -10,6 +11,7 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 import static jakarta.persistence.CascadeType.ALL;
 
 @Entity
+@DiscriminatorValue("DESCRIPTION_LIST")
 public class DescriptionListExtractionDefinition extends ExtractionDefinition {
 
     @OneToMany(
