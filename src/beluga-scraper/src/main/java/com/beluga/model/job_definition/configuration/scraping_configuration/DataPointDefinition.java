@@ -1,5 +1,6 @@
 package com.beluga.model.job_definition.configuration.scraping_configuration;
 
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import jakarta.persistence.*;
 
 import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.TEXT;
@@ -24,7 +25,10 @@ public class DataPointDefinition {
 	
 	@Enumerated(STRING)
 	private DataPointType type = TEXT;
-	
+
+	@OneToOne
+	private ExtractionDefinition extractionDefinition;
+
 	public Long getId() {
 		return id;
 	}
@@ -71,5 +75,13 @@ public class DataPointDefinition {
 	
 	public void setType(final DataPointType type) {
 		this.type = type;
+	}
+
+	public ExtractionDefinition getExtractionDefinition() {
+		return extractionDefinition;
+	}
+
+	public void setExtractionDefinition(ExtractionDefinition extractionDefinition) {
+		this.extractionDefinition = extractionDefinition;
 	}
 }

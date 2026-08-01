@@ -12,6 +12,55 @@ create table scraping_definition
     item_selector varchar not null
 );
 
+CREATE TABLE extraction_definition
+(
+    id   INTEGER PRIMARY KEY,
+    type varchar not null
+);
+
+create table text_extraction_definition
+(
+    id    integer primary key,
+    field varchar not null,
+    foreign key (id) references extraction_definition (id)
+);
+
+create table html_extraction_definition
+(
+    id    integer primary key,
+    field varchar not null,
+    foreign key (id) references extraction_definition (id)
+);
+
+create table attribute_extraction_definition
+(
+    id        integer primary key,
+    field     varchar not null,
+    attribute varchar not null,
+    foreign key (id) references extraction_definition (id)
+);
+
+create table image_extraction_definition
+(
+    id integer primary key,
+    foreign key (id) references execution_definition (id)
+);
+
+create table description_list_extraction_definition
+(
+    id integer primary key,
+    foreign key (id) references execution_definition (id)
+);
+
+create table description_list_extraction_data_point_definition
+(
+    id integer primary key,
+    dt_value varchar not null,
+    field varchar not null,
+    description_list_extraction_definition_id integer not null,
+    foreign key (description_list_extraction_definition_id) references  description_list_extraction_definition(id)
+);
+
 CREATE TABLE data_point_definition
 (
     id                     INTEGER PRIMARY KEY,
@@ -20,7 +69,9 @@ CREATE TABLE data_point_definition
     field                  varchar NOT NULL,
     "attribute"            varchar NULL,
     "type"                 varchar NOT NULL,
-    FOREIGN KEY (scraping_definition_id) REFERENCES scraping_definition (id)
+    extraction_definition_id integer not null,
+    FOREIGN KEY (scraping_definition_id) REFERENCES scraping_definition (id),
+    foreign key (extraction_definition_id) references extraction_definition(id)
 );
 
 CREATE TABLE execution_definition
@@ -87,53 +138,4 @@ CREATE TABLE result_file
     task_execution_id integer NOT NULL,
     key               varchar NULL,
     FOREIGN KEY (task_execution_id) REFERENCES task_execution (id)
-);
-
-CREATE TABLE extraction_definition
-(
-    id   INTEGER PRIMARY KEY,
-    type varchar not null
-);
-
-create table text_extraction_definition
-(
-    id    integer primary key,
-    field varchar not null,
-    foreign key (id) references extraction_definition (id)
-);
-
-create table html_extraction_definition
-(
-    id    integer primary key,
-    field varchar not null,
-    foreign key (id) references extraction_definition (id)
-);
-
-create table attribute_extraction_definition
-(
-    id        integer primary key,
-    field     varchar not null,
-    attribute varchar not null,
-    foreign key (id) references extraction_definition (id)
-);
-
-create table image_extraction_definition
-(
-    id integer primary key,
-    foreign key (id) references execution_definition (id)
-);
-
-create table description_list_extraction_definition
-(
-    id integer primary key,
-    foreign key (id) references execution_definition (id)
-);
-
-create table description_list_extraction_data_point_definition
-(
-    id integer primary key,
-    dt_value varchar not null,
-    field varchar not null,
-    description_list_extraction_definition_id integer not null,
-    foreign key (description_list_extraction_definition_id) references  description_list_extraction_definition(id)
 );

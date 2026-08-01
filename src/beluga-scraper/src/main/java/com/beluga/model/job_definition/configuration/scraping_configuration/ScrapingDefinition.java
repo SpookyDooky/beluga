@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -24,10 +23,9 @@ public class ScrapingDefinition {
 	@OneToMany(
 			cascade = ALL,
 			mappedBy = "scrapingDefinition",
-			fetch = EAGER,
 			orphanRemoval = true
 	)
-	private List<DataPointDefinition> dataPointDefinitions = new ArrayList<>();
+	private final List<DataPointDefinition> dataPointDefinitions = new ArrayList<>();
 	
 	public Long getId() {
 		return id;

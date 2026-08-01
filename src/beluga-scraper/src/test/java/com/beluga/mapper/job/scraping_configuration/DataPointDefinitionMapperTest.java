@@ -2,16 +2,29 @@ package com.beluga.mapper.job.scraping_configuration;
 
 import com.beluga.api.job.dto.read.ReadDataPointConfigurationDto;
 import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
+import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import com.beluga.properties.scraping.DataPointProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class DataPointDefinitionMapperTest {
-	
-	private final DataPointDefinitionMapperImpl mapper = new DataPointDefinitionMapperImpl();
+
+	@Mock
+	private ExtractionDefinitionMapper extractionDefinitionMapper;
+
+	@InjectMocks
+	private DataPointDefinitionMapperImpl mapper;
 	
 	@Test
 	void shouldMap() {
@@ -27,13 +40,14 @@ class DataPointDefinitionMapperTest {
 	@Test
 	void shouldMapFromWriteDataPointDto() {
 		final WriteDataPointConfigurationDto dto = Instancio.create(WriteDataPointConfigurationDto.class);
-		
+
+		final ExtractionDefinition extractionDefinition = mock();
+		when(extractionDefinitionMapper.map(dto.getExtraction())).thenReturn(extractionDefinition);
+
 		final DataPointDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getSelector(), entity.getSelector());
-		assertEquals(dto.getField(), entity.getField());
-		assertEquals(dto.getAttribute(), entity.getAttribute());
-		assertEquals(dto.getType(), entity.getType());
+		assertEquals(extractionDefinition, entity.getExtractionDefinition());
 	}
 	
 	@Test

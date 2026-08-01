@@ -176,3 +176,6 @@ create table description_list_extraction_data_point_definition
         foreign key (description_list_extraction_definition_id)
             references description_list_extraction_definition (id)
 );
+
+alter table data_point_definition add column extraction_definition_id bigint not null;
+alter table data_point_definition add constraint fk_extraction_definition_id foreign key (extraction_definition_id) references extraction_definition(id);
