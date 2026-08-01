@@ -23,8 +23,8 @@ The configuration for either is listed down below.
 ## Storage backend
 ### `beluga.result-storage.type`
 - **Type:** string
-- **Required:**: true
-- **Default:**: FILE_SYSTEM
+- **Required:** true
+- **Default:** FILE_SYSTEM
 - **Allowed values:** FILE_SYSTEM, S3
 - **Description:** The type of storage backend to use for result storage
 
