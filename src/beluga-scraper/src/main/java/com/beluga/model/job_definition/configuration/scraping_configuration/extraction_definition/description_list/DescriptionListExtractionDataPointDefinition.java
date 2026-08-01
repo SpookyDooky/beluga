@@ -16,6 +16,8 @@ public class DescriptionListExtractionDataPointDefinition {
     private String dtValue;
     private String field;
 
+    private DescriptionListExtractionDefinition descriptionListExtractionDefinition;
+
     public Long getId() {
         return id;
     }
@@ -38,5 +40,13 @@ public class DescriptionListExtractionDataPointDefinition {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    public DescriptionListExtractionDefinition getDescriptionListExtractionDefinition() {
+        return descriptionListExtractionDefinition;
+    }
+
+    public void setDescriptionListExtractionDefinition(DescriptionListExtractionDefinition descriptionListExtractionDefinition) {
+        this.descriptionListExtractionDefinition = descriptionListExtractionDefinition;
     }
 }
