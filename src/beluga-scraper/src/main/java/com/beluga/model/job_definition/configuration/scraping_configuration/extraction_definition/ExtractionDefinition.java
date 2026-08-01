@@ -1,15 +1,13 @@
 package com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition;
 
 import com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.InheritanceType.JOINED;
 
 @Entity
-@MappedSuperclass
+@Inheritance(strategy = JOINED)
 public abstract class ExtractionDefinition {
 
     @Id

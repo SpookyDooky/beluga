@@ -124,7 +124,7 @@ create table extraction_definition
 
 create table text_extraction_definition
 (
-    id    bigint,
+    id    bigint primary key,
     field varchar not null,
     constraint fk_extraction_definition_id
         foreign key (id)
@@ -133,7 +133,7 @@ create table text_extraction_definition
 
 create table html_extraction_definition
 (
-    id    bigint,
+    id    bigint primary key,
     field varchar not null,
     constraint fk_extraction_definition_id
         foreign key (id)
@@ -142,7 +142,7 @@ create table html_extraction_definition
 
 create table attribute_extraction_definition
 (
-    id        bigint,
+    id        bigint primary key,
     field     varchar not null,
     attribute varchar not null,
     constraint fk_extraction_definition_id
@@ -152,27 +152,27 @@ create table attribute_extraction_definition
 
 create table image_extraction_definition
 (
-    id bigint,
+    id bigint primary key,
     constraint fk_extraction_definition_id
         foreign key (id)
             references extraction_definition (id)
 );
 
-create table definition_list_extraction_definition
+create table description_list_extraction_definition
 (
-    id bigint,
+    id bigint primary key,
     constraint fk_extraction_definition_id
         foreign key (id)
             references extraction_definition (id)
 );
 
-create table definition_list_extraction_data_point_definition
+create table description_list_extraction_data_point_definition
 (
     id                                       bigint generated always as identity primary key,
     dt_value                                 varchar not null,
     field                                    varchar not null,
-    definition_list_extraction_definition_id bigint  not null,
-    constraint fk_definition_list_extraction_definition_id
-        foreign key (id)
-            references definition_list_extraction_definition (id)
-)
+    description_list_extraction_definition_id bigint  not null,
+    constraint fk_description_list_extraction_definition_id
+        foreign key (description_list_extraction_definition_id)
+            references description_list_extraction_definition (id)
+);

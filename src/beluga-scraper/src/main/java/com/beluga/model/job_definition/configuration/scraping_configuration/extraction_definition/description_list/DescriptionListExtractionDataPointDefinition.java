@@ -3,6 +3,7 @@ package com.beluga.model.job_definition.configuration.scraping_configuration.ext
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -16,6 +17,7 @@ public class DescriptionListExtractionDataPointDefinition {
     private String dtValue;
     private String field;
 
+    @ManyToOne
     private DescriptionListExtractionDefinition descriptionListExtractionDefinition;
 
     public Long getId() {
