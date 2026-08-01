@@ -223,6 +223,7 @@ components:
       enum:
         - IMAGE
         - TEXT
+        - HTML
 
     badRequestResponse:
       type: object
