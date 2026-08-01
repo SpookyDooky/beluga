@@ -7,29 +7,23 @@ import com.beluga.execution.event.task.TaskCompletedEvent;
 import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
+import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.ImageDownloadTask;
 import com.beluga.execution.model.task.Task;
-import com.beluga.execution.service.task.JobTaskQueue;
-import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
-import com.beluga.execution.service.worker.event.WorkerStartedEvent;
-import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.http.HttpService;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.model.event.storable.payload.ImagePayload;
 import com.beluga.model.event.storable.payload.JsonPayload;
 import com.beluga.model.event.storable.payload.StringPayload;
-import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.scraping.ScrapingService;
 import com.beluga.scraping.model.ScrapingResult;
 import com.beluga.util.TimingService;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,26 +36,23 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 @Scope(SCOPE_PROTOTYPE)
 public class Worker {
 
-    private final ContextLogger logger = new ContextLogger(LogManager.getLogger());
+    private final UUID workerId = UUID.randomUUID();
 
-    private final JobTaskQueue jobTaskQueue;
+    private final ContextLogger logger;
     private final ScrapingService scrapingService;
     private final HttpService httpService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimingService timingService;
 
     private Long jobId;
-    private Instant startTime;
-    private final UUID workerId = UUID.randomUUID();
+    private WorkerTaskCompletedCallback completedCallback;
 
-    private JitterRateLimiter rateLimiter;
-
-    public Worker(final JobTaskQueue jobTaskQueue,
+    public Worker(final ContextLogger logger,
                   final ScrapingService scrapingService,
                   final HttpService httpService,
                   final ApplicationEventPublisher applicationEventPublisher,
                   final TimingService timingService) {
-        this.jobTaskQueue = jobTaskQueue;
+        this.logger = logger;
         this.scrapingService = scrapingService;
         this.httpService = httpService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -69,31 +60,29 @@ public class Worker {
     }
 
     /**
-     * Initializes the worker and configures it as a worker for a specific {@link JobDefinition}.
+     * Initializes the worker.
      *
-     * @param jobId the id of the {@link JobDefinition}.
+     * @param jobId             The id of the {@link Job} this worker is for.
+     * @param completedCallback callback to use when the {@link Worker} completes a {@link Task}.
      */
     public void init(final Long jobId,
-                     final JitterRateLimiter rateLimiter) {
+                     final WorkerTaskCompletedCallback completedCallback) {
         this.jobId = jobId;
-        this.rateLimiter = rateLimiter;
+        this.completedCallback = completedCallback;
     }
 
-    public void start() {
-        try (final CloseableContext context = logger.with(JOB_EXECUTION_ID, jobId.toString())) {
-            context.put(WORKER_ID, workerId.toString());
-            logger.info("Worker starting.");
-
-            applicationEventPublisher.publishEvent(new WorkerStartedEvent(jobId));
-            startTime = Instant.now();
-
-            while (!jobTaskQueue.isQueueEmpty(jobId)) {
-                rateLimiter.acquire();
-                jobTaskQueue.pollTask(jobId)
-                        .ifPresent(this::executeTask);
-            }
-
-            finish();
+    /**
+     * Executes a {@link Task}.
+     *
+     * @param task the {@link Task} to execute.
+     */
+    public void execute(final Task task) {
+        try (final CloseableContext ignored = logger.with(
+                JOB_EXECUTION_ID, jobId.toString(),
+                WORKER_ID, workerId.toString()
+        )) {
+            executeTask(task);
+            completedCallback.complete(this);
         }
     }
 
@@ -139,21 +128,8 @@ public class Worker {
 
     private void publishScrapingResultEvents(final Task task,
                                              final ScrapingResult scrapingResult) {
-        applicationEventPublisher.publishEvent(
-                TaskResultEvent.of(
-                        task,
-                        "data.json",
-                        new JsonPayload(scrapingResult.getResult())
-                )
-        );
-
-        applicationEventPublisher.publishEvent(
-                TaskResultEvent.of(
-                        task,
-                        "source.html",
-                        new StringPayload(scrapingResult.getRawPage())
-                )
-        );
+        applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "data.json", new JsonPayload(scrapingResult.getResult())));
+        applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "source.html", new StringPayload(scrapingResult.getRawPage())));
     }
 
     /**
@@ -186,12 +162,5 @@ public class Worker {
 
         scrapedData.put(propertyName + "." + propertyName, urlValue);
         scrapedData.put(propertyName + ".fileName", fileName);
-    }
-
-    private void finish() {
-        final long totalTime = Instant.now().toEpochMilli() - startTime.toEpochMilli();
-        logger.info("Worker finished in: " + totalTime + "ms");
-
-        applicationEventPublisher.publishEvent(new WorkerFinishedEvent(jobId));
     }
 }
