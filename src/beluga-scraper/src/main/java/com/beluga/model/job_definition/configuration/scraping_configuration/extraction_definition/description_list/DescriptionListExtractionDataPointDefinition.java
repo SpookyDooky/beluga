@@ -1,0 +1,42 @@
+package com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
+public class DescriptionListExtractionDataPointDefinition {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
+
+    private String dtValue;
+    private String field;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDtValue() {
+        return dtValue;
+    }
+
+    public void setDtValue(String dtValue) {
+        this.dtValue = dtValue;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+}
