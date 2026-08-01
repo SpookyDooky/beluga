@@ -3,13 +3,11 @@ package com.beluga.execution.service.worker;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.service.task.JobTaskQueue;
 import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
-import com.beluga.execution.service.worker.event.WorkerFinishedEvent;
 import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -24,8 +22,6 @@ public class WorkerOrchestrator {
 	private final ApplicationContext applicationContext;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final JobTaskQueue jobTaskQueue;
-
-	private final Map<Long, Integer> activeWorkersPerJob = new ConcurrentHashMap<>();
 
 	private final Map<Long, List<Worker>> jobWorkers = new ConcurrentHashMap<>();
 	private final Map<Long, Queue<Worker>> jobIdleWorkers = new ConcurrentHashMap<>();
@@ -93,6 +89,7 @@ public class WorkerOrchestrator {
 		}
 
 		waitForWorkersToFinish(jobId, workers);
+		applicationEventPublisher.publishEvent(new JobWorkersFinishedEvent(jobId));
 		// Destroy beans
 	}
 
@@ -120,17 +117,6 @@ public class WorkerOrchestrator {
 			} catch (final InterruptedException e) {
 				throw new RuntimeException(e);
 			}
-		}
-	}
-
-
-	@EventListener
-	public void onWorkerFinishedEvent(final WorkerFinishedEvent event) {
-		final int activeWorkers = activeWorkersPerJob.get(event.getJobId()) - 1;
-		activeWorkersPerJob.put(event.getJobId(), activeWorkers);
-		
-		if (activeWorkers <= 0) {
-			applicationEventPublisher.publishEvent(new JobWorkersFinishedEvent(event.getJobId()));
 		}
 	}
 }
