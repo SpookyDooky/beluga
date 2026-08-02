@@ -1,5 +1,10 @@
 package com.beluga.mapper.job.scraping_configuration.extraction_definition;
 
+import com.beluga.api.job.dto.read.extraction_configuration.attribute.ReadAttributeExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.description_list.ReadDescriptionListExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.html.ReadHtmlExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.image.ReadImageExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.text.ReadTextExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.html.WriteHtmlExtractionConfigurationDto;
@@ -111,5 +116,75 @@ class ExtractionDefinitionMapperTest {
         );
 
         assertSame(expectedDefinition, result);
+    }
+
+    @Test
+    void shouldMapReadAttributeConfigurationDtoFromExtractionDefinition() {
+        final AttributeExtractionDefinition definition = mock();
+        final ReadAttributeExtractionConfigurationDto expectedDto = mock();
+        when(attributeExtractionDefinitionMapper.map(definition)).thenReturn(expectedDto);
+
+        final ReadAttributeExtractionConfigurationDto result = assertInstanceOf(
+                ReadAttributeExtractionConfigurationDto.class,
+                mapper.map(definition)
+        );
+
+        assertSame(expectedDto, result);
+    }
+
+    @Test
+    void shouldMapReadDescriptionListConfigurationDtoFromExtractionDefinition() {
+        final DescriptionListExtractionDefinition definition = mock();
+        final ReadDescriptionListExtractionConfigurationDto expectedDto = mock();
+        when(descriptionListExtractionDefinitionMapper.map(definition)).thenReturn(expectedDto);
+
+        final ReadDescriptionListExtractionConfigurationDto result = assertInstanceOf(
+                ReadDescriptionListExtractionConfigurationDto.class,
+                mapper.map(definition)
+        );
+
+        assertSame(expectedDto, result);
+    }
+
+    @Test
+    void shouldMapReadHtmlConfigurationDtoFromExtractionDefinition() {
+        final HtmlExtractionDefinition definition = mock();
+        final ReadHtmlExtractionConfigurationDto expectedDto = mock();
+        when(htmlExtractionDefinitionMapper.map(definition)).thenReturn(expectedDto);
+
+        final ReadHtmlExtractionConfigurationDto result = assertInstanceOf(
+                ReadHtmlExtractionConfigurationDto.class,
+                mapper.map(definition)
+        );
+
+        assertSame(expectedDto, result);
+    }
+
+    @Test
+    void shouldMapReadImageConfigurationDtoFromExtractionDefinition() {
+        final ImageExtractionDefinition definition = mock();
+        final ReadImageExtractionConfigurationDto expectedDto = mock();
+        when(imageExtractionDefinitionMapper.map(definition)).thenReturn(expectedDto);
+
+        final ReadImageExtractionConfigurationDto result = assertInstanceOf(
+                ReadImageExtractionConfigurationDto.class,
+                mapper.map(definition)
+        );
+
+        assertSame(expectedDto, result);
+    }
+
+    @Test
+    void shouldMapReadTextConfigurationDtoFromExtractionDefinition() {
+        final TextExtractionDefinition definition = mock();
+        final ReadTextExtractionConfigurationDto expectedDto = mock();
+        when(textExtractionDefinitionMapper.map(definition)).thenReturn(expectedDto);
+
+        final ReadTextExtractionConfigurationDto result = assertInstanceOf(
+                ReadTextExtractionConfigurationDto.class,
+                mapper.map(definition)
+        );
+
+        assertSame(expectedDto, result);
     }
 }

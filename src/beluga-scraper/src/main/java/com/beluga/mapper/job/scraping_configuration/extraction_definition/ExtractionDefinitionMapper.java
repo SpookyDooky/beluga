@@ -1,5 +1,11 @@
 package com.beluga.mapper.job.scraping_configuration.extraction_definition;
 
+import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.attribute.ReadAttributeExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.description_list.ReadDescriptionListExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.html.ReadHtmlExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.image.ReadImageExtractionConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.text.ReadTextExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.WriteExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
@@ -44,4 +50,11 @@ public interface ExtractionDefinitionMapper {
     @SubclassMapping(target = ImageExtractionDefinition.class, source = WriteImageExtractionConfigurationDto.class)
     @SubclassMapping(target = TextExtractionDefinition.class, source = WriteTextExtractionConfigurationDto.class)
     ExtractionDefinition map(WriteExtractionConfigurationDto dto);
+
+    @SubclassMapping(target = ReadAttributeExtractionConfigurationDto.class, source = AttributeExtractionDefinition.class)
+    @SubclassMapping(target = ReadDescriptionListExtractionConfigurationDto.class, source = DescriptionListExtractionDefinition.class)
+    @SubclassMapping(target = ReadHtmlExtractionConfigurationDto.class, source = HtmlExtractionDefinition.class)
+    @SubclassMapping(target = ReadImageExtractionConfigurationDto.class, source =  ImageExtractionDefinition.class)
+    @SubclassMapping(target = ReadTextExtractionConfigurationDto.class, source = TextExtractionDefinition.class)
+    ReadExtractionConfigurationDto map(ExtractionDefinition extractionDefinition);
 }

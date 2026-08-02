@@ -1,6 +1,7 @@
 package com.beluga.mapper.job.scraping_configuration;
 
 import com.beluga.api.job.dto.read.ReadDataPointConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,12 +55,14 @@ class DataPointDefinitionMapperTest {
 	@Test
 	void shouldMapToDto() {
 		final DataPointDefinition entity = Instancio.create(DataPointDefinition.class);
-		
+
+		final ReadExtractionConfigurationDto configurationDto = mock();
+		when(extractionDefinitionMapper.map(entity.getExtractionDefinition())).thenReturn(configurationDto);
+
 		final ReadDataPointConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getType(), dto.getType());
 		assertEquals(entity.getSelector(), dto.getSelector());
-		assertEquals(entity.getAttribute(), dto.getAttribute());
+		assertSame(configurationDto, dto.getExtraction());
 	}
 }
