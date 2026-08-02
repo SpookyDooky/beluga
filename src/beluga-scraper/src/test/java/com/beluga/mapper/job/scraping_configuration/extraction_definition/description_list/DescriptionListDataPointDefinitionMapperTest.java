@@ -1,5 +1,6 @@
 package com.beluga.mapper.job.scraping_configuration.extraction_definition.description_list;
 
+import com.beluga.api.job.dto.read.extraction_configuration.description_list.ReadDescriptionListExtractionDataPointConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionDataPointConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDataPointDefinition;
 import org.instancio.Instancio;
@@ -19,5 +20,16 @@ class DescriptionListDataPointDefinitionMapperTest {
 
         assertEquals(dto.getDtValue(), definition.getDtValue());
         assertEquals(dto.getField(), definition.getField());
+    }
+
+    @Test
+    void shouldMapFromDefinition() {
+        final DescriptionListExtractionDataPointDefinition definition = Instancio.create(DescriptionListExtractionDataPointDefinition.class);
+
+        final ReadDescriptionListExtractionDataPointConfigurationDto dto = mapper.map(definition);
+
+        assertEquals(definition.getId(), dto.getId());
+        assertEquals(definition.getField(), dto.getField());
+        assertEquals(definition.getDtValue(), dto.getDtValue());
     }
 }
