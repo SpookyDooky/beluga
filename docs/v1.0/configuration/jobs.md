@@ -99,7 +99,7 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Type:** string
 - **Required:** false
 - **Default:** TEXT
-- **Allowed values:** TEXT, IMAGE, HTML
+- **Allowed values:** TEXT, HTML
 - **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
 
 # Example

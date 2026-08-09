@@ -34,10 +34,7 @@ class DataPointConfigurationMapperTest {
 
         final DataPointConfiguration dataPointConfiguration = mapper.map(dataPointDefinition);
 
-        assertEquals(dataPointDefinition.getField(),  dataPointConfiguration.getField());
         assertEquals(dataPointDefinition.getSelector(), dataPointConfiguration.getSelector());
-        assertEquals(dataPointDefinition.getAttribute(), dataPointConfiguration.getAttribute());
-        assertEquals(dataPointDefinition.getType(), dataPointConfiguration.getType());
         assertSame(extractionConfiguration, dataPointConfiguration.getExtractionConfiguration());
     }
 }

@@ -195,7 +195,6 @@ components:
             - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
             - $ref: "#/components/schemas/writeDescriptionListExtractionConfigurationDto"
             - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
-            - $ref: "#/components/schemas/writeImageExtractionConfigurationDto"
             - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
       required:
         - selector
@@ -214,7 +213,6 @@ components:
             - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
             - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
             - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
-            - $ref: "#/components/schemas/readImageExtractionConfigurationDto"
             - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
       required:
         - id
@@ -328,27 +326,6 @@ components:
       type: object
       allOf:
         - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
-      properties:
-        id:
-          type: integer
-          example: 123
-      required:
-        - id
-
-    writeImageExtractionConfigurationDto:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-            - IMAGE
-      required:
-        - type
-
-    readImageExtractionConfigurationDto:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/writeImageExtractionConfigurationDto"
       properties:
         id:
           type: integer
