@@ -4,6 +4,7 @@ import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.attribute.AttributeExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionDataPointConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.html.HtmlExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.image.ImageExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
@@ -102,7 +103,37 @@ public class ScrapingService {
 
     private Map<String, Object> extractData(final Elements selectedElements,
                                             final DescriptionListExtractionConfiguration extractionConfiguration) {
-        return Map.of();
+        if (selectedElements.size() > 1) {
+            throw new IllegalArgumentException("Found more than one description list matching css selector.");
+        }
+
+        final List<Element> descriptionListElements = selectedElements.getFirst().children();
+        final Map<String, Object> result = new HashMap<>();
+
+        for (final DescriptionListExtractionDataPointConfiguration dataPointConfiguration : extractionConfiguration.getDataPoints()) {
+            final Object data = extractDescriptionListData(descriptionListElements, dataPointConfiguration.getDtValue());
+            result.put(dataPointConfiguration.getField(), data);
+        }
+
+        return result;
+    }
+
+    private Object extractDescriptionListData(final List<Element> descriptionListElements,
+                                              final String dtValue) {
+        boolean matched = false;
+
+        for (final Element descriptionListElement : descriptionListElements) {
+            if (descriptionListElement.tag().getName().equals("dt") && dtValue.equals(descriptionListElement.text())) {
+                matched = true;
+                continue;
+            }
+
+            if (matched && descriptionListElement.tag().getName().equals("dd")) {
+                return descriptionListElement.text();
+            }
+        }
+
+        return null;
     }
 
     private Map<String, Object> extractData(final Elements selectedElements,

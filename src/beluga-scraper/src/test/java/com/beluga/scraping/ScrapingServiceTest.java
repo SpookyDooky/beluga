@@ -4,6 +4,9 @@ import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.attribute.AttributeExtractionConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionDataPointConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.html.HtmlExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
 import com.beluga.http.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
@@ -99,12 +102,40 @@ class ScrapingServiceTest {
 
     @Test
     void shouldExtractDescriptionList() {
+        mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
 
+        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
+
+        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration1 = new DescriptionListExtractionDataPointConfiguration();
+        dataPointConfiguration1.setDtValue("title1");
+        dataPointConfiguration1.setField("value1");
+
+        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration2 = new DescriptionListExtractionDataPointConfiguration();
+        dataPointConfiguration2.setDtValue("title3");
+        dataPointConfiguration2.setField("value3");
+
+        extractionConfiguration.setDataPoints(List.of(dataPointConfiguration1, dataPointConfiguration2));
+
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("dl.description_list", extractionConfiguration);
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
+
+        assertEquals("data1", scrapingResult.getResult().getFirst().get("value1"));
+        assertEquals("data3", scrapingResult.getResult().getFirst().get("value3"));
     }
 
     @Test
     void shouldExtractHtml() {
+        mockDocumentResponse("src/test/resources/test-files/html/html_extraction.html");
 
+        final HtmlExtractionConfiguration extractionConfiguration = new HtmlExtractionConfiguration();
+        extractionConfiguration.setField("html");
+
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("div.some_html", extractionConfiguration);
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
+
+        assertEquals("<p></p>", scrapingResult.getResult().getFirst().get("html"));
     }
 
     @Test
