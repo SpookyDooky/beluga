@@ -20,4 +20,12 @@ public class AttributeExtractionConfiguration extends ExtractionConfiguration {
     public void setField(String field) {
         this.field = field;
     }
+
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
 }
