@@ -57,7 +57,7 @@ class ExtractionConfigurationMapperTest {
         final DescriptionListExtractionConfiguration configuration = mock();
         when(descriptionListExtractionConfigurationMapper.map(definition)).thenReturn(configuration);
 
-        assertInstanceOf(AttributeExtractionConfiguration.class, mapper.map(definition));
+        assertInstanceOf(DescriptionListExtractionConfiguration.class, mapper.map(definition));
     }
 
     @Test
@@ -66,7 +66,7 @@ class ExtractionConfigurationMapperTest {
         final HtmlExtractionConfiguration configuration = mock();
         when(htmlExtractionConfigurationMapper.map(definition)).thenReturn(configuration);
 
-        assertInstanceOf(AttributeExtractionConfiguration.class, mapper.map(definition));
+        assertInstanceOf(HtmlExtractionConfiguration.class, mapper.map(definition));
     }
 
     @Test
@@ -75,7 +75,7 @@ class ExtractionConfigurationMapperTest {
         final ImageExtractionConfiguration configuration = mock();
         when(imageExtractionConfigurationMapper.map(definition)).thenReturn(configuration);
 
-        assertInstanceOf(AttributeExtractionConfiguration.class, mapper.map(definition));
+        assertInstanceOf(ImageExtractionConfiguration.class, mapper.map(definition));
     }
 
     @Test
@@ -84,6 +84,6 @@ class ExtractionConfigurationMapperTest {
         final TextExtractionConfiguration configuration = mock();
         when(textExtractionConfigurationMapper.map(definition)).thenReturn(configuration);
 
-        assertInstanceOf(AttributeExtractionConfiguration.class, mapper.map(definition));
+        assertInstanceOf(TextExtractionConfiguration.class, mapper.map(definition));
     }
 }
