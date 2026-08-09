@@ -76,11 +76,16 @@ public class ScrapingService {
         final Elements selectedElements = element.select(dataPointConfiguration.getSelector());
 
         return switch (dataPointConfiguration.getExtractionConfiguration()) {
-            case AttributeExtractionConfiguration extractionConfiguration -> extractData(selectedElements, extractionConfiguration);
-            case DescriptionListExtractionConfiguration extractionConfiguration -> extractData(selectedElements, extractionConfiguration);
-            case HtmlExtractionConfiguration extractionConfiguration -> extractData(selectedElements, extractionConfiguration);
-            case ImageExtractionConfiguration extractionConfiguration -> extractData(selectedElements, extractionConfiguration);
-            case TextExtractionConfiguration extractionConfiguration -> extractData(selectedElements, extractionConfiguration);
+            case AttributeExtractionConfiguration extractionConfiguration ->
+                    extractData(selectedElements, extractionConfiguration);
+            case DescriptionListExtractionConfiguration extractionConfiguration ->
+                    extractData(selectedElements, extractionConfiguration);
+            case HtmlExtractionConfiguration extractionConfiguration ->
+                    extractData(selectedElements, extractionConfiguration);
+            case ImageExtractionConfiguration extractionConfiguration ->
+                    extractData(selectedElements, extractionConfiguration);
+            case TextExtractionConfiguration extractionConfiguration ->
+                    extractData(selectedElements, extractionConfiguration);
             default -> throw new IllegalArgumentException("Unsupported extraction configuration");
         };
     }
@@ -101,6 +106,12 @@ public class ScrapingService {
         );
     }
 
+    /**
+     * Extracts data from a description list for matching dt values.
+     * @param selectedElements the elements to extract the data from.
+     * @param extractionConfiguration the configuration containing information about the values to extract data for.
+     * @return the extracted data from the description list.
+     */
     private Map<String, Object> extractData(final Elements selectedElements,
                                             final DescriptionListExtractionConfiguration extractionConfiguration) {
         if (selectedElements.size() > 1) {
@@ -118,6 +129,13 @@ public class ScrapingService {
         return result;
     }
 
+    /**
+     * Extracts the data from a description list for a matching dt value.
+     *
+     * @param descriptionListElements list of elements in the description list.
+     * @param dtValue                 the value of the dt tag to match.
+     * @return The extracted data from the dd element.
+     */
     private Object extractDescriptionListData(final List<Element> descriptionListElements,
                                               final String dtValue) {
         boolean matched = false;
@@ -141,6 +159,13 @@ public class ScrapingService {
         return Map.of();
     }
 
+    /**
+     * Extracts text data from {@link Elements}
+     *
+     * @param selectedElements        elements to extract text from.
+     * @param extractionConfiguration the configuration of how to extract the text.
+     * @return extracted text stored under its respective field.
+     */
     private Map<String, Object> extractData(final Elements selectedElements,
                                             final TextExtractionConfiguration extractionConfiguration) {
         return Map.of(
