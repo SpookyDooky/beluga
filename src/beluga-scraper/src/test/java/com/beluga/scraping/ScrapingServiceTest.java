@@ -3,6 +3,7 @@ package com.beluga.scraping;
 import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.attribute.AttributeExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
 import com.beluga.http.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
@@ -50,7 +51,17 @@ class ScrapingServiceTest {
 
     @Test
     void shouldExtractAttribute() {
+        mockDocumentResponse("src/test/resources/test-files/html/attribute_extraction.html");
 
+        final AttributeExtractionConfiguration extractionConfiguration = new AttributeExtractionConfiguration();
+        extractionConfiguration.setField("attribute");
+        extractionConfiguration.setAttribute("href");
+
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("a.some_attribute", extractionConfiguration);
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
+
+        assertEquals("attribute", scrapingResult.getResult().getFirst().get("attribute"));
     }
 
     void mockDocumentResponse(final String responseFile) {
