@@ -3,6 +3,7 @@ package com.beluga.model.job_definition.configuration.scraping_configuration;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import jakarta.persistence.*;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -18,7 +19,7 @@ public class DataPointDefinition {
 	
 	private String selector;
 
-	@OneToOne
+	@OneToOne(cascade = ALL)
 	@JoinColumn(name = "extraction_definition_id")
 	private ExtractionDefinition extractionDefinition;
 
@@ -50,7 +51,7 @@ public class DataPointDefinition {
 		return extractionDefinition;
 	}
 
-	public void setExtractionDefinition(ExtractionDefinition extractionDefinition) {
+	public void setExtractionDefinition(final ExtractionDefinition extractionDefinition) {
 		this.extractionDefinition = extractionDefinition;
 	}
 }
