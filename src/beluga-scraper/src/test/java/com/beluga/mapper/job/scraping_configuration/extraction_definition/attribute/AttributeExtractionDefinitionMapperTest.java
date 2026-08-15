@@ -30,6 +30,6 @@ class AttributeExtractionDefinitionMapperTest {
 
         assertEquals(definition.getId(), dto.getId());
         assertEquals(definition.getField(), dto.getField());
-        assertEquals(definition.getAttribute(), dto.getField());
+        assertEquals(definition.getAttribute(), dto.getAttribute());
     }
 }

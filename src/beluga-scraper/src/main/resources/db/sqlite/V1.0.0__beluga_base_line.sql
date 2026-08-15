@@ -66,9 +66,6 @@ CREATE TABLE data_point_definition
     id                     INTEGER PRIMARY KEY,
     scraping_definition_id integer NOT NULL,
     selector               varchar NOT NULL,
-    field                  varchar NOT NULL,
-    "attribute"            varchar NULL,
-    "type"                 varchar NOT NULL,
     extraction_definition_id integer not null,
     FOREIGN KEY (scraping_definition_id) REFERENCES scraping_definition (id),
     foreign key (extraction_definition_id) references extraction_definition(id)
