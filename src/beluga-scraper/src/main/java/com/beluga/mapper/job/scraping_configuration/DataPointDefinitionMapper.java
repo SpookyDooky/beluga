@@ -22,6 +22,7 @@ public interface DataPointDefinitionMapper {
 
 	@Mapping(target = "extractionDefinition", source = "extraction")
 	DataPointDefinition map(WriteDataPointConfigurationDto writeDataPointConfigurationDto);
-	
+
+	@Mapping(target = "extraction", source = "extractionDefinition")
 	ReadDataPointConfigurationDto map(DataPointDefinition dataPointDefinition);
 }

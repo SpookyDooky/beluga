@@ -2,14 +2,12 @@ package com.beluga.api.job.dto.read;
 
 import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfigurationDto;
 
-import java.util.List;
-
 public class ReadDataPointConfigurationDto {
 	
 	private Long id;
 
 	private String selector;
-	private List<ReadExtractionConfigurationDto> extraction;
+	private ReadExtractionConfigurationDto extraction;
 
 	public Long getId() {
 		return id;
@@ -27,11 +25,11 @@ public class ReadDataPointConfigurationDto {
 		this.selector = selector;
 	}
 
-	public List<ReadExtractionConfigurationDto> getExtraction() {
+	public ReadExtractionConfigurationDto getExtraction() {
 		return extraction;
 	}
 
-	public void setExtraction(final List<ReadExtractionConfigurationDto> extraction) {
+	public void setExtraction(final ReadExtractionConfigurationDto extraction) {
 		this.extraction = extraction;
 	}
 }
