@@ -21,7 +21,7 @@ public class WriteDescriptionListExtractionConfigurationDto extends WriteExtract
         return dataPoints;
     }
 
-    public void setDataPoints(List<WriteDescriptionListExtractionDataPointConfigurationDto> dataPoints) {
+    public void setDataPoints(final List<WriteDescriptionListExtractionDataPointConfigurationDto> dataPoints) {
         this.dataPoints = dataPoints;
     }
 }

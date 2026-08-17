@@ -17,7 +17,7 @@ public class ReadAttributeExtractionConfigurationDto extends ReadExtractionConfi
         return field;
     }
 
-    public void setField(String field) {
+    public void setField(final String field) {
         this.field = field;
     }
 
@@ -25,7 +25,7 @@ public class ReadAttributeExtractionConfigurationDto extends ReadExtractionConfi
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(final String attribute) {
         this.attribute = attribute;
     }
 }

@@ -18,7 +18,7 @@ public class ReadDescriptionListExtractionConfigurationDto extends ReadExtractio
         return dataPoints;
     }
 
-    public void setDataPoints(List<ReadDescriptionListExtractionDataPointConfigurationDto> dataPoints) {
+    public void setDataPoints(final List<ReadDescriptionListExtractionDataPointConfigurationDto> dataPoints) {
         this.dataPoints = dataPoints;
     }
 }

@@ -20,7 +20,7 @@ public class WriteAttributeExtractionConfigurationDto extends WriteExtractionCon
         return field;
     }
 
-    public void setField(String field) {
+    public void setField(final String field) {
         this.field = field;
     }
 
@@ -28,7 +28,7 @@ public class WriteAttributeExtractionConfigurationDto extends WriteExtractionCon
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(final String attribute) {
         this.attribute = attribute;
     }
 }

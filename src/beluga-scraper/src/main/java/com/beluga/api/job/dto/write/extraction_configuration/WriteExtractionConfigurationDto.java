@@ -6,9 +6,13 @@ import com.beluga.api.job.dto.write.extraction_configuration.html.WriteHtmlExtra
 import com.beluga.api.job.dto.write.extraction_configuration.image.WriteImageExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.text.WriteTextExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType;
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+/**
+ * Write model for a {@link ExtractionDefinition}.
+ */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
