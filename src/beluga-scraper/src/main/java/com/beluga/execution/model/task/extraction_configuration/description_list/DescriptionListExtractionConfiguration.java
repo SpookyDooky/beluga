@@ -18,7 +18,7 @@ public class DescriptionListExtractionConfiguration extends ExtractionConfigurat
         return dataPoints;
     }
 
-    public void setDataPoints(List<DescriptionListExtractionDataPointConfiguration> dataPoints) {
+    public void setDataPoints(final List<DescriptionListExtractionDataPointConfiguration> dataPoints) {
         this.dataPoints = dataPoints;
     }
 }

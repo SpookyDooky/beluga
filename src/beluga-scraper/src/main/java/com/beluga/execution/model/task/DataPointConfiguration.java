@@ -19,7 +19,7 @@ public class DataPointConfiguration {
 		return extractionConfiguration;
 	}
 
-	public void setExtractionConfiguration(ExtractionConfiguration extractionConfiguration) {
+	public void setExtractionConfiguration(final ExtractionConfiguration extractionConfiguration) {
 		this.extractionConfiguration = extractionConfiguration;
 	}
 }

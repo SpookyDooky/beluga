@@ -16,7 +16,7 @@ public class HtmlExtractionConfiguration extends ExtractionConfiguration {
         return field;
     }
 
-    public void setField(String field) {
+    public void setField(final String field) {
         this.field = field;
     }
 }

@@ -15,7 +15,7 @@ public class ReadDescriptionListExtractionDataPointConfigurationDto {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -23,7 +23,7 @@ public class ReadDescriptionListExtractionDataPointConfigurationDto {
         return dtValue;
     }
 
-    public void setDtValue(String dtValue) {
+    public void setDtValue(final String dtValue) {
         this.dtValue = dtValue;
     }
 
@@ -31,7 +31,7 @@ public class ReadDescriptionListExtractionDataPointConfigurationDto {
         return field;
     }
 
-    public void setField(String field) {
+    public void setField(final String field) {
         this.field = field;
     }
 }
