@@ -98,6 +98,12 @@ public class ScrapingService {
         );
     }
 
+    /**
+     * Extracts the selected element as raw HTML.
+     * @param selectedElements the elements to extract the data from.
+     * @param extractionConfiguration the configuration containing information about the values to extract data for.
+     * @return the raw HTML stored under its configured field.
+     */
     private Map<String, Object> extractData(final Elements selectedElements,
                                             final HtmlExtractionConfiguration extractionConfiguration) {
         return Map.of(
@@ -156,6 +162,9 @@ public class ScrapingService {
         return null;
     }
 
+    /**
+     * Not implemented yet, this is scheduled to be implemented in v1.1
+     */
     private Map<String, Object> extractData(final Elements selectedElements,
                                             final ImageExtractionConfiguration extractionConfiguration) {
         return Map.of();
