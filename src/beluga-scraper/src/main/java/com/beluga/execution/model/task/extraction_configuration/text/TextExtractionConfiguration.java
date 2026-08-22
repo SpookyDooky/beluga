@@ -6,10 +6,19 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 
 public class TextExtractionConfiguration extends ExtractionConfiguration {
 
+    private String selector;
     private String field;
 
     public TextExtractionConfiguration() {
         super(TEXT);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public String getField() {

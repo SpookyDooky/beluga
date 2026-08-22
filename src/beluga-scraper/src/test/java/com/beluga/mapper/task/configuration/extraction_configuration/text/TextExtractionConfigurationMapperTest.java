@@ -17,6 +17,7 @@ class TextExtractionConfigurationMapperTest {
 
         final TextExtractionConfiguration configuration = mapper.map(definition);
 
+        assertEquals(definition.getSelector(), configuration.getSelector());
         assertEquals(definition.getField(), configuration.getField());
     }
 }

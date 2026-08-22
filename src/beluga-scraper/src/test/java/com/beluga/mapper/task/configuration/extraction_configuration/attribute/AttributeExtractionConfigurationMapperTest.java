@@ -17,6 +17,7 @@ class AttributeExtractionConfigurationMapperTest {
 
         final AttributeExtractionConfiguration configuration = mapper.map(definition);
 
+        assertEquals(definition.getSelector(), configuration.getSelector());
         assertEquals(definition.getAttribute(), configuration.getAttribute());
         assertEquals(definition.getField(), configuration.getField());
     }

@@ -8,10 +8,19 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 
 public class DescriptionListExtractionConfiguration extends ExtractionConfiguration {
 
+    private String selector;
     private List<DescriptionListExtractionDataPointConfiguration> dataPoints;
 
     public DescriptionListExtractionConfiguration() {
         super(DESCRIPTION_LIST);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public List<DescriptionListExtractionDataPointConfiguration> getDataPoints() {

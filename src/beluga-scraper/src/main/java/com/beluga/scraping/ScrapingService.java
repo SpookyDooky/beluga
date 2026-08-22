@@ -1,7 +1,7 @@
 package com.beluga.scraping;
 
-import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.attribute.AttributeExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionDataPointConfiguration;
@@ -58,10 +58,10 @@ public class ScrapingService {
     }
 
     private Map<String, Object> extractData(final Element element,
-                                            final List<DataPointConfiguration> dataPointConfigurations) {
+                                            final List<ExtractionConfiguration> dataPointConfigurations) {
         final Map<String, Object> result = new HashMap<>();
 
-        for (final DataPointConfiguration dataPointConfiguration : dataPointConfigurations) {
+        for (final ExtractionConfiguration dataPointConfiguration : dataPointConfigurations) {
             final Map<String, Object> dataPointResult = extractData(element, dataPointConfiguration);
 
             if (dataPointResult != null) {
@@ -72,26 +72,26 @@ public class ScrapingService {
     }
 
     private Map<String, Object> extractData(final Element element,
-                                            final DataPointConfiguration dataPointConfiguration) {
-        final Elements selectedElements = element.select(dataPointConfiguration.getSelector());
-
-        return switch (dataPointConfiguration.getExtractionConfiguration()) {
-            case AttributeExtractionConfiguration extractionConfiguration ->
-                    extractData(selectedElements, extractionConfiguration);
-            case DescriptionListExtractionConfiguration extractionConfiguration ->
-                    extractData(selectedElements, extractionConfiguration);
-            case HtmlExtractionConfiguration extractionConfiguration ->
-                    extractData(selectedElements, extractionConfiguration);
-            case ImageExtractionConfiguration extractionConfiguration ->
-                    extractData(selectedElements, extractionConfiguration);
-            case TextExtractionConfiguration extractionConfiguration ->
-                    extractData(selectedElements, extractionConfiguration);
+                                            final ExtractionConfiguration extractionConfiguration) {
+        return switch (extractionConfiguration) {
+            case AttributeExtractionConfiguration attributeExtractionConfiguration ->
+                    extractData(element, attributeExtractionConfiguration);
+            case DescriptionListExtractionConfiguration descriptionListExtractionConfiguration ->
+                    extractData(element, descriptionListExtractionConfiguration);
+            case HtmlExtractionConfiguration htmlExtractionConfiguration ->
+                    extractData(element, htmlExtractionConfiguration);
+            case ImageExtractionConfiguration imageExtractionConfiguration ->
+                    extractData(element, imageExtractionConfiguration);
+            case TextExtractionConfiguration textExtractionConfiguration ->
+                    extractData(element, textExtractionConfiguration);
             default -> throw new IllegalArgumentException("Unsupported extraction configuration");
         };
     }
 
-    private Map<String, Object> extractData(final Elements selectedElements,
+    private Map<String, Object> extractData(final Element element,
                                             final AttributeExtractionConfiguration extractionConfiguration) {
+        final Elements selectedElements = element.select(extractionConfiguration.getSelector());
+
         return Map.of(
                 extractionConfiguration.getField(),
                 selectedElements.attr(extractionConfiguration.getAttribute())
@@ -100,12 +100,13 @@ public class ScrapingService {
 
     /**
      * Extracts the selected element as raw HTML.
-     * @param selectedElements the elements to extract the data from.
+     * @param element the elements to extract the data from.
      * @param extractionConfiguration the configuration containing information about the values to extract data for.
      * @return the raw HTML stored under its configured field.
      */
-    private Map<String, Object> extractData(final Elements selectedElements,
+    private Map<String, Object> extractData(final Element element,
                                             final HtmlExtractionConfiguration extractionConfiguration) {
+        final Elements selectedElements = element.select(extractionConfiguration.getSelector());
         return Map.of(
                 extractionConfiguration.getField(),
                 selectedElements.html()
@@ -114,12 +115,14 @@ public class ScrapingService {
 
     /**
      * Extracts data from a description list for matching dt values.
-     * @param selectedElements the elements to extract the data from.
+     * @param element the elements to extract the data from.
      * @param extractionConfiguration the configuration containing information about the values to extract data for.
      * @return the extracted data from the description list.
      */
-    private Map<String, Object> extractData(final Elements selectedElements,
+    private Map<String, Object> extractData(final Element element,
                                             final DescriptionListExtractionConfiguration extractionConfiguration) {
+        final Elements selectedElements = element.select(extractionConfiguration.getSelector());
+
         if (selectedElements.size() > 1) {
             throw new IllegalArgumentException("Found more than one description list matching css selector.");
         } else if (selectedElements.isEmpty()) {
@@ -165,7 +168,7 @@ public class ScrapingService {
     /**
      * Not implemented yet, this is scheduled to be implemented in v1.1
      */
-    private Map<String, Object> extractData(final Elements selectedElements,
+    private Map<String, Object> extractData(final Element element,
                                             final ImageExtractionConfiguration extractionConfiguration) {
         return Map.of();
     }
@@ -173,12 +176,14 @@ public class ScrapingService {
     /**
      * Extracts text data from {@link Elements}
      *
-     * @param selectedElements        elements to extract text from.
+     * @param element the elements to extract the data from.
      * @param extractionConfiguration the configuration of how to extract the text.
      * @return extracted text stored under its respective field.
      */
-    private Map<String, Object> extractData(final Elements selectedElements,
+    private Map<String, Object> extractData(final Element element,
                                             final TextExtractionConfiguration extractionConfiguration) {
+        final Elements selectedElements = element.select(extractionConfiguration.getSelector());
+
         return Map.of(
                 extractionConfiguration.getField(),
                 selectedElements.text()

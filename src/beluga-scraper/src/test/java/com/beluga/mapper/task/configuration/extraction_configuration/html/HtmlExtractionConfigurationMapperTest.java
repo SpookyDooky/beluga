@@ -17,6 +17,7 @@ class HtmlExtractionConfigurationMapperTest {
 
         final HtmlExtractionConfiguration configuration = mapper.map(definition);
 
+        assertEquals(definition.getSelector(), configuration.getSelector());
         assertEquals(definition.getField(), configuration.getField());
     }
 }
