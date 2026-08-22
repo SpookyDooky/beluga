@@ -157,7 +157,11 @@ components:
         dataPoints:
           type: array
           items:
-            $ref: "#/components/schemas/writeScrapingDataPointDto"
+            anyOf:
+              - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeDescriptionListExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
           minLength: 1
       required:
         - itemSelector
@@ -176,29 +180,16 @@ components:
         dataPoints:
           type: array
           items:
-            $ref: "#/components/schemas/readScrapingDataPointDto"
+            anyOf:
+              - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
           minLength: 1
       required:
         - id
         - itemSelector
         - dataPoints
-
-    writeScrapingDataPointDto:
-      type: object
-      properties:
-        selector:
-          type: string
-          example: main#content
-          description: Css selector
-        extraction:
-          oneOf:
-            - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
-            - $ref: "#/components/schemas/writeDescriptionListExtractionConfigurationDto"
-            - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
-            - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
-      required:
-        - selector
-        - extraction
 
     readScrapingDataPointDto:
       type: object
@@ -237,6 +228,8 @@ components:
           example: output.field
         attribute:
           type: string
+        selector:
+          type: string
       required:
         - type
         - field
@@ -259,6 +252,8 @@ components:
         dtValue:
           type: string
         field:
+          type: string
+        selector:
           type: string
       required:
         - dtValue
@@ -286,6 +281,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/writeDescriptionListExtractionDataPointConfigurationDto"
+        selector:
+          type: string
       required:
         - type
         - dataPoints
@@ -318,6 +315,8 @@ components:
             - HTML
         field:
           type: string
+        selector:
+          type: string
       required:
         - type
         - field
@@ -341,6 +340,8 @@ components:
           enum:
             - TEXT
         field:
+          type: string
+        selector:
           type: string
       required:
         - type
