@@ -38,6 +38,7 @@ class DescriptionListExtractionDefinitionMapperTest {
 
         final DescriptionListExtractionDefinition definition = mapper.map(dto);
 
+        assertEquals(dto.getSelector(), definition.getSelector());
         assertEquals(1, definition.getDataPoints().size());
         assertTrue(definition.getDataPoints().contains(dataPointDefinition));
     }
@@ -56,5 +57,6 @@ class DescriptionListExtractionDefinitionMapperTest {
         assertEquals(definition.getId(), dto.getId());
         assertEquals(definition.getDataPoints().size(), dto.getDataPoints().size());
         assertTrue(dto.getDataPoints().contains(dataPointConfigurationDto));
+        assertEquals(definition.getSelector(), dto.getSelector());
     }
 }

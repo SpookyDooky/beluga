@@ -1,13 +1,16 @@
 package com.beluga.mapper.job.scraping_configuration;
 
-import com.beluga.api.job.dto.read.ReadDataPointConfigurationDto;
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
+import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
 import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import com.beluga.properties.scraping.DataPointProperties;
 import com.beluga.properties.scraping.ScrapingProperties;
+import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +31,9 @@ class ScrapingDefinitionMapperTest {
 
 	@Mock
 	private DataPointDefinitionMapper dataPointDefinitionMapper;
-	
+	@Mock
+	private ExtractionDefinitionMapper extractionDefinitionMapper;
+
 	@InjectMocks
 	private ScrapingDefinitionMapperImpl mapper;
 	
@@ -44,8 +49,10 @@ class ScrapingDefinitionMapperTest {
 		final ScrapingDefinition scrapingDefinition = mapper.map(dataScrapingProperties);
 		
 		assertEquals(dataScrapingProperties.getItemSelector(), scrapingDefinition.getItemSelector());
-		assertEquals(1, scrapingDefinition.getDataPointDefinitions().size());
-		assertSame(dataPointDefinition, scrapingDefinition.getDataPointDefinitions().getFirst());
+		assertEquals(1, scrapingDefinition.getExtractionDefinitions().size());
+		assertSame(dataPointDefinition, scrapingDefinition.getExtractionDefinitions().getFirst());
+
+		Assertions.fail();
 	}
 	
 	@Test
@@ -54,31 +61,31 @@ class ScrapingDefinitionMapperTest {
 				.set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(mock(WriteDataPointConfigurationDto.class)))
 				.create();
 		
-		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		final ExtractionDefinition extractionDefinition = mock();
+		when(extractionDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(extractionDefinition);
 		
 		final ScrapingDefinition entity = mapper.map(dto);
 		
 		assertEquals(dto.getItemSelector(), entity.getItemSelector());
-		assertEquals(1, entity.getDataPointDefinitions().size());
-		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
+		assertEquals(1, entity.getExtractionDefinitions().size());
+		assertSame(extractionDefinition, entity.getExtractionDefinitions().getFirst());
 	}
 	
 	@Test
 	void shouldMapToDto() {
 		final ScrapingDefinition entity = Instancio.of(ScrapingDefinition.class)
-				.set(field(ScrapingDefinition::getDataPointDefinitions), List.of(mock(DataPointDefinition.class)))
+				.set(field(ScrapingDefinition::getExtractionDefinitions), List.of(mock(DataPointDefinition.class)))
 				.create();
 		
-		final ReadDataPointConfigurationDto dataPointConfigurationDto = mock();
-		when(dataPointDefinitionMapper.map(entity.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfigurationDto);
+		final ReadExtractionConfigurationDto extractionConfigurationDto = mock();
+		when(extractionDefinitionMapper.map(entity.getExtractionDefinitions().getFirst())).thenReturn(extractionConfigurationDto);
 		
 		final ReadScrapingConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
 		assertEquals(entity.getItemSelector(), dto.getItemSelector());
 		assertEquals(1, dto.getDataPoints().size());
-		assertSame(dataPointConfigurationDto, dto.getDataPoints().getFirst());
+		assertSame(extractionConfigurationDto, dto.getDataPoints().getFirst());
 	}
 	
 	@Test
@@ -87,15 +94,15 @@ class ScrapingDefinitionMapperTest {
 				.set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(mock(WriteDataPointConfigurationDto.class)))
 				.create();
 		
-		final DataPointDefinition dataPointDefinition = mock();
-		when(dataPointDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+		final ExtractionDefinition extractionDefinition = mock();
+		when(extractionDefinitionMapper.map(dto.getDataPoints().getFirst())).thenReturn(extractionDefinition);
 		
 		final ScrapingDefinition entity = Instancio.create(ScrapingDefinition.class);
 		
 		mapper.update(dto, entity);
 		
-		assertEquals(1, entity.getDataPointDefinitions().size());
-		assertSame(dataPointDefinition, entity.getDataPointDefinitions().getFirst());
+		assertEquals(1, entity.getExtractionDefinitions().size());
+		assertSame(extractionDefinition, entity.getExtractionDefinitions().getFirst());
 		assertEquals(dto.getItemSelector(), entity.getItemSelector());
 	}
 }

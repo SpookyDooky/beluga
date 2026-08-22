@@ -18,6 +18,7 @@ class TextExtractionDefinitionMapperTest {
 
         final TextExtractionDefinition definition = mapper.map(dto);
 
+        assertEquals(dto.getSelector(), definition.getSelector());
         assertEquals(dto.getField(), definition.getField());
     }
 
@@ -29,5 +30,6 @@ class TextExtractionDefinitionMapperTest {
 
         assertEquals(definition.getId(), dto.getId());
         assertEquals(definition.getField(), dto.getField());
+        assertEquals(definition.getSelector(), dto.getSelector());
     }
 }

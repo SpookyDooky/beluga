@@ -1,6 +1,7 @@
 package com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition;
 
 import com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType;
+import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.EnumType.STRING;
@@ -20,6 +21,10 @@ public abstract class ExtractionDefinition {
     @Enumerated(STRING)
     private final ExtractionType type;
 
+    @ManyToOne
+    @JoinColumn(name = "scraping_definition_id")
+    private ScrapingDefinition scrapingDefinition;
+
     protected ExtractionDefinition(final ExtractionType type) {
         this.type = type;
     }
@@ -35,4 +40,13 @@ public abstract class ExtractionDefinition {
     public ExtractionType getType() {
         return type;
     }
+
+    public ScrapingDefinition getScrapingDefinition() {
+        return scrapingDefinition;
+    }
+
+    public void setScrapingDefinition(final ScrapingDefinition scrapingDefinition) {
+        this.scrapingDefinition = scrapingDefinition;
+    }
+
 }

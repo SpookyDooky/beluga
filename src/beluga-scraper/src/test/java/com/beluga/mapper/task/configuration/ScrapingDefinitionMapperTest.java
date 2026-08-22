@@ -31,13 +31,13 @@ class ScrapingDefinitionMapperTest {
                 .withSetting(COLLECTION_MAX_SIZE, 1)
                 .create();
         final DataPointConfiguration dataPointConfiguration = mock();
-        when(dataPointConfigurationMapper.map(scrapingDefinition.getDataPointDefinitions().getFirst())).thenReturn(dataPointConfiguration);
+        when(dataPointConfigurationMapper.map(scrapingDefinition.getExtractionDefinitions().getFirst())).thenReturn(dataPointConfiguration);
 
         final ScrapingConfiguration scrapingConfiguration = scrapingConfigurationMapper.map(scrapingDefinition);
 
         assertEquals(scrapingDefinition.getItemSelector(),  scrapingConfiguration.getItemSelector());
-        assertEquals(1, scrapingConfiguration.getDataPointConfigurations().size());
-        assertTrue(scrapingConfiguration.getDataPointConfigurations().contains(dataPointConfiguration));
+        assertEquals(1, scrapingConfiguration.getExtractionConfigurations().size());
+        assertTrue(scrapingConfiguration.getExtractionConfigurations().contains(dataPointConfiguration));
     }
 
 }

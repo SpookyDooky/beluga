@@ -94,7 +94,7 @@ class ScrapingServiceTest {
 
         return Instancio.of(ScrapingConfiguration.class)
                 .set(
-                        field(ScrapingConfiguration::getDataPointConfigurations),
+                        field(ScrapingConfiguration::getExtractionConfigurations),
                         List.of(dataPointConfiguration)
                 ).set(field(ScrapingConfiguration::getItemSelector), "div.main_element")
                 .create();

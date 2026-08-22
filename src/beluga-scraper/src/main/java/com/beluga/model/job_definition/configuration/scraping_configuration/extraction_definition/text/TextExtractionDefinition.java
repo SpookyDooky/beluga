@@ -10,10 +10,19 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 @DiscriminatorValue("TEXT")
 public class TextExtractionDefinition extends ExtractionDefinition {
 
+    private String selector;
     private String field;
 
     public TextExtractionDefinition() {
         super(TEXT);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public String getField() {

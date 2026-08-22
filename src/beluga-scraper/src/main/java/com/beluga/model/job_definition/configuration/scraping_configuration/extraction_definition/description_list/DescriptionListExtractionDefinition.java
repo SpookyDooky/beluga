@@ -14,6 +14,8 @@ import static jakarta.persistence.CascadeType.ALL;
 @DiscriminatorValue("DESCRIPTION_LIST")
 public class DescriptionListExtractionDefinition extends ExtractionDefinition {
 
+    private String selector;
+
     @OneToMany(
             cascade = ALL,
             mappedBy = "descriptionListExtractionDefinition"
@@ -22,6 +24,14 @@ public class DescriptionListExtractionDefinition extends ExtractionDefinition {
 
     public DescriptionListExtractionDefinition() {
         super(DESCRIPTION_LIST);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public List<DescriptionListExtractionDataPointDefinition> getDataPoints() {

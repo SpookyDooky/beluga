@@ -10,11 +10,20 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 @DiscriminatorValue("ATTRIBUTE")
 public class AttributeExtractionDefinition extends ExtractionDefinition {
 
+    private String selector;
     private String field;
     private String attribute;
 
     public AttributeExtractionDefinition() {
         super(ATTRIBUTE);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public String getField() {

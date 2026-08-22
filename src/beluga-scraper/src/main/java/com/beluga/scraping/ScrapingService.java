@@ -42,7 +42,7 @@ public class ScrapingService {
         logger.info("Found " + elements.size() + " in document");
 
         final List<Map<String, Object>> result = elements.stream()
-                .map(element -> extractData(element, scrapingProperties.getDataPointConfigurations()))
+                .map(element -> extractData(element, scrapingProperties.getExtractionConfigurations()))
                 .toList();
 
         return new ScrapingResult(
