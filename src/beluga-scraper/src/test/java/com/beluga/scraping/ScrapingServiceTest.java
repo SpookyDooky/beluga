@@ -1,6 +1,5 @@
 package com.beluga.scraping;
 
-import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.attribute.AttributeExtractionConfiguration;
@@ -59,8 +58,9 @@ class ScrapingServiceTest {
         final AttributeExtractionConfiguration extractionConfiguration = new AttributeExtractionConfiguration();
         extractionConfiguration.setField("attribute");
         extractionConfiguration.setAttribute("href");
+        extractionConfiguration.setSelector("a.some_attribute");
 
-        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("a.some_attribute", extractionConfiguration);
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
         final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
 
@@ -85,17 +85,11 @@ class ScrapingServiceTest {
         }
     }
 
-    ScrapingConfiguration createScrapingConfiguration(final String selector,
-                                                      final ExtractionConfiguration extractionConfiguration) {
-        final DataPointConfiguration dataPointConfiguration = Instancio.of(DataPointConfiguration.class)
-                .set(field(DataPointConfiguration::getSelector), selector)
-                .set(field(DataPointConfiguration::getExtractionConfiguration), extractionConfiguration)
-                .create();
-
+    ScrapingConfiguration createScrapingConfiguration(final ExtractionConfiguration extractionConfiguration) {
         return Instancio.of(ScrapingConfiguration.class)
                 .set(
                         field(ScrapingConfiguration::getExtractionConfigurations),
-                        List.of(dataPointConfiguration)
+                        List.of(extractionConfiguration)
                 ).set(field(ScrapingConfiguration::getItemSelector), "div.main_element")
                 .create();
     }
@@ -105,6 +99,7 @@ class ScrapingServiceTest {
         mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
 
         final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
+        extractionConfiguration.setSelector("dl.description_list");
 
         final DescriptionListExtractionDataPointConfiguration dataPointConfiguration1 = new DescriptionListExtractionDataPointConfiguration();
         dataPointConfiguration1.setDtValue("title1");
@@ -116,7 +111,7 @@ class ScrapingServiceTest {
 
         extractionConfiguration.setDataPoints(List.of(dataPointConfiguration1, dataPointConfiguration2));
 
-        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("dl.description_list", extractionConfiguration);
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
         final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
 
@@ -130,8 +125,9 @@ class ScrapingServiceTest {
 
         final HtmlExtractionConfiguration extractionConfiguration = new HtmlExtractionConfiguration();
         extractionConfiguration.setField("html");
+        extractionConfiguration.setSelector("div.some_html");
 
-        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("div.some_html", extractionConfiguration);
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
         final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
 
@@ -149,8 +145,9 @@ class ScrapingServiceTest {
 
         final TextExtractionConfiguration extractionConfiguration = new TextExtractionConfiguration();
         extractionConfiguration.setField("text");
+        extractionConfiguration.setSelector("p.some_text");
 
-        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration("p.some_text", extractionConfiguration);
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
         final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
 
