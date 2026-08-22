@@ -105,18 +105,19 @@ create table activity_log
 
 create table extraction_definition
 (
-    id   bigint generated always as identity primary key,
-    scraping_definition_id bigint not null,
-    type varchar not null,
+    id                     bigint generated always as identity primary key,
+    scraping_definition_id bigint  not null,
+    type                   varchar not null,
     constraint fk_scraping_definition_id
         foreign key (scraping_definition_id)
-            references scraping_definition(id)
+            references scraping_definition (id)
 );
 
 create table text_extraction_definition
 (
-    id    bigint primary key,
-    field varchar not null,
+    id       bigint primary key,
+    selector varchar not null,
+    field    varchar not null,
     constraint fk_extraction_definition_id
         foreign key (id)
             references extraction_definition (id)
@@ -124,8 +125,9 @@ create table text_extraction_definition
 
 create table html_extraction_definition
 (
-    id    bigint primary key,
-    field varchar not null,
+    id       bigint primary key,
+    selector varchar not null,
+    field    varchar not null,
     constraint fk_extraction_definition_id
         foreign key (id)
             references extraction_definition (id)
@@ -134,6 +136,7 @@ create table html_extraction_definition
 create table attribute_extraction_definition
 (
     id        bigint primary key,
+    selector  varchar not null,
     field     varchar not null,
     attribute varchar not null,
     constraint fk_extraction_definition_id
@@ -151,7 +154,8 @@ create table image_extraction_definition
 
 create table description_list_extraction_definition
 (
-    id bigint primary key,
+    id       bigint primary key,
+    selector varchar not null,
     constraint fk_extraction_definition_id
         foreign key (id)
             references extraction_definition (id)
@@ -159,9 +163,9 @@ create table description_list_extraction_definition
 
 create table description_list_extraction_data_point_definition
 (
-    id                                       bigint generated always as identity primary key,
-    dt_value                                 varchar not null,
-    field                                    varchar not null,
+    id                                        bigint generated always as identity primary key,
+    dt_value                                  varchar not null,
+    field                                     varchar not null,
     description_list_extraction_definition_id bigint  not null,
     constraint fk_description_list_extraction_definition_id
         foreign key (description_list_extraction_definition_id)
