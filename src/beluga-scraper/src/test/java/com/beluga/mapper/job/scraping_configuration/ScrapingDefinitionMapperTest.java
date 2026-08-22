@@ -2,7 +2,6 @@ package com.beluga.mapper.job.scraping_configuration;
 
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
 import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfigurationDto;
-import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
 import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
