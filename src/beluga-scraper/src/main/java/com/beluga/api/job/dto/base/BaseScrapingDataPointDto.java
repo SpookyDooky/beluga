@@ -1,6 +1,5 @@
 package com.beluga.api.job.dto.base;
 
-import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 

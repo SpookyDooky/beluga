@@ -11,16 +11,6 @@ create table scraping_definition
     item_selector varchar not null
 );
 
-create table data_point_definition
-(
-    id                     bigint generated always as identity primary key,
-    scraping_definition_id bigint  not null,
-    selector               varchar not null,
-    constraint fk_scraping_definition_id
-        foreign key (scraping_definition_id)
-            references scraping_definition (id)
-);
-
 create table url_configuration
 (
     id       bigint generated always as identity primary key,
@@ -116,7 +106,11 @@ create table activity_log
 create table extraction_definition
 (
     id   bigint generated always as identity primary key,
-    type varchar not null
+    scraping_definition_id bigint not null,
+    type varchar not null,
+    constraint fk_scraping_definition_id
+        foreign key (scraping_definition_id)
+            references scraping_definition(id)
 );
 
 create table text_extraction_definition
@@ -173,6 +167,3 @@ create table description_list_extraction_data_point_definition
         foreign key (description_list_extraction_definition_id)
             references description_list_extraction_definition (id)
 );
-
-alter table data_point_definition add column extraction_definition_id bigint not null;
-alter table data_point_definition add constraint fk_extraction_definition_id foreign key (extraction_definition_id) references extraction_definition(id);

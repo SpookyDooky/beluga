@@ -3,7 +3,6 @@ package com.beluga.mapper.task.configuration;
 import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
 import com.beluga.mapper.task.configuration.extraction_configuration.ExtractionConfigurationMapper;
-import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

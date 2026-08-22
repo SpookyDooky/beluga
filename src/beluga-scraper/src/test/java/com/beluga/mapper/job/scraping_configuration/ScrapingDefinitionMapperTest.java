@@ -5,10 +5,8 @@ import com.beluga.api.job.dto.read.extraction_configuration.ReadExtractionConfig
 import com.beluga.api.job.dto.write.WriteDataPointConfigurationDto;
 import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
-import com.beluga.model.job_definition.configuration.scraping_configuration.DataPointDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
-import com.beluga.properties.scraping.DataPointProperties;
 import com.beluga.properties.scraping.ScrapingProperties;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
