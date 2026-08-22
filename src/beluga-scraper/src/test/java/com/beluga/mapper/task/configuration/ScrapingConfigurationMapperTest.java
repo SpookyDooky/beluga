@@ -4,6 +4,7 @@ import com.beluga.execution.model.task.ScrapingConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
 import com.beluga.mapper.task.configuration.extraction_configuration.ExtractionConfigurationMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.text.TextExtractionDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,8 @@ class ScrapingConfigurationMapperTest {
         final ScrapingDefinition scrapingDefinition = Instancio.of(ScrapingDefinition.class)
                 .withSetting(COLLECTION_MAX_SIZE, 1)
                 .create();
+        scrapingDefinition.getExtractionDefinitions().add(mock(TextExtractionDefinition.class));
+
         final ExtractionConfiguration extractionConfiguration = mock();
         when(extractionConfigurationMapper.map(scrapingDefinition.getExtractionDefinitions().getFirst())).thenReturn(extractionConfiguration);
 

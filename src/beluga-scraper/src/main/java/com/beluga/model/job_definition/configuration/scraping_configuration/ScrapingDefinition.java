@@ -51,8 +51,8 @@ public class ScrapingDefinition {
 	public void setExtractionDefinitions(final List<ExtractionDefinition> extractionDefinitions) {
 		this.extractionDefinitions.clear();
 		this.extractionDefinitions.addAll(extractionDefinitions);
-		this.extractionDefinitions.forEach(dataPointConfiguration -> {
-			dataPointConfiguration.setScrapingDefinition(this);
+		this.extractionDefinitions.forEach(extractionDefinition -> {
+			extractionDefinition.setScrapingDefinition(this);
 		});
 	}
 }
