@@ -1,7 +1,8 @@
 package com.beluga.mapper.task.configuration;
 
-import com.beluga.execution.model.task.DataPointConfiguration;
 import com.beluga.execution.model.task.ScrapingConfiguration;
+import com.beluga.execution.model.task.extraction_configuration.ExtractionConfiguration;
+import com.beluga.mapper.task.configuration.extraction_configuration.ExtractionConfigurationMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ScrapingDefinitionMapperTest {
+class ScrapingConfigurationMapperTest {
 
     @Mock
-    private DataPointConfigurationMapper dataPointConfigurationMapper;
+    private ExtractionConfigurationMapper extractionConfigurationMapper;
 
     @InjectMocks
     private ScrapingConfigurationMapperImpl scrapingConfigurationMapper;
@@ -30,14 +31,14 @@ class ScrapingDefinitionMapperTest {
         final ScrapingDefinition scrapingDefinition = Instancio.of(ScrapingDefinition.class)
                 .withSetting(COLLECTION_MAX_SIZE, 1)
                 .create();
-        final DataPointConfiguration dataPointConfiguration = mock();
-        when(dataPointConfigurationMapper.map(scrapingDefinition.getExtractionDefinitions().getFirst())).thenReturn(dataPointConfiguration);
+        final ExtractionConfiguration extractionConfiguration = mock();
+        when(extractionConfigurationMapper.map(scrapingDefinition.getExtractionDefinitions().getFirst())).thenReturn(extractionConfiguration);
 
         final ScrapingConfiguration scrapingConfiguration = scrapingConfigurationMapper.map(scrapingDefinition);
 
         assertEquals(scrapingDefinition.getItemSelector(),  scrapingConfiguration.getItemSelector());
         assertEquals(1, scrapingConfiguration.getExtractionConfigurations().size());
-        assertTrue(scrapingConfiguration.getExtractionConfigurations().contains(dataPointConfiguration));
+        assertTrue(scrapingConfiguration.getExtractionConfigurations().contains(extractionConfiguration));
     }
 
 }
