@@ -8,12 +8,22 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 public class WriteAttributeExtractionConfigurationDto extends WriteExtractionConfigurationDto {
 
     @NotBlank
+    private String selector;
+    @NotBlank
     private String field;
     @NotBlank
     private String attribute;
 
     public WriteAttributeExtractionConfigurationDto() {
         super(ATTRIBUTE);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public String getField() {

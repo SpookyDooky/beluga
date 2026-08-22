@@ -6,10 +6,19 @@ import static com.beluga.model.job_definition.configuration.scraping_configurati
 
 public class ReadHtmlExtractionConfigurationDto extends ReadExtractionConfigurationDto {
 
+    private String selector;
     private String field;
 
     public ReadHtmlExtractionConfigurationDto() {
         super(HTML);
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(final String selector) {
+        this.selector = selector;
     }
 
     public String getField() {
