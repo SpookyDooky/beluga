@@ -3,6 +3,7 @@ package com.beluga.properties.scraping.extraction_configuration;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType;
 import com.beluga.properties.scraping.extraction_configuration.validation.annotation.ExtractionConfiguration;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * An aggregate properties class containing all relevant extraction configuration properties. These will then be mapped to the correct
  * entities.
  */
+@Validated
 @ExtractionConfiguration
 public class ExtractionConfigurationProperties {
 

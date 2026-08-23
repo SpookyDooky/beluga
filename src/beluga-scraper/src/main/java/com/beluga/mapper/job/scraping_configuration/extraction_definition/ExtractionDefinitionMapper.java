@@ -39,7 +39,8 @@ import static org.mapstruct.SubclassExhaustiveStrategy.RUNTIME_EXCEPTION;
                 DescriptionListExtractionDefinitionMapper.class,
                 HtmlExtractionDefinitionMapper.class,
                 ImageExtractionDefinitionMapper.class,
-                TextExtractionDefinitionMapper.class
+                TextExtractionDefinitionMapper.class,
+                ExtractionDefinitionMapperService.class
         }
 )
 public interface ExtractionDefinitionMapper {

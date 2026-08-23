@@ -3,6 +3,7 @@ package com.beluga.mapper.job.scraping_configuration.extraction_definition.attri
 import com.beluga.api.job.dto.read.extraction_configuration.attribute.ReadAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.attribute.AttributeExtractionDefinition;
+import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
 import org.mapstruct.Mapper;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -11,6 +12,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface AttributeExtractionDefinitionMapper {
 
     AttributeExtractionDefinition map(WriteAttributeExtractionConfigurationDto dto);
+
+    AttributeExtractionDefinition map(ExtractionConfigurationProperties properties);
 
     ReadAttributeExtractionConfigurationDto map(AttributeExtractionDefinition extractionDefinition);
 }

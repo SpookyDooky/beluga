@@ -3,6 +3,7 @@ package com.beluga.mapper.job.scraping_configuration.extraction_definition.text;
 import com.beluga.api.job.dto.read.extraction_configuration.text.ReadTextExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.text.WriteTextExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.text.TextExtractionDefinition;
+import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,16 @@ class TextExtractionDefinitionMapperTest {
 
         assertEquals(dto.getSelector(), definition.getSelector());
         assertEquals(dto.getField(), definition.getField());
+    }
+
+    @Test
+    void shouldMapFromProperties() {
+        final ExtractionConfigurationProperties properties = Instancio.create(ExtractionConfigurationProperties.class);
+
+        final TextExtractionDefinition definition = mapper.map(properties);
+
+        assertEquals(properties.getSelector(), definition.getSelector());
+        assertEquals(properties.getField(), definition.getField());
     }
 
     @Test

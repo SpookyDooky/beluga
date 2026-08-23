@@ -5,6 +5,7 @@ import com.beluga.api.job.dto.read.extraction_configuration.description_list.Rea
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDataPointDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDefinition;
+import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,22 @@ class DescriptionListExtractionDefinitionMapperTest {
         final DescriptionListExtractionDefinition definition = mapper.map(dto);
 
         assertEquals(dto.getSelector(), definition.getSelector());
+        assertEquals(1, definition.getDataPoints().size());
+        assertTrue(definition.getDataPoints().contains(dataPointDefinition));
+    }
+
+    @Test
+    void shouldMapFromProperties() {
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .withSetting(COLLECTION_MAX_SIZE, 1)
+                .create();
+
+        final DescriptionListExtractionDataPointDefinition dataPointDefinition = mock();
+        when(descriptionListDataPointDefinitionMapper.map(properties.getDataPoints().getFirst())).thenReturn(dataPointDefinition);
+
+        final DescriptionListExtractionDefinition definition = mapper.map(properties);
+
+        assertEquals(properties.getSelector(), definition.getSelector());
         assertEquals(1, definition.getDataPoints().size());
         assertTrue(definition.getDataPoints().contains(dataPointDefinition));
     }
