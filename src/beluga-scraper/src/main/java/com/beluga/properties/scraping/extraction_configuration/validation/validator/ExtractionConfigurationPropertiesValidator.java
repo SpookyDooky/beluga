@@ -44,11 +44,11 @@ public class ExtractionConfigurationPropertiesValidator
         final String value = valueSupplier.get();
 
         if (value == null || value.isBlank()) {
-            context.buildConstraintViolationWithTemplate(propertyName + "is required and can not be null or blank.");
+            context.buildConstraintViolationWithTemplate(propertyName + " is required and can not be null or blank.");
             return false;
         }
 
-         return true;
+        return true;
     }
 
     private boolean isValidDescriptionListExtractionConfiguration(final ExtractionConfigurationProperties extractionConfiguration,
