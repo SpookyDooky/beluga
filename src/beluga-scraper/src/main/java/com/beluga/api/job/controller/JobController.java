@@ -46,7 +46,7 @@ public class JobController {
     }
 
     /**
-     * Retrieves a {@link JobDefinition} by it's id.
+     * Retrieves a {@link JobDefinition} by its id.
      *
      * @param id id of the {@link JobDefinition}.
      * @return the {@link JobDefinition}.

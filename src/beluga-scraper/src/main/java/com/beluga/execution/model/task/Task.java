@@ -3,14 +3,11 @@ package com.beluga.execution.model.task;
 import com.beluga.execution.model.job.Job;
 import com.beluga.logging.ContextLoggable;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
 import static com.beluga.logging.ContextKeys.TASK_ID;
 import static com.beluga.logging.ContextKeys.URL;
-import static com.beluga.model.job_definition.configuration.scraping_configuration.DataPointType.IMAGE;
 
 public class Task implements ContextLoggable {
 	
@@ -50,36 +47,6 @@ public class Task implements ContextLoggable {
 	
 	public void setScrapingConfiguration(final ScrapingConfiguration scrapingConfiguration) {
 		this.scrapingConfiguration = scrapingConfiguration;
-	}
-	
-	public List<ImageDownloadTask> getImageDownloadsTask(final Map<String, Object> scrapedData) {
-		return scrapingConfiguration.getDataPointConfigurations()
-				.stream()
-				.filter(dataPointConfiguration -> IMAGE.equals(dataPointConfiguration.getType()))
-				.map(imageConfiguration -> createImageDownloadTask(scrapedData, imageConfiguration.getField()))
-				.toList();
-	}
-	
-	private ImageDownloadTask createImageDownloadTask(final Map<String, Object> scrapedData,
-	                                                  final String propertyName) {
-		
-		final String rawUrl = (String) scrapedData.get(propertyName);
-		try {
-			final URL url = new URL(rawUrl);
-			return createImageDownloadTask(url, propertyName);
-		} catch (final MalformedURLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-	
-	private ImageDownloadTask createImageDownloadTask(final URL url,
-	                                                  final String propertyName) {
-		final ImageDownloadTask task = new ImageDownloadTask();
-		
-		task.setUrl(url);
-		task.setPropertyName(propertyName);
-		
-		return task;
 	}
 	
 	@Override

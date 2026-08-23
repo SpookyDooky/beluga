@@ -8,12 +8,10 @@ import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.execution.model.job.Job;
-import com.beluga.execution.model.task.ImageDownloadTask;
 import com.beluga.execution.model.task.Task;
 import com.beluga.http.HttpService;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
-import com.beluga.model.event.storable.payload.ImagePayload;
 import com.beluga.model.event.storable.payload.JsonPayload;
 import com.beluga.model.event.storable.payload.StringPayload;
 import com.beluga.scraping.ScrapingService;
@@ -23,9 +21,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.beluga.logging.ContextKeys.JOB_EXECUTION_ID;
@@ -99,7 +94,6 @@ public class Worker {
                     task.getScrapingConfiguration()
             );
 
-            downloadImages(task, scrapingResult.getResult());
             publishScrapingResultEvents(task, scrapingResult);
 
             logger.info("Task completed");
@@ -112,55 +106,10 @@ public class Worker {
         }
     }
 
-    private void downloadImages(final Task task,
-                                final List<Map<String, Object>> scrapedData) {
-        scrapedData.forEach(elementScrapedData -> {
-            final List<ImageDownloadTask> imageDownloadTasks = task.getImageDownloadsTask(elementScrapedData);
-
-            for (final ImageDownloadTask imageDownloadTask : imageDownloadTasks) {
-                final String fileKey = UUID.randomUUID() + ".png";
-                downloadImage(task, imageDownloadTask, fileKey);
-
-                addImagePathToResult(elementScrapedData, fileKey, imageDownloadTask.getPropertyName());
-            }
-        });
-    }
 
     private void publishScrapingResultEvents(final Task task,
                                              final ScrapingResult scrapingResult) {
         applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "data.json", new JsonPayload(scrapingResult.getResult())));
         applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "source.html", new StringPayload(scrapingResult.getRawPage())));
-    }
-
-    /**
-     * Downloads an image and publishes an event to save the image.
-     *
-     * @param task              task.
-     * @param imageDownloadTask image download sub-task.
-     * @param fileKey           name for the file.
-     */
-    private void downloadImage(final Task task,
-                               final ImageDownloadTask imageDownloadTask,
-                               final String fileKey) {
-        logger.info("Downloading image");
-        final InputStream imageInputStream = httpService.get(imageDownloadTask.getUrl());
-
-        applicationEventPublisher.publishEvent(
-                TaskResultEvent.of(
-                        task,
-                        fileKey,
-                        new ImagePayload(imageInputStream)
-                )
-        );
-    }
-
-    private void addImagePathToResult(final Map<String, Object> scrapedData,
-                                      final String fileName,
-                                      final String propertyName) {
-        final String urlValue = (String) scrapedData.get(propertyName);
-        scrapedData.remove(propertyName);
-
-        scrapedData.put(propertyName + "." + propertyName, urlValue);
-        scrapedData.put(propertyName + ".fileName", fileName);
     }
 }

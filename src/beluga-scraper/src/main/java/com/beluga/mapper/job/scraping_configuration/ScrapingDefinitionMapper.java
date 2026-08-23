@@ -2,6 +2,8 @@ package com.beluga.mapper.job.scraping_configuration;
 
 import com.beluga.api.job.dto.read.ReadScrapingConfigurationDto;
 import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapper;
+import com.beluga.mapper.job.scraping_configuration.extraction_definition.ExtractionDefinitionMapperService;
 import com.beluga.model.job_definition.configuration.scraping_configuration.ScrapingDefinition;
 import com.beluga.properties.scraping.ScrapingProperties;
 import org.mapstruct.Mapper;
@@ -17,20 +19,21 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 		injectionStrategy = CONSTRUCTOR,
 		collectionMappingStrategy = TARGET_IMMUTABLE,
 		uses = {
-				DataPointDefinitionMapper.class
+				ExtractionDefinitionMapper.class,
+				ExtractionDefinitionMapperService.class
 		}
 )
 public interface ScrapingDefinitionMapper {
 	
-	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
+	@Mapping(target = "extractionDefinitions", source = "dataPoints")
 	ScrapingDefinition map(ScrapingProperties scrapingProperties);
 	
-	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
+	@Mapping(target = "extractionDefinitions", source = "dataPoints")
 	ScrapingDefinition map(WriteScrapingConfigurationDto dto);
 	
-	@Mapping(target = "dataPoints", source = "dataPointDefinitions")
+	@Mapping(target = "dataPoints", source = "extractionDefinitions")
 	ReadScrapingConfigurationDto map(ScrapingDefinition scrapingDefinition);
 	
-	@Mapping(target = "dataPointDefinitions", source = "dataPoints")
+	@Mapping(target = "extractionDefinitions", source = "dataPoints")
 	void update(WriteScrapingConfigurationDto dto, @MappingTarget ScrapingDefinition scrapingDefinition);
 }

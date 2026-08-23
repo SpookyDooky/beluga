@@ -1,5 +1,6 @@
 package com.beluga.model.job_definition.configuration.scraping_configuration;
 
+import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -24,10 +24,9 @@ public class ScrapingDefinition {
 	@OneToMany(
 			cascade = ALL,
 			mappedBy = "scrapingDefinition",
-			fetch = EAGER,
 			orphanRemoval = true
 	)
-	private List<DataPointDefinition> dataPointDefinitions = new ArrayList<>();
+	private final List<ExtractionDefinition> extractionDefinitions = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -45,15 +44,15 @@ public class ScrapingDefinition {
 		this.itemSelector = itemSelector;
 	}
 	
-	public List<DataPointDefinition> getDataPointDefinitions() {
-		return dataPointDefinitions;
+	public List<ExtractionDefinition> getExtractionDefinitions() {
+		return extractionDefinitions;
 	}
 	
-	public void setDataPointDefinitions(final List<DataPointDefinition> dataPointDefinitions) {
-		this.dataPointDefinitions.clear();
-		this.dataPointDefinitions.addAll(dataPointDefinitions);
-		this.dataPointDefinitions.forEach(dataPointConfiguration -> {
-			dataPointConfiguration.setScrapingDefinition(this);
+	public void setExtractionDefinitions(final List<ExtractionDefinition> extractionDefinitions) {
+		this.extractionDefinitions.clear();
+		this.extractionDefinitions.addAll(extractionDefinitions);
+		this.extractionDefinitions.forEach(extractionDefinition -> {
+			extractionDefinition.setScrapingDefinition(this);
 		});
 	}
 }

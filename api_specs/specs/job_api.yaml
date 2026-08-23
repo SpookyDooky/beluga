@@ -157,7 +157,11 @@ components:
         dataPoints:
           type: array
           items:
-            $ref: "#/components/schemas/createScrapingDataPoint"
+            anyOf:
+              - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeDescriptionListExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
           minLength: 1
       required:
         - itemSelector
@@ -176,41 +180,65 @@ components:
         dataPoints:
           type: array
           items:
-            $ref: "#/components/schemas/scrapingDataPoint"
+            anyOf:
+              - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
           minLength: 1
       required:
         - id
         - itemSelector
         - dataPoints
 
-    createScrapingDataPoint:
+    readScrapingDataPointDto:
       type: object
       properties:
+        id:
+          type: integer
+          example: 123
         selector:
           type: string
-          example: main#content
-          description: Css selector
+        extraction:
+          oneOf:
+            - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
+            - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
+            - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
+            - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
+      required:
+        - id
+        - selector
+
+    dataPointType:
+      type: string
+      enum:
+        - IMAGE
+        - TEXT
+        - HTML
+
+    writeAttributeExtractionConfigurationDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - ATTRIBUTE
         field:
           type: string
-          example: name
-          description: the name under which to store the scraped value
+          example: output.field
         attribute:
           type: string
-          example: src
-          description: Can be set in case a specific attribute of an HTML tag needs to be scraped
-          nullable: true
-        type:
-          allOf:
-            - $ref: "#/components/schemas/dataPointType"
-          default: TEXT
+        selector:
+          type: string
       required:
-        - selector
+        - type
         - field
+        - attribute
 
-    scrapingDataPoint:
+    readAttributeExtractionConfigurationDto:
       type: object
       allOf:
-        - $ref: "#/components/schemas/createScrapingDataPoint"
+        - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
       properties:
         id:
           type: integer
@@ -218,11 +246,117 @@ components:
       required:
         - id
 
-    dataPointType:
-      type: string
-      enum:
-        - IMAGE
-        - TEXT
+    writeDescriptionListExtractionDataPointConfigurationDto:
+      type: object
+      properties:
+        dtValue:
+          type: string
+        field:
+          type: string
+        selector:
+          type: string
+      required:
+        - dtValue
+        - field
+
+    readDescriptionListExtractionDataPointConfigurationDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/writeDescriptionListExtractionDataPointConfigurationDto"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    writeDescriptionListExtractionConfigurationDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - DESCRIPTION_LIST
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/writeDescriptionListExtractionDataPointConfigurationDto"
+        selector:
+          type: string
+      required:
+        - type
+        - dataPoints
+
+    readDescriptionListExtractionConfigurationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        type:
+          type: string
+          enum:
+            - DESCRIPTION_LIST
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/readDescriptionListExtractionDataPointConfigurationDto"
+      required:
+        - id
+        - type
+        - dataPoints
+
+    writeHtmlExtractionConfigurationDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - HTML
+        field:
+          type: string
+        selector:
+          type: string
+      required:
+        - type
+        - field
+
+    readHtmlExtractionConfigurationDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    writeTextExtractionConfigurationDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - TEXT
+        field:
+          type: string
+        selector:
+          type: string
+      required:
+        - type
+        - field
+
+    readTextExtractionConfigurationDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
 
     badRequestResponse:
       type: object

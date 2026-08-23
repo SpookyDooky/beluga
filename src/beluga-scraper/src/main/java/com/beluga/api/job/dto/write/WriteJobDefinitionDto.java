@@ -9,7 +9,7 @@ public class WriteJobDefinitionDto extends BaseJobDefinitionDto {
 	private WriteExecutionConfigurationDto execution;
 	@NotNull
 	private WriteScrapingConfigurationDto scraping;
-	
+
 	public WriteExecutionConfigurationDto getExecution() {
 		return execution;
 	}

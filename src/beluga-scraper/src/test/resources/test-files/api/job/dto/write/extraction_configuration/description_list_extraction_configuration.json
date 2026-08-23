@@ -1,0 +1,9 @@
+{
+  "type": "DESCRIPTION_LIST",
+  "dataPoints": [
+    {
+      "dtValue": "someValue",
+      "field": "someField"
+    }
+  ]
+}
