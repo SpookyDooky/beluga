@@ -7,10 +7,12 @@ public class ContextKeys {
 	public static final String JOB_ID = "jobId";
 	public static final String WORKER_ID = "workerId";
 	public static final String TASK_ID = "taskId";
-	
+	public static final String TASK_EXECUTION_ID = "taskExecutionId";
 	public static final String URL = "url";
 	public static final String RESULTS = "results";
 	public static final String FILE_NAME = "fileName";
 	public static final String RESOURCE_IDENTIFIER = "resourceIdentifier";
 	public static final String JOB_NAME = "jobName";
+	public static final String PAGE = "page";
+	public static final String PAGE_SIZE = "pageSize";
 }

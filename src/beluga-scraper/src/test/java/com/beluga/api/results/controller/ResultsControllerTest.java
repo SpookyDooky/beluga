@@ -4,6 +4,7 @@ import com.beluga.api.execution.exception.TaskResultNotFoundException;
 import com.beluga.api.results.dto.ResultFileInfoDto;
 import com.beluga.api.results.dto.TaskResultDto;
 import com.beluga.api.results.service.ResultService;
+import com.beluga.logging.ContextLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ResultsControllerTest {
-	
+
+	@Mock
+	private ContextLogger logger;
 	@Mock
 	private ResultService resultService;
 	

@@ -3,6 +3,8 @@ package com.beluga.api.execution.controller;
 import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.service.ExecutionApiService;
+import com.beluga.logging.CloseableContext;
+import com.beluga.logging.ContextLogger;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.service.exception.JobDefinitionNotFoundException;
@@ -10,14 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.beluga.logging.ContextKeys.JOB_EXECUTION_ID;
+import static com.beluga.logging.ContextKeys.JOB_ID;
 
 @RestController
 @RequestMapping("/jobs/{jobDefinitionId}")
 public class ExecutionController {
 
+    private final ContextLogger logger;
     private final ExecutionApiService executionApiService;
 
-    public ExecutionController(final ExecutionApiService executionApiService) {
+    public ExecutionController(final ContextLogger logger,
+                               final ExecutionApiService executionApiService) {
+        this.logger = logger;
         this.executionApiService = executionApiService;
     }
 
@@ -29,10 +38,14 @@ public class ExecutionController {
      */
     @PostMapping("/start")
     public ResponseEntity<Void> start(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        executionApiService.start(jobDefinitionId);
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Starting job execution.");
 
-        return ResponseEntity.noContent()
-                .build();
+            executionApiService.start(jobDefinitionId);
+
+            return ResponseEntity.noContent()
+                    .build();
+        }
     }
 
     @ExceptionHandler(JobDefinitionNotFoundException.class)
@@ -49,10 +62,13 @@ public class ExecutionController {
      */
     @PostMapping("/stop")
     public ResponseEntity<Void> stop(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        executionApiService.stop(jobDefinitionId);
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Stopping job execution.");
+            executionApiService.stop(jobDefinitionId);
 
-        return ResponseEntity.noContent()
-                .build();
+            return ResponseEntity.noContent()
+                    .build();
+        }
     }
 
     /**
@@ -63,10 +79,13 @@ public class ExecutionController {
      */
     @PostMapping("/pause")
     public ResponseEntity<Void> pause(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        executionApiService.pause(jobDefinitionId);
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Pausing job execution.");
+            executionApiService.pause(jobDefinitionId);
 
-        return ResponseEntity.noContent()
-                .build();
+            return ResponseEntity.noContent()
+                    .build();
+        }
     }
 
     /**
@@ -77,10 +96,13 @@ public class ExecutionController {
      */
     @PostMapping("/resume")
     public ResponseEntity<Void> resume(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        executionApiService.resume(jobDefinitionId);
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Resuming job execution.");
+            executionApiService.resume(jobDefinitionId);
 
-        return ResponseEntity.noContent()
-                .build();
+            return ResponseEntity.noContent()
+                    .build();
+        }
     }
 
     /**
@@ -91,7 +113,10 @@ public class ExecutionController {
      */
     @GetMapping("/executions/latest")
     public ResponseEntity<ReadJobExecutionDto> getLatestExecution(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        return ResponseEntity.of(executionApiService.getLatestJobExecution(jobDefinitionId));
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Retrieving latest job execution.");
+            return ResponseEntity.of(executionApiService.getLatestJobExecution(jobDefinitionId));
+        }
     }
 
     /**
@@ -102,7 +127,10 @@ public class ExecutionController {
      */
     @GetMapping("/executions")
     public List<ReadJobExecutionDto> getExecutions(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
-        return executionApiService.getExecutions(jobDefinitionId);
+        try (final CloseableContext ignored = logger.withKey(JOB_ID, jobDefinitionId.toString())) {
+            logger.info("Retrieving all job executions.");
+            return executionApiService.getExecutions(jobDefinitionId);
+        }
     }
 
     /**
@@ -115,6 +143,12 @@ public class ExecutionController {
     @GetMapping("/executions/{executionId}")
     public ResponseEntity<ReadJobExecutionWithTasksDto> getExecution(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
                                                                      @PathVariable("executionId") final Long executionId) {
-        return ResponseEntity.of(executionApiService.getExecution(jobDefinitionId, executionId));
+        try (final CloseableContext ignored = logger.withKeys(Map.of(
+                JOB_ID, jobDefinitionId.toString(),
+                JOB_EXECUTION_ID, executionId.toString()
+        ))) {
+            logger.info("Retrieving job execution.");
+            return ResponseEntity.of(executionApiService.getExecution(jobDefinitionId, executionId));
+        }
     }
 }

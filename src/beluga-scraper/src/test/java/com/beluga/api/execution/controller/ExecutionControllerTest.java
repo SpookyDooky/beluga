@@ -3,6 +3,7 @@ package com.beluga.api.execution.controller;
 import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.service.ExecutionApiService;
+import com.beluga.logging.ContextLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +20,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExecutionControllerTest {
-	
+
+	@Mock
+	private ContextLogger logger;
 	@Mock
 	private ExecutionApiService executionApiService;
 	

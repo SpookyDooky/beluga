@@ -37,7 +37,7 @@ public class JobController {
     @PostMapping
     @Transactional
     public ReadJobDefinitionDto create(@RequestBody @Valid final WriteJobDefinitionDto job) {
-        logger.info("Received new job definition.");
+        logger.info("Creating new job.");
 
         final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
         jobDefinitionService.save(jobDefinition);
