@@ -137,4 +137,9 @@ public class JobDefinitionService {
     public void deleteByName(final String name) {
         repository.deleteByName(name);
     }
+
+    @Transactional
+    public String getNameById(final Long id) {
+        return getById(id).getName();
+    }
 }

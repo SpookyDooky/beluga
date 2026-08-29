@@ -1,13 +1,10 @@
 package com.beluga.api.job.validation.validator;
 
-import com.beluga.api.job.validation.annotation.JobName;
 import com.beluga.service.job.JobDefinitionService;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JobNameValidator implements ConstraintValidator<JobName, String> {
+public class JobNameValidator {
 
     private final JobDefinitionService jobDefinitionService;
 
@@ -15,8 +12,16 @@ public class JobNameValidator implements ConstraintValidator<JobName, String> {
         this.jobDefinitionService = jobDefinitionService;
     }
 
-    @Override
-    public boolean isValid(final String jobName, final ConstraintValidatorContext context) {
-        return !jobDefinitionService.existsByName(jobName);
+    public void validate(final String jobName) {
+        if (jobDefinitionService.existsByName(jobName)) {
+            throw new IllegalArgumentException("Job name must be unique.");
+        }
+    }
+
+    public void validate(final String jobName,
+                         final Long jobDefinitionId) {
+        if (!jobName.equals(jobDefinitionService.getNameById(jobDefinitionId))) {
+            validate(jobName);
+        }
     }
 }

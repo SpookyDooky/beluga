@@ -23,4 +23,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(errorResponseDtoFactory.create(methodArgumentNotValidException, BAD_REQUEST));
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handle(final IllegalArgumentException illegalArgumentException) {
+        return ResponseEntity.badRequest()
+                .body(errorResponseDtoFactory.create(illegalArgumentException, BAD_REQUEST));
+    }
 }

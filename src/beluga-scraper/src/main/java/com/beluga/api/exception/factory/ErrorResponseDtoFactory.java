@@ -27,4 +27,14 @@ public class ErrorResponseDtoFactory {
                 .map(FieldError::getDefaultMessage)
                 .toList();
     }
+
+    public ErrorResponseDto create(final IllegalArgumentException illegalArgumentException,
+                                   final HttpStatus httpStatus) {
+        final ErrorResponseDto errorResponse = new ErrorResponseDto();
+
+        errorResponse.setStatus(httpStatus.value());
+        errorResponse.setErrors(List.of(illegalArgumentException.getMessage()));
+
+        return errorResponse;
+    }
 }

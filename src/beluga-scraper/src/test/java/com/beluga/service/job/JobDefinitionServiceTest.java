@@ -193,4 +193,15 @@ class JobDefinitionServiceTest {
 
 		verify(repository).deleteByName(name);
 	}
+
+	@Test
+	void shouldGetNameById() {
+		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
+		when(repository.findById(jobDefinition.getId())).thenReturn(Optional.of(jobDefinition));
+
+		assertEquals(
+				jobDefinition.getName(),
+				jobDefinitionService.getNameById(jobDefinition.getId())
+		);
+	}
 }

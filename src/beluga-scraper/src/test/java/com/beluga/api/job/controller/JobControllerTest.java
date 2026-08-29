@@ -2,6 +2,7 @@ package com.beluga.api.job.controller;
 
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.job.validation.validator.JobNameValidator;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
@@ -25,6 +26,8 @@ class JobControllerTest {
 	
 	@Mock
 	private ContextLogger logger;
+	@Mock
+	private JobNameValidator jobNameValidator;
 	@Mock
 	private JobDefinitionMapper jobDefinitionMapper;
 	@Mock
