@@ -19,7 +19,7 @@ To be added later
 For the complete documentation, including configuration, scraping jobs,
 storage, persistence, API reference, and deployment:
 
-**[Read the documentation →](...)**
+**[Read the documentation →](/docs/v1.0/index.md)**
 ## Roadmap
 TODO
 ## Contributing
