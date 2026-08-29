@@ -1,5 +1,6 @@
-package com.beluga.api.job.dto.validation;
+package com.beluga.api.job.validation.annotation;
 
+import com.beluga.api.job.validation.validator.PathValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

@@ -1,13 +1,17 @@
 package com.beluga.api.task.dto;
 
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+@Validated
 public class PatchTaskDto {
 	
-	private Set<URL> add = new HashSet<>();
-	private Set<URL> remove = new HashSet<>();
+	private Set<@NotNull(message = "A URL must not be null.") URL> add = new HashSet<>();
+	private Set<@NotNull(message = "A URL must not be null.") URL> remove = new HashSet<>();
 	
 	public Set<URL> getAdd() {
 		return add;

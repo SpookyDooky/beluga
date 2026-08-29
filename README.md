@@ -23,6 +23,7 @@ storage, persistence, API reference, and deployment:
 ### V1.1
 - [ ] image scraping
 - [ ] improve datapoint configuration by introducing datapoint-specific prefixes
+- [ ] improve 400 responses with explanations of which field is configured incorrectly
 
 ## Contributing
 See CONTRIBUTING.md

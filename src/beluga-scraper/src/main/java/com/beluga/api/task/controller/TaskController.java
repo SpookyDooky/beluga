@@ -13,6 +13,7 @@ import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException
 import com.beluga.service.exception.JobDefinitionNotFoundException;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskDefinitionService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +92,7 @@ public class TaskController {
 	@PutMapping
 	@Transactional
 	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
-	                                               @RequestBody final UpdateTaskDto tasks) {
+	                                               @RequestBody @Valid final UpdateTaskDto tasks) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
 			logger.info("Updating tasks for job.");
 			final Set<URL> existingActiveUrls = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
@@ -119,7 +120,7 @@ public class TaskController {
 	@PatchMapping
 	@Transactional
 	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
-	                                               @RequestBody final PatchTaskDto patchTaskDto) {
+	                                               @RequestBody @Valid final PatchTaskDto patchTaskDto) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
 			logger.info("Updating tasks for job.");
 			jobDefinitionService.setTaskDefinitionsInactiveByUrl(jobDefinitionId, patchTaskDto.getRemove());
