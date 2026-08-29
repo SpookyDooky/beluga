@@ -38,4 +38,16 @@ class GlobalExceptionHandlerTest {
         assertEquals(400, responseEntity.getStatusCode().value());
     }
 
+    @Test
+    void shouldHandleIllegalArgumentException() {
+        final IllegalArgumentException exception = mock();
+
+        final ErrorResponseDto expectedResponseDto = mock();
+        when(errorResponseDtoFactory.create(exception, BAD_REQUEST)).thenReturn(expectedResponseDto);
+
+        final ResponseEntity<ErrorResponseDto> responseEntity = globalExceptionHandler.handle(exception);
+
+        assertSame(expectedResponseDto, responseEntity.getBody());
+        assertEquals(400, responseEntity.getStatusCode().value());
+    }
 }

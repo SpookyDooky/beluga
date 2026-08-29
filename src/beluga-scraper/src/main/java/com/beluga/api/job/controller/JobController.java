@@ -2,6 +2,7 @@ package com.beluga.api.job.controller;
 
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.job.validation.validator.JobNameValidator;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextKeys;
 import com.beluga.logging.ContextLogger;
@@ -20,13 +21,16 @@ import java.util.Optional;
 public class JobController {
 
     private final ContextLogger logger;
+    private final JobNameValidator jobNameValidator;
     private final JobDefinitionMapper jobDefinitionMapper;
     private final JobDefinitionService jobDefinitionService;
 
     public JobController(final ContextLogger logger,
+                         final JobNameValidator jobNameValidator,
                          final JobDefinitionMapper jobDefinitionMapper,
                          final JobDefinitionService jobDefinitionService) {
         this.logger = logger;
+        this.jobNameValidator = jobNameValidator;
         this.jobDefinitionMapper = jobDefinitionMapper;
         this.jobDefinitionService = jobDefinitionService;
     }
@@ -38,6 +42,8 @@ public class JobController {
     @Transactional
     public ReadJobDefinitionDto create(@RequestBody @Valid final WriteJobDefinitionDto job) {
         logger.info("Creating new job.");
+
+        jobNameValidator.validate(job.getName());
 
         final JobDefinition jobDefinition = jobDefinitionMapper.map(job);
         jobDefinitionService.save(jobDefinition);
@@ -71,6 +77,8 @@ public class JobController {
                                                        @RequestBody @Valid final WriteJobDefinitionDto writeJobDefinitionDto) {
         try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
             logger.info("Updating job.");
+
+            jobNameValidator.validate(writeJobDefinitionDto.getName(), id);
 
             final Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findById(id);
             if (jobDefinitionOptional.isEmpty()) {

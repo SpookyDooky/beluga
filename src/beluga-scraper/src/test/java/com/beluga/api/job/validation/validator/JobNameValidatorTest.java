@@ -7,8 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,18 +20,37 @@ class JobNameValidatorTest {
     private JobNameValidator jobNameValidator;
 
     @Test
-    void shouldBeValid() {
+    void shouldValidate() {
         final String jobName = "jobName";
         when(jobDefinitionService.existsByName(jobName)).thenReturn(false);
 
-        assertTrue(jobNameValidator.isValid(jobName, null));
+        jobNameValidator.validate(jobName);
     }
 
     @Test
-    void shouldNotBeValid() {
+    void shouldThrowIllegalArgumentExceptionForValidate() {
         final String jobName = "jobName";
         when(jobDefinitionService.existsByName(jobName)).thenReturn(true);
 
-        assertFalse(jobNameValidator.isValid(jobName, null));
+        assertThrows(IllegalArgumentException.class, () -> jobNameValidator.validate(jobName));
+    }
+
+    @Test
+    void shouldValidateForNameAndId() {
+        final String jobName = "jobName";
+        final Long jobDefinitionId = 123L;
+        when(jobDefinitionService.getNameById(jobDefinitionId)).thenReturn(jobName);
+
+        jobNameValidator.validate(jobName, jobDefinitionId);
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionForValidationForNameAndId() {
+        final String jobName = "jobName";
+        final Long jobDefinitionId = 123L;
+        when(jobDefinitionService.getNameById(jobDefinitionId)).thenReturn("otherName");
+        when(jobDefinitionService.existsByName(jobName)).thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> jobNameValidator.validate(jobName, jobDefinitionId));
     }
 }
