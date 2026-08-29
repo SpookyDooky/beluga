@@ -13,6 +13,8 @@ import com.beluga.model.job_definition.exception.TaskDefinitionNotFoundException
 import com.beluga.service.exception.JobDefinitionNotFoundException;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskDefinitionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,8 @@ import static com.beluga.logging.ContextKeys.TASK_ID;
 @RestController
 @RequestMapping("/jobs/{jobDefinitionId}/tasks")
 public class TaskController {
-	
+
+	private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 	private final ContextLogger logger;
 	private final TaskDefinitionMapperService taskDefinitionMapperService;
 	private final JobDefinitionService jobDefinitionService;
@@ -51,6 +54,7 @@ public class TaskController {
 	@Transactional
 	public List<ReadTaskDefinitionDto> getTasks(@PathVariable("jobDefinitionId") final Long jobDefinitionId) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
+			logger.info("Retrieving tasks for job.");
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
 			
 			return jobDefinition.getActiveTaskDefinitions()
@@ -75,7 +79,8 @@ public class TaskController {
 	                                     @PathVariable("taskId") final Long taskId) {
 		try (final CloseableContext context = logger.with(JOB_ID, jobDefinitionId.toString())) {
 			context.put(TASK_ID, taskId.toString());
-			
+			logger.info("Retrieving task.");
+
 			final TaskDefinition taskDefinition = jobDefinitionService.getById(jobDefinitionId)
 					.getTaskDefinitionById(taskId);
 			
@@ -88,6 +93,7 @@ public class TaskController {
 	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
 	                                               @RequestBody final UpdateTaskDto tasks) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
+			logger.info("Updating tasks for job.");
 			final Set<URL> existingActiveUrls = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
 					tasks.getUrls(),
 					jobDefinitionId
@@ -115,6 +121,7 @@ public class TaskController {
 	public List<ReadTaskDefinitionDto> updateTasks(@PathVariable("jobDefinitionId") final Long jobDefinitionId,
 	                                               @RequestBody final PatchTaskDto patchTaskDto) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
+			logger.info("Updating tasks for job.");
 			jobDefinitionService.setTaskDefinitionsInactiveByUrl(jobDefinitionId, patchTaskDto.getRemove());
 			
 			final List<TaskDefinition> taskDefinitions = taskDefinitionMapperService.map(patchTaskDto.getAdd());
