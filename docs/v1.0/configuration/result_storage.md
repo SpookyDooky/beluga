@@ -16,11 +16,13 @@ The configuration for either is listed down below.
     * [beluga.result-storage.s3.bucket](#belugaresult-storages3bucket)
     * [beluga.result-storage.s3.prefix](#belugaresult-storages3prefix)
 * [Examples](#examples)
+  * [File system](#file-system-1)
   * [S3 Compatible](#s3-compatible-1)
 
 # Configuration
 
 ## Storage backend
+
 ### `beluga.result-storage.type`
 - **Type:** string
 - **Required:** true
@@ -35,6 +37,7 @@ The configuration for either is listed down below.
 - **Required:** false
 - **Default:** /data/results
 - **Description:** Folder in which the results will be stored, this folder needs to be mounted.
+
 ## S3 compatible
 When using S3 compatible storage backends there are a few properties that need to be configured. 
 Below is a list of all properties that have to be configured for S3 compatible storage backends.
@@ -88,7 +91,8 @@ beluga:
     s3:
       host: s3-host.com
       access-key: accessKey
-      secret-key: secretKey
+      secret-key: ${ENVIRONMENT_VARIABLES_ARE_SUPPORTED}
       region: us-east-1
       bucket: beluga-results
+      prefix: some-prefix
 ```
