@@ -1,5 +1,6 @@
 package com.beluga.api.job.dto.validation;
 
+import com.beluga.api.job.validation.validator.PathValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
