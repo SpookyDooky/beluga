@@ -13,6 +13,7 @@ This way of configuring jobs is mainly offered for ease of use, there is also a 
 for managing jobs which is more suited for a production environment. You can find the documentation here.
 
 # Contents
+
 * [Configuration](#configuration)
   * [Name](#belugajobsname)
     * [beluga.jobs[].name](#belugajobsname)
@@ -23,12 +24,24 @@ for managing jobs which is more suited for a production environment. You can fin
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
   * [Scraping configuration](#scraping-configuration)
     * [beluga.jobs[].scraping.item-selector](#belugajobsscrapingitem-selector)
+  * [Attribute data point configuration](#attribute-data-point-configuration)
     * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsproperty-name)
+    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
     * [beluga.jobs[].scraping.data-points[].attribute](#belugajobsscrapingdata-pointsattribute)
+    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+  * [Description list data point configuration](#description-list-data-point-configuration)
+    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
     * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
     * [beluga.jobs[].scraping.data-points[].data-points[].dtValue](#belugajobsscrapingdata-pointsdata-pointsdtvalue)
     * [beluga.jobs[].scraping.data-points[].data-points[].field](#belugajobsscrapingdata-pointsdata-pointsfield)
+  * [HTML data point configuration](#html-data-point-configuration)
+    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
+    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
+    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+  * [Text data point configuration](#text-data-point-configuration)
+    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
+    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
+    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
 * [Example](#example)
 
 # Configuration
@@ -82,26 +95,7 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Required:** true
 - **Description:** CSS selector for an element
 
-## Data point configuration
-Each data point configuration needs different properties per type. Below is a list that list the required properties per type
-- ATTRIBUTE
-  - `beluga.jobs[].scraping.data-points[].selector`
-  - `beluga.jobs[].scraping.data-points[].field`
-  - `beluga.jobs[].scraping.data-points[].attribute`
-  - `beluga.jobs[].scraping.data-points[].type`
-- DESCRIPTION_LIST
-  - `beluga.jobs[].scraping.data-points[].selector`
-  - `beluga.jobs[].scraping.data-points[].type`
-- HTML
-  - `beluga.jobs[].scraping.data-points[].selector`
-  - `beluga.jobs[].scraping.data-points[].field`
-  - `beluga.jobs[].scraping.data-points[].type`
-- TEXT
-  - `beluga.jobs[].scraping.data-points[].selector`
-  - `beluga.jobs[].scraping.data-points[].field`
-  - `beluga.jobs[].scraping.data-points[].type`
-
-Below is the documentation for each configurable property.
+## Attribute data point configuration
 ### `beluga.jobs[].scraping.data-points[].selector`
 - **Type:** string
 - **Required:** true
@@ -114,8 +108,21 @@ Below is the documentation for each configurable property.
 
 ### `beluga.jobs[].scraping.data-points[].attribute`
 - **Type:** string
-- **Required:** false
+- **Required:** true
 - **Description:** Name of the attribute from which to retrieve the data. When attribute is not specified the text is used.
+
+### `beluga.jobs[].scraping.data-points[].type`
+- **Type:** string
+- **Required:** true
+- **Default:** TEXT
+- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
+- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+
+## Description list data point configuration
+### `beluga.jobs[].scraping.data-points[].selector`
+- **Type:** string
+- **Required:** true
+- **Description:** CSS selector for which data should be retrieved from an element
 
 ### `beluga.jobs[].scraping.data-points[].type`
 - **Type:** string
@@ -126,13 +133,49 @@ Below is the documentation for each configurable property.
 
 ### `beluga.jobs[].scraping.data-points[].data-points[].dtValue`
 - **Type:** string
-- **Required:** false
+- **Required:** true
 - **Description:** The value to match of the dt HTML tag.
 
 ### `beluga.jobs[].scraping.data-points[].data-points[].field`
 - **Type:** string
-- **Required:** false
+- **Required:** true
 - **Description:** Name of the property in the results
+
+## HTML data point configuration
+### `beluga.jobs[].scraping.data-points[].selector`
+- **Type:** string
+- **Required:** true
+- **Description:** CSS selector for which data should be retrieved from an element
+
+### `beluga.jobs[].scraping.data-points[].field`
+- **Type:** string
+- **Required:** true
+- **Description:** Name of the property in the results
+
+### `beluga.jobs[].scraping.data-points[].type`
+- **Type:** string
+- **Required:** false
+- **Default:** TEXT
+- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
+- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+
+## Text data point configuration
+### `beluga.jobs[].scraping.data-points[].selector`
+- **Type:** string
+- **Required:** true
+- **Description:** CSS selector for which data should be retrieved from an element
+
+### `beluga.jobs[].scraping.data-points[].field`
+- **Type:** string
+- **Required:** true
+- **Description:** Name of the property in the results
+
+### `beluga.jobs[].scraping.data-points[].type`
+- **Type:** string
+- **Required:** false
+- **Default:** TEXT
+- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
+- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
 
 # Example
 ```yaml
@@ -145,9 +188,9 @@ beluga:
         workers: 1
         tasks-per-second: 1
       scraping:
-        element-selector: "repeated#field"
+        item-selector: "repeated#field"
         data-points:
-          - selector: "span.something"
-            field: "regularPrice"
-            attribute: content
+          - type: TEXT
+            selector: p.price
+            field: price
 ```
