@@ -1,0 +1,90 @@
+name: Bug report
+description: Report a reproducible problem with the scraping engine
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+        Before submitting, please search existing issues to make sure
+        this hasn't already been reported.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version/commit are you running?
+      placeholder: "v0.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clearly describe the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How can we reproduce it?
+      description: |
+        Provide the smallest configuration, API request, or code example
+        that reproduces the problem.
+      placeholder: |
+        1. Configure a job with ...
+        2. Start the engine with ...
+        3. Send POST /api/...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or errors
+      description: Please remove secrets, API keys, credentials, and other sensitive information.
+      render: shell
+
+  - type: dropdown
+    id: storage
+    attributes:
+      label: Storage backend
+      options:
+        - SQLite
+        - PostgreSQL
+        - S3
+        - File system
+        - Not applicable
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Docker
+        - Linux
+        - macOS
+        - Windows
+        - Other
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues.
+          required: true
+        - label: I have removed sensitive information from logs/configuration.
+          required: true

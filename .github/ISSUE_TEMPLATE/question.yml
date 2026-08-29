@@ -1,0 +1,24 @@
+name: Question / Support
+description: Ask a question about using or configuring the scraper
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Relevant configuration
+      description: Remove credentials, tokens, and other sensitive information.
+      render: yaml
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include version, OS/container setup, database, etc.
