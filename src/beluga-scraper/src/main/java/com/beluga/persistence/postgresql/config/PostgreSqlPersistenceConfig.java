@@ -23,10 +23,6 @@ import static org.springframework.orm.jpa.vendor.Database.POSTGRESQL;
 @Configuration
 public class PostgreSqlPersistenceConfig {
 	
-	// TODO - Set connection pool size
-	// Isolation level
-	// Autocommit mode
-	
 	private final PostgreSqlPersistenceProperties properties;
 	
 	public PostgreSqlPersistenceConfig(final BelugaScraperProperties belugaScraperProperties) {

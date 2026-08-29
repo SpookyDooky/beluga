@@ -68,8 +68,6 @@ public class JobExecutionService {
 		eventPublisher.publishEvent(new JobStartedEvent(job.getJobDefinitionId(), job.getId()));
 	}
 	
-	// Todo we should keep track of failed workers, because that means tasks failed these should be reran
-	// To actually complete the job
 	@EventListener
 	public void onJobWorkersFinishedEvent(final JobWorkersFinishedEvent event) {
 		final Job job = jobIdJobMap.get(event.getJobId());
