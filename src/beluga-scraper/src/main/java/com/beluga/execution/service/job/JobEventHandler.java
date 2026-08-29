@@ -26,9 +26,7 @@ public class JobEventHandler {
 	public void onJobStartedEvent(final JobStartedEvent jobStartedEvent) {
 		jobDefinitionService.setJobExecutionStatusById(ACTIVE, jobStartedEvent.getJobDefinitionId(), jobStartedEvent.getJobExecutionId());
 	}
-	
-	// Todo we should keep track of failed workers, because that means tasks failed these should be reran
-	// To actually complete the job
+
 	@EventListener
 	public void onJobFinishedEvent(final JobFinishedEvent event) {
 		jobDefinitionService.setJobExecutionStatusById(COMPLETED, event.getJobDefinitionId(), event.getJobExecutionId());

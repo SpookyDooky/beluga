@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import static com.beluga.logging.ContextKeys.FILE_NAME;
 
 @Service
-// TODO MAKE custom annotation @IsResultStoreFileSystem
 @ConditionalOnProperty(
 		name = "beluga.result-storage.type",
 		havingValue = "FILE_SYSTEM"

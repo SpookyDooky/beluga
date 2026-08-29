@@ -8,22 +8,21 @@ for persistent job management.
 - REST API for managing scraping jobs
 - SQLite and PostgreSQL persistence
 - Filesystem and S3-compatible result storage
-- Configuration-driven operation
 - Docker support
 
 ## Quick Start
-To be added later
-
-## Example
 To be added later
 
 ## Documentation
 For the complete documentation, including configuration, scraping jobs,
 storage, persistence, API reference, and deployment:
 
-**[Read the documentation →](/docs/v1.0/index.md)**
+**[Read the documentation →](docs/v1.0/index.md)**
+
 ## Roadmap
-TODO
+### V1.1
+- [ ] image scraping
+- [ ] improve datapoint configuration by introducing datapoint-specific prefixes
 
 ## Contributing
 See CONTRIBUTING.md

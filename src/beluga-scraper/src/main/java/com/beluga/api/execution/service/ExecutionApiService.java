@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static com.beluga.model.job_definition.JobStatus.*;
 
-// Todo - this entire service should support multiple running jobs and executions should be stopped/resumed/paused based on the job execution id.
 @Service
 public class ExecutionApiService {
 
@@ -72,7 +71,6 @@ public class ExecutionApiService {
         if (latestExecutionOptional.isPresent()) {
             final JobExecution latestExecution = latestExecutionOptional.get();
 
-            // Todo - reconsider when a job can be stopped
             if (latestExecution.getStatus() == COMPLETED) {
                 return;
             }
@@ -95,7 +93,6 @@ public class ExecutionApiService {
         if (latestExecutionOptional.isPresent()) {
             final JobExecution latestExecution = latestExecutionOptional.get();
 
-            // Todo - reconsider when a job can be paused
             if (latestExecution.getStatus() == COMPLETED) {
                 return;
             }
