@@ -65,5 +65,5 @@ beluga:
     postgresql:
       url: jdbc:postgresql://host:1234/database_name
       username: username
-      password: password
+      password: ${SOME_ENVIRONMENT_VARIABLE_ALSO_WORKS}
 ```
