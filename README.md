@@ -13,8 +13,10 @@ for persistent job management.
 
 ## Quick Start
 To be added later
+
 ## Example
 To be added later
+
 ## Documentation
 For the complete documentation, including configuration, scraping jobs,
 storage, persistence, API reference, and deployment:
@@ -22,6 +24,6 @@ storage, persistence, API reference, and deployment:
 **[Read the documentation →](/docs/v1.0/index.md)**
 ## Roadmap
 TODO
+
 ## Contributing
 See CONTRIBUTING.md
-## License
