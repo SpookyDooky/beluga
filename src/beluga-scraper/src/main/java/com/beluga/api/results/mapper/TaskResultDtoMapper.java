@@ -1,8 +1,6 @@
 package com.beluga.api.results.mapper;
 
-import com.beluga.api.execution.exception.TaskResultNotFoundException;
 import com.beluga.api.results.dto.TaskResultDto;
-import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.result_storage.ResultStorageService;
 import org.springframework.stereotype.Component;
@@ -16,9 +14,7 @@ import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Component
 public class TaskResultDtoMapper {
-	
-	private static final String DATA_FILE_NAME = "data.json";
-	
+
 	private final ObjectMapper objectMapper;
 	private final ResultStorageService resultStorageService;
 	
@@ -29,18 +25,13 @@ public class TaskResultDtoMapper {
 	}
 	
 	@Transactional(propagation = MANDATORY)
-	public TaskResultDto map(final TaskExecution taskExecution) {
-		final ResultFile resultFile = taskExecution.getResultFiles().stream()
-				.filter(taskResultFile -> taskResultFile.getKey().equals(DATA_FILE_NAME))
-				.findFirst()
-				.orElseThrow(TaskResultNotFoundException::new);
-		
+	public TaskResultDto map(final ResultFile resultFile) {
 		final byte[] rawResultData = resultStorageService.retrieve(resultFile.getResourceIdentifier());
 		final List<Object> data = mapData(rawResultData);
 		
 		final TaskResultDto taskResultDto = new TaskResultDto();
 		
-		taskResultDto.setTaskId(taskExecution.getId());
+		taskResultDto.setTaskId(resultFile.getTaskExecution().getId());
 		taskResultDto.setData(data);
 		
 		return taskResultDto;

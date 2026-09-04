@@ -11,6 +11,7 @@ import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
+import com.beluga.service.results.ResultFileService;
 import com.beluga.service.task.TaskExecutionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ResultServiceTest {
-	
+
+	private static final String DATA_FILE_NAME = "data.json";
+
 	@Mock
 	private JobDefinitionService jobDefinitionService;
 	@Mock
@@ -42,7 +45,9 @@ class ResultServiceTest {
 	private ResultFileInfoMapper resultFileInfoMapper;
 	@Mock
 	private ResultStorageService resultStorageService;
-	
+	@Mock
+	private ResultFileService resultFileService;
+
 	@InjectMocks
 	private ResultService resultService;
 	
@@ -58,15 +63,18 @@ class ResultServiceTest {
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
 		when(jobDefinition.hasExecutionById(jobExecutionId)).thenReturn(true);
-		
+
 		final TaskExecution taskExecution = mock(RETURNS_DEEP_STUBS);
 		when(taskExecutionService.findById(taskExecutionId)).thenReturn(Optional.of(taskExecution));
 		when(taskExecutionService.getById(taskExecutionId)).thenReturn(taskExecution);
 		when(taskExecution.getJobExecution().getId()).thenReturn(jobExecutionId);
-		
+
+		final ResultFile resultFile = mock();
+		when(resultFileService.findByTaskExecutionAndKey(taskExecution, DATA_FILE_NAME)).thenReturn(Optional.of(resultFile));
+
 		final TaskResultDto taskResultDto = mock();
-		when(taskResultDtoMapper.map(taskExecution)).thenReturn(taskResultDto);
-		
+		when(taskResultDtoMapper.map(resultFile)).thenReturn(taskResultDto);
+
 		final TaskResultDto result = resultService.getTaskResult(
 				jobDefinitionId, jobExecutionId, taskExecutionId
 		);
@@ -178,24 +186,27 @@ class ResultServiceTest {
 		
 		final JobExecution jobExecution = mock();
 		when(jobDefinition.getExecutionById(jobExecutionId)).thenReturn(jobExecution);
-		
-		final TaskExecution taskExecution = mock();
-		final Page<TaskExecution> taskExecutionPage = new PageImpl<>(List.of(taskExecution));
-		when(taskExecutionService.findByJobExecutionPaged(eq(jobExecution), pageableArgumentCaptor.capture())).thenReturn(taskExecutionPage);
-		
+
+		final ResultFile resultFile = mock();
+		final Page<ResultFile> resultFilePage = new PageImpl<>(List.of(resultFile));
+		when(resultFileService.findByJobExecutionAndKeyPaged(
+				eq(jobExecution),
+				eq(DATA_FILE_NAME),
+				pageableArgumentCaptor.capture()
+		)).thenReturn(resultFilePage);
+
 		final TaskResultDto taskResultDto = mock();
-		when(taskResultDtoMapper.map(taskExecution)).thenReturn(taskResultDto);
-		
+		when(taskResultDtoMapper.map(resultFile)).thenReturn(taskResultDto);
+
 		final Page<TaskResultDto> result = resultService.getResults(
 				jobDefinitionId,
 				jobExecutionId,
 				page,
 				pageSize
 		);
-		
-		final List<TaskResultDto> taskResults = result.stream().toList();
-		assertEquals(1, taskResults.size());
-		assertTrue(taskResults.contains(taskResultDto));
+
+		assertEquals(1, result.getTotalElements());
+		assertTrue(result.get().toList().contains(taskResultDto));
 	}
 	
 	@Test
