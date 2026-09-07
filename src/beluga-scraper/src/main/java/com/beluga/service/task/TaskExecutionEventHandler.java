@@ -8,6 +8,7 @@ import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.mapper.ResultFileMapper;
 import com.beluga.model.result.ResultFile;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class TaskExecutionEventHandler {
 		this.taskExecutionService = taskExecutionService;
 		this.resultFileMapper = resultFileMapper;
 	}
-	
+
 	@EventListener
 	@Transactional
 	public void onTaskStarted(final TaskStartedEvent event) {
@@ -36,7 +37,7 @@ public class TaskExecutionEventHandler {
 		
 		taskExecutionService.save(taskExecution);
 	}
-	
+
 	@EventListener
 	@Transactional
 	public void onTaskCompleted(final TaskCompletedEvent event) {
@@ -58,7 +59,8 @@ public class TaskExecutionEventHandler {
 			throw e;
 		}
 	}
-	
+
+	@Async
 	@EventListener
 	public void onTaskResultStored(final TaskResultStoredEvent event) {
 		final ResultFile resultFile = resultFileMapper.map(event);

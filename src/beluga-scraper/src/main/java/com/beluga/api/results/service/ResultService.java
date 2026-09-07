@@ -12,6 +12,7 @@ import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.service.job.JobDefinitionService;
+import com.beluga.service.results.ResultFileService;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,23 +24,28 @@ import java.util.Optional;
 
 @Service
 public class ResultService {
-	
+
+	private static final String DATA_FILE_NAME = "data.json";
+
 	private final JobDefinitionService jobDefinitionService;
 	private final TaskExecutionService taskExecutionService;
 	private final TaskResultDtoMapper taskResultDtoMapper;
 	private final ResultFileInfoMapper resultFileInfoMapper;
 	private final ResultStorageService resultStorageService;
-	
+	private final ResultFileService resultFileService;
+
 	public ResultService(final JobDefinitionService jobDefinitionService,
 	                     final TaskExecutionService taskExecutionService,
 	                     final TaskResultDtoMapper taskResultDtoMapper,
 	                     final ResultFileInfoMapper resultFileInfoMapper,
-	                     final ResultStorageService resultStorageService) {
+	                     final ResultStorageService resultStorageService,
+						 final ResultFileService resultFileService) {
 		this.jobDefinitionService = jobDefinitionService;
 		this.taskExecutionService = taskExecutionService;
 		this.taskResultDtoMapper = taskResultDtoMapper;
 		this.resultFileInfoMapper = resultFileInfoMapper;
 		this.resultStorageService = resultStorageService;
+		this.resultFileService = resultFileService;
 	}
 	
 	/**
@@ -57,7 +63,10 @@ public class ResultService {
 		validateTaskResultExists(jobDefinitionId, executionId, taskExecutionId);
 		
 		final TaskExecution taskExecution = taskExecutionService.getById(taskExecutionId);
-		return taskResultDtoMapper.map(taskExecution);
+		final ResultFile resultFile = resultFileService.findByTaskExecutionAndKey(taskExecution, DATA_FILE_NAME)
+				.orElseThrow(TaskResultNotFoundException::new);
+
+		return taskResultDtoMapper.map(resultFile);
 	}
 
 
@@ -97,9 +106,11 @@ public class ResultService {
 	                                      final int pageSize) {
 		final JobExecution jobExecution = jobDefinitionService.getById(jobDefinitionId)
 				.getExecutionById(jobExecutionId);
-		
-		return taskExecutionService.findByJobExecutionPaged(
-				jobExecution, createPageRequest(page, pageSize)
+
+		return resultFileService.findByJobExecutionAndKeyPaged(
+				jobExecution,
+				DATA_FILE_NAME,
+				createPageRequest(page, pageSize)
 		).map(taskResultDtoMapper::map);
 	}
 	
