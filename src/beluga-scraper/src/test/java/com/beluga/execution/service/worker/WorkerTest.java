@@ -8,7 +8,6 @@ import com.beluga.scraping.ScrapingService;
 import com.beluga.scraping.model.ScrapingResult;
 import com.beluga.util.TimingService;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -45,11 +44,6 @@ class WorkerTest {
 
 	@Captor
 	private ArgumentCaptor<TaskResultEvent> taskResultEventArgumentCaptor;
-
-	@BeforeEach
-	void setup() {
-		worker.init(JOB_ID, completedCallback);
-	}
 
 	@Test
 	void shouldExecuteTask() {

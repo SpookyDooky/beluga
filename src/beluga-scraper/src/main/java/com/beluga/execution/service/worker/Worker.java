@@ -7,7 +7,6 @@ import com.beluga.execution.event.task.TaskCompletedEvent;
 import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.event.task.TaskStartedEvent;
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
-import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.Task;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
@@ -27,15 +26,10 @@ import static com.beluga.logging.ContextKeys.JOB_EXECUTION_ID;
 @Component
 public class Worker {
 
-    private final UUID workerId = UUID.randomUUID();
-
     private final ContextLogger logger;
     private final ScrapingService scrapingService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimingService timingService;
-
-    private Long jobId;
-    private WorkerTaskCompletedCallback completedCallback;
 
     public Worker(final ContextLogger logger,
                   final ScrapingService scrapingService,
@@ -45,22 +39,6 @@ public class Worker {
         this.scrapingService = scrapingService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.timingService = timingService;
-    }
-
-    public UUID getWorkerId() {
-        return workerId;
-    }
-
-    /**
-     * Initializes the worker.
-     *
-     * @param jobId             The id of the {@link Job} this worker is for.
-     * @param completedCallback callback to use when the {@link Worker} completes a {@link Task}.
-     */
-    public void init(final Long jobId,
-                     final WorkerTaskCompletedCallback completedCallback) {
-        this.jobId = jobId;
-        this.completedCallback = completedCallback;
     }
 
     /**

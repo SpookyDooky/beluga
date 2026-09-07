@@ -29,7 +29,7 @@ import static com.beluga.execution.model.task.TaskStatus.STOPPED;
  * Furthermore, for each {@link JobDefinition} it also places all tasks in the {@link JobTaskQueue}.
  */
 @Service
-public class JobExecutionService {
+public class JobExecutorService {
 	
 	private final ContextLogger logger;
 	private final JobTaskQueue jobTaskQueue;
@@ -40,11 +40,11 @@ public class JobExecutionService {
 	private final Map<Long, Job> jobIdJobMap = new HashMap<>();
 	private final Map<Long, AtomicInteger> jobActiveTasks = new HashMap<>();
 
-	public JobExecutionService(final ContextLogger logger,
-	                           final JobTaskQueue jobTaskQueue,
-	                           final ApplicationEventPublisher eventPublisher,
-	                           final Worker worker,
-	                           final TaskExecutionService taskExecutionService) {
+	public JobExecutorService(final ContextLogger logger,
+	                          final JobTaskQueue jobTaskQueue,
+	                          final ApplicationEventPublisher eventPublisher,
+	                          final Worker worker,
+	                          final TaskExecutionService taskExecutionService) {
 		this.logger = logger;
 		this.jobTaskQueue = jobTaskQueue;
 		this.eventPublisher = eventPublisher;

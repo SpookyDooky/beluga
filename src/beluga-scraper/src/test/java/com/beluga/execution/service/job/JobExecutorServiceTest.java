@@ -5,8 +5,6 @@ import com.beluga.execution.model.job.ExecutionConfiguration;
 import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.service.task.JobTaskQueue;
-import com.beluga.execution.service.worker.Worker;
-import com.beluga.execution.service.worker.WorkerOrchestrator;
 import com.beluga.logging.ContextLogger;
 import com.beluga.service.task.TaskExecutionService;
 import com.google.common.util.concurrent.RateLimiter;
@@ -32,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class JobExecutionServiceTest {
+class JobExecutorServiceTest {
 	
 	@Mock
 	private ContextLogger logger;
@@ -42,14 +40,9 @@ class JobExecutionServiceTest {
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Mock
 	private TaskExecutionService taskExecutionService;
-	@Mock
-	private WorkerOrchestrator workerOrchestrator;
 	
 	@InjectMocks
-	private JobExecutionService jobExecutionService;
-	
-	@Mock
-	private Worker worker;
+	private JobExecutorService jobExecutorService;
 	
 	@Captor
 	private ArgumentCaptor<RateLimiter> rateLimiterArgumentCaptor;
@@ -70,18 +63,12 @@ class JobExecutionServiceTest {
 		
 		final List<Task> tasks = new ArrayList<>(job.getTasks());
 		
-		jobExecutionService.execute(job);
+		jobExecutorService.execute(job);
 		
 		assertTrue(job.getTasks().isEmpty());
 		tasks.forEach(task -> {
 			verify(jobTaskQueue).offerTask(task);
 		});
-		
-		verify(workerOrchestrator).startWorkers(
-				job.getId(),
-				job.getExecutionConfiguration().getTasksPerSecond(),
-				job.getExecutionConfiguration().getWorkers()
-		);
 		
 		verify(applicationEventPublisher).publishEvent(jobStartedEventArgumentCaptor.capture());
 		final JobStartedEvent jobStartedEvent = jobStartedEventArgumentCaptor.getValue();
@@ -96,7 +83,7 @@ class JobExecutionServiceTest {
 		final Collection<Task> tasks = List.of(Instancio.create(Task.class));
 		when(jobTaskQueue.clearTasks(jobId)).thenReturn(tasks);
 		
-		jobExecutionService.stop(jobId);
+		jobExecutorService.stop(jobId);
 		
 		tasks.forEach(task -> {
 			verify(taskExecutionService).setStatusById(task.getId(), STOPPED);
@@ -109,7 +96,7 @@ class JobExecutionServiceTest {
 		final Collection<Task> tasks = List.of(Instancio.create(Task.class));
 		when(jobTaskQueue.clearTasks(jobId)).thenReturn(tasks);
 		
-		jobExecutionService.pause(jobId);
+		jobExecutorService.pause(jobId);
 		
 		tasks.forEach(task -> {
 			verify(taskExecutionService).setStatusById(task.getId(), PAUSED);

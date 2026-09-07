@@ -4,7 +4,7 @@ import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.mapper.ReadJobExecutionMapper;
 import com.beluga.execution.model.job.Job;
-import com.beluga.execution.service.job.JobExecutionService;
+import com.beluga.execution.service.job.JobExecutorService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.job_definition.JobStatus;
@@ -37,7 +37,7 @@ class ExecutionApiServiceTest {
 	@Mock
 	private JobService jobService;
 	@Mock
-	private JobExecutionService jobExecutionService;
+	private JobExecutorService jobExecutorService;
 	@Mock
 	private ReadJobExecutionMapper readJobExecutionMapper;
 	
@@ -60,7 +60,7 @@ class ExecutionApiServiceTest {
 			final TransactionSynchronization transactionSynchronization = transactionSynchronizationArgumentCaptor.getValue();
 			
 			transactionSynchronization.afterCommit();
-			verify(jobExecutionService).execute(job);
+			verify(jobExecutorService).execute(job);
 		}
 	}
 	
@@ -78,7 +78,7 @@ class ExecutionApiServiceTest {
 		executionApiService.stop(jobDefinitionId);
 		
 		verify(jobDefinitionService).setJobExecutionStatusById(STOPPED, jobDefinitionId, jobExecution.getId());
-		verify(jobExecutionService).stop(jobExecution.getId());
+		verify(jobExecutorService).stop(jobExecution.getId());
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ class ExecutionApiServiceTest {
 		executionApiService.stop(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(STOPPED, jobDefinitionId, jobExecution.getId());
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ class ExecutionApiServiceTest {
 		executionApiService.stop(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(any(), any(), any());
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
@@ -125,7 +125,7 @@ class ExecutionApiServiceTest {
 		executionApiService.pause(jobDefinitionId);
 		
 		verify(jobDefinitionService).setJobExecutionStatusById(PAUSED, jobDefinitionId, jobExecution.getId());
-		verify(jobExecutionService).pause(jobExecution.getId());
+		verify(jobExecutorService).pause(jobExecution.getId());
 	}
 	
 	@Test
@@ -142,7 +142,7 @@ class ExecutionApiServiceTest {
 		executionApiService.stop(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(PAUSED, jobDefinitionId, jobExecution.getId());
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ class ExecutionApiServiceTest {
 		executionApiService.pause(jobDefinitionId);
 		
 		verify(jobDefinitionService, never()).setJobExecutionStatusById(any(), any(), any());
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
@@ -173,7 +173,7 @@ class ExecutionApiServiceTest {
 		
 		executionApiService.resume(jobDefinitionId);
 		
-		verify(jobExecutionService).execute(job);
+		verify(jobExecutorService).execute(job);
 	}
 	
 	@Test
@@ -185,7 +185,7 @@ class ExecutionApiServiceTest {
 		
 		executionApiService.resume(jobDefinitionId);
 		
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@ParameterizedTest
@@ -207,7 +207,7 @@ class ExecutionApiServiceTest {
 		
 		executionApiService.resume(jobDefinitionId);
 		
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
@@ -224,7 +224,7 @@ class ExecutionApiServiceTest {
 		
 		executionApiService.resume(jobDefinitionId);
 		
-		verifyNoInteractions(jobExecutionService);
+		verifyNoInteractions(jobExecutorService);
 	}
 	
 	@Test
