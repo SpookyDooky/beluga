@@ -60,7 +60,7 @@ class ExecutionApiServiceTest {
 			final TransactionSynchronization transactionSynchronization = transactionSynchronizationArgumentCaptor.getValue();
 			
 			transactionSynchronization.afterCommit();
-			verify(jobExecutionService).executeJob(job);
+			verify(jobExecutionService).execute(job);
 		}
 	}
 	
@@ -173,7 +173,7 @@ class ExecutionApiServiceTest {
 		
 		executionApiService.resume(jobDefinitionId);
 		
-		verify(jobExecutionService).executeJob(job);
+		verify(jobExecutionService).execute(job);
 	}
 	
 	@Test

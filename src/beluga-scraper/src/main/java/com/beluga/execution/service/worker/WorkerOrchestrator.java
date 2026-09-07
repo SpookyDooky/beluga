@@ -7,8 +7,6 @@ import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -21,7 +19,6 @@ import static com.beluga.logging.ContextKeys.JOB_ID;
 @Component
 public class WorkerOrchestrator {
 
-    private static final Logger log = LoggerFactory.getLogger(WorkerOrchestrator.class);
     private final ContextLogger logger;
     private final ApplicationContext applicationContext;
     private final ApplicationEventPublisher applicationEventPublisher;

@@ -53,7 +53,7 @@ public class ExecutionApiService {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                jobExecutionService.executeJob(job);
+                jobExecutionService.execute(job);
             }
         });
     }
@@ -124,7 +124,7 @@ public class ExecutionApiService {
 
             if (jobOptional.isPresent()) {
                 final Job job = jobOptional.get();
-                jobExecutionService.executeJob(job);
+                jobExecutionService.execute(job);
             }
         }
     }

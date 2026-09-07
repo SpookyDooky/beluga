@@ -70,7 +70,7 @@ class JobExecutionServiceTest {
 		
 		final List<Task> tasks = new ArrayList<>(job.getTasks());
 		
-		jobExecutionService.executeJob(job);
+		jobExecutionService.execute(job);
 		
 		assertTrue(job.getTasks().isEmpty());
 		tasks.forEach(task -> {
