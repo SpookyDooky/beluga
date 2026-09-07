@@ -7,6 +7,8 @@ import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
 import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import static com.beluga.logging.ContextKeys.JOB_ID;
 @Component
 public class WorkerOrchestrator {
 
+    private static final Logger log = LoggerFactory.getLogger(WorkerOrchestrator.class);
     private final ContextLogger logger;
     private final ApplicationContext applicationContext;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -70,6 +73,7 @@ public class WorkerOrchestrator {
 
         for (int i = 0; i < workerCount; i++) {
             final Worker worker = applicationContext.getBean(Worker.class);
+            logger.info("Registered worker.");
             worker.init(jobId, completedCallback(jobId));
 
             jobWorkers.compute(jobId, (jobIdKey, workers) -> {
@@ -95,11 +99,13 @@ public class WorkerOrchestrator {
                                final int workers) {
         while (!jobTaskQueue.isQueueEmpty(jobId)) {
             rateLimiter.acquire();
-
             final Task task = jobTaskQueue.pollTask(jobId)
                     .orElseThrow();
             final Worker worker = getIdleWorker(jobId);
-            worker.execute(task);
+            new Thread(
+                    () -> worker.execute(task),
+                    "worker-" + worker.getWorkerId()
+            ).start();
         }
 
         waitForWorkersToFinish(jobId, workers);

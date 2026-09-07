@@ -54,6 +54,10 @@ public class Worker {
         this.timingService = timingService;
     }
 
+    public UUID getWorkerId() {
+        return workerId;
+    }
+
     /**
      * Initializes the worker.
      *
