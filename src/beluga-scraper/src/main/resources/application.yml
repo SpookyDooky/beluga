@@ -3,9 +3,6 @@ spring:
     name: beluga
   main:
     web-application-type: servlet
-  profiles:
-    active:
-      - local
   flyway:
     enabled: true
     baseline-version: 0
