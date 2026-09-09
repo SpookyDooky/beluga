@@ -19,7 +19,7 @@ public class ExtractionConfigurationPropertiesValidator
     public boolean isValid(final ExtractionConfigurationProperties extractionConfiguration,
                            final ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
-        return switch(extractionConfiguration.getType()) {
+        return switch (extractionConfiguration.getType()) {
             case ATTRIBUTE -> isValidAttributeExtractionConfiguration(extractionConfiguration, context);
             case DESCRIPTION_LIST -> isValidDescriptionListExtractionConfiguration(extractionConfiguration, context);
             case HTML -> isValidHtmlExtractionConfiguration(extractionConfiguration, context);
@@ -48,7 +48,7 @@ public class ExtractionConfigurationPropertiesValidator
             return false;
         }
 
-         return true;
+        return true;
     }
 
     private boolean isValidDescriptionListExtractionConfiguration(final ExtractionConfigurationProperties extractionConfiguration,

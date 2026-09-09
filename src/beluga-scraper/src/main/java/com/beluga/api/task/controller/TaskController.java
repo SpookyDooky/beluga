@@ -14,8 +14,6 @@ import com.beluga.service.exception.JobDefinitionNotFoundException;
 import com.beluga.service.job.JobDefinitionService;
 import com.beluga.service.task.TaskDefinitionService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +30,6 @@ import static com.beluga.logging.ContextKeys.TASK_ID;
 @RequestMapping("/jobs/{jobDefinitionId}/tasks")
 public class TaskController {
 
-	private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 	private final ContextLogger logger;
 	private final TaskDefinitionMapperService taskDefinitionMapperService;
 	private final JobDefinitionService jobDefinitionService;

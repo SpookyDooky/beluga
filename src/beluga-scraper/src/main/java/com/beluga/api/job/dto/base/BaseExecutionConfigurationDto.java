@@ -3,19 +3,9 @@ package com.beluga.api.job.dto.base;
 import jakarta.validation.constraints.Positive;
 
 public abstract class BaseExecutionConfigurationDto {
-	
-	@Positive
-	private Integer workers;
+
 	@Positive
 	private Double tasksPerSecond;
-	
-	public Integer getWorkers() {
-		return workers;
-	}
-	
-	public void setWorkers(final Integer workers) {
-		this.workers = workers;
-	}
 	
 	public Double getTasksPerSecond() {
 		return tasksPerSecond;

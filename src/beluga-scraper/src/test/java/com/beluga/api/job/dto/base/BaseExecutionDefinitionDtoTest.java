@@ -11,7 +11,6 @@ class BaseExecutionDefinitionDtoTest {
 	@ParameterizedTest
 	@ValueSource(
 			strings = {
-					"workers",
 					"tasksPerSecond"
 			}
 	)

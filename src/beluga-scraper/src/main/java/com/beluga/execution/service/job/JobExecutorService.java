@@ -2,22 +2,24 @@ package com.beluga.execution.service.job;
 
 import com.beluga.execution.event.job.JobFinishedEvent;
 import com.beluga.execution.event.job.JobStartedEvent;
-import com.beluga.execution.model.job.ExecutionConfiguration;
+import com.beluga.execution.event.task.TaskCompletedEvent;
+import com.beluga.execution.event.task.TaskFailedEvent;
 import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.service.task.JobTaskQueue;
 import com.beluga.execution.service.worker.Worker;
-import com.beluga.execution.service.worker.WorkerOrchestrator;
-import com.beluga.execution.service.worker.event.JobWorkersFinishedEvent;
+import com.beluga.execution.service.worker.rate_limiting.JitterRateLimiter;
 import com.beluga.logging.ContextLogger;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.beluga.execution.model.task.TaskStatus.PAUSED;
 import static com.beluga.execution.model.task.TaskStatus.STOPPED;
@@ -27,52 +29,86 @@ import static com.beluga.execution.model.task.TaskStatus.STOPPED;
  * Furthermore, for each {@link JobDefinition} it also places all tasks in the {@link JobTaskQueue}.
  */
 @Service
-public class JobExecutionService {
+public class JobExecutorService {
 	
 	private final ContextLogger logger;
 	private final JobTaskQueue jobTaskQueue;
 	private final ApplicationEventPublisher eventPublisher;
-	private final WorkerOrchestrator workerOrchestrator;
+	private final Worker worker;
 	private final TaskExecutionService taskExecutionService;
-	
+
 	private final Map<Long, Job> jobIdJobMap = new HashMap<>();
-	
-	public JobExecutionService(final ContextLogger logger,
-	                           final JobTaskQueue jobTaskQueue,
-	                           final ApplicationEventPublisher eventPublisher,
-	                           final WorkerOrchestrator workerOrchestrator,
-	                           final TaskExecutionService taskExecutionService) {
+	private final Map<Long, AtomicInteger> jobActiveTasks = new HashMap<>();
+
+	public JobExecutorService(final ContextLogger logger,
+	                          final JobTaskQueue jobTaskQueue,
+	                          final ApplicationEventPublisher eventPublisher,
+	                          final Worker worker,
+	                          final TaskExecutionService taskExecutionService) {
 		this.logger = logger;
 		this.jobTaskQueue = jobTaskQueue;
 		this.eventPublisher = eventPublisher;
-		this.workerOrchestrator = workerOrchestrator;
+		this.worker = worker;
 		this.taskExecutionService = taskExecutionService;
 	}
-	
-	public void executeJob(final Job job) {
+
+	@Async
+	public void execute(final Job job) {
 		logger.info("Executing job");
 		
 		job.getTasks().forEach(jobTaskQueue::offerTask);
 		job.getTasks().clear();
-		
-		final ExecutionConfiguration executionConfiguration = job.getExecutionConfiguration();
-		
-		workerOrchestrator.startWorkers(
-				job.getId(),
-				executionConfiguration.getTasksPerSecond(),
-				executionConfiguration.getWorkers()
-		);
-		
+
 		jobIdJobMap.put(job.getId(), job);
-		
+		jobActiveTasks.put(job.getId(), new AtomicInteger(0));
+
 		eventPublisher.publishEvent(new JobStartedEvent(job.getJobDefinitionId(), job.getId()));
+
+		final JitterRateLimiter jitterRateLimiter = new JitterRateLimiter(job.getExecutionConfiguration().getTasksPerSecond());
+		execute(job.getId(), jitterRateLimiter);
 	}
-	
+
+	private void execute(final Long jobId,
+						 final JitterRateLimiter rateLimiter) {
+		while (!jobTaskQueue.isQueueEmpty(jobId)) {
+			rateLimiter.acquire();
+
+			jobTaskQueue.pollTask(jobId)
+					.ifPresent(worker::execute);
+			jobActiveTasks.get(jobId).incrementAndGet();
+		}
+
+		waitForAllTasksToFinish(jobId);
+	}
+
+	private void waitForAllTasksToFinish(final Long jobId) {
+		while (jobActiveTasks.get(jobId).get() != 0) {
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+		eventPublisher.publishEvent(new JobFinishedEvent(
+				jobIdJobMap.get(jobId).getJobDefinitionId(),
+				jobId
+		));
+
+		jobIdJobMap.remove(jobId);
+		jobActiveTasks.remove(jobId);
+	}
+
+	@Async
 	@EventListener
-	public void onJobWorkersFinishedEvent(final JobWorkersFinishedEvent event) {
-		final Job job = jobIdJobMap.get(event.getJobId());
-		
-		eventPublisher.publishEvent(new JobFinishedEvent(job.getJobDefinitionId(), job.getId()));
+	public void onTaskCompletedEvent(final TaskCompletedEvent event) {
+		jobActiveTasks.get(event.getJobId()).decrementAndGet();
+	}
+
+	@Async
+	@EventListener
+	public void onTaskFailedEvent(final TaskFailedEvent event) {
+		jobActiveTasks.get(event.getJobId()).decrementAndGet();
 	}
 	
 	/**

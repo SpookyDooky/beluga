@@ -4,7 +4,6 @@ import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.api.job.validation.validator.JobNameValidator;
 import com.beluga.logging.CloseableContext;
-import com.beluga.logging.ContextKeys;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
@@ -15,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+
+import static com.beluga.logging.ContextKeys.JOB_ID;
 
 @RestController
 @RequestMapping("/jobs")
@@ -60,7 +61,7 @@ public class JobController {
     @GetMapping("/{id}")
     @Transactional
     public ResponseEntity<ReadJobDefinitionDto> get(@PathVariable("id") final Long id) {
-        try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
+        try (final CloseableContext ignored = logger.with(JOB_ID)) {
             logger.info("Retrieving job.");
 
             return jobDefinitionService.findById(id)
@@ -75,7 +76,7 @@ public class JobController {
     @Transactional
     public ResponseEntity<ReadJobDefinitionDto> update(@PathVariable("id") final Long id,
                                                        @RequestBody @Valid final WriteJobDefinitionDto writeJobDefinitionDto) {
-        try (final CloseableContext ignored = logger.with(ContextKeys.JOB_ID)) {
+        try (final CloseableContext ignored = logger.with(JOB_ID, id.toString())) {
             logger.info("Updating job.");
 
             jobNameValidator.validate(writeJobDefinitionDto.getName(), id);

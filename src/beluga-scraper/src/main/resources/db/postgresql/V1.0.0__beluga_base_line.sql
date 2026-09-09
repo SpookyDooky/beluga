@@ -1,7 +1,6 @@
 create table execution_definition
 (
     id               bigint generated always as identity primary key,
-    workers          bigint           not null,
     tasks_per_second double precision not null
 );
 
@@ -11,32 +10,12 @@ create table scraping_definition
     item_selector varchar not null
 );
 
-create table url_configuration
-(
-    id       bigint generated always as identity primary key,
-    url_file varchar
-);
-
-create table urls
-(
-    id                   bigint generated always as identity primary key,
-    url_configuration_id bigint  not null,
-    url                  varchar not null,
-    constraint fk_url_configuration_id
-        foreign key (url_configuration_id)
-            references url_configuration (id)
-);
-
 create table job_definition
 (
     id                      bigint generated always as identity primary key,
     name                    varchar not null unique,
-    url_configuration_id    bigint,
     scraping_definition_id  bigint  not null,
     execution_definition_id bigint  not null,
-    constraint fk_url_configuration_id
-        foreign key (url_configuration_id)
-            references url_configuration (id),
     constraint fk_scraping_definition_id
         foreign key (scraping_definition_id)
             references scraping_definition (id),
@@ -171,3 +150,7 @@ create table description_list_extraction_data_point_definition
         foreign key (description_list_extraction_definition_id)
             references description_list_extraction_definition (id)
 );
+
+create index if not exists job_execution_id_index on task_execution(job_execution_id);
+create index if not exists task_execution_id_index on result_file(task_execution_id);
+create index if not exists key_index on result_file(key);

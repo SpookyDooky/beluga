@@ -19,7 +19,6 @@ class ExecutionDefinitionMapperTest {
 		
 		final ExecutionDefinition executionDefinition = mapper.map(executionProperties);
 		
-		assertEquals(executionProperties.getWorkers(), executionDefinition.getWorkers());
 		assertEquals(executionProperties.getTasksPerSecond(), executionDefinition.getTasksPerSecond());
 	}
 	
@@ -28,8 +27,7 @@ class ExecutionDefinitionMapperTest {
 		final WriteExecutionConfigurationDto dto = Instancio.create(WriteExecutionConfigurationDto.class);
 		
 		final ExecutionDefinition entity = mapper.map(dto);
-		
-		assertEquals(dto.getWorkers(), entity.getWorkers());
+
 		assertEquals(dto.getTasksPerSecond(), entity.getTasksPerSecond());
 	}
 	
@@ -40,7 +38,6 @@ class ExecutionDefinitionMapperTest {
 		final ReadExecutionConfigurationDto dto = mapper.map(entity);
 		
 		assertEquals(entity.getId(), dto.getId());
-		assertEquals(entity.getWorkers(), dto.getWorkers());
 		assertEquals(entity.getTasksPerSecond(), dto.getTasksPerSecond());
 	}
 	
@@ -50,8 +47,7 @@ class ExecutionDefinitionMapperTest {
 		final ExecutionDefinition entity = Instancio.create(ExecutionDefinition.class);
 		
 		mapper.update(dto, entity);
-		
-		assertEquals(dto.getWorkers(), entity.getWorkers());
+
 		assertEquals(dto.getTasksPerSecond(), entity.getTasksPerSecond());
 	}
 }

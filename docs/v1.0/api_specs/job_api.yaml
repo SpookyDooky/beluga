@@ -126,14 +126,10 @@ components:
     createExecutionConfiguration:
       type: object
       properties:
-        workers:
-          type: integer
-          example: 1
         tasksPerSecond:
           type: integer
           example: 5
       required:
-        - workers
         - tasksPerSecond
 
     executionConfiguration:

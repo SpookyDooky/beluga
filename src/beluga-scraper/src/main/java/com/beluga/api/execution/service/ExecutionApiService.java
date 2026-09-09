@@ -4,7 +4,7 @@ import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.execution.dto.ReadJobExecutionWithTasksDto;
 import com.beluga.api.execution.mapper.ReadJobExecutionMapper;
 import com.beluga.execution.model.job.Job;
-import com.beluga.execution.service.job.JobExecutionService;
+import com.beluga.execution.service.job.JobExecutorService;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
 import com.beluga.service.job.JobDefinitionService;
@@ -24,16 +24,16 @@ public class ExecutionApiService {
 
     private final JobDefinitionService jobDefinitionService;
     private final JobService jobService;
-    private final JobExecutionService jobExecutionService;
+    private final JobExecutorService jobExecutorService;
     private final ReadJobExecutionMapper readJobExecutionMapper;
 
     public ExecutionApiService(final JobDefinitionService jobDefinitionService,
                                final JobService jobService,
-                               final JobExecutionService jobExecutionService,
+                               final JobExecutorService jobExecutorService,
                                final ReadJobExecutionMapper readJobExecutionMapper) {
         this.jobDefinitionService = jobDefinitionService;
         this.jobService = jobService;
-        this.jobExecutionService = jobExecutionService;
+        this.jobExecutorService = jobExecutorService;
         this.readJobExecutionMapper = readJobExecutionMapper;
     }
 
@@ -53,7 +53,7 @@ public class ExecutionApiService {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                jobExecutionService.executeJob(job);
+                jobExecutorService.execute(job);
             }
         });
     }
@@ -76,7 +76,7 @@ public class ExecutionApiService {
             }
 
             jobDefinitionService.setJobExecutionStatusById(STOPPED, jobDefinitionId, latestExecution.getId());
-            jobExecutionService.stop(latestExecution.getId());
+            jobExecutorService.stop(latestExecution.getId());
         }
     }
 
@@ -98,7 +98,7 @@ public class ExecutionApiService {
             }
 
             jobDefinitionService.setJobExecutionStatusById(PAUSED, jobDefinitionId, latestExecution.getId());
-            jobExecutionService.pause(latestExecution.getId());
+            jobExecutorService.pause(latestExecution.getId());
         }
     }
 
@@ -124,7 +124,7 @@ public class ExecutionApiService {
 
             if (jobOptional.isPresent()) {
                 final Job job = jobOptional.get();
-                jobExecutionService.executeJob(job);
+                jobExecutorService.execute(job);
             }
         }
     }
