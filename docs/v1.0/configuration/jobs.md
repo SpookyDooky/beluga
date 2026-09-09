@@ -20,7 +20,6 @@ for managing jobs which is more suited for a production environment. You can fin
   * [Urls](#belugajobsurlurl-file)
     * [beluga.jobs[].url.url-file](#belugajobsurlurl-file)
   * [Execution configuration](#execution-configuration)
-    * [beluga.jobs[].execution.workers](#belugajobsexecutionworkers)
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
   * [Scraping configuration](#scraping-configuration)
     * [beluga.jobs[].scraping.item-selector](#belugajobsscrapingitem-selector)
@@ -75,12 +74,6 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Description:** Location in which the job results will be stored
 
 ## Execution configuration
-
-### `beluga.jobs[].execution.workers`
-- **Type:** integer
-- **Required:** false
-- **Default:** 1
-- **Description:** The amount of workers that are used for a job
 
 ### `beluga.jobs[].execution.tasks-per-second`
 - **Type:** integer
