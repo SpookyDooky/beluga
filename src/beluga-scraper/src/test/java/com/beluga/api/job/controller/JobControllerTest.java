@@ -96,8 +96,10 @@ class JobControllerTest {
 	void shouldUpdateReturnsNotFound() {
 		final Long id = 123L;
 		when(jobDefinitionService.findById(id)).thenReturn(Optional.empty());
-		
-		final ResponseEntity<ReadJobDefinitionDto> result = jobController.update(id, null);
+
+		final WriteJobDefinitionDto writeJobDefinitionDto = mock();
+
+		final ResponseEntity<ReadJobDefinitionDto> result = jobController.update(id, writeJobDefinitionDto);
 		
 		assertEquals(404, result.getStatusCode().value());
 	}

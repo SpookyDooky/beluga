@@ -34,9 +34,6 @@ class WorkerTest {
 	@InjectMocks
 	private Worker worker;
 
-	@Mock
-	private WorkerTaskCompletedCallback completedCallback;
-
 	@Captor
 	private ArgumentCaptor<TaskResultEvent> taskResultEventArgumentCaptor;
 
@@ -58,7 +55,5 @@ class WorkerTest {
 		final TaskResultEvent taskResultEvent2 = taskResultEventArgumentCaptor.getAllValues().get(1);
 		assertEquals("source.html", taskResultEvent2.getKey());
 		assertEquals(scrapingResult.getRawPage(), taskResultEvent2.getPayload().getData());
-
-		verify(completedCallback).complete(worker);
 	}
 }

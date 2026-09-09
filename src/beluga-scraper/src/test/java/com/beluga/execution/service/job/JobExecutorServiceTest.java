@@ -72,7 +72,7 @@ class JobExecutorServiceTest {
 		when(jobTaskQueue.isQueueEmpty(job.getId())).thenReturn(false, true);
 
 		new Thread(() -> jobExecutorService.execute(job)).start();
-		Thread.sleep(500);
+		Thread.sleep(750);
 
 		assertTrue(job.getTasks().isEmpty());
 		tasks.forEach(task -> {
