@@ -40,7 +40,7 @@ storage, persistence, API reference, and deployment:
 - [ ] improve 400 responses with explanations of which field is configured incorrectly
 
 ## Contributing
-See CONTRIBUTING.md
+See **[CONTRIBUTING.md](CONTRIBUTING.md)**
 
 ## Disclaimer
 Beluga is provided as an open-source web scraping tool for legitimate purposes. 
