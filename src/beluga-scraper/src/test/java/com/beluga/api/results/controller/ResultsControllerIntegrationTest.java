@@ -57,7 +57,6 @@ class ResultsControllerIntegrationTest {
 						.set(
 								field(WriteJobDefinitionDto::getExecution),
 								Instancio.of(WriteExecutionConfigurationDto.class)
-										.set(field(WriteExecutionConfigurationDto::getWorkers), 1)
 										.set(field(WriteExecutionConfigurationDto::getTasksPerSecond), 10.0)
 										.create()
 						).create()

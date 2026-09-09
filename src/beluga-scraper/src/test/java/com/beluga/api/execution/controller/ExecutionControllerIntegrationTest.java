@@ -38,8 +38,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldStart() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
-		
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
@@ -77,8 +75,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldStop() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
-		
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		// First start job
@@ -99,8 +95,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldPause() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
-		
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/pause"))
@@ -116,8 +110,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldResume() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
-		
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/resume"))
@@ -133,7 +125,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldGetLatestExecution() throws Exception{
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
@@ -159,7 +150,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldRetrieveExecutions() throws Exception{
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
@@ -179,7 +169,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldGetExecution() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(post("/jobs/" + readJobDefinitionDto.getId() + "/start"))
@@ -206,7 +195,6 @@ class ExecutionControllerIntegrationTest {
 	@TestTemplate
 	void shouldGet404ForRetrievingNonExistingExecutionFromJob() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
-		writeJobDefinitionDto.getExecution().setWorkers(1);
 		final ReadJobDefinitionDto readJobDefinitionDto = createJob(writeJobDefinitionDto);
 		
 		mvc.perform(get("/jobs/" + readJobDefinitionDto.getId() + "/executions/321"))

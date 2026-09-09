@@ -12,8 +12,7 @@ public class ExecutionDefinition {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	
-	private int workers;
+
 	private double tasksPerSecond;
 	
 	public Long getId() {
@@ -22,14 +21,6 @@ public class ExecutionDefinition {
 	
 	public void setId(final Long id) {
 		this.id = id;
-	}
-	
-	public int getWorkers() {
-		return workers;
-	}
-	
-	public void setWorkers(final int workers) {
-		this.workers = workers;
 	}
 	
 	public double getTasksPerSecond() {

@@ -1,7 +1,6 @@
 create table execution_definition
 (
     id               bigint generated always as identity primary key,
-    workers          bigint           not null,
     tasks_per_second double precision not null
 );
 
