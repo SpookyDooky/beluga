@@ -2,7 +2,6 @@ package com.beluga.execution.service.worker;
 
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.execution.model.task.Task;
-import com.beluga.http.HttpService;
 import com.beluga.logging.ContextLogger;
 import com.beluga.scraping.ScrapingService;
 import com.beluga.scraping.model.ScrapingResult;
@@ -23,14 +22,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WorkerTest {
 
-	private final static Long JOB_ID = 123L;
-
 	@Mock
 	private ContextLogger logger;
 	@Mock
 	private ScrapingService scrapingService;
-	@Mock
-	private HttpService httpService;
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Mock

@@ -35,7 +35,6 @@ class TaskResultDtoMapperTest {
 		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
 		final ResultFile resultFile = mock();
 		when(resultFile.getTaskExecution()).thenReturn(taskExecution);
-		when(resultFile.getKey()).thenReturn("data.json");
 		when(resultFile.getResourceIdentifier()).thenReturn("resourceIdentifier");
 		
 		final byte[] rawData = new byte[1];
