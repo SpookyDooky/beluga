@@ -11,7 +11,21 @@ for persistent job management.
 - Docker support
 
 ## Quick Start
-To be added later
+Beluga can work with zero configuration by running the following command:
+```shell
+docker run -p 8080:8080 spookybuster/beluga:v1.0
+```
+
+To actually persist data across restarts the following command can be used:
+```shell
+docker run -p 8080:8080 -v beluga-data:/app/data spookybuster/beluga:v1.0
+```
+
+To run Beluga with a custom configuration the following command can be used:
+```shell
+docker run -p 8080:8080 -e BELUGA_CONFIGURATION_FILE=/app/config.yaml \
+-v ./config.yaml:/app/config.yaml spookybuster/beluga:v1.0
+```
 
 ## Documentation
 For the complete documentation, including configuration, scraping jobs,
@@ -27,3 +41,11 @@ storage, persistence, API reference, and deployment:
 
 ## Contributing
 See CONTRIBUTING.md
+
+## Disclaimer
+Beluga is provided as an open-source web scraping tool for legitimate purposes. 
+Users are responsible for how they use the software and for complying with applicable laws, 
+regulations, and the terms of service of websites they interact with.
+
+The project maintainer is not responsible or liable for any misuse, abuse, 
+damage, or legal consequences resulting from the use of Beluga.

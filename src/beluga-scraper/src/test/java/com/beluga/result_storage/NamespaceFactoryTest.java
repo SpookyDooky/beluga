@@ -2,7 +2,6 @@ package com.beluga.result_storage;
 
 import com.beluga.execution.event.task.task_result.TaskResultEvent;
 import com.beluga.properties.BelugaScraperProperties;
-import com.beluga.properties.datastore.FileSystemProperties;
 import com.beluga.properties.datastore.ResultStorageProperties;
 import com.beluga.properties.datastore.S3Properties;
 import org.instancio.Instancio;
@@ -60,14 +59,8 @@ class NamespaceFactoryTest {
                 ),
                 Arguments.of(
                         Instancio.of(ResultStorageProperties.class)
-                                .set(field(ResultStorageProperties::getType), FILE_SYSTEM)
-                                .set(
-                                        field(ResultStorageProperties::getFileSystem),
-                                        Instancio.of(FileSystemProperties.class)
-                                                .set(field(FileSystemProperties::getPath), "path")
-                                                .create()
-                                ).create(),
-                        "path"
+                                .set(field(ResultStorageProperties::getType), FILE_SYSTEM),
+                        "/app/data"
                 )
         );
     }

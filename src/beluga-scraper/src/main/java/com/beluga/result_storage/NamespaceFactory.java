@@ -23,7 +23,7 @@ public class NamespaceFactory {
      */
     private String getNamespacePrefix(final ResultStorageProperties properties) {
         return switch (properties.getType()) {
-            case FILE_SYSTEM -> properties.getFileSystem().getPath();
+            case FILE_SYSTEM -> "/app/data";
             case S3 -> properties.getS3().getPrefix();
         };
     }

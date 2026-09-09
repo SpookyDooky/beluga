@@ -7,7 +7,6 @@ The configuration for either is listed down below.
   * [Storage backend](#storage-backend)
     * [beluga.result-storage.type](#belugaresult-storagetype)
   * [File system](#file-system)
-    * [beluga.result-storage.file-system.path](#belugaresult-storagefile-systempath)
   * [S3 Compatible](#s3-compatible)
     * [beluga.result-storage.s3.host](#belugaresult-storages3host)
     * [beluga.result-storage.s3.access-key](#belugaresult-storages3access-key)
@@ -31,12 +30,7 @@ The configuration for either is listed down below.
 - **Description:** The type of storage backend to use for result storage
 
 ## File system
-
-### `beluga.result-storage.file-system.path`
-- **Type:** string
-- **Required:** false
-- **Default:** /data/results
-- **Description:** Folder in which the results will be stored, this folder needs to be mounted.
+When using the file system results are stored under /app/data
 
 ## S3 compatible
 When using S3 compatible storage backends there are a few properties that need to be configured. 
