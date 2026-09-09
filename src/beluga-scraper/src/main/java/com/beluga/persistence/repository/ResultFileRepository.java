@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface ResultFileRepository extends CrudRepository<ResultFile, Long> {
 
     Optional<ResultFile> findByTaskExecutionAndKey(TaskExecution taskExecution, String key);
