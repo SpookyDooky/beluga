@@ -30,7 +30,7 @@ public class SqlitePersistenceConfig {
 	@Bean
 	public DataSource dataSource() {
 		final HikariDataSource dataSource = new HikariDataSource();
-		
+
 		dataSource.setJdbcUrl("jdbc:sqlite:" + DATABASE_LOCATION + "?foreign_keys=on");
 		dataSource.setDriverClassName("org.sqlite.JDBC");
 		dataSource.setMaximumPoolSize(1);

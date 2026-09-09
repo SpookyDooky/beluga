@@ -6,3 +6,10 @@ spring:
   flyway:
     enabled: true
     baseline-version: 0
+
+# Defaults
+beluga:
+  persistence:
+    type: SQLITE
+  result-storage:
+    type: FILE_SYSTEM
