@@ -59,7 +59,8 @@ class NamespaceFactoryTest {
                 ),
                 Arguments.of(
                         Instancio.of(ResultStorageProperties.class)
-                                .set(field(ResultStorageProperties::getType), FILE_SYSTEM),
+                                .set(field(ResultStorageProperties::getType), FILE_SYSTEM)
+                                .create(),
                         "/app/data"
                 )
         );

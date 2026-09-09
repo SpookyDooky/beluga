@@ -4,7 +4,7 @@ workdir /build
 
 copy src .
 
-run chmod +X mvnw
+run chmod +x mvnw
 
 run ./mvnw clean package -DskipTests
 
