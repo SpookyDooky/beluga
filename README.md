@@ -16,9 +16,15 @@ Beluga can work with zero configuration by running the following command:
 docker run -p 8080:8080 spookybuster/beluga:v1.0
 ```
 
-To actually persistent data across restarts the following command can be used:
+To actually persist data across restarts the following command can be used:
 ```shell
 docker run -p 8080:8080 -v beluga-data:/app/data spookybuster/beluga:v1.0
+```
+
+To run Beluga with a custom configuration the following command can be used:
+```shell
+docker run -p 8080:8080 -e BELUGA_CONFIGURATION_FILE=/app/config.yaml \
+-v ./config.yaml:/app/config.yaml spookybuster/beluga:v1.0
 ```
 
 ## Documentation
