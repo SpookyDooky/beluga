@@ -6,7 +6,8 @@ spring:
   flyway:
     enabled: true
     baseline-version: 0
-
+  profiles:
+    active: local
 # Defaults
 beluga:
   persistence:
