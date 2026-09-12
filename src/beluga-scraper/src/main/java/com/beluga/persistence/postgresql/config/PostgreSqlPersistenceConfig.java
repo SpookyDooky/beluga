@@ -63,7 +63,12 @@ public class PostgreSqlPersistenceConfig {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(dataSource);
 		entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactory.setPackagesToScan("com.beluga");
+		entityManagerFactory.setPackagesToScan(
+				"com.beluga.model",
+				"com.beluga.execution.model",
+				"com.beluga.activity_logging.model",
+				"com.beluga.persistence.repository"
+		);
 		
 		final Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
