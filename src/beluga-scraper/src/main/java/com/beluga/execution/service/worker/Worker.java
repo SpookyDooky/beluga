@@ -81,7 +81,6 @@ public class Worker {
         }
     }
 
-
     private void publishScrapingResultEvents(final Task task,
                                              final ScrapingResult scrapingResult) {
         applicationEventPublisher.publishEvent(TaskResultEvent.of(task, "data.json", new JsonPayload(scrapingResult.getResult())));
