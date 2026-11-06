@@ -9,19 +9,26 @@ import com.beluga.mapper.job.JobMapper;
 import com.beluga.mapper.task.TaskMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.job_definition.JobStatus;
 import com.beluga.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -135,6 +142,95 @@ class JobServiceTest {
 		assertSame(result, createdTask.getJob());
 	}
 	
+	@ParameterizedTest
+	@EnumSource(value = TaskStatus.class, names = {"PLANNED", "PAUSED", "ACTIVE"})
+	void shouldAddUnfinishedTaskToActiveJob(final TaskStatus status) {
+		final TaskExecution taskExecution = createTaskExecution(1L, status);
+		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(123L, JobStatus.ACTIVE, List.of(taskExecution));
+		
+		final Job expected = new Job();
+		when(jobMapper.map(jobDefinition)).thenReturn(expected);
+		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(new Task());
+		
+		final Job result = jobService.createActiveJob(jobDefinition).get();
+		
+		assertSame(expected, result);
+		assertEquals(123L, result.getId());
+		assertEquals(1, result.getTasks().size());
+		
+		final Task task = result.getTasks().getFirst();
+		assertEquals(taskExecution.getId(), task.getId());
+		assertSame(result, task.getJob());
+	}
+	
+	@ParameterizedTest
+	@EnumSource(value = TaskStatus.class, names = {"PLANNED", "PAUSED", "ACTIVE"}, mode = EXCLUDE)
+	void shouldNotAddFinishedTaskToActiveJob(final TaskStatus status) {
+		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(
+				123L,
+				JobStatus.ACTIVE,
+				List.of(createTaskExecution(1L, status))
+		);
+		when(jobMapper.map(jobDefinition)).thenReturn(new Job());
+		
+		final Job result = jobService.createActiveJob(jobDefinition).get();
+		
+		assertEquals(123L, result.getId());
+		assertTrue(result.getTasks().isEmpty());
+	}
+	
+	@ParameterizedTest
+	@EnumSource(value = JobStatus.class, names = "ACTIVE", mode = EXCLUDE)
+	void shouldNotCreateActiveJobWhenLatestExecutionIsNotActive(final JobStatus status) {
+		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(
+				123L,
+				status,
+				List.of(createTaskExecution(1L, TaskStatus.PLANNED))
+		);
+
+		assertTrue(jobService.createActiveJob(jobDefinition).isEmpty());
+		verifyNoInteractions(jobMapper, taskMapper);
+	}
+
+	@Test
+	void shouldNotCreateActiveJobForJobWithNoExecutions() {
+		assertTrue(jobService.createActiveJob(new JobDefinition()).isEmpty());
+		verifyNoInteractions(jobMapper, taskMapper);
+	}
+
+	@Test
+	void shouldRequireTransactionForCreatingActiveJob() throws NoSuchMethodException {
+		final Transactional transactional = JobService.class
+				.getMethod("createActiveJob", JobDefinition.class)
+				.getAnnotation(Transactional.class);
+
+		assertEquals(Propagation.MANDATORY, transactional.propagation());
+	}
+
+	private JobDefinition createJobDefinitionWithLatestExecution(final Long jobExecutionId,
+	                                                             final JobStatus status,
+	                                                             final List<TaskExecution> taskExecutions) {
+		final JobExecution jobExecution = new JobExecution();
+		jobExecution.setId(jobExecutionId);
+		jobExecution.setStatus(status);
+		jobExecution.setTasks(taskExecutions);
+
+		final JobDefinition jobDefinition = new JobDefinition();
+		jobDefinition.addExecution(jobExecution);
+
+		return jobDefinition;
+	}
+
+	private TaskExecution createTaskExecution(final Long id,
+	                                          final TaskStatus status) {
+		final TaskExecution taskExecution = new TaskExecution();
+		taskExecution.setId(id);
+		taskExecution.setStatus(status);
+		taskExecution.setTaskDefinition(new TaskDefinition());
+
+		return taskExecution;
+	}
+
 	@Test
 	void shouldNotCreateResumedJobForJobWithNoExecutions() {
 		final Long jobDefinitionId = 123L;

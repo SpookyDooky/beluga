@@ -101,10 +101,9 @@ public class JobExecutorService {
 					jobIdJobMap.get(jobId).getJobDefinitionId(),
 					jobId
 			));
-		} else {
-			interruptedJobs.remove(jobId);
 		}
 
+		interruptedJobs.remove(jobId);
 		jobIdJobMap.remove(jobId);
 		jobActiveTasks.remove(jobId);
 	}

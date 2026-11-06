@@ -4,23 +4,29 @@ import com.beluga.execution.model.job.Job;
 import com.beluga.execution.model.task.Task;
 import com.beluga.execution.model.task.TaskDefinition;
 import com.beluga.execution.model.task.TaskExecution;
+import com.beluga.execution.model.task.TaskStatus;
 import com.beluga.mapper.job.JobMapper;
 import com.beluga.mapper.task.TaskMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.job_definition.JobStatus;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.beluga.execution.model.task.TaskStatus.PAUSED;
+import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
 public class JobService {
-	
+
+	private static final Set<TaskStatus> UNFINISHED_TASK_STATUSES = Set.of(TaskStatus.PLANNED, PAUSED, TaskStatus.ACTIVE);
+
 	private final JobDefinitionService jobDefinitionService;
 	private final JobMapper jobMapper;
 	private final TaskMapper taskMapper;
@@ -119,6 +125,29 @@ public class JobService {
 		return createResumedJob(latestExecutionOptional.get());
 	}
 	
+	/**
+	 * Creates a {@link Job} to continue the active {@link JobExecution} of a {@link JobDefinition}, containing the tasks
+	 * that have not finished yet.
+	 * <p>
+	 * The {@link Job} is also created when there are no tasks left, so that executing it completes the execution.
+	 *
+	 * @param jobDefinition the {@link JobDefinition}.
+	 * @return optional {@link Job}, empty if there is no execution or the latest execution is not active.
+	 */
+	@Transactional(propagation = MANDATORY)
+	public Optional<Job> createActiveJob(final JobDefinition jobDefinition) {
+		return jobDefinition.getMostRecentExecution()
+				.filter(jobExecution -> jobExecution.getStatus() == JobStatus.ACTIVE)
+				.map(jobExecution -> createResumedJob(getUnfinishedTasks(jobExecution), jobDefinition, jobExecution));
+	}
+
+	private List<TaskExecution> getUnfinishedTasks(final JobExecution jobExecution) {
+		return jobExecution.getTasks()
+				.stream()
+				.filter(taskExecution -> UNFINISHED_TASK_STATUSES.contains(taskExecution.getStatus()))
+				.toList();
+	}
+
 	private Optional<Job> createResumedJob(final JobExecution jobExecution) {
 		final List<TaskExecution> pausedTasks = jobExecution.getTasksByStatus(PAUSED);
 		if (pausedTasks.isEmpty()) {
