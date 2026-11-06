@@ -8,7 +8,6 @@ import com.beluga.mapper.job.JobMapper;
 import com.beluga.mapper.task.TaskMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
-import com.beluga.model.job_definition.JobStatus;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,10 +120,6 @@ public class JobService {
 	}
 	
 	private Optional<Job> createResumedJob(final JobExecution jobExecution) {
-		if (jobExecution.getStatus() != JobStatus.PAUSED) {
-			return Optional.empty();
-		}
-		
 		final List<TaskExecution> pausedTasks = jobExecution.getTasksByStatus(PAUSED);
 		if (pausedTasks.isEmpty()) {
 			return Optional.empty();

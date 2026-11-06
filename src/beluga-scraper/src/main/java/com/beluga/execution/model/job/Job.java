@@ -22,7 +22,7 @@ public class Job {
 
 	private ExecutionConfiguration executionConfiguration;
 	
-	private List<Task> tasks = new ArrayList<>();
+	private final List<Task> tasks = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -61,6 +61,7 @@ public class Job {
 	}
 	
 	public void setTasks(final List<Task> tasks) {
-		this.tasks = tasks;
+		this.tasks.clear();
+		this.tasks.addAll(tasks);
 	}
 }

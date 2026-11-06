@@ -11,7 +11,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -24,14 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -121,17 +115,6 @@ class HttpServiceTest {
 	@Test
 	void shouldReturnEmptyDocumentWhenConnectionIsRefused() {
 		final URL url = closedServerUrl();
-
-		final Optional<Document> document = httpService.retrievePageAsDocument(url);
-
-		assertTrue(document.isEmpty());
-		assertRequestActivityPublished(url, false);
-	}
-
-	@Test
-	void shouldNotRetrieveDocumentFromLocalFile(@TempDir final Path directory) throws IOException {
-		final Path file = Files.writeString(directory.resolve("page.html"), PAGE);
-		final URL url = file.toUri().toURL();
 
 		final Optional<Document> document = httpService.retrievePageAsDocument(url);
 

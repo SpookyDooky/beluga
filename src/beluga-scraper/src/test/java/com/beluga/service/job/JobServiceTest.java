@@ -20,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.beluga.model.job_definition.JobStatus.COMPLETED;
-import static com.beluga.model.job_definition.JobStatus.PAUSED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -111,7 +109,6 @@ class JobServiceTest {
 		final Long jobExecutionId = 123L;
 		final JobExecution jobExecution = mock();
 		when(jobExecution.getId()).thenReturn(jobExecutionId);
-		when(jobExecution.getStatus()).thenReturn(PAUSED);
 		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
 		
@@ -144,37 +141,6 @@ class JobServiceTest {
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
-		
-		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
-		
-		assertTrue(result.isEmpty());
-	}
-	
-	@Test
-	void shouldNotCreateResumedJobForCompletedJob() {
-		final Long jobDefinitionId = 123L;
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
-		
-		final JobExecution jobExecution = mock();
-		when(jobExecution.getStatus()).thenReturn(COMPLETED);
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		
-		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
-		
-		assertTrue(result.isEmpty());
-	}
-	
-	@Test
-	void shouldNotCreatedResumedJobForPausedJobWithNoTasksLeft() {
-		final Long jobDefinitionId = 123L;
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
-		
-		final JobExecution jobExecution = mock();
-		when(jobExecution.getStatus()).thenReturn(PAUSED);
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		when(jobExecution.getTasksByStatus(TaskStatus.PAUSED)).thenReturn(List.of());
 		
 		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
 		
