@@ -45,7 +45,7 @@ public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
 		try (final FileOutputStream fileOutputStream = new FileOutputStream(file)){
 			fileOutputStream.write(bytes);
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new IllegalStateException("Could not write file.", e);
 		}
 	}
 	
