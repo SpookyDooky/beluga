@@ -7,7 +7,7 @@ import com.beluga.api.job.dto.write.WriteExecutionConfigurationDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.api.task.dto.UpdateTaskDto;
 import com.beluga.execution.event.task.task_result.TaskResultStoredEvent;
-import com.beluga.integration_test.MultiStoreTest;
+import com.beluga.integration_test.BaseIntegrationTest;
 import com.beluga.model.event.storable.payload.StringPayload;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.scraping.ScrapingService;
@@ -15,7 +15,6 @@ import com.beluga.service.task.TaskExecutionEventHandler;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,10 +32,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@MultiStoreTest
 @AutoConfigureMockMvc
-class ResultsControllerIntegrationTest {
+class ResultsControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@MockitoBean
 	private ResultStorageService resultStorageService;
