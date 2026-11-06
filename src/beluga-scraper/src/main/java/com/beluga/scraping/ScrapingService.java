@@ -126,7 +126,7 @@ public class ScrapingService {
         if (selectedElements.size() > 1) {
             throw new IllegalArgumentException("Found more than one description list matching css selector.");
         } else if (selectedElements.isEmpty()) {
-            return Map.of();
+            return null;
         }
 
         final List<Element> descriptionListElements = selectedElements.getFirst().children();
