@@ -31,7 +31,7 @@ docker run -p 8080:8080 -e BELUGA_CONFIGURATION_FILE=/app/config.yaml \
 For the complete documentation, including configuration, scraping jobs,
 storage, persistence, API reference, and deployment:
 
-**[Read the documentation →](docs/v1.0/index.md)**
+**[Read the documentation →](docs/index.md)**
 
 ## Roadmap
 ### V1.1

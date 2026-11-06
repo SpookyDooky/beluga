@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Beluga is a general-purpose web scraping engine: a Spring Boot 4 / Java 21 service that manages scraping jobs through a REST API. It persists to SQLite or PostgreSQL and stores results on the filesystem or in S3-compatible storage. User docs and OpenAPI specs are in `docs/v1.0/`; update them when documented behaviour changes.
+Beluga is a general-purpose web scraping engine: a Spring Boot 4 / Java 21 service that manages scraping jobs through a REST API. It persists to SQLite or PostgreSQL and stores results on the filesystem or in S3-compatible storage. User docs and OpenAPI specs are in `docs/`; update them when documented behaviour changes.
 
 ## Commands
 
@@ -89,7 +89,7 @@ When changing persistence:
 - Schema changes need a Flyway migration in **both** `db/sqlite/` and `db/postgresql/`. Hibernate DDL generation is off.
 - Entity scan packages are hardcoded separately in `SqlitePersistenceConfig` and `PostgreSqlPersistenceConfig`, so a new entity package must be added to both. Only SQLite scans the `InstantConverter` package; this is deliberate, so don't copy it to PostgreSQL.
 
-Removing a task soft-deletes it, and deduplication applies only to active tasks (see `docs/v1.0/system_guarantees/task_deduplication.md`).
+Removing a task soft-deletes it, and deduplication applies only to active tasks (see `docs/system_guarantees/task_deduplication.md`).
 
 ## Code style
 
