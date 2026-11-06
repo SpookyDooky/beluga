@@ -41,52 +41,6 @@ class JobDefinitionServiceTest {
 	
 	@InjectMocks
 	private JobDefinitionService jobDefinitionService;
-	
-	@ParameterizedTest
-	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"})
-	void shouldHaveRunningJobWhenLatestExecutionIsActiveOrPaused(final JobStatus status) {
-		final Long id = 123L;
-		mockLatestExecutionWithStatus(id, status);
-
-		assertTrue(jobDefinitionService.hasRunningJob(id));
-	}
-
-	@ParameterizedTest
-	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"}, mode = EXCLUDE)
-	void shouldNotHaveRunningJobWhenLatestExecutionIsNotActiveOrPaused(final JobStatus status) {
-		final Long id = 123L;
-		mockLatestExecutionWithStatus(id, status);
-
-		assertFalse(jobDefinitionService.hasRunningJob(id));
-	}
-
-	@Test
-	void shouldNotHaveRunningJobWhenJobHasNoExecutions() {
-		final Long id = 123L;
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
-		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
-
-		assertFalse(jobDefinitionService.hasRunningJob(id));
-	}
-
-	@Test
-	void shouldThrowWhenCheckingForRunningJobOfNonExistingJob() {
-		final Long id = 123L;
-		when(repository.findById(id)).thenReturn(Optional.empty());
-
-		assertThrows(JobDefinitionNotFoundException.class, () -> jobDefinitionService.hasRunningJob(id));
-	}
-
-	private void mockLatestExecutionWithStatus(final Long id,
-	                                           final JobStatus status) {
-		final JobExecution jobExecution = new JobExecution();
-		jobExecution.setStatus(status);
-
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
-	}
 
 	@Test
 	void shouldSave() {
@@ -254,5 +208,51 @@ class JobDefinitionServiceTest {
 				jobDefinition.getName(),
 				jobDefinitionService.getNameById(jobDefinition.getId())
 		);
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"})
+	void shouldHaveRunningJobWhenLatestExecutionIsActiveOrPaused(final JobStatus status) {
+		final Long id = 123L;
+		mockLatestExecutionWithStatus(id, status);
+
+		assertTrue(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"}, mode = EXCLUDE)
+	void shouldNotHaveRunningJobWhenLatestExecutionIsNotActiveOrPaused(final JobStatus status) {
+		final Long id = 123L;
+		mockLatestExecutionWithStatus(id, status);
+
+		assertFalse(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@Test
+	void shouldNotHaveRunningJobWhenJobHasNoExecutions() {
+		final Long id = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
+
+		assertFalse(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@Test
+	void shouldThrowWhenCheckingForRunningJobOfNonExistingJob() {
+		final Long id = 123L;
+		when(repository.findById(id)).thenReturn(Optional.empty());
+
+		assertThrows(JobDefinitionNotFoundException.class, () -> jobDefinitionService.hasRunningJob(id));
+	}
+
+	private void mockLatestExecutionWithStatus(final Long id,
+	                                           final JobStatus status) {
+		final JobExecution jobExecution = new JobExecution();
+		jobExecution.setStatus(status);
+
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
 	}
 }
