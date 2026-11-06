@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class JobTest {
 
@@ -16,5 +17,16 @@ class JobTest {
         job.setTasks(tasks);
 
         assertDoesNotThrow(() -> job.getTasks().clear());
+    }
+
+    @Test
+    void shouldSetTasks() {
+        final Task task = mock();
+        final Job job = new Job();
+
+        job.setTasks(List.of(task));
+
+        assertEquals(1, job.getTasks().size());
+        assertTrue(job.getTasks().contains(task));
     }
 }
