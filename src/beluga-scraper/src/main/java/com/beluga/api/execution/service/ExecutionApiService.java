@@ -122,10 +122,7 @@ public class ExecutionApiService {
             jobDefinitionService.setJobExecutionStatusById(ACTIVE, jobDefinitionId, latestExecution.getId());
             final Optional<Job> jobOptional = jobService.createResumedJob(jobDefinitionId);
 
-            if (jobOptional.isPresent()) {
-                final Job job = jobOptional.get();
-                jobExecutorService.execute(job);
-            }
+            jobOptional.ifPresent(jobExecutorService::execute);
         }
     }
 
