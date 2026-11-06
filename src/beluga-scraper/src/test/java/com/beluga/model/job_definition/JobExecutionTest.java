@@ -3,13 +3,15 @@ package com.beluga.model.job_definition;
 import com.beluga.execution.model.task.TaskExecution;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.List;
 
-import static com.beluga.execution.model.task.TaskStatus.COMPLETED;
-import static com.beluga.execution.model.task.TaskStatus.PAUSED;
+import static com.beluga.execution.model.task.TaskStatus.*;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 
 class JobExecutionTest {
 	
@@ -44,5 +46,30 @@ class JobExecutionTest {
 		
 		assertEquals(1, result.size());
 		assertTrue(result.contains(pausedTask));
+	}
+
+	@Test
+	void shouldBeIsActive() {
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), JobStatus.ACTIVE)
+				.create();
+
+		assertTrue(jobExecution.isActive());
+	}
+
+	@EnumSource(
+			value = JobStatus.class,
+			mode = EXCLUDE,
+			names = {
+					"ACTIVE"
+			}
+	)
+	@ParameterizedTest
+	public void shouldNotBeIsActive(final JobStatus status) {
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), status)
+				.create();
+
+		assertFalse(jobExecution.isActive());
 	}
 }

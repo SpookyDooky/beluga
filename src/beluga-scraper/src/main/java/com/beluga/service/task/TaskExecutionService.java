@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,5 +114,11 @@ public class TaskExecutionService {
     public Page<TaskExecution> findByJobExecutionPaged(final JobExecution jobExecution,
                                                        final Pageable pageable) {
         return taskExecutionRepository.findByJobExecution(jobExecution, pageable);
+    }
+
+    @Transactional(propagation = MANDATORY)
+    public List<TaskExecution> findAllByJobExecutionAndStatus(final JobExecution jobExecution,
+                                                              final Collection<TaskStatus> statuses) {
+        return taskExecutionRepository.findByJobExecutionAndStatusIn(jobExecution, statuses);
     }
 }

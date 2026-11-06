@@ -9,13 +9,10 @@ import com.beluga.mapper.job.JobMapper;
 import com.beluga.mapper.task.TaskMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
-import com.beluga.model.job_definition.JobStatus;
 import com.beluga.service.task.TaskExecutionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,15 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobServiceTest {
+
+	private static final Set<TaskStatus> UNFINISHED_TASK_STATUSES = Set.of(TaskStatus.PLANNED, TaskStatus.PAUSED, TaskStatus.ACTIVE);
 
 	@Mock
 	private JobDefinitionService jobDefinitionService;
@@ -142,11 +141,17 @@ class JobServiceTest {
 		assertSame(result, createdTask.getJob());
 	}
 	
-	@ParameterizedTest
-	@EnumSource(value = TaskStatus.class, names = {"PLANNED", "PAUSED", "ACTIVE"})
-	void shouldAddUnfinishedTaskToActiveJob(final TaskStatus status) {
-		final TaskExecution taskExecution = createTaskExecution(1L, status);
-		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(123L, JobStatus.ACTIVE, List.of(taskExecution));
+	@Test
+	void shouldCreateActiveJobWithUnfinishedTasks() {
+		final JobExecution jobExecution = mock();
+		when(jobExecution.isActive()).thenReturn(true);
+		when(jobExecution.getId()).thenReturn(123L);
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
+		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
+		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of(taskExecution));
 		
 		final Job expected = new Job();
 		when(jobMapper.map(jobDefinition)).thenReturn(expected);
@@ -156,48 +161,46 @@ class JobServiceTest {
 		
 		assertSame(expected, result);
 		assertEquals(123L, result.getId());
-		assertEquals(1, result.getTasks().size());
 		
 		final Task task = result.getTasks().getFirst();
 		assertEquals(taskExecution.getId(), task.getId());
 		assertSame(result, task.getJob());
 	}
 	
-	@ParameterizedTest
-	@EnumSource(value = TaskStatus.class, names = {"PLANNED", "PAUSED", "ACTIVE"}, mode = EXCLUDE)
-	void shouldNotAddFinishedTaskToActiveJob(final TaskStatus status) {
-		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(
-				123L,
-				JobStatus.ACTIVE,
-				List.of(createTaskExecution(1L, status))
-		);
+	@Test
+	void shouldCreateActiveJobWithoutTasksWhenNoTasksAreLeft() {
+		final JobExecution jobExecution = mock();
+		when(jobExecution.isActive()).thenReturn(true);
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of());
 		when(jobMapper.map(jobDefinition)).thenReturn(new Job());
 		
 		final Job result = jobService.createActiveJob(jobDefinition).get();
 		
-		assertEquals(123L, result.getId());
 		assertTrue(result.getTasks().isEmpty());
 	}
 	
-	@ParameterizedTest
-	@EnumSource(value = JobStatus.class, names = "ACTIVE", mode = EXCLUDE)
-	void shouldNotCreateActiveJobWhenLatestExecutionIsNotActive(final JobStatus status) {
-		final JobDefinition jobDefinition = createJobDefinitionWithLatestExecution(
-				123L,
-				status,
-				List.of(createTaskExecution(1L, TaskStatus.PLANNED))
-		);
-
+	@Test
+	void shouldNotCreateActiveJobWhenLatestExecutionIsNotActive() {
+		final JobExecution jobExecution = mock();
+		when(jobExecution.isActive()).thenReturn(false);
+		
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		
 		assertTrue(jobService.createActiveJob(jobDefinition).isEmpty());
-		verifyNoInteractions(jobMapper, taskMapper);
 	}
-
+	
 	@Test
 	void shouldNotCreateActiveJobForJobWithNoExecutions() {
-		assertTrue(jobService.createActiveJob(new JobDefinition()).isEmpty());
-		verifyNoInteractions(jobMapper, taskMapper);
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		
+		assertTrue(jobService.createActiveJob(jobDefinition).isEmpty());
 	}
-
+	
 	@Test
 	void shouldRequireTransactionForCreatingActiveJob() throws NoSuchMethodException {
 		final Transactional transactional = JobService.class
@@ -205,30 +208,6 @@ class JobServiceTest {
 				.getAnnotation(Transactional.class);
 
 		assertEquals(Propagation.MANDATORY, transactional.propagation());
-	}
-
-	private JobDefinition createJobDefinitionWithLatestExecution(final Long jobExecutionId,
-	                                                             final JobStatus status,
-	                                                             final List<TaskExecution> taskExecutions) {
-		final JobExecution jobExecution = new JobExecution();
-		jobExecution.setId(jobExecutionId);
-		jobExecution.setStatus(status);
-		jobExecution.setTasks(taskExecutions);
-
-		final JobDefinition jobDefinition = new JobDefinition();
-		jobDefinition.addExecution(jobExecution);
-
-		return jobDefinition;
-	}
-
-	private TaskExecution createTaskExecution(final Long id,
-	                                          final TaskStatus status) {
-		final TaskExecution taskExecution = new TaskExecution();
-		taskExecution.setId(id);
-		taskExecution.setStatus(status);
-		taskExecution.setTaskDefinition(new TaskDefinition());
-
-		return taskExecution;
 	}
 
 	@Test

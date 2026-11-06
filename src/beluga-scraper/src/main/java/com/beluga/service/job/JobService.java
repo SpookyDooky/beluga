@@ -9,7 +9,6 @@ import com.beluga.mapper.job.JobMapper;
 import com.beluga.mapper.task.TaskMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
-import com.beluga.model.job_definition.JobStatus;
 import com.beluga.service.task.TaskExecutionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,15 +136,14 @@ public class JobService {
 	@Transactional(propagation = MANDATORY)
 	public Optional<Job> createActiveJob(final JobDefinition jobDefinition) {
 		return jobDefinition.getMostRecentExecution()
-				.filter(jobExecution -> jobExecution.getStatus() == JobStatus.ACTIVE)
-				.map(jobExecution -> createResumedJob(getUnfinishedTasks(jobExecution), jobDefinition, jobExecution));
+				.filter(JobExecution::isActive)
+				.map(jobExecution -> createActiveJob(jobDefinition, jobExecution));
 	}
 
-	private List<TaskExecution> getUnfinishedTasks(final JobExecution jobExecution) {
-		return jobExecution.getTasks()
-				.stream()
-				.filter(taskExecution -> UNFINISHED_TASK_STATUSES.contains(taskExecution.getStatus()))
-				.toList();
+	private Job createActiveJob(final JobDefinition jobDefinition,
+								final JobExecution jobExecution) {
+		final List<TaskExecution> unfinishedTasks = taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES);
+		return createResumedJob(unfinishedTasks, jobDefinition, jobExecution);
 	}
 
 	private Optional<Job> createResumedJob(final JobExecution jobExecution) {

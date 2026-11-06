@@ -2,6 +2,7 @@ package com.beluga.service.task;
 
 import com.beluga.execution.model.task.TaskExecution;
 import com.beluga.execution.model.task.TaskStatus;
+import com.beluga.model.job_definition.JobExecution;
 import com.beluga.model.result.ResultFile;
 import com.beluga.persistence.repository.TaskExecutionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -110,5 +111,17 @@ class TaskExecutionServiceTest {
 		final List<TaskExecution> result = taskExecutionService.saveAll(taskExecutions);
 		
 		assertSame(taskExecutions, result);
+	}
+
+	@Test
+	void shouldFindAllByJobExecutionAndStatus() {
+		final JobExecution jobExecution = mock();
+		final List<TaskStatus> statuses = List.of();
+		final List<TaskExecution> expected = List.of();
+		when(taskExecutionRepository.findByJobExecutionAndStatusIn(jobExecution, statuses)).thenReturn(expected);
+
+		final List<TaskExecution> result = taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, statuses);
+
+		assertSame(expected, result);
 	}
 }
