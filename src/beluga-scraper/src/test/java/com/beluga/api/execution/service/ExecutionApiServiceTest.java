@@ -63,7 +63,17 @@ class ExecutionApiServiceTest {
 			verify(jobExecutorService).execute(job);
 		}
 	}
-	
+
+	@Test
+	void shouldNotStartJobThatIsAlreadyRunning() {
+		final Long jobDefinitionId = 123L;
+		when(jobDefinitionService.hasRunningJob(jobDefinitionId)).thenReturn(true);
+
+		executionApiService.start(jobDefinitionId);
+
+		verifyNoInteractions(jobService, jobExecutorService);
+	}
+
 	@Test
 	void shouldStop() {
 		final Long jobDefinitionId = 123L;

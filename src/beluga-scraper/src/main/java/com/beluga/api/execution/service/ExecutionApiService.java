@@ -39,14 +39,16 @@ public class ExecutionApiService {
 
     /**
      * Starts a job, after the method is finished it is guaranteed a job has started.
+     * Does nothing if the job is already running.
      *
      * @param jobDefinitionId id of the {@link Job}'s {@link JobDefinition} to start.
      */
     @Transactional
     public void start(final Long jobDefinitionId) {
-        final Job job = jobService.createJobByJobDefinitionId(jobDefinitionId);
-
-        start(job);
+        if (!jobDefinitionService.hasRunningJob(jobDefinitionId)) {
+            final Job job = jobService.createJobByJobDefinitionId(jobDefinitionId);
+            start(job);
+        }
     }
 
     private void start(final Job job) {

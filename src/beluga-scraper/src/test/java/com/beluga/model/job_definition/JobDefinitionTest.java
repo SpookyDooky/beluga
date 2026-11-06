@@ -39,6 +39,18 @@ class JobDefinitionTest {
 	}
 	
 	@Test
+	void shouldGetLastAddedExecutionAsMostRecentExecution() {
+		final JobExecution olderExecution = mock();
+		final JobExecution newerExecution = mock();
+		final JobDefinition jobDefinition = new JobDefinition();
+
+		jobDefinition.addExecution(olderExecution);
+		jobDefinition.addExecution(newerExecution);
+
+		assertSame(newerExecution, jobDefinition.getMostRecentExecution().get());
+	}
+
+	@Test
 	void shouldGetMostRecentExecutionReturnsEmpty() {
 		final JobDefinition jobDefinition = new JobDefinition();
 		
