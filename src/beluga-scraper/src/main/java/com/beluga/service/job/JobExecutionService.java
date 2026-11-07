@@ -20,11 +20,6 @@ public class JobExecutionService {
 		this.jobExecutionRepository = jobExecutionRepository;
 	}
 
-	/**
-	 * Retrieves all {@link JobExecution}'s that are active or planned, these are the ones that still need to run.
-	 *
-	 * @return the {@link JobExecution}'s.
-	 */
 	@Transactional(propagation = MANDATORY)
 	public List<JobExecution> findAllByStatus(final Collection<JobStatus> statuses) {
 		return jobExecutionRepository.findByStatusIn(statuses);
