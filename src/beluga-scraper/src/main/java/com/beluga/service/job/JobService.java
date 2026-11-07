@@ -125,25 +125,17 @@ public class JobService {
 	}
 	
 	/**
-	 * Creates a {@link Job} to continue the active {@link JobExecution} of a {@link JobDefinition}, containing the tasks
-	 * that have not finished yet.
+	 * Creates a {@link Job} to continue a {@link JobExecution}, containing the tasks that have not finished yet.
 	 * <p>
 	 * The {@link Job} is also created when there are no tasks left, so that executing it completes the execution.
 	 *
-	 * @param jobDefinition the {@link JobDefinition}.
-	 * @return optional {@link Job}, empty if there is no execution or the latest execution is not active.
+	 * @param jobExecution the {@link JobExecution} to continue.
+	 * @return the {@link Job}.
 	 */
 	@Transactional(propagation = MANDATORY)
-	public Optional<Job> createActiveJob(final JobDefinition jobDefinition) {
-		return jobDefinition.getMostRecentExecution()
-				.filter(JobExecution::isActive)
-				.map(jobExecution -> createActiveJob(jobDefinition, jobExecution));
-	}
-
-	private Job createActiveJob(final JobDefinition jobDefinition,
-								final JobExecution jobExecution) {
+	public Job createActiveJob(final JobExecution jobExecution) {
 		final List<TaskExecution> unfinishedTasks = taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES);
-		return createResumedJob(unfinishedTasks, jobDefinition, jobExecution);
+		return createResumedJob(unfinishedTasks, jobExecution.getJobDefinition(), jobExecution);
 	}
 
 	private Optional<Job> createResumedJob(final JobExecution jobExecution) {

@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.beluga.model.job_definition.JobStatus.ACTIVE;
 import static com.beluga.model.job_definition.JobStatus.PLANNED;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
@@ -60,10 +59,6 @@ public class JobExecution {
 		this.status = status;
 	}
 
-	public boolean isActive() {
-		return status == ACTIVE;
-	}
-	
 	public JobDefinition getJobDefinition() {
 		return jobDefinition;
 	}

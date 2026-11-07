@@ -143,12 +143,10 @@ class JobServiceTest {
 	
 	@Test
 	void shouldCreateActiveJobWithUnfinishedTasks() {
-		final JobExecution jobExecution = mock();
-		when(jobExecution.isActive()).thenReturn(true);
-		when(jobExecution.getId()).thenReturn(123L);
-		
 		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getId()).thenReturn(123L);
+		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
 		
 		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
 		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of(taskExecution));
@@ -157,7 +155,7 @@ class JobServiceTest {
 		when(jobMapper.map(jobDefinition)).thenReturn(expected);
 		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(new Task());
 		
-		final Job result = jobService.createActiveJob(jobDefinition).get();
+		final Job result = jobService.createActiveJob(jobExecution);
 		
 		assertSame(expected, result);
 		assertEquals(123L, result.getId());
@@ -169,42 +167,21 @@ class JobServiceTest {
 	
 	@Test
 	void shouldCreateActiveJobWithoutTasksWhenNoTasksAreLeft() {
-		final JobExecution jobExecution = mock();
-		when(jobExecution.isActive()).thenReturn(true);
-		
 		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
 		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of());
 		when(jobMapper.map(jobDefinition)).thenReturn(new Job());
 		
-		final Job result = jobService.createActiveJob(jobDefinition).get();
+		final Job result = jobService.createActiveJob(jobExecution);
 		
 		assertTrue(result.getTasks().isEmpty());
 	}
 	
 	@Test
-	void shouldNotCreateActiveJobWhenLatestExecutionIsNotActive() {
-		final JobExecution jobExecution = mock();
-		when(jobExecution.isActive()).thenReturn(false);
-		
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		
-		assertTrue(jobService.createActiveJob(jobDefinition).isEmpty());
-	}
-	
-	@Test
-	void shouldNotCreateActiveJobForJobWithNoExecutions() {
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
-		
-		assertTrue(jobService.createActiveJob(jobDefinition).isEmpty());
-	}
-	
-	@Test
 	void shouldRequireTransactionForCreatingActiveJob() throws NoSuchMethodException {
 		final Transactional transactional = JobService.class
-				.getMethod("createActiveJob", JobDefinition.class)
+				.getMethod("createActiveJob", JobExecution.class)
 				.getAnnotation(Transactional.class);
 
 		assertEquals(Propagation.MANDATORY, transactional.propagation());
