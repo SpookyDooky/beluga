@@ -85,7 +85,7 @@ class ExecutionControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForStop() throws Exception {
-		mvc.perform(post("/jobs/123/stop"))
+		mvc.perform(post("/jobs/123456789/stop"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -115,7 +115,7 @@ class ExecutionControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForResume() throws Exception {
-		mvc.perform(post("/jobs/123/resume"))
+		mvc.perform(post("/jobs/1234567/resume"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -185,7 +185,7 @@ class ExecutionControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForRetrievingExecutionOfNonExistingJob() throws Exception{
-		mvc.perform(get("/jobs/123/executions/321"))
+		mvc.perform(get("/jobs/12345678/executions/321"))
 				.andExpect(status().isNotFound());
 	}
 	
