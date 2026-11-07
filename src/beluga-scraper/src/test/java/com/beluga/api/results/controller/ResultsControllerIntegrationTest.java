@@ -12,6 +12,7 @@ import com.beluga.model.event.storable.payload.StringPayload;
 import com.beluga.result_storage.ResultStorageService;
 import com.beluga.scraping.ScrapingService;
 import com.beluga.service.task.TaskExecutionEventHandler;
+import org.awaitility.Awaitility;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -105,11 +107,14 @@ class ResultsControllerIntegrationTest extends BaseIntegrationTest {
 				new StringPayload("a")
 		));
 
-		mvc.perform(
-				get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId() + "/tasks/" + readJobExecutionWithTasksDto.getTasks().getFirst().getId() + "/results")
-		).andExpect(status().isOk());
+		// The result file is added asynchronously
+		Awaitility.await()
+				.atMost(Duration.ofSeconds(10))
+				.untilAsserted(() -> mvc.perform(
+						get("/jobs/" + readJobDefinitionDto.getId() + "/executions/" + readJobExecutionDto.getId() + "/tasks/" + readJobExecutionWithTasksDto.getTasks().getFirst().getId() + "/results")
+				).andExpect(status().isOk()));
 	}
-	
+
 	ReadJobDefinitionDto createJob() throws Exception {
 		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
 		return createJob(writeJobDefinitionDto);
