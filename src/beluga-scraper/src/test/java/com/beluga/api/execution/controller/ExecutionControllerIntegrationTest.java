@@ -4,12 +4,11 @@ import com.beluga.api.execution.dto.ReadJobExecutionDto;
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
 import com.beluga.api.task.dto.UpdateTaskDto;
-import com.beluga.integration_test.MultiStoreTest;
+import com.beluga.integration_test.BaseIntegrationTest;
 import com.beluga.result_storage.file_system.FileSystemResultDataStoreProvider;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,10 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@MultiStoreTest
 @AutoConfigureMockMvc
-class ExecutionControllerIntegrationTest {
+class ExecutionControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@MockitoBean(answers = RETURNS_DEEP_STUBS)
 	private FileSystemResultDataStoreProvider fileSystemResultDataStoreProvider;
@@ -88,7 +85,7 @@ class ExecutionControllerIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForStop() throws Exception {
-		mvc.perform(post("/jobs/123/stop"))
+		mvc.perform(post("/jobs/123456789/stop"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -118,7 +115,7 @@ class ExecutionControllerIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForResume() throws Exception {
-		mvc.perform(post("/jobs/123/resume"))
+		mvc.perform(post("/jobs/1234567/resume"))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -188,7 +185,7 @@ class ExecutionControllerIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForRetrievingExecutionOfNonExistingJob() throws Exception{
-		mvc.perform(get("/jobs/123/executions/321"))
+		mvc.perform(get("/jobs/12345678/executions/321"))
 				.andExpect(status().isNotFound());
 	}
 	

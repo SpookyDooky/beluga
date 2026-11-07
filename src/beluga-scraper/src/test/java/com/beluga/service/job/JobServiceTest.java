@@ -16,18 +16,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static com.beluga.model.job_definition.JobStatus.COMPLETED;
-import static com.beluga.model.job_definition.JobStatus.PAUSED;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobServiceTest {
+
+	private static final Set<TaskStatus> UNFINISHED_TASK_STATUSES = Set.of(TaskStatus.PLANNED, TaskStatus.PAUSED, TaskStatus.ACTIVE);
 
 	@Mock
 	private JobDefinitionService jobDefinitionService;
@@ -111,7 +115,6 @@ class JobServiceTest {
 		final Long jobExecutionId = 123L;
 		final JobExecution jobExecution = mock();
 		when(jobExecution.getId()).thenReturn(jobExecutionId);
-		when(jobExecution.getStatus()).thenReturn(PAUSED);
 		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
 		
@@ -139,42 +142,57 @@ class JobServiceTest {
 	}
 	
 	@Test
+	void shouldCreateActiveJobWithUnfinishedTasks() {
+		final JobDefinition jobDefinition = mock();
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getId()).thenReturn(123L);
+		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
+		
+		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
+		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of(taskExecution));
+		
+		final Job expected = new Job();
+		when(jobMapper.map(jobDefinition)).thenReturn(expected);
+		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(new Task());
+		
+		final Job result = jobService.createActiveJob(jobExecution);
+		
+		assertSame(expected, result);
+		assertEquals(123L, result.getId());
+		
+		final Task task = result.getTasks().getFirst();
+		assertEquals(taskExecution.getId(), task.getId());
+		assertSame(result, task.getJob());
+	}
+	
+	@Test
+	void shouldCreateActiveJobWithoutTasksWhenNoTasksAreLeft() {
+		final JobDefinition jobDefinition = mock();
+		final JobExecution jobExecution = mock();
+		when(jobExecution.getJobDefinition()).thenReturn(jobDefinition);
+		when(taskExecutionService.findAllByJobExecutionAndStatus(jobExecution, UNFINISHED_TASK_STATUSES)).thenReturn(List.of());
+		when(jobMapper.map(jobDefinition)).thenReturn(new Job());
+		
+		final Job result = jobService.createActiveJob(jobExecution);
+		
+		assertTrue(result.getTasks().isEmpty());
+	}
+	
+	@Test
+	void shouldRequireTransactionForCreatingActiveJob() throws NoSuchMethodException {
+		final Transactional transactional = JobService.class
+				.getMethod("createActiveJob", JobExecution.class)
+				.getAnnotation(Transactional.class);
+
+		assertEquals(Propagation.MANDATORY, transactional.propagation());
+	}
+
+	@Test
 	void shouldNotCreateResumedJobForJobWithNoExecutions() {
 		final Long jobDefinitionId = 123L;
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
-		
-		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
-		
-		assertTrue(result.isEmpty());
-	}
-	
-	@Test
-	void shouldNotCreateResumedJobForCompletedJob() {
-		final Long jobDefinitionId = 123L;
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
-		
-		final JobExecution jobExecution = mock();
-		when(jobExecution.getStatus()).thenReturn(COMPLETED);
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		
-		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
-		
-		assertTrue(result.isEmpty());
-	}
-	
-	@Test
-	void shouldNotCreatedResumedJobForPausedJobWithNoTasksLeft() {
-		final Long jobDefinitionId = 123L;
-		final JobDefinition jobDefinition = mock();
-		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
-		
-		final JobExecution jobExecution = mock();
-		when(jobExecution.getStatus()).thenReturn(PAUSED);
-		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
-		when(jobExecution.getTasksByStatus(TaskStatus.PAUSED)).thenReturn(List.of());
 		
 		final Optional<Job> result = jobService.createResumedJob(jobDefinitionId);
 		

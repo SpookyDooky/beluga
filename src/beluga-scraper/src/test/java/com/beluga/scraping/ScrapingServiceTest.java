@@ -29,6 +29,9 @@ import java.util.Optional;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,6 +120,52 @@ class ScrapingServiceTest {
 
         assertEquals("data1", scrapingResult.getResult().getFirst().get("value1"));
         assertEquals("data3", scrapingResult.getResult().getFirst().get("value3"));
+    }
+
+    @Test
+    void shouldNotAddFieldsWhenDescriptionListIsNotFound() {
+        mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
+
+        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
+        extractionConfiguration.setSelector("dl.does_not_exist");
+
+        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
+        dataPointConfiguration.setDtValue("title1");
+        dataPointConfiguration.setField("value1");
+
+        extractionConfiguration.setDataPoints(List.of(dataPointConfiguration));
+
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
+
+        assertFalse(scrapingResult.getResult().getFirst().containsKey("value1"));
+    }
+
+    @Test
+    void shouldSetFieldToNullWhenDtIsNotFound() {
+        mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
+
+        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
+        extractionConfiguration.setSelector("dl.description_list");
+
+        final DescriptionListExtractionDataPointConfiguration foundDataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
+        foundDataPointConfiguration.setDtValue("title1");
+        foundDataPointConfiguration.setField("found");
+
+        final DescriptionListExtractionDataPointConfiguration missingDataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
+        missingDataPointConfiguration.setDtValue("does_not_exist");
+        missingDataPointConfiguration.setField("missing");
+
+        extractionConfiguration.setDataPoints(List.of(foundDataPointConfiguration, missingDataPointConfiguration));
+
+        final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
+
+        assertEquals("data1", scrapingResult.getResult().getFirst().get("found"));
+        assertTrue(scrapingResult.getResult().getFirst().containsKey("missing"));
+        assertNull(scrapingResult.getResult().getFirst().get("missing"));
     }
 
     @Test

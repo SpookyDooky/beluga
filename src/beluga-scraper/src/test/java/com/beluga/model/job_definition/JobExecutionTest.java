@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.beluga.execution.model.task.TaskStatus.COMPLETED;
-import static com.beluga.execution.model.task.TaskStatus.PAUSED;
+import static com.beluga.execution.model.task.TaskStatus.*;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 

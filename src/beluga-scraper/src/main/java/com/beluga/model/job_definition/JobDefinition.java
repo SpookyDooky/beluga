@@ -122,7 +122,7 @@ public class JobDefinition {
 	}
 	
 	public void addExecution(final JobExecution jobExecution) {
-		executions.add(jobExecution);
+		executions.addFirst(jobExecution);
 		jobExecution.setJobDefinition(this);
 	}
 	

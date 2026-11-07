@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.beluga.execution.model.task.TaskStatus.PAUSED;
@@ -39,6 +41,7 @@ public class JobExecutorService {
 
 	private final Map<Long, Job> jobIdJobMap = new HashMap<>();
 	private final Map<Long, AtomicInteger> jobActiveTasks = new HashMap<>();
+	private final Set<Long> interruptedJobs = ConcurrentHashMap.newKeySet();
 
 	public JobExecutorService(final ContextLogger logger,
 	                          final JobTaskQueue jobTaskQueue,
@@ -74,8 +77,10 @@ public class JobExecutorService {
 			rateLimiter.acquire();
 
 			jobTaskQueue.pollTask(jobId)
-					.ifPresent(worker::execute);
-			jobActiveTasks.get(jobId).incrementAndGet();
+					.ifPresent(task -> {
+						jobActiveTasks.get(jobId).incrementAndGet();
+						worker.execute(task);
+					});
 		}
 
 		waitForAllTasksToFinish(jobId);
@@ -90,11 +95,15 @@ public class JobExecutorService {
             }
         }
 
-		eventPublisher.publishEvent(new JobFinishedEvent(
-				jobIdJobMap.get(jobId).getJobDefinitionId(),
-				jobId
-		));
+		// An interrupted job is not finished.
+		if (!interruptedJobs.remove(jobId)) {
+			eventPublisher.publishEvent(new JobFinishedEvent(
+					jobIdJobMap.get(jobId).getJobDefinitionId(),
+					jobId
+			));
+		}
 
+		interruptedJobs.remove(jobId);
 		jobIdJobMap.remove(jobId);
 		jobActiveTasks.remove(jobId);
 	}
@@ -117,6 +126,8 @@ public class JobExecutorService {
 	 * @param jobId the id of the {@link Job}.
 	 */
 	public void stop(final Long jobId) {
+		markAsInterrupted(jobId);
+
 		jobTaskQueue.clearTasks(jobId).stream()
 				.map(Task::getId)
 				.forEach(taskId -> taskExecutionService.setStatusById(taskId, STOPPED));
@@ -128,8 +139,20 @@ public class JobExecutorService {
 	 * @param jobId the id of the {@link Job}.
 	 */
 	public void pause(final Long jobId) {
+		markAsInterrupted(jobId);
+
 		jobTaskQueue.clearTasks(jobId).stream()
 				.map(Task::getId)
 				.forEach(taskId -> taskExecutionService.setStatusById(taskId, PAUSED));
+	}
+
+	/**
+	 * Only marks a {@link Job} that is still running, as otherwise no run would clear the mark and the next run of this
+	 * {@link Job} would not report that it finished.
+	 */
+	private void markAsInterrupted(final Long jobId) {
+		if (jobIdJobMap.containsKey(jobId)) {
+			interruptedJobs.add(jobId);
+		}
 	}
 }

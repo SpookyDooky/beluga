@@ -142,4 +142,19 @@ public class JobDefinitionService {
     public String getNameById(final Long id) {
         return getById(id).getName();
     }
+
+    /**
+     * Checks whether the latest {@link JobExecution} of a {@link JobDefinition} is either active or paused.
+     *
+     * @param id the id of the {@link JobDefinition}.
+     * @return true if the latest {@link JobExecution} is active or paused, false otherwise or if there are none.
+     * @throws JobDefinitionNotFoundException in case no {@link JobDefinition} exists with the id.
+     */
+    @Transactional
+    public boolean hasRunningJob(final Long id) {
+        return getById(id).getMostRecentExecution()
+                .map(JobExecution::getStatus)
+                .filter(status -> status == JobStatus.ACTIVE || status == JobStatus.PAUSED)
+                .isPresent();
+    }
 }

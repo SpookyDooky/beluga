@@ -101,6 +101,7 @@ Checkstyle (`src/checkstyle.xml`) and PMD (`src/pmd-ruleset.xml`) fail the build
 - `BaseIntegrationTest` rebuilds the Spring context before every test method, so these tests are slow.
 - Surefire matches `*IntegrationTest` classes too; there is no separate Failsafe phase.
 - Test data commonly comes from Instancio, with custom generators registered in `src/test/resources/META-INF/services/org.instancio.spi.InstancioServiceProvider`.
+- Use OkHttp’s MockWebServer for HTTP stubs, not `com.sun.net.httpserver.HttpServer`
 
 ## Architectural Invariants
 

@@ -3,12 +3,16 @@ package com.beluga.service.job;
 import com.beluga.execution.model.task.TaskDefinition;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.model.job_definition.JobExecution;
+import com.beluga.model.job_definition.JobStatus;
 import com.beluga.persistence.repository.JobDefinitionRepository;
+import com.beluga.service.exception.JobDefinitionNotFoundException;
 import com.beluga.service.task.TaskDefinitionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +28,7 @@ import static com.beluga.model.job_definition.JobStatus.COMPLETED;
 import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnMethod;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +41,7 @@ class JobDefinitionServiceTest {
 	
 	@InjectMocks
 	private JobDefinitionService jobDefinitionService;
-	
+
 	@Test
 	void shouldSave() {
 		final JobDefinition jobDefinition = mock();
@@ -203,5 +208,51 @@ class JobDefinitionServiceTest {
 				jobDefinition.getName(),
 				jobDefinitionService.getNameById(jobDefinition.getId())
 		);
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"})
+	void shouldHaveRunningJobWhenLatestExecutionIsActiveOrPaused(final JobStatus status) {
+		final Long id = 123L;
+		mockLatestExecutionWithStatus(id, status);
+
+		assertTrue(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = JobStatus.class, names = {"ACTIVE", "PAUSED"}, mode = EXCLUDE)
+	void shouldNotHaveRunningJobWhenLatestExecutionIsNotActiveOrPaused(final JobStatus status) {
+		final Long id = 123L;
+		mockLatestExecutionWithStatus(id, status);
+
+		assertFalse(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@Test
+	void shouldNotHaveRunningJobWhenJobHasNoExecutions() {
+		final Long id = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.empty());
+		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
+
+		assertFalse(jobDefinitionService.hasRunningJob(id));
+	}
+
+	@Test
+	void shouldThrowWhenCheckingForRunningJobOfNonExistingJob() {
+		final Long id = 123L;
+		when(repository.findById(id)).thenReturn(Optional.empty());
+
+		assertThrows(JobDefinitionNotFoundException.class, () -> jobDefinitionService.hasRunningJob(id));
+	}
+
+	private void mockLatestExecutionWithStatus(final Long id,
+	                                           final JobStatus status) {
+		final JobExecution jobExecution = new JobExecution();
+		jobExecution.setStatus(status);
+
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));
+		when(repository.findById(id)).thenReturn(Optional.of(jobDefinition));
 	}
 }

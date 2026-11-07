@@ -8,10 +8,12 @@ import java.util.List;
 
 @Repository
 public interface JobDefinitionRepository extends CrudRepository<JobDefinition, Long> {
-	
-	@Override
-	List<JobDefinition> findAll();
 
-	boolean existsByName(String name);
-	void deleteByName(String name);
+    @Override
+    List<JobDefinition> findAll();
+
+    boolean existsByName(String name);
+
+    void deleteByName(String name);
 }
+

@@ -58,7 +58,7 @@ public class JobExecution {
 	public void setStatus(final JobStatus status) {
 		this.status = status;
 	}
-	
+
 	public JobDefinition getJobDefinition() {
 		return jobDefinition;
 	}
