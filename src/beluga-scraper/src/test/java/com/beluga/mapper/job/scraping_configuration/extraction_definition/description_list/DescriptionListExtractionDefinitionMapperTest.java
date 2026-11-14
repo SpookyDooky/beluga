@@ -5,7 +5,7 @@ import com.beluga.api.job.dto.read.extraction_configuration.description_list.Rea
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDataPointDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDefinition;
-import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ class DescriptionListExtractionDefinitionMapperTest {
 
     @Test
     void shouldMapFromProperties() {
-        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+        final DescriptionListExtractionConfigurationProperties properties = Instancio.of(DescriptionListExtractionConfigurationProperties.class)
                 .withSetting(COLLECTION_MAX_SIZE, 1)
                 .create();
 

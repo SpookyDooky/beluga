@@ -3,7 +3,7 @@ package com.beluga.mapper.job.scraping_configuration.extraction_definition.descr
 import com.beluga.api.job.dto.read.extraction_configuration.description_list.ReadDescriptionListExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDefinition;
-import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import org.mapstruct.Mapper;
 
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
@@ -20,7 +20,7 @@ public interface DescriptionListExtractionDefinitionMapper {
 
     DescriptionListExtractionDefinition map(WriteDescriptionListExtractionConfigurationDto dto);
 
-    DescriptionListExtractionDefinition map(ExtractionConfigurationProperties properties);
+    DescriptionListExtractionDefinition map(DescriptionListExtractionConfigurationProperties properties);
 
     ReadDescriptionListExtractionConfigurationDto map(DescriptionListExtractionDefinition extractionDefinition);
 }

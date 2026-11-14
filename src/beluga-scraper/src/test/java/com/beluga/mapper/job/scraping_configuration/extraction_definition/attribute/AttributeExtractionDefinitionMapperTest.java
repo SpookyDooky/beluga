@@ -3,7 +3,7 @@ package com.beluga.mapper.job.scraping_configuration.extraction_definition.attri
 import com.beluga.api.job.dto.read.extraction_configuration.attribute.ReadAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.attribute.AttributeExtractionDefinition;
-import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.AttributeExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ class AttributeExtractionDefinitionMapperTest {
 
     @Test
     void shouldMapFromProperties() {
-        final ExtractionConfigurationProperties properties = Instancio.create(ExtractionConfigurationProperties.class);
+        final AttributeExtractionConfigurationProperties properties = Instancio.create(AttributeExtractionConfigurationProperties.class);
 
         final AttributeExtractionDefinition definition = mapper.map(properties);
 

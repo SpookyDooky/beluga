@@ -23,24 +23,24 @@ for managing jobs which is more suited for a production environment. You can fin
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
   * [Scraping configuration](#scraping-configuration)
     * [beluga.jobs[].scraping.item-selector](#belugajobsscrapingitem-selector)
+  * [Data point configuration](#data-point-configuration)
+    * [beluga.jobs[].scraping.data-points[]](#belugajobsscrapingdata-points)
   * [Attribute data point configuration](#attribute-data-point-configuration)
-    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
-    * [beluga.jobs[].scraping.data-points[].attribute](#belugajobsscrapingdata-pointsattribute)
-    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+    * [beluga.jobs[].scraping.data-points[].attribute.selector](#belugajobsscrapingdata-pointsattributeselector)
+    * [beluga.jobs[].scraping.data-points[].attribute.field](#belugajobsscrapingdata-pointsattributefield)
+    * [beluga.jobs[].scraping.data-points[].attribute.attribute](#belugajobsscrapingdata-pointsattributeattribute)
   * [Description list data point configuration](#description-list-data-point-configuration)
-    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
-    * [beluga.jobs[].scraping.data-points[].data-points[].dtValue](#belugajobsscrapingdata-pointsdata-pointsdtvalue)
-    * [beluga.jobs[].scraping.data-points[].data-points[].field](#belugajobsscrapingdata-pointsdata-pointsfield)
+    * [beluga.jobs[].scraping.data-points[].description-list.selector](#belugajobsscrapingdata-pointsdescription-listselector)
+    * [beluga.jobs[].scraping.data-points[].description-list.data-points[].dt-value](#belugajobsscrapingdata-pointsdescription-listdata-pointsdt-value)
+    * [beluga.jobs[].scraping.data-points[].description-list.data-points[].field](#belugajobsscrapingdata-pointsdescription-listdata-pointsfield)
   * [HTML data point configuration](#html-data-point-configuration)
-    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
-    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+    * [beluga.jobs[].scraping.data-points[].html.selector](#belugajobsscrapingdata-pointshtmlselector)
+    * [beluga.jobs[].scraping.data-points[].html.field](#belugajobsscrapingdata-pointshtmlfield)
+  * [Image data point configuration](#image-data-point-configuration)
+    * [beluga.jobs[].scraping.data-points[].image](#belugajobsscrapingdata-pointsimage)
   * [Text data point configuration](#text-data-point-configuration)
-    * [beluga.jobs[].scraping.data-points[].selector](#belugajobsscrapingdata-pointsselector)
-    * [beluga.jobs[].scraping.data-points[].field](#belugajobsscrapingdata-pointsfield)
-    * [beluga.jobs[].scraping.data-points[].type](#belugajobsscrapingdata-pointstype)
+    * [beluga.jobs[].scraping.data-points[].text.selector](#belugajobsscrapingdata-pointstextselector)
+    * [beluga.jobs[].scraping.data-points[].text.field](#belugajobsscrapingdata-pointstextfield)
 * [Example](#example)
 
 # Configuration
@@ -88,87 +88,88 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Required:** true
 - **Description:** CSS selector for an element
 
+## Data point configuration
+
+### `beluga.jobs[].scraping.data-points[]`
+- **Type:** list
+- **Description:** The data to extract from each item. Each data point configures **exactly one** of the extraction
+  types below by setting its block: `attribute`, `description-list`, `html`, `image` or `text`. There is no separate
+  `type` property. Configuring no block, or more than one block, in the same data point fails startup with a message
+  such as `Exactly one of [attribute, description-list, html, image, text] must be configured, but found: [html, text]`.
+
 ## Attribute data point configuration
-### `beluga.jobs[].scraping.data-points[].selector`
+Extracts the value of an attribute of the selected element.
+
+### `beluga.jobs[].scraping.data-points[].attribute.selector`
 - **Type:** string
 - **Required:** true
-- **Description:** CSS selector for which data should be retrieved from an element
+- **Description:** CSS selector, relative to the item, of the element to extract the data from
 
-### `beluga.jobs[].scraping.data-points[].field`
+### `beluga.jobs[].scraping.data-points[].attribute.field`
 - **Type:** string
 - **Required:** true
 - **Description:** Name of the property in the results
 
-### `beluga.jobs[].scraping.data-points[].attribute`
+### `beluga.jobs[].scraping.data-points[].attribute.attribute`
 - **Type:** string
 - **Required:** true
-- **Description:** Name of the attribute from which to retrieve the data. When attribute is not specified the text is used.
-
-### `beluga.jobs[].scraping.data-points[].type`
-- **Type:** string
-- **Required:** true
-- **Default:** TEXT
-- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
-- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+- **Description:** Name of the attribute from which to retrieve the value
 
 ## Description list data point configuration
-### `beluga.jobs[].scraping.data-points[].selector`
+Extracts values from a description list (`dl`). Each configured data point matches a `dt` element by its text and stores
+the text of the `dd` element that follows it.
+
+### `beluga.jobs[].scraping.data-points[].description-list.selector`
 - **Type:** string
 - **Required:** true
-- **Description:** CSS selector for which data should be retrieved from an element
+- **Description:** CSS selector, relative to the item, of the description list element
 
-### `beluga.jobs[].scraping.data-points[].type`
-- **Type:** string
-- **Required:** false
-- **Default:** TEXT
-- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
-- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+### `beluga.jobs[].scraping.data-points[].description-list.data-points[]`
+- **Type:** list
+- **Required:** true
+- **Constraints:** Must contain at least one data point
 
-### `beluga.jobs[].scraping.data-points[].data-points[].dtValue`
+### `beluga.jobs[].scraping.data-points[].description-list.data-points[].dt-value`
 - **Type:** string
 - **Required:** true
-- **Description:** The value to match of the dt HTML tag.
+- **Description:** The value to match of the dt HTML tag
 
-### `beluga.jobs[].scraping.data-points[].data-points[].field`
+### `beluga.jobs[].scraping.data-points[].description-list.data-points[].field`
 - **Type:** string
 - **Required:** true
 - **Description:** Name of the property in the results
 
 ## HTML data point configuration
-### `beluga.jobs[].scraping.data-points[].selector`
+Extracts the HTML of the selected element.
+
+### `beluga.jobs[].scraping.data-points[].html.selector`
 - **Type:** string
 - **Required:** true
-- **Description:** CSS selector for which data should be retrieved from an element
+- **Description:** CSS selector, relative to the item, of the element to extract the data from
 
-### `beluga.jobs[].scraping.data-points[].field`
+### `beluga.jobs[].scraping.data-points[].html.field`
 - **Type:** string
 - **Required:** true
 - **Description:** Name of the property in the results
 
-### `beluga.jobs[].scraping.data-points[].type`
-- **Type:** string
-- **Required:** false
-- **Default:** TEXT
-- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
-- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
+## Image data point configuration
+
+### `beluga.jobs[].scraping.data-points[].image`
+- **Type:** empty block
+- **Description:** Extracts an image. It has no settings, so configure it as an empty block: `image: {}`
 
 ## Text data point configuration
-### `beluga.jobs[].scraping.data-points[].selector`
+Extracts the text of the selected element.
+
+### `beluga.jobs[].scraping.data-points[].text.selector`
 - **Type:** string
 - **Required:** true
-- **Description:** CSS selector for which data should be retrieved from an element
+- **Description:** CSS selector, relative to the item, of the element to extract the data from
 
-### `beluga.jobs[].scraping.data-points[].field`
+### `beluga.jobs[].scraping.data-points[].text.field`
 - **Type:** string
 - **Required:** true
 - **Description:** Name of the property in the results
-
-### `beluga.jobs[].scraping.data-points[].type`
-- **Type:** string
-- **Required:** false
-- **Default:** TEXT
-- **Allowed values:** TEXT, HTML, DESCRIPTION_LIST, ATTRIBUTE
-- **Description:** Used to specify what type of content to retrieve, if IMAGE is used it will try to retrieve the image from what it retrieved from the attribute.
 
 # Example
 ```yaml
@@ -178,12 +179,24 @@ beluga:
       url:
         url-file: "/mounted/file_containing_urls.txt"
       execution:
-        workers: 1
         tasks-per-second: 1
       scraping:
-        item-selector: "repeated#field"
+        item-selector: "div.product"
         data-points:
-          - type: TEXT
-            selector: p.price
-            field: price
+          - text:
+              selector: p.price
+              field: price
+          - attribute:
+              selector: a.details
+              field: link
+              attribute: href
+          - html:
+              selector: div.description
+              field: description
+          - image: {}
+          - description-list:
+              selector: dl.specifications
+              data-points:
+                - dt-value: Color
+                  field: color
 ```
