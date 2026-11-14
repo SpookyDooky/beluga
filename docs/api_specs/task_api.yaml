@@ -31,7 +31,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
         400:
-          description: Invalid request, for example a null or malformed URL
+          description: A URL is null (ErrorResponseDto). Malformed JSON or an unparseable URL also returns 400, but with Spring's default error body.
           content:
             application/json:
               schema:
@@ -88,7 +88,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
         400:
-          description: Invalid request, for example a null or malformed URL
+          description: A URL is null (ErrorResponseDto). Malformed JSON or an unparseable URL also returns 400, but with Spring's default error body.
           content:
             application/json:
               schema:
