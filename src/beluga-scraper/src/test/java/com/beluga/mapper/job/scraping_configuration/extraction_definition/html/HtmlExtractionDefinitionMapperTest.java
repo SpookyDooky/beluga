@@ -3,7 +3,7 @@ package com.beluga.mapper.job.scraping_configuration.extraction_definition.html;
 import com.beluga.api.job.dto.read.extraction_configuration.html.ReadHtmlExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.html.WriteHtmlExtractionConfigurationDto;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.html.HtmlExtractionDefinition;
-import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.HtmlExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class HtmlExtractionDefinitionMapperTest {
 
     @Test
     void shouldMapFromProperties() {
-        final ExtractionConfigurationProperties properties = Instancio.create(ExtractionConfigurationProperties.class);
+        final HtmlExtractionConfigurationProperties properties = Instancio.create(HtmlExtractionConfigurationProperties.class);
 
         final HtmlExtractionDefinition definition = mapper.map(properties);
 

@@ -5,14 +5,18 @@ import com.beluga.mapper.job.scraping_configuration.extraction_definition.descri
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.html.HtmlExtractionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.image.ImageExtractionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.text.TextExtractionDefinitionMapper;
-import com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.attribute.AttributeExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.description_list.DescriptionListExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.html.HtmlExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.image.ImageExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.text.TextExtractionDefinition;
+import com.beluga.properties.scraping.extraction_configuration.AttributeExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.HtmlExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.ImageExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.TextExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.beluga.model.job_definition.configuration.scraping_configuration.ExtractionType.*;
-import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -45,26 +47,25 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToAttributeExtractionDefinition() {
-        final ExtractionConfigurationProperties properties = createExtractionConfigurationProperties(ATTRIBUTE);
+        final AttributeExtractionConfigurationProperties attribute = Instancio.create(AttributeExtractionConfigurationProperties.class);
+        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
+        properties.setAttribute(attribute);
         final AttributeExtractionDefinition extractionDefinition = mock();
-        when(attributeExtractionDefinitionMapper.map(properties)).thenReturn(extractionDefinition);
+        when(attributeExtractionDefinitionMapper.map(attribute)).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
         assertSame(extractionDefinition, result);
     }
 
-    ExtractionConfigurationProperties createExtractionConfigurationProperties(final ExtractionType type) {
-        return Instancio.of(ExtractionConfigurationProperties.class)
-                .set(field(ExtractionConfigurationProperties::getType), type)
-                .create();
-    }
-
     @Test
     void shouldMapToDescriptionListExtractionDefinition() {
-        final ExtractionConfigurationProperties properties = createExtractionConfigurationProperties(DESCRIPTION_LIST);
+        final DescriptionListExtractionConfigurationProperties descriptionList =
+                Instancio.create(DescriptionListExtractionConfigurationProperties.class);
+        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
+        properties.setDescriptionList(descriptionList);
         final DescriptionListExtractionDefinition extractionDefinition = mock();
-        when(descriptionListExtractionDefinitionMapper.map(properties)).thenReturn(extractionDefinition);
+        when(descriptionListExtractionDefinitionMapper.map(descriptionList)).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -73,9 +74,11 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToHtmlExtractionDefinition() {
-        final ExtractionConfigurationProperties properties = createExtractionConfigurationProperties(HTML);
+        final HtmlExtractionConfigurationProperties html = Instancio.create(HtmlExtractionConfigurationProperties.class);
+        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
+        properties.setHtml(html);
         final HtmlExtractionDefinition extractionDefinition = mock();
-        when(htmlExtractionDefinitionMapper.map(properties)).thenReturn(extractionDefinition);
+        when(htmlExtractionDefinitionMapper.map(html)).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -84,9 +87,11 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToImageExtractionDefinition() {
-        final ExtractionConfigurationProperties properties = createExtractionConfigurationProperties(IMAGE);
+        final ImageExtractionConfigurationProperties image = new ImageExtractionConfigurationProperties();
+        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
+        properties.setImage(image);
         final ImageExtractionDefinition extractionDefinition = mock();
-        when(imageExtractionDefinitionMapper.map(properties)).thenReturn(extractionDefinition);
+        when(imageExtractionDefinitionMapper.map(image)).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -95,9 +100,11 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToTextExtractionDefinition() {
-        final ExtractionConfigurationProperties properties = createExtractionConfigurationProperties(TEXT);
+        final TextExtractionConfigurationProperties text = Instancio.create(TextExtractionConfigurationProperties.class);
+        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
+        properties.setText(text);
         final TextExtractionDefinition extractionDefinition = mock();
-        when(textExtractionDefinitionMapper.map(properties)).thenReturn(extractionDefinition);
+        when(textExtractionDefinitionMapper.map(text)).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 

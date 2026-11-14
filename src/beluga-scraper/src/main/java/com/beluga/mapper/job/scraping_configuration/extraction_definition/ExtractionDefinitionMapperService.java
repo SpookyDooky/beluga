@@ -6,7 +6,12 @@ import com.beluga.mapper.job.scraping_configuration.extraction_definition.html.H
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.image.ImageExtractionDefinitionMapper;
 import com.beluga.mapper.job.scraping_configuration.extraction_definition.text.TextExtractionDefinitionMapper;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.ExtractionDefinition;
+import com.beluga.properties.scraping.extraction_configuration.AttributeExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.HtmlExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.ImageExtractionConfigurationProperties;
+import com.beluga.properties.scraping.extraction_configuration.TextExtractionConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,12 +36,13 @@ public class ExtractionDefinitionMapperService {
     }
 
     public ExtractionDefinition map(final ExtractionConfigurationProperties properties) {
-        return switch (properties.getType()) {
-            case ATTRIBUTE -> attributeExtractionDefinitionMapper.map(properties);
-            case DESCRIPTION_LIST -> descriptionListExtractionDefinitionMapper.map(properties);
-            case HTML -> htmlExtractionDefinitionMapper.map(properties);
-            case IMAGE -> imageExtractionDefinitionMapper.map(properties);
-            case TEXT -> textExtractionDefinitionMapper.map(properties);
+        return switch (properties.getConfiguredExtractionType()) {
+            case AttributeExtractionConfigurationProperties attribute -> attributeExtractionDefinitionMapper.map(attribute);
+            case DescriptionListExtractionConfigurationProperties descriptionList ->
+                    descriptionListExtractionDefinitionMapper.map(descriptionList);
+            case HtmlExtractionConfigurationProperties html -> htmlExtractionDefinitionMapper.map(html);
+            case ImageExtractionConfigurationProperties image -> imageExtractionDefinitionMapper.map(image);
+            case TextExtractionConfigurationProperties text -> textExtractionDefinitionMapper.map(text);
         };
     }
 }
