@@ -30,10 +30,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
+        400:
+          description: A URL is null (ErrorResponseDto). Malformed JSON or an unparseable URL also returns 400, but with Spring's default error body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
         404:
           description: Job not found
     get:
-      description: Retrieve the tasks for a job
+      description: Retrieve the active tasks of a job
       tags:
         - Task
       parameters:
@@ -43,7 +49,7 @@ paths:
           schema:
             type: integer
             example: 123
-          description: Id of the job for which to update the tasks
+          description: Id of the job
       responses:
         200:
           description: OK
@@ -81,11 +87,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ReadTaskDefinitionDto"
+        400:
+          description: A URL is null (ErrorResponseDto). Malformed JSON or an unparseable URL also returns 400, but with Spring's default error body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
         404:
           description: Job not found
   /jobs/{jobId}/tasks/{taskId}:
     get:
-      description: Retrieves a specific task
+      description: Retrieves a specific task definition, including removed (inactive) ones
       tags:
         - Task
       parameters:
@@ -95,14 +107,14 @@ paths:
           schema:
             type: integer
             example: 123
-          description: Id of the job for which to update the tasks
+          description: Id of the job
         - in: path
           name: taskId
           required: true
           schema:
             type: integer
             example: 123
-          description: Id of the task
+          description: Id of the task definition (not a task execution id)
       responses:
         200:
           description: OK
@@ -139,6 +151,26 @@ components:
       required:
         - id
         - url
+
+    errorResponse:
+      type: object
+      description: Returned for validation errors and invalid arguments (ErrorResponseDto).
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          example: 400
+        errors:
+          type: array
+          items:
+            type: string
+            example: A URL must not be null.
+      required:
+        - timestamp
+        - status
+        - errors
 
     patchTaskDto:
       type: object

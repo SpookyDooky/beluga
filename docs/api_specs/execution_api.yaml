@@ -12,7 +12,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     post:
       description: Starts a job, does nothing if job already running
       tags:
@@ -30,7 +30,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     post:
       description: Stops a job, does nothing if job not running
       tags:
@@ -48,7 +48,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     post:
       description: Pauses a job, does nothing if job already paused
       tags:
@@ -66,7 +66,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     post:
       description: Resumes a job, does nothing if job was already running
       tags:
@@ -84,7 +84,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     get:
       description: Returns the last or current exection of a job.
       tags:
@@ -106,7 +106,7 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
     get:
       description: Returns all job executions
       tags:
@@ -130,14 +130,14 @@ paths:
         schema:
           type: integer
           example: 123
-        description: If of the job
+        description: Id of the job
       - in: path
         name: executionId
         required: true
         schema:
           type: integer
           example: 321
-        description: id of the job
+        description: Id of the job execution
     get:
       description: Returns all details of a job execution including tasks
       tags:
@@ -150,7 +150,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReadExecutionWithTasksDto"
         404:
-          description: Job was not found
+          description: Job or execution was not found
 
 components:
   schemas:
@@ -172,10 +172,6 @@ components:
             - STOPPED
             - ACTIVE
             - COMPLETED
-        tasks:
-          type: array
-          items:
-            $ref: "#/components/schemas/ReadTaskDto"
       required:
         - id
         - executedAt
@@ -202,6 +198,8 @@ components:
         executedAt:
           type: string
           format: date-time
+          nullable: true
+          description: Set when the task starts; null while the task is still planned
         status:
           type: string
           enum:
@@ -216,6 +214,5 @@ components:
           example: http://some.website.com/some/path
       required:
         - id
-        - executedAt
         - status
         - url
