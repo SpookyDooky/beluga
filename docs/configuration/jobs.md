@@ -4,20 +4,20 @@ Jobs contain the scraping configuration for all tasks that belong to that job. P
 all tasks. A job defines:
 - what URLs should be scraped
 - how pages should be scraped
-- how results should be stored
 - how execution should be configured
 
-Each URL in the configured URL file becomes an individual scraping task during execution.
+Each configured URL becomes an individual scraping task during execution.
 
 This way of configuring jobs is mainly offered for ease of use, there is also a complete REST API 
-for managing jobs which is more suited for a production environment. You can find the documentation here.
+for managing jobs which is more suited for a production environment. See the [Jobs API](../api_specs/job_api.yaml).
 
 # Contents
 
 * [Configuration](#configuration)
   * [Name](#belugajobsname)
     * [beluga.jobs[].name](#belugajobsname)
-  * [Urls](#belugajobsurlurl-file)
+  * [Urls](#urls)
+    * [beluga.jobs[].url.urls](#belugajobsurlurls)
     * [beluga.jobs[].url.url-file](#belugajobsurlurl-file)
   * [Execution configuration](#execution-configuration)
     * [beluga.jobs[].execution.tasks-per-second](#belugajobsexecutiontasks-per-second)
@@ -53,25 +53,18 @@ for managing jobs which is more suited for a production environment. You can fin
 - **Constraints:** Must be unique across all jobs
 
 ## Urls
+Configure either `urls` or `url-file`. When `urls` contains at least one URL, `url-file` is ignored.
+
+### `beluga.jobs[].url.urls`
+- **Type:** list of URLs
+- **Required:** false
+- **Description:** URLs to scrape
 
 ### `beluga.jobs[].url.url-file`
 - **Type:** string
-- **Required:** true
+- **Required:** false
 - **Description:** Path to file containing URLs
-- **Constraints:** Each URL must on a separate line
-
-## Storage configuration
-
-### `beluga.jobs[].storage.format`
-- **Type:** string
-- **Required:** true
-- **Allowed values:** JSON
-- **Description:** Format in which the results will be stored
-
-### `beluga.jobs[].storage.folder`
-- **Type:** string
-- **Required:** true
-- **Description:** Location in which the job results will be stored
+- **Constraints:** Each URL must be on a separate line
 
 ## Execution configuration
 
