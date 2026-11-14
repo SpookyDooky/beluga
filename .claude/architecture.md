@@ -595,79 +595,7 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
 
 ---
 
-## 6. Known defects
-
-These are real bugs, kept here so agents don't mistake current behaviour for intent. Each entry says whether it was
-**verified** (code read and confirmed) or is **reported** (found by analysis, not yet confirmed). Remove an entry when it
-is fixed.
-
-### Execution engine
-
-| # | Defect | Status |
-| --- | --- | --- |
-| E1 | `CloseableContext` snapshots the MDC **after** `with(...)` has added the keys, so `close()` restores them and the keys never get removed. On request threads, context leaks into later requests' logs. | verified |
-| E2 | `JitterRateLimiter`: Guava `acquire()` returns **seconds**, but the "extreme variation" sleep uses that value as milliseconds, so that sleep is almost always 0 ms. | verified |
-| E3 | `JitterRateLimiter`: when `tasksPerSecond > ~700`, both jitter bounds truncate to 0 and `nextLong(min, max)` throws. The job then stays ACTIVE with its tasks queued. `@Positive` has no upper bound. | reported |
-| E4 | `jobIdJobMap` and `jobActiveTasks` are plain `HashMap`s mutated from several threads. | verified |
-| E5 | Stop or pause twice, or pause then stop, can NPE: `JobTaskQueue.clearTasks` returns `null` once the queue has been removed. | reported |
-| E6 | Resuming while a paused run is still draining reuses the same execution id. The old waiter then removes the new run's state, which leads to NPEs and wrong counters. | reported |
-| E7 | Pause after the queue has drained, then resume: the execution is set to ACTIVE, but no run starts because there are no PAUSED tasks. The job is wedged ACTIVE, and `hasRunningJob` blocks every later `start`. | reported |
-| E8 | `resume` calls `execute` inside the transaction instead of `afterCommit`. | reported |
-| E9 | A job becomes COMPLETED even when every task failed, and possibly before its results are stored. | reported |
-| E10 | `TaskFailedActivity` is never published. | reported |
-| E11 | `JobTaskQueue` never removes the empty queue of a finished job (a small leak per execution). | reported |
-
-### API / persistence / storage
-
-| # | Defect | Status |
-| --- | --- | --- |
-| A1 | `S3Service.getObject` returns `getObjectAsBytes(...).toString().getBytes()`, a debug string rather than the object, so **every S3 read and download is broken**. It should use `asByteArray()`. | verified |
-| A2 | `S3Service.putObject` sets `contentType("application/json")` for every object, including `source.html`. | reported |
-| A3 | `WriteJobDefinitionDto.execution` and `.scraping` are `@NotNull` but not `@Valid`, so **nested validation never runs**: `@Positive tasksPerSecond`, `@NotEmpty itemSelector/dataPoints` and the extraction `@NotBlank`s are skipped. | verified |
-| A4 | The SQLite migration's `image_extraction_definition` and `description_list_extraction_definition` FKs reference `execution_definition(id)` instead of `extraction_definition(id)`, with `foreign_keys=on`. PostgreSQL is correct. | verified |
-| A5 | No DB constraint backs active-task deduplication: there is no unique or partial index on `task_definition`, so concurrent PUT/PATCH can insert duplicates. | verified (no index) |
-| A6 | Task URLs are kept in `Set<java.net.URL>`. `URL.equals/hashCode` do blocking DNS lookups and treat hosts that resolve to the same IP as equal, so distinct tasks can be dropped, and the lookups happen inside transactions. | reported |
-| A7 | `PUT /jobs/{missing}` returns 500, not 404: `JobNameValidator` throws `JobDefinitionNotFoundException` before the 404 branch. | reported |
-| A8 | `ReadJobDefinitionDto` has no `name`, but `job_api.yaml` declares it as required. | reported |
-| A9 | `ResultFile.sizeInBytes` is computed by JSON-serializing the payload, not from the stored bytes. It is wrong for `source.html`. | reported |
-| A10 | `JsonNestingService` checks for existing keys against the top-level map at every depth, so some combinations of dotted keys NPE or overwrite each other, depending on set iteration order. | reported |
-| A11 | `hasRunningJob` ignores PLANNED, and nothing locks between the check and the insert, so two quick `start` calls can create two executions. | reported |
-| A12 | `JobController.get` calls `logger.with(JOB_ID)` with no value, so the job id never reaches the logging context. | reported |
-
-### Configuration
-
-| # | Defect | Status |
-| --- | --- | --- |
-| C1 | `beluga.jobs` is bound and validated, but nothing calls `getJobs()`, so YAML jobs are never loaded. `JobDefinitionMapper.map(JobProperties)` exists but has no caller. | verified |
-| C2 | `type=S3` without an `s3:` block causes an NPE in the `S3ResultDataStoreProvider` constructor. There is no validation like `@HasCorrectPersistenceStore`. | verified |
-| C3 | `beluga.persistence.type: sqlite` (lowercase) binds to the enum but activates **no** persistence config, because the condition uses an exact `equals`. | reported |
-
-Recently fixed, so don't reintroduce: the S3 beans were conditional on the non-existent `beluga.result-datastore.*`
-prefix (covered by `ResultStorageBackendSelectionTest`); and the flat `type`-based extraction properties had a broken
-validator.
-
----
-
-## 7. Dead code
-
-None of this has a production caller. Prefer deleting it over building on it, and confirm it's still unused first.
-
-- `execution/service/worker/event/*`: `WorkerStartedEvent`, `WorkerFinishedEvent`, `JobWorkersFinishedEvent`.
-- `execution/model/task/DataPointConfiguration`.
-- `ExecutionConfiguration.workers`.
-- `execution/event/task/task_result/StorageHint` and `StorageType`.
-- `model/event/storable/StorableEvent` and `MapPayload`. `ImagePayload` is handled but never produced.
-- `HttpService.get(URL)`.
-- `config/SchedulingConfig`: no `@Scheduled` methods.
-- `api/job/validation/annotation/Path` and its validator; `WriteDataPointExtractionConfigurationDto`.
-- `model/types/StorageFormat`; `result_storage/file_system/exception/*`.
-- `TaskExecutionService.findByJobExecutionPaged`; `JsonService.toJson(List)`; `JobDefinitionRepository.deleteByName`.
-- Unused `ContextKeys` constants, such as `JOB_UUID` and `WORKER_ID`.
-- The test dependency `testcontainers-minio`, which no test uses.
-
----
-
-## 8. Testing architecture
+## 6. Testing architecture
 
 - **Test layout:** `src/beluga-scraper/src/test/java`, mirroring the main packages. Surefire also runs
   `*IntegrationTest`; there is no Failsafe phase.
@@ -691,7 +619,7 @@ None of this has a production caller. Prefer deleting it over building on it, an
 
 ---
 
-## 9. Change recipes
+## 7. Change recipes
 
 ### Add or change an extraction type
 
