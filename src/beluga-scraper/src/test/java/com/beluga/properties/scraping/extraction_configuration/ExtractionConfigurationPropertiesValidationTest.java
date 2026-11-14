@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
+import static org.instancio.settings.Keys.COLLECTION_MAX_SIZE;
 
 /**
  * Validates {@link ExtractionConfigurationProperties} with a real Bean Validation provider, covering both the exactly-one rule
@@ -47,18 +49,51 @@ class ExtractionConfigurationPropertiesValidationTest {
 
     static Stream<Arguments> shouldBeValid() {
         return Stream.of(
-                configured(properties -> properties.setAttribute(attribute("a", "link", "href"))),
-                configured(properties -> properties.setDescriptionList(descriptionList("dl", List.of(dataPoint("Color", "color"))))),
-                configured(properties -> properties.setHtml(html("div", "body"))),
-                configured(properties -> properties.setImage(new ImageExtractionConfigurationProperties())),
-                configured(properties -> properties.setText(text("p.price", "price")))
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getHtml))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .ignore(field(ExtractionConfigurationProperties::getText))
+                        .create(),
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getHtml))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .ignore(field(ExtractionConfigurationProperties::getText))
+                        .create(),
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .ignore(field(ExtractionConfigurationProperties::getText))
+                        .create(),
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getHtml))
+                        .ignore(field(ExtractionConfigurationProperties::getText))
+                        .create(),
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getHtml))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .create()
         ).map(Arguments::of);
     }
 
     @Test
     void shouldRejectWhenNoExtractionTypeIsConfigured() {
-        final Set<ConstraintViolation<ExtractionConfigurationProperties>> violations =
-                validator.validate(new ExtractionConfigurationProperties());
+        final ExtractionConfigurationProperties properties =
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getHtml))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .ignore(field(ExtractionConfigurationProperties::getText))
+                        .create();
+
+        final Set<ConstraintViolation<ExtractionConfigurationProperties>> violations = validator.validate(properties);
 
         assertThat(violations)
                 .singleElement()
@@ -68,9 +103,12 @@ class ExtractionConfigurationPropertiesValidationTest {
 
     @Test
     void shouldRejectWhenMultipleExtractionTypesAreConfigured() {
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setHtml(html("div", "body"));
-        properties.setText(text("p.price", "price"));
+        final ExtractionConfigurationProperties properties =
+                Instancio.of(ExtractionConfigurationProperties.class)
+                        .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                        .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                        .ignore(field(ExtractionConfigurationProperties::getImage))
+                        .create();
 
         final Set<ConstraintViolation<ExtractionConfigurationProperties>> violations = validator.validate(properties);
 
@@ -96,75 +134,144 @@ class ExtractionConfigurationPropertiesValidationTest {
 
         return Stream.of(
                 // Attribute
-                Arguments.of(configured(properties -> properties.setAttribute(attribute(null, "link", "href"))), "attribute.selector"),
-                Arguments.of(configured(properties -> properties.setAttribute(attribute("a", " ", "href"))), "attribute.field"),
-                Arguments.of(configured(properties -> properties.setAttribute(attribute("a", "link", ""))), "attribute.attribute"),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(AttributeExtractionConfigurationProperties::getSelector), null)
+                                .create(),
+                        "attribute.selector"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(AttributeExtractionConfigurationProperties::getField), " ")
+                                .create(),
+                        "attribute.field"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(AttributeExtractionConfigurationProperties::getAttribute), "")
+                                .create(),
+                        "attribute.attribute"
+                ),
 
                 // Description list
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList(" ", List.of(dataPoint("Color", "color"))))),
-                        "descriptionList.selector"),
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList("dl", null))),
-                        "descriptionList.dataPoints"),
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList("dl", List.of()))),
-                        "descriptionList.dataPoints"),
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList("dl", containingNull))),
-                        "descriptionList.dataPoints[0].<list element>"),
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList("dl", List.of(dataPoint(null, "color"))))),
-                        "descriptionList.dataPoints[0].dtValue"),
-                Arguments.of(configured(properties -> properties.setDescriptionList(descriptionList("dl", List.of(dataPoint("Color", ""))))),
-                        "descriptionList.dataPoints[0].field"),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(DescriptionListExtractionConfigurationProperties::getSelector), " ")
+                                .create(),
+                        "descriptionList.selector"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(DescriptionListExtractionConfigurationProperties::getDataPoints), null)
+                                .create(),
+                        "descriptionList.dataPoints"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(DescriptionListExtractionConfigurationProperties::getDataPoints), List.of())
+                                .create(),
+                        "descriptionList.dataPoints"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(DescriptionListExtractionConfigurationProperties::getDataPoints), containingNull)
+                                .create(),
+                        "descriptionList.dataPoints[0].<list element>"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .withSetting(COLLECTION_MAX_SIZE, 1)
+                                .set(field(DescriptionListExtractionConfigurationDataPointProperties::getDtValue), null)
+                                .create(),
+                        "descriptionList.dataPoints[0].dtValue"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .withSetting(COLLECTION_MAX_SIZE, 1)
+                                .set(field(DescriptionListExtractionConfigurationDataPointProperties::getField), "")
+                                .create(),
+                        "descriptionList.dataPoints[0].field"
+                ),
 
                 // Html
-                Arguments.of(configured(properties -> properties.setHtml(html(null, "body"))), "html.selector"),
-                Arguments.of(configured(properties -> properties.setHtml(html("div", " "))), "html.field"),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(HtmlExtractionConfigurationProperties::getSelector), null)
+                                .create(),
+                        "html.selector"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .ignore(field(ExtractionConfigurationProperties::getText))
+                                .set(field(HtmlExtractionConfigurationProperties::getField), " ")
+                                .create(),
+                        "html.field"
+                ),
 
                 // Text
-                Arguments.of(configured(properties -> properties.setText(text("", "price"))), "text.selector"),
-                Arguments.of(configured(properties -> properties.setText(text("p.price", null))), "text.field")
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .set(field(TextExtractionConfigurationProperties::getSelector), "")
+                                .create(),
+                        "text.selector"
+                ),
+                Arguments.of(
+                        Instancio.of(ExtractionConfigurationProperties.class)
+                                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                                .ignore(field(ExtractionConfigurationProperties::getImage))
+                                .set(field(TextExtractionConfigurationProperties::getField), null)
+                                .create(),
+                        "text.field"
+                )
         );
-    }
-
-    private static ExtractionConfigurationProperties configured(final Consumer<ExtractionConfigurationProperties> configurer) {
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        configurer.accept(properties);
-        return properties;
-    }
-
-    private static AttributeExtractionConfigurationProperties attribute(final String selector, final String field, final String attribute) {
-        final AttributeExtractionConfigurationProperties properties = new AttributeExtractionConfigurationProperties();
-        properties.setSelector(selector);
-        properties.setField(field);
-        properties.setAttribute(attribute);
-        return properties;
-    }
-
-    private static DescriptionListExtractionConfigurationProperties descriptionList(
-            final String selector,
-            final List<DescriptionListExtractionConfigurationDataPointProperties> dataPoints) {
-        final DescriptionListExtractionConfigurationProperties properties = new DescriptionListExtractionConfigurationProperties();
-        properties.setSelector(selector);
-        properties.setDataPoints(dataPoints);
-        return properties;
-    }
-
-    private static DescriptionListExtractionConfigurationDataPointProperties dataPoint(final String dtValue, final String field) {
-        final DescriptionListExtractionConfigurationDataPointProperties properties = new DescriptionListExtractionConfigurationDataPointProperties();
-        properties.setDtValue(dtValue);
-        properties.setField(field);
-        return properties;
-    }
-
-    private static HtmlExtractionConfigurationProperties html(final String selector, final String field) {
-        final HtmlExtractionConfigurationProperties properties = new HtmlExtractionConfigurationProperties();
-        properties.setSelector(selector);
-        properties.setField(field);
-        return properties;
-    }
-
-    private static TextExtractionConfigurationProperties text(final String selector, final String field) {
-        final TextExtractionConfigurationProperties properties = new TextExtractionConfigurationProperties();
-        properties.setSelector(selector);
-        properties.setField(field);
-        return properties;
     }
 }
