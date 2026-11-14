@@ -26,7 +26,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/badRequestResponse"
+                $ref: "#/components/schemas/errorResponse"
   /jobs/{jobId}:
     get:
       description: Retrieve a job
@@ -77,7 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/badRequestResponse"
+                $ref: "#/components/schemas/errorResponse"
         404:
           description: NOT FOUND
 
@@ -98,11 +98,6 @@ components:
         - name
         - execution
         - scraping
-
-    updateJob:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/createJob"
 
     job:
       type: object
@@ -127,7 +122,9 @@ components:
       type: object
       properties:
         tasksPerSecond:
-          type: integer
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
           example: 5
       required:
         - tasksPerSecond
@@ -153,12 +150,15 @@ components:
         dataPoints:
           type: array
           items:
-            anyOf:
+            oneOf:
               - $ref: "#/components/schemas/writeAttributeExtractionConfigurationDto"
               - $ref: "#/components/schemas/writeDescriptionListExtractionConfigurationDto"
               - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/writeImageExtractionConfigurationDto"
               - $ref: "#/components/schemas/writeTextExtractionConfigurationDto"
-          minLength: 1
+            discriminator:
+              propertyName: type
+          minItems: 1
       required:
         - itemSelector
         - dataPoints
@@ -176,41 +176,19 @@ components:
         dataPoints:
           type: array
           items:
-            anyOf:
+            oneOf:
               - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
               - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
               - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
+              - $ref: "#/components/schemas/readImageExtractionConfigurationDto"
               - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
-          minLength: 1
+            discriminator:
+              propertyName: type
+          minItems: 1
       required:
         - id
         - itemSelector
         - dataPoints
-
-    readScrapingDataPointDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 123
-        selector:
-          type: string
-        extraction:
-          oneOf:
-            - $ref: "#/components/schemas/readAttributeExtractionConfigurationDto"
-            - $ref: "#/components/schemas/readDescriptionListExtractionConfigurationDto"
-            - $ref: "#/components/schemas/readHtmlExtractionConfigurationDto"
-            - $ref: "#/components/schemas/readTextExtractionConfigurationDto"
-      required:
-        - id
-        - selector
-
-    dataPointType:
-      type: string
-      enum:
-        - IMAGE
-        - TEXT
-        - HTML
 
     writeAttributeExtractionConfigurationDto:
       type: object
@@ -228,6 +206,7 @@ components:
           type: string
       required:
         - type
+        - selector
         - field
         - attribute
 
@@ -248,8 +227,6 @@ components:
         dtValue:
           type: string
         field:
-          type: string
-        selector:
           type: string
       required:
         - dtValue
@@ -275,12 +252,14 @@ components:
             - DESCRIPTION_LIST
         dataPoints:
           type: array
+          minItems: 1
           items:
             $ref: "#/components/schemas/writeDescriptionListExtractionDataPointConfigurationDto"
         selector:
           type: string
       required:
         - type
+        - selector
         - dataPoints
 
     readDescriptionListExtractionConfigurationDto:
@@ -293,6 +272,8 @@ components:
           type: string
           enum:
             - DESCRIPTION_LIST
+        selector:
+          type: string
         dataPoints:
           type: array
           items:
@@ -300,6 +281,7 @@ components:
       required:
         - id
         - type
+        - selector
         - dataPoints
 
     writeHtmlExtractionConfigurationDto:
@@ -315,12 +297,34 @@ components:
           type: string
       required:
         - type
+        - selector
         - field
 
     readHtmlExtractionConfigurationDto:
       type: object
       allOf:
         - $ref: "#/components/schemas/writeHtmlExtractionConfigurationDto"
+      properties:
+        id:
+          type: integer
+          example: 123
+      required:
+        - id
+
+    writeImageExtractionConfigurationDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - IMAGE
+      required:
+        - type
+
+    readImageExtractionConfigurationDto:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/writeImageExtractionConfigurationDto"
       properties:
         id:
           type: integer
@@ -341,6 +345,7 @@ components:
           type: string
       required:
         - type
+        - selector
         - field
 
     readTextExtractionConfigurationDto:
@@ -354,11 +359,22 @@ components:
       required:
         - id
 
-    badRequestResponse:
+    errorResponse:
       type: object
+      description: Returned for validation errors and invalid arguments (ErrorResponseDto).
       properties:
-        message:
+        timestamp:
           type: string
-          example: some property was null but expected not null
+          format: date-time
+        status:
+          type: integer
+          example: 400
+        errors:
+          type: array
+          items:
+            type: string
+            example: Job name must be unique.
       required:
-        - message
+        - timestamp
+        - status
+        - errors
