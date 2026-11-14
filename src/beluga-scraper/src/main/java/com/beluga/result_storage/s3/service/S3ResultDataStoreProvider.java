@@ -14,7 +14,7 @@ import static com.beluga.logging.ContextKeys.RESOURCE_IDENTIFIER;
  */
 @Component
 @ConditionalOnProperty(
-		name = "beluga.result-datastore.type",
+		name = "beluga.result-storage.type",
 		havingValue = "S3"
 )
 public class S3ResultDataStoreProvider extends ResultDataStoreProvider {

@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
  */
 @Service
 @ConditionalOnProperty(
-        name = "beluga.result-datastore.type",
+        name = "beluga.result-storage.type",
         havingValue = "S3"
 )
 public class S3Service {
