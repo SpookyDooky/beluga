@@ -50,6 +50,9 @@ paths:
           description: Not found
   /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results:
     get:
+      description: Retrieve the scraped data of a single task execution
+      tags:
+        - Results
       parameters:
         - in: path
           name: jobId
@@ -71,7 +74,7 @@ paths:
           schema:
             type: integer
             example: 123
-          description: Id of a task that belongs to an executions
+          description: Id of a task execution (see GET /jobs/{jobId}/executions/{executionId})
       responses:
         200:
           description: OK
@@ -83,6 +86,9 @@ paths:
           description: Not found
   /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results/files:
     get:
+      description: List the stored result files of a task execution
+      tags:
+        - Results
       parameters:
         - in: path
           name: jobId
@@ -104,7 +110,7 @@ paths:
           schema:
             type: integer
             example: 123
-          description: Id of a task that belongs to an executions
+          description: Id of a task execution (see GET /jobs/{jobId}/executions/{executionId})
       responses:
         200:
           description: OK
@@ -118,6 +124,9 @@ paths:
           description: Not found
   /jobs/{jobId}/executions/{executionId}/tasks/{taskId}/results/files/download:
     get:
+      description: Download a stored result file of a task execution
+      tags:
+        - Results
       parameters:
         - in: path
           name: jobId
@@ -139,20 +148,21 @@ paths:
           schema:
             type: integer
             example: 123
-          description: Id of a task that belongs to an executions
+          description: Id of a task execution (see GET /jobs/{jobId}/executions/{executionId})
         - in: query
           name: fileName
           required: true
           schema:
             type: string
-            example: image.png
-          description: The file name that belongs to a task
+            example: data.json
+          description: Stored file key of the task execution, for example data.json or source.html
       responses:
         200:
           description: OK
           content:
             application/octet-stream:
               schema:
+                type: string
                 format: binary
         404:
           description: Not found
@@ -271,12 +281,17 @@ components:
     TaskResultFile:
       type: object
       properties:
+        id:
+          type: integer
+          example: 42
         resourceIdentifier:
           type: string
-          example: data/results/123/321/1/data.json
+          example: /app/data/123/321/1/data.json
+          description: "{prefix}/{jobId}/{executionId}/{taskId}/{fileName}"
         sizeInBytes:
           type: integer
           example: 123
       required:
+        - id
         - resourceIdentifier
         - sizeInBytes
