@@ -18,7 +18,6 @@ import java.net.URI;
 public class S3Config {
 	
 	@Bean("results-s3client")
-	@ConditionalOnProperty("beluga.result-datastore.s3.host")
 	public S3Client s3Client(final com.beluga.properties.BelugaScraperProperties properties) {
 		final S3Properties s3Properties = properties.getResultStorage().getS3();
 		
