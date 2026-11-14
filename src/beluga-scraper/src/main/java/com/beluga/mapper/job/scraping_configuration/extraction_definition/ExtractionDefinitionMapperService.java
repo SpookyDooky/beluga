@@ -36,7 +36,7 @@ public class ExtractionDefinitionMapperService {
     }
 
     public ExtractionDefinition map(final ExtractionConfigurationProperties properties) {
-        return switch (properties.configuredExtractionType()) {
+        return switch (properties.getConfiguredExtractionType()) {
             case AttributeExtractionConfigurationProperties attribute -> attributeExtractionDefinitionMapper.map(attribute);
             case DescriptionListExtractionConfigurationProperties descriptionList ->
                     descriptionListExtractionDefinitionMapper.map(descriptionList);

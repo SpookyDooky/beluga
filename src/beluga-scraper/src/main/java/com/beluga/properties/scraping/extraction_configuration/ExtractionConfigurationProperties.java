@@ -3,10 +3,7 @@ package com.beluga.properties.scraping.extraction_configuration;
 import com.beluga.properties.scraping.extraction_configuration.validation.annotation.HasExactlyOneExtractionConfiguration;
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A single data point to extract. Exactly one of the extraction type properties must be configured, for example:
@@ -32,11 +29,7 @@ public class ExtractionConfigurationProperties {
     @Valid
     private TextExtractionConfigurationProperties text;
 
-    /**
-     * Returns all extraction type properties keyed by their property name, including the ones that are not configured.
-     * Not named as a getter so the configuration binder does not treat it as a bindable property.
-     */
-    public Map<String, ExtractionTypeProperties> extractionTypesByName() {
+    public Map<String, ExtractionTypeProperties> getExtractionTypesByName() {
         final Map<String, ExtractionTypeProperties> extractionTypes = new LinkedHashMap<>();
         extractionTypes.put("attribute", attribute);
         extractionTypes.put("description-list", descriptionList);
@@ -51,13 +44,11 @@ public class ExtractionConfigurationProperties {
      *
      * @throws IllegalStateException when not exactly one extraction type is configured, which validation prevents
      */
-    public ExtractionTypeProperties configuredExtractionType() {
-        final List<ExtractionTypeProperties> configured = new ArrayList<>();
-        extractionTypesByName().values().forEach(extractionType -> {
-            if (extractionType != null) {
-                configured.add(extractionType);
-            }
-        });
+    public ExtractionTypeProperties getConfiguredExtractionType() {
+        final List<ExtractionTypeProperties> configured = getExtractionTypesByName().values()
+                .stream()
+                .filter(Objects::nonNull)
+                .toList();
 
         if (configured.size() != 1) {
             throw new IllegalStateException("Expected exactly one extraction type to be configured, but found " + configured.size());

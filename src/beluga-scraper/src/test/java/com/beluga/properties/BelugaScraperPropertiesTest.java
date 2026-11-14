@@ -76,21 +76,21 @@ class BelugaScraperPropertiesTest {
 					.getJobs().getFirst().getScraping().getDataPoints();
 			
 			assertThat(dataPoints).hasSize(5);
-			assertThat(dataPoints.get(0).configuredExtractionType()).isInstanceOfSatisfying(TextExtractionConfigurationProperties.class, text -> {
+			assertThat(dataPoints.get(0).getConfiguredExtractionType()).isInstanceOfSatisfying(TextExtractionConfigurationProperties.class, text -> {
 				assertThat(text.getSelector()).isEqualTo("p.price");
 				assertThat(text.getField()).isEqualTo("price");
 			});
-			assertThat(dataPoints.get(1).configuredExtractionType()).isInstanceOfSatisfying(AttributeExtractionConfigurationProperties.class, attribute -> {
+			assertThat(dataPoints.get(1).getConfiguredExtractionType()).isInstanceOfSatisfying(AttributeExtractionConfigurationProperties.class, attribute -> {
 				assertThat(attribute.getSelector()).isEqualTo("a");
 				assertThat(attribute.getField()).isEqualTo("link");
 				assertThat(attribute.getAttribute()).isEqualTo("href");
 			});
-			assertThat(dataPoints.get(2).configuredExtractionType()).isInstanceOfSatisfying(HtmlExtractionConfigurationProperties.class, html -> {
+			assertThat(dataPoints.get(2).getConfiguredExtractionType()).isInstanceOfSatisfying(HtmlExtractionConfigurationProperties.class, html -> {
 				assertThat(html.getSelector()).isEqualTo("div");
 				assertThat(html.getField()).isEqualTo("body");
 			});
-			assertThat(dataPoints.get(3).configuredExtractionType()).isInstanceOf(ImageExtractionConfigurationProperties.class);
-			assertThat(dataPoints.get(4).configuredExtractionType()).isInstanceOfSatisfying(DescriptionListExtractionConfigurationProperties.class, descriptionList -> {
+			assertThat(dataPoints.get(3).getConfiguredExtractionType()).isInstanceOf(ImageExtractionConfigurationProperties.class);
+			assertThat(dataPoints.get(4).getConfiguredExtractionType()).isInstanceOfSatisfying(DescriptionListExtractionConfigurationProperties.class, descriptionList -> {
 				assertThat(descriptionList.getSelector()).isEqualTo("dl");
 				assertThat(descriptionList.getDataPoints()).singleElement().satisfies(dataPoint -> {
 					assertThat(dataPoint.getDtValue()).isEqualTo("Color");

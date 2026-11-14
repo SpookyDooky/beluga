@@ -23,7 +23,7 @@ public class HasExactlyOneExtractionConfigurationValidator
             return true;
         }
 
-        final Map<String, ExtractionTypeProperties> extractionTypes = extractionConfiguration.extractionTypesByName();
+        final Map<String, ExtractionTypeProperties> extractionTypes = extractionConfiguration.getExtractionTypesByName();
         final List<String> configured = extractionTypes.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .map(Map.Entry::getKey)

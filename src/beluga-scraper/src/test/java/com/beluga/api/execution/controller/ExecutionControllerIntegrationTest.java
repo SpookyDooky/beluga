@@ -159,7 +159,7 @@ class ExecutionControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@TestTemplate
 	void shouldGet404ForRetrievingExecutionsForNonExistingJob() throws Exception{
-		mvc.perform(get("/jobs/123/executions"))
+		mvc.perform(get("/jobs/123456789/executions"))
 				.andExpect(status().isNotFound());
 	}
 	

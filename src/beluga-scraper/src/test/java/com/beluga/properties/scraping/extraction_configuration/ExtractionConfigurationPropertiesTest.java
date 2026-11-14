@@ -8,19 +8,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ExtractionConfigurationPropertiesTest {
 
     @Test
-    void shouldReturnConfiguredExtractionType() {
+    void shouldReturnGetConfiguredExtractionType() {
         final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
         final ImageExtractionConfigurationProperties image = new ImageExtractionConfigurationProperties();
         properties.setImage(image);
 
-        assertThat(properties.configuredExtractionType()).isSameAs(image);
+        assertThat(properties.getConfiguredExtractionType()).isSameAs(image);
     }
 
     @Test
     void shouldThrowWhenNoExtractionTypeIsConfigured() {
         final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
 
-        assertThatThrownBy(properties::configuredExtractionType)
+        assertThatThrownBy(properties::getConfiguredExtractionType)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Expected exactly one extraction type to be configured, but found 0");
     }
@@ -31,7 +31,7 @@ class ExtractionConfigurationPropertiesTest {
         properties.setImage(new ImageExtractionConfigurationProperties());
         properties.setText(new TextExtractionConfigurationProperties());
 
-        assertThatThrownBy(properties::configuredExtractionType)
+        assertThatThrownBy(properties::getConfiguredExtractionType)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Expected exactly one extraction type to be configured, but found 2");
     }

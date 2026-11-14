@@ -1,7 +1,7 @@
 package com.beluga.properties.scraping.extraction_configuration;
 
 /**
- * Extracts an image. Has no settings, configure it as an empty block: {@code image: {}}.
+ * Extracts an image. Not supported until v1.1.
  */
 public final class ImageExtractionConfigurationProperties implements ExtractionTypeProperties {
 }
