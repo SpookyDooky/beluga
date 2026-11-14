@@ -572,6 +572,9 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
 - **`interruptedJobs` is only set for running jobs,** so a stale mark can't suppress a later `JobFinishedEvent`.
 - **An execution with zero tasks still runs through the executor,** so it reaches COMPLETED.
 - **`job.tasks` is cleared after enqueueing.** The queue is the source of truth while running.
+- **Rate limiting is per job, not per host.** Each running job gets its own `JitterRateLimiter(tasksPerSecond)`, so
+  several jobs that target the same site add up their rates. This is intended. Per-host limiting is a possible future
+  feature, not a missing one; don't flag it as a defect.
 - **The MDC is cleared on every async task** (`CustomAsyncTaskExecutor`), so context never leaks between pooled tasks.
   Re-establish it with `logger.with(...)`.
 - **Only SQLite scans `com.beluga.persistence.sqlite.converter` (`InstantConverter`).** SQLite has no timestamp type, so
