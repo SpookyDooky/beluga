@@ -50,7 +50,9 @@ closest existing test and say so. If you're not sure, ask before going your own 
   calls that are already proven by a stubbed return value.
 - Use `spy`, `mockStatic` or `mockConstruction` only if the project already
   uses them for the same kind of case.
-- Mocking a DTO, entity or value object is fine when the test only checks that the same instance is passed along (assertSame, verify, or a stub match). Use Instancio when the test reads or depends on the object's fields.
+- Mocking a DTO, entity or value object is fine when the test only checks
+  that the same instance is passed along (assertSame, verify, or a stub
+  match). Use Instancio when the test reads or depends on the object's fields.
 
 ## 4. What makes a good test here
 - One behaviour per test; the method name says which.
