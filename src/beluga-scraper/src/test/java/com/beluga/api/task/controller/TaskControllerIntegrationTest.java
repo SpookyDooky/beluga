@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -261,5 +263,24 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		).getFirst().getId();
 		
 		assertEquals(firstId, secondId);
+	}
+	
+	@TestTemplate
+	void shouldReturn400ForNullTaskUrl() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+
+		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
+				.set(field(UpdateTaskDto::getUrls), new HashSet<>())
+				.create();
+		updateTaskDto.getUrls().add(null);
+
+		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
+						.content(objectMapper.writeValueAsString(updateTaskDto))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.errors", hasItem("A URL must not be null.")));
 	}
 }
