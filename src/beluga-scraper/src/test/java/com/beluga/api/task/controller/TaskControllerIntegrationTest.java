@@ -77,12 +77,12 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 				.andReturn();
 		
 		final byte[] content = mvcResult.getResponse().getContentAsByteArray();
-		final List<ReadTaskDefinitionDto> taskDefinitions = objectMapper.readValue(content, new TypeReference<List<ReadTaskDefinitionDto>>() {
-			@Override
-			public Type getType() {
-				return super.getType();
-			}
-		});
+		final List<ReadTaskDefinitionDto> taskDefinitions = objectMapper.readValue(content, new TypeReference<>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
 		
 		final ReadTaskDefinitionDto taskDefinition = taskDefinitions.getFirst();
 		
