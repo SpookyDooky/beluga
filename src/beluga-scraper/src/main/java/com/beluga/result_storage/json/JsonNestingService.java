@@ -73,20 +73,6 @@ public class JsonNestingService {
 					nestedObject = newObject;
 				}
 			}
-			
-//			Map<String, Object> lastObject = null;
-//			for (int i = 0; i < nestedObjects.size(); i++) {
-//				final String objectName = nestedObjects.get(i);
-//				final Map<String, Object> nestedObject = new HashMap<>();
-//
-//				if (i >= 1) {
-//					lastObject.put(objectName, nestedObject);
-//					lastObject = nestedObject;
-//				} else {
-//					nestedMap.put(objectName, nestedObject);
-//					lastObject = nestedObject;
-//				}
-//			}
 		}
 		
 		return nestedMap;
