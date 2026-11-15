@@ -248,8 +248,9 @@ class JobDefinitionServiceTest {
 
 	private void mockLatestExecutionWithStatus(final Long id,
 	                                           final JobStatus status) {
-		final JobExecution jobExecution = new JobExecution();
-		jobExecution.setStatus(status);
+		final JobExecution jobExecution = Instancio.of(JobExecution.class)
+				.set(field(JobExecution::getStatus), status)
+				.create();
 
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinition.getMostRecentExecution()).thenReturn(Optional.of(jobExecution));

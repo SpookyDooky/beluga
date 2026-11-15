@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.instancio.Select.field;
 import static com.beluga.execution.model.task.TaskStatus.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,7 +34,10 @@ class TaskExecutionEventHandlerTest {
 	@Test
 	void shouldOnTaskStarted() {
 		final TaskStartedEvent event = Instancio.create(TaskStartedEvent.class);
-		final TaskExecution taskExecution = new TaskExecution();
+		final TaskExecution taskExecution = Instancio.of(TaskExecution.class)
+				.set(field(TaskExecution::getStatus), PLANNED)
+				.ignore(field(TaskExecution::getExecutedAt))
+				.create();
 		when(taskExecutionService.getById(event.getTaskId())).thenReturn(taskExecution);
 		
 		taskExecutionEventHandler.onTaskStarted(event);
@@ -47,7 +51,9 @@ class TaskExecutionEventHandlerTest {
 	@Test
 	void onTaskCompleted() {
 		final TaskCompletedEvent event = Instancio.create(TaskCompletedEvent.class);
-		final TaskExecution taskExecution = new TaskExecution();
+		final TaskExecution taskExecution = Instancio.of(TaskExecution.class)
+				.set(field(TaskExecution::getStatus), PLANNED)
+				.create();
 		when(taskExecutionService.getById(event.getTaskId())).thenReturn(taskExecution);
 		
 		taskExecutionEventHandler.onTaskCompleted(event);
@@ -60,7 +66,9 @@ class TaskExecutionEventHandlerTest {
 	@Test
 	void onTaskFailed() {
 		final TaskFailedEvent event = Instancio.create(TaskFailedEvent.class);
-		final TaskExecution taskExecution = new TaskExecution();
+		final TaskExecution taskExecution = Instancio.of(TaskExecution.class)
+				.set(field(TaskExecution::getStatus), PLANNED)
+				.create();
 		when(taskExecutionService.getById(event.getTaskId())).thenReturn(taskExecution);
 		
 		taskExecutionEventHandler.onTaskFailed(event);

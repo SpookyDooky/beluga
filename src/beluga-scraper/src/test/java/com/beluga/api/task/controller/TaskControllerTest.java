@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.*;
@@ -122,8 +123,9 @@ class TaskControllerTest {
 		when(jobDefinition.getActiveTaskDefinitions()).thenReturn(newTaskDefinitions);
 		when(readTaskDefinitionDtoMapper.map(newTaskDefinitions.getFirst())).thenReturn(expected.getFirst());
 		
-		final UpdateTaskDto updateTaskDto = new UpdateTaskDto();
-		updateTaskDto.getUrls().addAll(Set.of(newUrl, existingUrl));
+		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
+				.set(field(UpdateTaskDto::getUrls), Set.of(newUrl, existingUrl))
+				.create();
 		
 		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobDefinitionId, updateTaskDto);
 		
