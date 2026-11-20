@@ -284,7 +284,9 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
   - An empty fetch throws `IllegalStateException`, which makes the task FAILED.
   - Items are `document.body().select(itemSelector)`; only the body is searched.
   - Each item becomes one `Map<String,Object>`. Each extraction's map is `putAll`-ed into it, so **later fields with
-    the same name overwrite earlier ones**.
+    the same name overwrite earlier ones**. The API rejects duplicate, malformed and conflicting field names
+    (`@HasValidFieldNames` on `WriteScrapingConfigurationDto`), so this only affects jobs saved before that check.
+    `JsonNestingService` throws `IllegalArgumentException` when one key is the prefix of another.
   - Output is `ScrapingResult(document.toString(), List<Map>)`. The raw page is jsoup's **re-serialized** document, not
     the original bytes.
 - **Per type:**
@@ -437,7 +439,8 @@ try (final CloseableContext ignored = logger.with(JOB_EXECUTION_ID, task.getJob(
 
 **Create job.** `JobController.create` (`@Transactional`):
 
-1. Bean validation runs on `@Valid`, but it is shallow; see [§6](#6-known-defects).
+1. Bean validation runs on `@Valid` and cascades into `execution` and `scraping`, including the field name rules of
+   `@HasValidFieldNames`.
 2. `JobNameValidator` checks `existsByName`, and a duplicate throws `IllegalArgumentException`, which becomes 400. The
    DB unique constraint is the backstop.
 3. `JobDefinitionMapper.map(dto)` maps the DTO and saves it, cascading.
