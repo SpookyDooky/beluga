@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 @Testcontainers
 class S3ResultDataStoreProviderIntegrationTest {
 	
-	private static final DockerImageName MINIO_IMAGE = DockerImageName.parse("quay.io/minio/minio:latest")
+	private static final DockerImageName MINIO_IMAGE = DockerImageName.parse("docker.io/pgsty/silo:9.9")
 			.asCompatibleSubstituteFor("minio/minio");
 	private static final String BUCKET = "results";
 
