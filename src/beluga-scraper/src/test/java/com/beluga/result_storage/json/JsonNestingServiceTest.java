@@ -39,4 +39,20 @@ class JsonNestingServiceTest {
 		assertEquals("f", countryMap.get("code"));
 		assertEquals("g", countryMap.get("name"));
 	}
+	
+	@Test
+	void shouldNestObjectWithSameNameAsTopLevelObject() {
+		final Map<String, Object> mapWithNesting = Map.of(
+				"price.amount", "a",
+				"discount.price.amount", "b"
+		);
+		
+		final Map<String, Object> result = jsonNestingService.createJsonNesting(mapWithNesting);
+		
+		final Map<String, Object> expected = Map.of(
+				"price", Map.of("amount", "a"),
+				"discount", Map.of("price", Map.of("amount", "b"))
+		);
+		assertEquals(expected, result);
+	}
 }

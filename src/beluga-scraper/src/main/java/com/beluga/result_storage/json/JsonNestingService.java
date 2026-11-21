@@ -17,7 +17,7 @@ public class JsonNestingService {
 		
 		return result;
 	}
-	
+
 	private Set<String> findNestedProperties(final Set<String> propertyNames) {
 		final Set<String> prefixes = new HashSet<>();
 		
@@ -50,13 +50,13 @@ public class JsonNestingService {
 		
 		for (final String nestedPropertyPrefix : nestedPrefixes) {
 			final List<String> nestedObjects = getNestedObjects(nestedPropertyPrefix);
-			
+
 			Map<String, Object> nestedObject = null;
 			for (int i = 0; i < nestedObjects.size(); i++) {
 				final String objectName = nestedObjects.get(i);
-				
+
 				// Some part is already defined
-				if (nestedMap.containsKey(objectName)) {
+				if (nestedObject == null && nestedMap.containsKey(objectName)) {
 					nestedObject = (Map<String, Object>) nestedMap.get(objectName);
 					continue;
 				} else if (nestedObject != null && nestedObject.containsKey(objectName)) {
