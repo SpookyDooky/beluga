@@ -109,13 +109,13 @@ calls ([§4.3](#43-execution-event-driven)).
 | `api/execution` | Start, stop, pause and resume, plus execution history. `ExecutionApiService` hands off to the executor. |
 | `api/results` | Result retrieval, paged results, file listing and download. |
 | `api/exception` | `GlobalExceptionHandler`, `ErrorResponseDtoFactory`, `ErrorResponseDto`. |
-| `service/job` | `JobDefinitionService` (repository facade and task add/deactivate), `JobService` (builds executions and runtime snapshots), `JobExecutionService`. |
+| `service/job` | `JobDefinitionService` (repository facade and task add/deactivate), `JobService` (builds executions and runtime snapshots), `JobExecutionService`, `JobRegistrar` (saves YAML jobs at startup). |
 | `service/task` | `TaskDefinitionService`, `TaskExecutionService`, and `TaskExecutionEventHandler`, which persists task status and `ResultFile` rows from events. |
 | `service/results` | `ResultFileService`. |
 | `model/job_definition/**` | Definition entities: `JobDefinition`, `ScrapingDefinition`, `ExecutionDefinition`, the `ExtractionDefinition` hierarchy, `ExtractionType`. |
 | `model/` (other) | `JobExecution`, `ResultFile`, `JobStatus`, `CompressionType`; `model/event/storable` (payloads). |
 | `execution/model/job`, `execution/model/task` | **Runtime** snapshots `Job`, `Task`, `ScrapingConfiguration` and the runtime `ExtractionConfiguration` hierarchy. **Note:** the JPA entities `TaskDefinition` and `TaskExecution` and the enum `TaskStatus` also live in `execution/model/task`. |
-| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery), `JobRegistrar` (saves YAML jobs at startup). |
+| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery). |
 | `execution/service/task` | `JobTaskQueue`. |
 | `execution/service/worker` | `Worker` (one task per async call); `rate_limiting/JitterRateLimiter`. |
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |

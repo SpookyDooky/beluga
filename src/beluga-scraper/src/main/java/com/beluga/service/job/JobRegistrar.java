@@ -1,4 +1,4 @@
-package com.beluga.execution.service.job;
+package com.beluga.service.job;
 
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
@@ -6,7 +6,6 @@ import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.scraping.JobProperties;
-import com.beluga.service.job.JobDefinitionService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,8 @@ import org.springframework.stereotype.Component;
 /**
  * Registers the {@link JobDefinition}'s configured through {@link BelugaScraperProperties} when the application starts.
  * As an {@link ApplicationRunner} it finishes before the {@code ApplicationReadyEvent} is published, so the
- * definitions are in place before {@link JobScheduler} recovers unfinished executions, and a failure stops startup.
+ * definitions are in place before {@link com.beluga.execution.service.job.JobScheduler} recovers unfinished
+ * executions, and a failure stops startup.
  */
 @Component
 public class JobRegistrar implements ApplicationRunner {

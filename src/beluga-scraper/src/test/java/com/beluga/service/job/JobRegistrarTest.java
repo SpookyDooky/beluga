@@ -1,11 +1,10 @@
-package com.beluga.execution.service.job;
+package com.beluga.service.job;
 
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
 import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.scraping.JobProperties;
-import com.beluga.service.job.JobDefinitionService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
