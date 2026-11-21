@@ -1,0 +1,13 @@
+# For integration tests that create jobs from spring properties
+beluga:
+  jobs:
+    - name: configured-job
+      url:
+        urls:
+          - https://example.com/products
+      scraping:
+        item-selector: div.product
+        data-points:
+          - text:
+              selector: p.price
+              field: price
