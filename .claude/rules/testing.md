@@ -56,6 +56,9 @@ closest existing test and say so. If you're not sure, ask before going your own 
 
 ## 4. What makes a good test here
 - One behaviour per test; the method name says which.
+- Declare every variable with its explicit type, for example
+  `final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);`.
+  Never use `var`, not even in try-with-resources, loops or lambdas.
 - Cover the happy path, the edge cases and the error paths (exceptions:
   `assertThatThrownBy` / `assertThrows`, whichever the project uses).
 - Every bug fix gets a test that fails before the fix.
