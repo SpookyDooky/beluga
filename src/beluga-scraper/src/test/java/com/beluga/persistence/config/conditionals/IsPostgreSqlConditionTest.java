@@ -36,4 +36,10 @@ class IsPostgreSqlConditionTest {
 		assertTrue(condition.matches(context, metadata));
 	}
 	
+	@Test
+	void shouldMatchLowercaseType() {
+		when(environment.getProperty("beluga.persistence.type")).thenReturn("postgresql");
+		assertTrue(condition.matches(context, metadata));
+	}
+	
 }

@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.util.function.Predicate.not;
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Service
@@ -99,10 +99,10 @@ public class JobDefinitionService {
                                        final Long jobDefinitionId) {
         final JobDefinition jobDefinition = getById(jobDefinitionId);
 
-        final Set<URL> activeTaskDefinitionUrls = taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId);
+        final Set<String> knownUrls = new HashSet<>(taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId));
         jobDefinition.addTaskDefinitions(
                 taskDefinitions.stream()
-                        .filter(not(taskDefinition -> activeTaskDefinitionUrls.contains(taskDefinition.getUrl())))
+                        .filter(taskDefinition -> knownUrls.add(taskDefinition.getUrl().toExternalForm()))
                         .toList()
         );
 

@@ -159,6 +159,11 @@ components:
             discriminator:
               propertyName: type
           minItems: 1
+          description: >
+            Field names (including those of description list data points) are stored as nested JSON, where dots
+            separate the levels. Across all data points, a field name must be unique, must not start or end with a dot
+            or contain consecutive dots, and must not also be the prefix of another field name (`product` and
+            `product.price` cannot both be used). Violations are rejected with a 400.
       required:
         - itemSelector
         - dataPoints

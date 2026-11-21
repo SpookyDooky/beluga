@@ -15,7 +15,7 @@ class JobExecutionTest {
 	@Test
 	void shouldAddTask() {
 		final JobExecution jobExecution = new JobExecution();
-		final TaskExecution taskExecution = new TaskExecution();
+		final TaskExecution taskExecution = Instancio.create(TaskExecution.class);
 		
 		jobExecution.addTask(taskExecution);
 		

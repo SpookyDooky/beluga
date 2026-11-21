@@ -11,12 +11,7 @@ import com.beluga.model.job_definition.configuration.scraping_configuration.extr
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.html.HtmlExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.image.ImageExtractionDefinition;
 import com.beluga.model.job_definition.configuration.scraping_configuration.extraction_definition.text.TextExtractionDefinition;
-import com.beluga.properties.scraping.extraction_configuration.AttributeExtractionConfigurationProperties;
-import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
-import com.beluga.properties.scraping.extraction_configuration.HtmlExtractionConfigurationProperties;
-import com.beluga.properties.scraping.extraction_configuration.ImageExtractionConfigurationProperties;
-import com.beluga.properties.scraping.extraction_configuration.TextExtractionConfigurationProperties;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,11 +43,14 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToAttributeExtractionDefinition() {
-        final AttributeExtractionConfigurationProperties attribute = Instancio.create(AttributeExtractionConfigurationProperties.class);
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setAttribute(attribute);
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                .ignore(field(ExtractionConfigurationProperties::getImage))
+                .ignore(field(ExtractionConfigurationProperties::getText))
+                .create();
         final AttributeExtractionDefinition extractionDefinition = mock();
-        when(attributeExtractionDefinitionMapper.map(attribute)).thenReturn(extractionDefinition);
+        when(attributeExtractionDefinitionMapper.map(properties.getAttribute())).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -60,12 +59,14 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToDescriptionListExtractionDefinition() {
-        final DescriptionListExtractionConfigurationProperties descriptionList =
-                Instancio.create(DescriptionListExtractionConfigurationProperties.class);
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setDescriptionList(descriptionList);
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                .ignore(field(ExtractionConfigurationProperties::getImage))
+                .ignore(field(ExtractionConfigurationProperties::getText))
+                .create();
         final DescriptionListExtractionDefinition extractionDefinition = mock();
-        when(descriptionListExtractionDefinitionMapper.map(descriptionList)).thenReturn(extractionDefinition);
+        when(descriptionListExtractionDefinitionMapper.map(properties.getDescriptionList())).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -74,11 +75,14 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToHtmlExtractionDefinition() {
-        final HtmlExtractionConfigurationProperties html = Instancio.create(HtmlExtractionConfigurationProperties.class);
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setHtml(html);
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                .ignore(field(ExtractionConfigurationProperties::getImage))
+                .ignore(field(ExtractionConfigurationProperties::getText))
+                .create();
         final HtmlExtractionDefinition extractionDefinition = mock();
-        when(htmlExtractionDefinitionMapper.map(html)).thenReturn(extractionDefinition);
+        when(htmlExtractionDefinitionMapper.map(properties.getHtml())).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -87,11 +91,14 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToImageExtractionDefinition() {
-        final ImageExtractionConfigurationProperties image = new ImageExtractionConfigurationProperties();
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setImage(image);
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                .ignore(field(ExtractionConfigurationProperties::getText))
+                .create();
         final ImageExtractionDefinition extractionDefinition = mock();
-        when(imageExtractionDefinitionMapper.map(image)).thenReturn(extractionDefinition);
+        when(imageExtractionDefinitionMapper.map(properties.getImage())).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 
@@ -100,11 +107,14 @@ class ExtractionDefinitionMapperServiceTest {
 
     @Test
     void shouldMapToTextExtractionDefinition() {
-        final TextExtractionConfigurationProperties text = Instancio.create(TextExtractionConfigurationProperties.class);
-        final ExtractionConfigurationProperties properties = new ExtractionConfigurationProperties();
-        properties.setText(text);
+        final ExtractionConfigurationProperties properties = Instancio.of(ExtractionConfigurationProperties.class)
+                .ignore(field(ExtractionConfigurationProperties::getAttribute))
+                .ignore(field(ExtractionConfigurationProperties::getDescriptionList))
+                .ignore(field(ExtractionConfigurationProperties::getHtml))
+                .ignore(field(ExtractionConfigurationProperties::getImage))
+                .create();
         final TextExtractionDefinition extractionDefinition = mock();
-        when(textExtractionDefinitionMapper.map(text)).thenReturn(extractionDefinition);
+        when(textExtractionDefinitionMapper.map(properties.getText())).thenReturn(extractionDefinition);
 
         final ExtractionDefinition result = extractionDefinitionMapperService.map(properties);
 

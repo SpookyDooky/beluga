@@ -14,8 +14,9 @@ public class ContextLogger {
     }
 
     public CloseableContext with(final String... context) {
+        final CloseableContext closeableContext = new CloseableContext();
         configureContext(context);
-        return new CloseableContext();
+        return closeableContext;
     }
 
     private void configureContext(final String... context) {
@@ -36,10 +37,10 @@ public class ContextLogger {
      * @return a closable context to automatically remove values from the {@link MDC} when it gets closed.
      */
     public CloseableContext with(final ContextLoggable contextLoggable) {
+        final CloseableContext context = new CloseableContext();
         contextLoggable.loggingContext()
                 .forEach(this::putContext);
-
-        return new CloseableContext();
+        return context;
     }
 
     /**
@@ -50,15 +51,15 @@ public class ContextLogger {
      * @return a closable context to automatically remove values from the {@link MDC} when it gets closed.
      */
     public CloseableContext withKey(final String key, final String value) {
+        final CloseableContext context = new CloseableContext();
         putContext(key, value);
-
-        return new CloseableContext();
+        return context;
     }
 
     public CloseableContext withKeys(final Map<String, String> keyValues) {
+        final CloseableContext context = new CloseableContext();
         keyValues.forEach(this::putContext);
-
-        return new CloseableContext();
+        return context;
     }
 
     public void info(final String message,

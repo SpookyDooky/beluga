@@ -38,8 +38,8 @@ class JobSchedulerTest {
 		final JobExecution secondJobExecution = mock();
 		when(jobExecutionService.findAllByStatus(List.of(PLANNED, ACTIVE))).thenReturn(List.of(firstJobExecution, secondJobExecution));
 
-		final Job firstJob = new Job();
-		final Job secondJob = new Job();
+		final Job firstJob = mock();
+		final Job secondJob = mock();
 		when(jobService.createActiveJob(firstJobExecution)).thenReturn(firstJob);
 		when(jobService.createActiveJob(secondJobExecution)).thenReturn(secondJob);
 

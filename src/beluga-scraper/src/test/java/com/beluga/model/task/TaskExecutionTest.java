@@ -13,7 +13,7 @@ class TaskExecutionTest {
 	@Test
 	void shouldAddResultFile() {
 		final TaskExecution taskExecution = new TaskExecution();
-		final ResultFile resultFile = new ResultFile();
+		final ResultFile resultFile = Instancio.create(ResultFile.class);
 		
 		taskExecution.addResultFile(resultFile);
 		

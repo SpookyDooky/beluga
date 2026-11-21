@@ -4,7 +4,7 @@ import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.result_storage.ResultDataStoreProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.beluga.result_storage.config.conditionals.annotation.IsS3ResultStorage;
 import org.springframework.stereotype.Component;
 
 import static com.beluga.logging.ContextKeys.RESOURCE_IDENTIFIER;
@@ -13,10 +13,7 @@ import static com.beluga.logging.ContextKeys.RESOURCE_IDENTIFIER;
  * Data store provider for S3 compatible object-stores.
  */
 @Component
-@ConditionalOnProperty(
-		name = "beluga.result-storage.type",
-		havingValue = "S3"
-)
+@IsS3ResultStorage
 public class S3ResultDataStoreProvider extends ResultDataStoreProvider {
 	
 	private final S3Service s3Service;

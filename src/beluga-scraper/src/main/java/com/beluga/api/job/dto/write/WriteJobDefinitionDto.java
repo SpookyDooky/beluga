@@ -1,6 +1,7 @@
 package com.beluga.api.job.dto.write;
 
 import com.beluga.api.job.dto.base.BaseJobDefinitionDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
@@ -8,8 +9,10 @@ import org.springframework.validation.annotation.Validated;
 public class WriteJobDefinitionDto extends BaseJobDefinitionDto {
 
 	@NotNull
+	@Valid
 	private WriteExecutionConfigurationDto execution;
 	@NotNull
+	@Valid
 	private WriteScrapingConfigurationDto scraping;
 
 	public WriteExecutionConfigurationDto getExecution() {

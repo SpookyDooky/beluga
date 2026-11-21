@@ -9,8 +9,8 @@ changes.
 - Paths are relative to `src/beluga-scraper/src/main/java/com/beluga/` unless stated otherwise. For example, `execution/`
   means `src/beluga-scraper/src/main/java/com/beluga/execution/`.
 - Statements are verified against the code unless marked **(inferred)**.
-- [Decisions & constraints](#5-decisions--constraints) lists deliberate choices; keep them.
-  [Known defects](#6-known-defects) lists real bugs; fix them, never preserve them. Do not confuse the two.
+- [Decisions & constraints](#5-decisions--constraints) lists deliberate choices; keep them. Behaviour described as a bug
+  elsewhere in this file is a bug: fix it, never preserve it.
 - Last verified against the code on 2026-11-14.
 
 ## Contents
@@ -20,10 +20,8 @@ changes.
 3. [Key modules](#3-key-modules)
 4. [Data flow](#4-data-flow)
 5. [Decisions & constraints](#5-decisions--constraints)
-6. [Known defects](#6-known-defects)
-7. [Dead code](#7-dead-code)
-8. [Testing architecture](#8-testing-architecture)
-9. [Change recipes](#9-change-recipes)
+6. [Testing architecture](#6-testing-architecture)
+7. [Change recipes](#7-change-recipes)
 
 ---
 
@@ -31,8 +29,9 @@ changes.
 
 Beluga is a general-purpose web scraping engine: a Spring Boot 4.1 / Java 21 service.
 
-- **Users** define *jobs* through a REST API. YAML `beluga.jobs` exists, but jobs from it are never loaded; see
-  [§6](#6-known-defects).
+- **Users** define *jobs* through a REST API, or in YAML under `beluga.jobs`. `JobRegistrar` saves the YAML jobs at
+  startup and replaces any job with the same name. It does not start them; starting a job is always a manual action
+  ([§4](#4-data-flow)).
 - **A job** is a scraping configuration (an item selector plus extraction rules) and a set of URLs called *tasks*.
 - **Starting a job** creates an *execution*. Every active task URL is fetched with jsoup at a rate-limited pace, and the
   configured data points are extracted from each item on the page.
@@ -110,7 +109,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `api/execution` | Start, stop, pause and resume, plus execution history. `ExecutionApiService` hands off to the executor. |
 | `api/results` | Result retrieval, paged results, file listing and download. |
 | `api/exception` | `GlobalExceptionHandler`, `ErrorResponseDtoFactory`, `ErrorResponseDto`. |
-| `service/job` | `JobDefinitionService` (repository facade and task add/deactivate), `JobService` (builds executions and runtime snapshots), `JobExecutionService`. |
+| `service/job` | `JobDefinitionService` (repository facade and task add/deactivate), `JobService` (builds executions and runtime snapshots), `JobExecutionService`, `JobRegistrar` (saves YAML jobs at startup). |
 | `service/task` | `TaskDefinitionService`, `TaskExecutionService`, and `TaskExecutionEventHandler`, which persists task status and `ResultFile` rows from events. |
 | `service/results` | `ResultFileService`. |
 | `model/job_definition/**` | Definition entities: `JobDefinition`, `ScrapingDefinition`, `ExecutionDefinition`, the `ExtractionDefinition` hierarchy, `ExtractionType`. |
@@ -122,12 +121,12 @@ calls ([§4.3](#43-execution-event-driven)).
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |
 | `scraping` | `ScrapingService` (extraction) and `model/ScrapingResult`. |
 | `http` | `HttpService`: jsoup fetch plus `RequestActivity` events. |
-| `result_storage` | `ResultStorageService`, `ResultDataStoreProvider` (abstract), `NamespaceFactory`, `json/` (JSON plus dotted-key nesting), `file_system/`, `s3/`. |
+| `result_storage` | `ResultStorageService`, `ResultDataStoreProvider` (abstract), `NamespaceFactory`, `json/` (JSON plus dotted-key nesting), `file_system/`, `s3/`, `config/conditionals` (`@IsFileSystemResultStorage`, `@IsS3ResultStorage`). |
 | `activity_logging` | Activity events and the `activity_log` table. The subpackage is spelled **`activitiy`**; don't "fix" it piecemeal. |
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
 | `properties` | `@ConfigurationProperties("beluga")` tree ([§3.6](#36-configuration-properties)). |
 | `mapper` | MapStruct mappers: definitions ↔ DTOs/properties, and definitions → runtime snapshots. |
-| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, currently unused). |
+| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean). |
 | `async` | `CustomAsyncTaskExecutor` (clears the MDC per task). |
 | `util` | `TimingService` (UUID-keyed stopwatches). |
 
@@ -193,9 +192,9 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 - **`JobExecution.setTasks` appends**; it does not replace.
 - **Soft delete:** removing a task sets `TaskDefinition.active=false`. Rows are never deleted, because `TaskExecution`
   references them.
-- **Deduplication** applies only among *active* tasks, and it is enforced **only in application code** (`Set<URL>`
-  semantics plus active-URL filters). No DB constraint backs it. See `docs/system_guarantees/task_deduplication.md` and
-  [§6](#6-known-defects).
+- **Deduplication** applies only among *active* tasks, and it is enforced **only in application code** (exact
+  `toExternalForm()` strings plus active-URL filters). No DB constraint backs it, so concurrent PUT/PATCH requests can insert duplicates.
+  See `docs/system_guarantees/task_deduplication.md`.
 - **`ResultFile`** stores `namespace` and `key` separately. Its resource identifier is `namespace + "/" + key`. Retrieval
   uses the stored values, so it doesn't depend on the current configuration.
 - **Extraction ids on update:** `PUT /jobs/{id}` **replaces** the extraction list (`ScrapingDefinitionMapper.update`
@@ -230,7 +229,7 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 ### 3.3 Persistence backends
 
 - **Selection:** `beluga.persistence.type` is read **raw from the `Environment`** by `IsSqliteCondition` and
-  `IsPostgreSqlCondition`, with exact, case-sensitive `equals` against `SQLITE` or `POSTGRESQL`.
+  `IsPostgreSqlCondition`, with a case-insensitive comparison against `SQLITE` or `POSTGRESQL`.
 - **Shared beans:** each config class defines the same bean names: `dataSource` (Hikari), `jpaVendorAdapter`,
   `entityManagerFactory`, `transactionManager`, `flywayCustomizer`.
 - **Shared Hibernate settings:** both use `CamelCaseToUnderscoresNamingStrategy` with DDL generation off.
@@ -284,7 +283,9 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
   - An empty fetch throws `IllegalStateException`, which makes the task FAILED.
   - Items are `document.body().select(itemSelector)`; only the body is searched.
   - Each item becomes one `Map<String,Object>`. Each extraction's map is `putAll`-ed into it, so **later fields with
-    the same name overwrite earlier ones**.
+    the same name overwrite earlier ones**. The API rejects duplicate, malformed and conflicting field names
+    (`@HasValidFieldNames` on `WriteScrapingConfigurationDto`), so this only affects jobs saved before that check.
+    `JsonNestingService` throws `IllegalArgumentException` when one key is the prefix of another.
   - Output is `ScrapingResult(document.toString(), List<Map>)`. The raw page is jsoup's **re-serialized** document, not
     the original bytes.
 - **Per type:**
@@ -320,8 +321,9 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
      - `ImagePayload`: the stream.
      - Anything else throws `IllegalStateException`.
   3. It saves through the single active `ResultDataStoreProvider`, then publishes `TaskResultStoredEvent`.
-- **Providers** are selected with `@ConditionalOnProperty(name = "beluga.result-storage.type", havingValue = ...)`, with
-  no `matchIfMissing`:
+- **Providers** are selected with `@IsFileSystemResultStorage` and `@IsS3ResultStorage`, the same way persistence
+  backends are. Their conditions read `beluga.result-storage.type` raw from the `Environment` and compare it
+  case-insensitively against the `DataStoreType` name. They don't match when the property is missing:
   - `FILE_SYSTEM`: `FileSystemResultDataStoreProvider` writes to `Path.of(identifier)` after `mkdirs`.
   - `S3`: `S3Config` (bean `results-s3client`: static credentials, endpoint override, `forcePathStyle(true)`),
     `S3Service` and `S3ResultDataStoreProvider`.
@@ -345,10 +347,10 @@ beluga
 ├── persistence            PersistenceProperties  @HasCorrectPersistenceStore @HasOnlyOnePersistenceStore
 │   ├── type               SQLITE | POSTGRESQL
 │   └── postgresql         url, username, password (@NotBlank)
-├── result-storage         ResultStorageProperties
+├── result-storage         ResultStorageProperties  @HasCorrectResultStorage
 │   ├── type               FILE_SYSTEM | S3
 │   └── s3                 host, access-key, secret-key, bucket, region (@NotNull), prefix
-└── jobs[]                 JobProperties          (bound and validated, but NEVER loaded; see §6)
+└── jobs[]                 JobProperties          (saved at startup by `JobRegistrar`, not started)
     ├── name               @NotBlank
     ├── url                urls[] | url-file      (urls wins when non-empty)
     ├── execution          tasks-per-second (int, default 1)
@@ -437,7 +439,8 @@ try (final CloseableContext ignored = logger.with(JOB_EXECUTION_ID, task.getJob(
 
 **Create job.** `JobController.create` (`@Transactional`):
 
-1. Bean validation runs on `@Valid`, but it is shallow; see [§6](#6-known-defects).
+1. Bean validation runs on `@Valid` and cascades into `execution` and `scraping`, including the field name rules of
+   `@HasValidFieldNames`.
 2. `JobNameValidator` checks `existsByName`, and a duplicate throws `IllegalArgumentException`, which becomes 400. The
    DB unique constraint is the backstop.
 3. `JobDefinitionMapper.map(dto)` maps the DTO and saves it, cascading.
@@ -467,12 +470,25 @@ Kept URLs keep their ids.
 3. A `TransactionSynchronization.afterCommit` calls `JobExecutorService.execute(job)`, so the async thread sees the
    committed rows.
 
-**Resume** calls `execute` **inside** the transaction, not `afterCommit`; see [§6](#6-known-defects).
+**Resume** calls `execute` **inside** the transaction, not `afterCommit`. This is a bug: the async thread can read
+uncommitted state.
 
 **Startup recovery.** `JobScheduler.startOutstandingJobs` (`@Async`, on `ApplicationReadyEvent`) re-runs every execution
 in PLANNED or ACTIVE, using `JobService.createActiveJob`. That includes its PLANNED, PAUSED and ACTIVE tasks, so tasks
 that were in flight are scraped again. PAUSED executions are left alone. A job with no tasks still runs, so that it
 reaches COMPLETED.
+
+**YAML jobs.** `JobRegistrar` is an `ApplicationRunner`, so Spring runs it on the main thread before it publishes
+`ApplicationReadyEvent`. It therefore always finishes before startup recovery begins, and an exception stops startup.
+For each `beluga.jobs` entry it:
+
+1. Maps the entry to a `JobDefinition` with `JobDefinitionMapper.map(JobProperties)`.
+2. Deletes any job with the same name with `deleteByName`. This cascades to its executions and result file rows, and
+   the job gets a new id.
+3. Saves the new definition.
+
+It never creates an execution or starts the job. The delete and the save run in separate transactions, so a failed
+save leaves the job deleted.
 
 ### 4.3 Execution (event-driven)
 
@@ -543,7 +559,8 @@ order across `@Async` listeners is not guaranteed.
 - **`JitterRateLimiter`:** Guava `RateLimiter.create(tasksPerSecond)`.
   - After each permit it sleeps a random jitter in `[min(2000, 0.3·base), min(5000, 0.7·base))` ms, where
     `base = 1000 / rate`.
-  - With 5 % probability it adds a further sleep; see [§6](#6-known-defects).
+  - With 5 % probability it adds a further sleep of the value `acquire()` returned. That value is in seconds but is
+    used as milliseconds, so the sleep is almost always 0 ms. This is a bug.
   - The average rate stays about `tasksPerSecond`; only the phase shifts **(inferred)**.
 - **Shutdown:** not handled. There is no `@PreDestroy`, `SmartLifecycle` or `ContextClosedEvent`. In-flight runs are
   lost, and recovery happens on the next startup through `JobScheduler`.
@@ -572,6 +589,15 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
 - **`interruptedJobs` is only set for running jobs,** so a stale mark can't suppress a later `JobFinishedEvent`.
 - **An execution with zero tasks still runs through the executor,** so it reaches COMPLETED.
 - **`job.tasks` is cleared after enqueueing.** The queue is the source of truth while running.
+- **Rate limiting is per job, not per host.** Each running job gets its own `JitterRateLimiter(tasksPerSecond)`, so
+  several jobs that target the same site add up their rates. This is intended. Per-host limiting is a possible future
+  feature, not a missing one; don't flag it as a defect.
+- **Task URLs are `java.net.URL`, but are never compared as `URL`s.** Don't put a `URL` in a `Set` or `Map` key, and
+  don't compare two with `equals`: `URL.equals` and `hashCode` resolve the host over DNS, so distinct URLs on the same
+  IP are merged and every comparison blocks on a lookup. Compare `toExternalForm()` strings, the same form Hibernate
+  stores and the native queries compare. The request DTOs use `List<URL>` for the same reason, because Jackson would
+  fill a `Set<URL>` by hashing. `java.net.URI` was tried and rejected: it is stricter than `URL` and rejects hosts with
+  underscores, non-ASCII hosts and unencoded spaces, and Hibernate has no built-in mapping for it.
 - **The MDC is cleared on every async task** (`CustomAsyncTaskExecutor`), so context never leaks between pooled tasks.
   Re-establish it with `logger.with(...)`.
 - **Only SQLite scans `com.beluga.persistence.sqlite.converter` (`InstantConverter`).** SQLite has no timestamp type, so
@@ -615,7 +641,8 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
     failure threshold also skips the other variant.
   - They need Docker and a writable `/app/db`; with FILE_SYSTEM storage they also write to `/app/data`.
 - **HTTP stubs:** OkHttp `mockwebserver3`, not `com.sun.net.httpserver`.
-- **Gap:** nothing exercises S3 end to end. Defects A1 and A2 would have been caught by a test against MinIO.
+- **S3:** `S3ResultDataStoreProviderIntegrationTest` saves and retrieves through the real S3 beans against MinIO
+  (Testcontainers). It loads only the S3 beans plus the `s3` test profile, not persistence.
 
 ---
 
@@ -650,11 +677,12 @@ for both backends.
 
 ### Add a result storage backend
 
-1. Subclass `ResultDataStoreProvider` and gate it with
-   `@ConditionalOnProperty(name = "beluga.result-storage.type", havingValue = "<TYPE>")`.
+1. Subclass `ResultDataStoreProvider` and gate it with a new `@Is<Type>ResultStorage` annotation and condition in
+   `result_storage/config/conditionals`, following `@IsS3ResultStorage`.
 2. Add the enum value to `DataStoreType`, a prefix branch to `NamespaceFactory`, and properties to
-   `ResultStorageProperties`.
-3. Extend `ResultStorageBackendSelectionTest`.
+   `ResultStorageProperties`, plus a `switch` case in `HasCorrectResultStorageValidator`. The compiler enforces the
+   last one.
+3. Extend `ResultStorageBackendConfigurationTest`.
 
 ### Add a new event or listener
 
@@ -666,4 +694,6 @@ for both backends.
 
 ### Change execution flow or in-memory state
 
-Keep [the invariants](#architectural-invariants). Review E4–E7 first, because they involve the same state.
+Keep [the invariants](#architectural-invariants). The in-memory run state in `JobExecutorService` (`jobIdJobMap`,
+`jobActiveTasks`, `interruptedJobs`) and `JobTaskQueue` is shared by the dispatch loop, worker events and stop, pause
+and resume requests, so check every change against all of them.

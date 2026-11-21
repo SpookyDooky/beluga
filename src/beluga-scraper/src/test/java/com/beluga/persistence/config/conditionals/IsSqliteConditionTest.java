@@ -36,4 +36,10 @@ class IsSqliteConditionTest {
 		assertTrue(condition.matches(context, metadata));
 	}
 	
+	@Test
+	void shouldMatchLowercaseType() {
+		when(environment.getProperty("beluga.persistence.type")).thenReturn("sqlite");
+		assertTrue(condition.matches(context, metadata));
+	}
+	
 }

@@ -24,13 +24,15 @@ The configuration for either is listed down below.
 
 ### `beluga.result-storage.type`
 - **Type:** string
-- **Required:** true
+- **Required:** false
 - **Default:** FILE_SYSTEM
 - **Allowed values:** FILE_SYSTEM, S3
 - **Description:** The type of storage backend to use for result storage
 
 ## File system
-When using the file system results are stored under /app/data
+When using the file system, results are stored under `/app/data`, which can't be changed. Each file is written to
+`/app/data/{jobId}/{executionId}/{taskId}/{fileName}`, for example `data.json` and `source.html`.
+In Docker, mount a volume at `/app/data` to keep results across restarts.
 
 ## S3 compatible
 When using S3 compatible storage backends there are a few properties that need to be configured. 
@@ -74,8 +76,6 @@ Below are some example configurations.
 beluga:
   result-storage:
     type: FILE_SYSTEM
-    file-system:
-      path: /folder/to/mount
 ```
 ## S3 Compatible
 ```yaml

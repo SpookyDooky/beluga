@@ -58,10 +58,11 @@ class ScrapingServiceTest {
     void shouldExtractAttribute() {
         mockDocumentResponse("src/test/resources/test-files/html/attribute_extraction.html");
 
-        final AttributeExtractionConfiguration extractionConfiguration = new AttributeExtractionConfiguration();
-        extractionConfiguration.setField("attribute");
-        extractionConfiguration.setAttribute("href");
-        extractionConfiguration.setSelector("a.some_attribute");
+        final AttributeExtractionConfiguration extractionConfiguration = Instancio.of(AttributeExtractionConfiguration.class)
+                .set(field(AttributeExtractionConfiguration::getSelector), "a.some_attribute")
+                .set(field(AttributeExtractionConfiguration::getField), "attribute")
+                .set(field(AttributeExtractionConfiguration::getAttribute), "href")
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
@@ -101,18 +102,20 @@ class ScrapingServiceTest {
     void shouldExtractDescriptionList() {
         mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
 
-        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
-        extractionConfiguration.setSelector("dl.description_list");
-
-        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration1 = new DescriptionListExtractionDataPointConfiguration();
-        dataPointConfiguration1.setDtValue("title1");
-        dataPointConfiguration1.setField("value1");
-
-        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration2 = new DescriptionListExtractionDataPointConfiguration();
-        dataPointConfiguration2.setDtValue("title3");
-        dataPointConfiguration2.setField("value3");
-
-        extractionConfiguration.setDataPoints(List.of(dataPointConfiguration1, dataPointConfiguration2));
+        final DescriptionListExtractionConfiguration extractionConfiguration = Instancio.of(DescriptionListExtractionConfiguration.class)
+                .set(field(DescriptionListExtractionConfiguration::getSelector), "dl.description_list")
+                .set(field(DescriptionListExtractionConfiguration::getDataPoints),
+                        List.of(
+                                Instancio.of(DescriptionListExtractionDataPointConfiguration.class)
+                                        .set(field(DescriptionListExtractionDataPointConfiguration::getDtValue), "title1")
+                                        .set(field(DescriptionListExtractionDataPointConfiguration::getField), "value1")
+                                        .create(),
+                                Instancio.of(DescriptionListExtractionDataPointConfiguration.class)
+                                        .set(field(DescriptionListExtractionDataPointConfiguration::getDtValue), "title3")
+                                        .set(field(DescriptionListExtractionDataPointConfiguration::getField), "value3")
+                                        .create()
+                        ))
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
@@ -126,14 +129,15 @@ class ScrapingServiceTest {
     void shouldNotAddFieldsWhenDescriptionListIsNotFound() {
         mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
 
-        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
-        extractionConfiguration.setSelector("dl.does_not_exist");
-
-        final DescriptionListExtractionDataPointConfiguration dataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
-        dataPointConfiguration.setDtValue("title1");
-        dataPointConfiguration.setField("value1");
-
-        extractionConfiguration.setDataPoints(List.of(dataPointConfiguration));
+        final DescriptionListExtractionConfiguration extractionConfiguration = Instancio.of(DescriptionListExtractionConfiguration.class)
+                .set(field(DescriptionListExtractionConfiguration::getSelector), "dl.does_not_exist")
+                .set(field(DescriptionListExtractionConfiguration::getDataPoints), List.of(
+                        Instancio.of(DescriptionListExtractionDataPointConfiguration.class)
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getDtValue), "title1")
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getField), "value1")
+                                .create()
+                ))
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
@@ -146,18 +150,19 @@ class ScrapingServiceTest {
     void shouldSetFieldToNullWhenDtIsNotFound() {
         mockDocumentResponse("src/test/resources/test-files/html/description_list_extraction.html");
 
-        final DescriptionListExtractionConfiguration extractionConfiguration = new DescriptionListExtractionConfiguration();
-        extractionConfiguration.setSelector("dl.description_list");
-
-        final DescriptionListExtractionDataPointConfiguration foundDataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
-        foundDataPointConfiguration.setDtValue("title1");
-        foundDataPointConfiguration.setField("found");
-
-        final DescriptionListExtractionDataPointConfiguration missingDataPointConfiguration = new DescriptionListExtractionDataPointConfiguration();
-        missingDataPointConfiguration.setDtValue("does_not_exist");
-        missingDataPointConfiguration.setField("missing");
-
-        extractionConfiguration.setDataPoints(List.of(foundDataPointConfiguration, missingDataPointConfiguration));
+        final DescriptionListExtractionConfiguration extractionConfiguration = Instancio.of(DescriptionListExtractionConfiguration.class)
+                .set(field(DescriptionListExtractionConfiguration::getSelector), "dl.description_list")
+                .set(field(DescriptionListExtractionConfiguration::getDataPoints), List.of(
+                        Instancio.of(DescriptionListExtractionDataPointConfiguration.class)
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getDtValue), "title1")
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getField), "found")
+                                .create(),
+                        Instancio.of(DescriptionListExtractionDataPointConfiguration.class)
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getDtValue), "does_not_exist")
+                                .set(field(DescriptionListExtractionDataPointConfiguration::getField), "missing")
+                                .create()
+                ))
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
@@ -172,9 +177,10 @@ class ScrapingServiceTest {
     void shouldExtractHtml() {
         mockDocumentResponse("src/test/resources/test-files/html/html_extraction.html");
 
-        final HtmlExtractionConfiguration extractionConfiguration = new HtmlExtractionConfiguration();
-        extractionConfiguration.setField("html");
-        extractionConfiguration.setSelector("div.some_html");
+        final HtmlExtractionConfiguration extractionConfiguration = Instancio.of(HtmlExtractionConfiguration.class)
+                .set(field(HtmlExtractionConfiguration::getSelector), "div.some_html")
+                .set(field(HtmlExtractionConfiguration::getField), "html")
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 
@@ -192,9 +198,10 @@ class ScrapingServiceTest {
     void shouldExtractText() {
         mockDocumentResponse("src/test/resources/test-files/html/text_extraction.html");
 
-        final TextExtractionConfiguration extractionConfiguration = new TextExtractionConfiguration();
-        extractionConfiguration.setField("text");
-        extractionConfiguration.setSelector("p.some_text");
+        final TextExtractionConfiguration extractionConfiguration = Instancio.of(TextExtractionConfiguration.class)
+                .set(field(TextExtractionConfiguration::getSelector), "p.some_text")
+                .set(field(TextExtractionConfiguration::getField), "text")
+                .create();
 
         final ScrapingConfiguration scrapingConfiguration = createScrapingConfiguration(extractionConfiguration);
 

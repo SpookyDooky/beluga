@@ -36,8 +36,10 @@ storage, persistence, API reference, and deployment:
 ## Roadmap
 ### V1.1
 - [ ] image scraping
-- [ ] improve datapoint configuration by introducing datapoint-specific prefixes
+- [x] improve datapoint configuration by introducing datapoint-specific prefixes
 - [ ] improve 400 responses with explanations of which field is configured incorrectly
+- [ ] user agent rotation
+- [ ] configurable respecting of robots.txt
 
 ## Contributing
 See **[CONTRIBUTING.md](CONTRIBUTING.md)**

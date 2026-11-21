@@ -15,6 +15,6 @@ public class IsSqliteCondition implements Condition {
 		final Environment environment = context.getEnvironment();
 		final String persistenceType = environment.getProperty("beluga.persistence.type");
 		
-		return SQLITE.name().equals(persistenceType);
+		return SQLITE.name().equalsIgnoreCase(persistenceType);
 	}
 }

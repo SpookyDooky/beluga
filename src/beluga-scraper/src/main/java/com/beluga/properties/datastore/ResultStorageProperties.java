@@ -1,10 +1,12 @@
 package com.beluga.properties.datastore;
 
+import com.beluga.properties.datastore.validation.HasCorrectResultStorage;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 
 import static com.beluga.properties.datastore.DataStoreType.FILE_SYSTEM;
 
+@HasCorrectResultStorage
 public class ResultStorageProperties {
 
 	private DataStoreType type = FILE_SYSTEM;

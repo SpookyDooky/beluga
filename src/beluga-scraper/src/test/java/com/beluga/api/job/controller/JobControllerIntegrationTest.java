@@ -3,6 +3,8 @@ package com.beluga.api.job.controller;
 import com.beluga.api.job.dto.base.BaseJobDefinitionDto;
 import com.beluga.api.job.dto.read.ReadJobDefinitionDto;
 import com.beluga.api.job.dto.write.WriteJobDefinitionDto;
+import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.api.job.dto.write.extraction_configuration.text.WriteTextExtractionConfigurationDto;
 import com.beluga.integration_test.BaseIntegrationTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.TestTemplate;
@@ -11,6 +13,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -134,5 +138,28 @@ public class JobControllerIntegrationTest extends BaseIntegrationTest {
 						.contentType(APPLICATION_JSON)
 				).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors", hasItem("Job name must be unique.")));
+	}
+
+	@TestTemplate
+	void shouldReturn400ForConflictingFieldNames() throws Exception {
+		final WriteJobDefinitionDto jobDefinition = Instancio.of(WriteJobDefinitionDto.class)
+				.set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(
+						Instancio.of(WriteTextExtractionConfigurationDto.class)
+								.set(field(WriteTextExtractionConfigurationDto::getField), "product")
+								.create(),
+						Instancio.of(WriteTextExtractionConfigurationDto.class)
+								.set(field(WriteTextExtractionConfigurationDto::getField), "product.price")
+								.create()
+				))
+				.create();
+
+		// Account for async application configuration
+		Thread.sleep(250);
+
+		mvc.perform(post("/jobs")
+						.content(objectMapper.writeValueAsString(jobDefinition))
+						.contentType(APPLICATION_JSON)
+				).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.errors", hasItem("Field name 'product' conflicts with nested field name 'product.price'.")));
 	}
 }

@@ -7,13 +7,12 @@ import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.mapper.job.JobDefinitionMapper;
 import com.beluga.model.job_definition.JobDefinition;
+import com.beluga.service.exception.JobDefinitionNotFoundException;
 import com.beluga.service.job.JobDefinitionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 import static com.beluga.logging.ContextKeys.JOB_ID;
 
@@ -52,6 +51,14 @@ public class JobController {
         return jobDefinitionMapper.map(jobDefinition);
     }
 
+    @ExceptionHandler({
+            JobDefinitionNotFoundException.class
+    })
+    public ResponseEntity<Void> handleJobDefinitionNotFoundException(final RuntimeException exception) {
+        return ResponseEntity.notFound()
+                .build();
+    }
+
     /**
      * Retrieves a {@link JobDefinition} by its id.
      *
@@ -60,38 +67,28 @@ public class JobController {
      */
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<ReadJobDefinitionDto> get(@PathVariable("id") final Long id) {
-        try (final CloseableContext ignored = logger.with(JOB_ID)) {
+    public ReadJobDefinitionDto get(@PathVariable("id") final Long id) {
+        try (final CloseableContext ignored = logger.with(JOB_ID, id.toString())) {
             logger.info("Retrieving job.");
 
-            return jobDefinitionService.findById(id)
-                    .map(jobDefinitionMapper::map)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-
+            return jobDefinitionMapper.map(jobDefinitionService.getById(id));
         }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<ReadJobDefinitionDto> update(@PathVariable("id") final Long id,
-                                                       @RequestBody @Valid final WriteJobDefinitionDto writeJobDefinitionDto) {
+    public ReadJobDefinitionDto update(@PathVariable("id") final Long id,
+                                       @RequestBody @Valid final WriteJobDefinitionDto writeJobDefinitionDto) {
         try (final CloseableContext ignored = logger.with(JOB_ID, id.toString())) {
             logger.info("Updating job.");
 
             jobNameValidator.validate(writeJobDefinitionDto.getName(), id);
 
-            final Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findById(id);
-            if (jobDefinitionOptional.isEmpty()) {
-                return ResponseEntity.notFound()
-                        .build();
-            }
-
-            final JobDefinition jobDefinition = jobDefinitionOptional.get();
+            final JobDefinition jobDefinition = jobDefinitionService.getById(id);
             jobDefinitionMapper.update(writeJobDefinitionDto, jobDefinition);
             jobDefinitionService.save(jobDefinition);
 
-            return ResponseEntity.ok(jobDefinitionMapper.map(jobDefinition));
+            return jobDefinitionMapper.map(jobDefinition);
         }
     }
 }

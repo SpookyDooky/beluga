@@ -4,19 +4,19 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Validated
 public class UpdateTaskDto {
 	
-	private Set<@NotNull(message = "A URL must not be null.") URL> urls = new HashSet<>();
+	private List<@NotNull(message = "A URL must not be null.") URL> urls = new ArrayList<>();
 	
-	public Set<URL> getUrls() {
+	public List<URL> getUrls() {
 		return urls;
 	}
 	
-	public void setUrls(final Set<URL> urls) {
+	public void setUrls(final List<URL> urls) {
 		this.urls = urls;
 	}
 }

@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
 
 import java.net.URL;
-import java.util.UUID;
 
+import static org.instancio.Select.field;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -36,11 +36,9 @@ public class TaskControllerPerformanceIntegrationTest extends BaseIntegrationTes
 		Thread.sleep(250);
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
 		
-		final UpdateTaskDto updateTaskDto = new UpdateTaskDto();
-		
-		for (int i = 0; i < 10_000; i++) {
-			updateTaskDto.getUrls().add(createUrl());
-		}
+		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
+				.set(field(UpdateTaskDto::getUrls), Instancio.ofList(URL.class).size(10_000).create())
+				.create();
 		
 		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
 				.content(objectMapper.writeValueAsString(updateTaskDto))
@@ -56,9 +54,5 @@ public class TaskControllerPerformanceIntegrationTest extends BaseIntegrationTes
 		
 		final byte[] expectedContent = result.getResponse().getContentAsByteArray();
 		return objectMapper.readValue(expectedContent, ReadJobDefinitionDto.class);
-	}
-	
-	URL createUrl() throws Exception {
-		return new URL("http://localhost:1234/" + UUID.randomUUID());
 	}
 }

@@ -124,7 +124,7 @@ class JobServiceTest {
 		final Job expected = new Job();
 		when(jobMapper.map(jobDefinition)).thenReturn(expected);
 		
-		final Task task = new Task();
+		final Task task = Instancio.create(Task.class);
 		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(task);
 		
 		final Job result = jobService.createResumedJob(jobDefinitionId)
@@ -153,7 +153,7 @@ class JobServiceTest {
 		
 		final Job expected = new Job();
 		when(jobMapper.map(jobDefinition)).thenReturn(expected);
-		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(new Task());
+		when(taskMapper.map(jobDefinition, taskExecution.getTaskDefinition())).thenReturn(Instancio.create(Task.class));
 		
 		final Job result = jobService.createActiveJob(jobExecution);
 		

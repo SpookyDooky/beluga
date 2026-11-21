@@ -1,0 +1,10 @@
+# For integration tests that store results in S3 compatible storage
+beluga:
+  result-storage:
+    type: S3
+    s3:
+      host: ${MINIO_HOST}
+      access-key: username
+      secret-key: password
+      region: us-east-1
+      bucket: results
