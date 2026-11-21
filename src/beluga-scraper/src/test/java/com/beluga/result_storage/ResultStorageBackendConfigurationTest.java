@@ -9,6 +9,7 @@ import com.beluga.result_storage.s3.service.S3ResultDataStoreProvider;
 import com.beluga.result_storage.s3.service.S3Service;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +63,16 @@ class ResultStorageBackendConfigurationTest {
 			assertThat(context).hasSingleBean(S3ResultDataStoreProvider.class);
 			assertThat(context).hasSingleBean(S3Service.class);
 			assertThat(context).doesNotHaveBean(FileSystemResultDataStoreProvider.class);
+		});
+	}
+
+	@Test
+	void shouldFailValidationWhenS3PropertiesAreMissing() {
+		contextRunner.withPropertyValues(
+				"beluga.result-storage.type=S3"
+		).run(context -> {
+			assertThat(context).hasFailed();
+			assertThat(context.getStartupFailure()).rootCause().isInstanceOf(BindValidationException.class);
 		});
 	}
 

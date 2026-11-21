@@ -1,7 +1,7 @@
 package com.beluga.result_storage.s3.config;
 
 import com.beluga.properties.datastore.S3Properties;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.beluga.result_storage.config.conditionals.annotation.IsS3ResultStorage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -11,10 +11,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URI;
 
 @Configuration
-@ConditionalOnProperty(
-		name = "beluga.result-storage.type",
-		havingValue = "S3"
-)
+@IsS3ResultStorage
 public class S3Config {
 	
 	@Bean("results-s3client")

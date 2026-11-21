@@ -121,7 +121,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |
 | `scraping` | `ScrapingService` (extraction) and `model/ScrapingResult`. |
 | `http` | `HttpService`: jsoup fetch plus `RequestActivity` events. |
-| `result_storage` | `ResultStorageService`, `ResultDataStoreProvider` (abstract), `NamespaceFactory`, `json/` (JSON plus dotted-key nesting), `file_system/`, `s3/`. |
+| `result_storage` | `ResultStorageService`, `ResultDataStoreProvider` (abstract), `NamespaceFactory`, `json/` (JSON plus dotted-key nesting), `file_system/`, `s3/`, `config/conditionals` (`@IsFileSystemResultStorage`, `@IsS3ResultStorage`). |
 | `activity_logging` | Activity events and the `activity_log` table. The subpackage is spelled **`activitiy`**; don't "fix" it piecemeal. |
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
 | `properties` | `@ConfigurationProperties("beluga")` tree ([§3.6](#36-configuration-properties)). |
@@ -229,7 +229,7 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 ### 3.3 Persistence backends
 
 - **Selection:** `beluga.persistence.type` is read **raw from the `Environment`** by `IsSqliteCondition` and
-  `IsPostgreSqlCondition`, with exact, case-sensitive `equals` against `SQLITE` or `POSTGRESQL`.
+  `IsPostgreSqlCondition`, with a case-insensitive comparison against `SQLITE` or `POSTGRESQL`.
 - **Shared beans:** each config class defines the same bean names: `dataSource` (Hikari), `jpaVendorAdapter`,
   `entityManagerFactory`, `transactionManager`, `flywayCustomizer`.
 - **Shared Hibernate settings:** both use `CamelCaseToUnderscoresNamingStrategy` with DDL generation off.
@@ -321,8 +321,9 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
      - `ImagePayload`: the stream.
      - Anything else throws `IllegalStateException`.
   3. It saves through the single active `ResultDataStoreProvider`, then publishes `TaskResultStoredEvent`.
-- **Providers** are selected with `@ConditionalOnProperty(name = "beluga.result-storage.type", havingValue = ...)`, with
-  no `matchIfMissing`:
+- **Providers** are selected with `@IsFileSystemResultStorage` and `@IsS3ResultStorage`, the same way persistence
+  backends are. Their conditions read `beluga.result-storage.type` raw from the `Environment` and compare it
+  case-insensitively against the `DataStoreType` name. They don't match when the property is missing:
   - `FILE_SYSTEM`: `FileSystemResultDataStoreProvider` writes to `Path.of(identifier)` after `mkdirs`.
   - `S3`: `S3Config` (bean `results-s3client`: static credentials, endpoint override, `forcePathStyle(true)`),
     `S3Service` and `S3ResultDataStoreProvider`.
@@ -670,11 +671,11 @@ for both backends.
 
 ### Add a result storage backend
 
-1. Subclass `ResultDataStoreProvider` and gate it with
-   `@ConditionalOnProperty(name = "beluga.result-storage.type", havingValue = "<TYPE>")`.
+1. Subclass `ResultDataStoreProvider` and gate it with a new `@Is<Type>ResultStorage` annotation and condition in
+   `result_storage/config/conditionals`, following `@IsS3ResultStorage`.
 2. Add the enum value to `DataStoreType`, a prefix branch to `NamespaceFactory`, and properties to
    `ResultStorageProperties`.
-3. Extend `ResultStorageBackendSelectionTest`.
+3. Extend `ResultStorageBackendConfigurationTest`.
 
 ### Add a new event or listener
 

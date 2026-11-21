@@ -1,8 +1,8 @@
 package com.beluga.result_storage.s3.service;
 
 import com.beluga.logging.ContextLogger;
+import com.beluga.result_storage.config.conditionals.annotation.IsS3ResultStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -13,10 +13,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
  * Service that handles communication with S3-compatible object stores.
  */
 @Service
-@ConditionalOnProperty(
-        name = "beluga.result-storage.type",
-        havingValue = "S3"
-)
+@IsS3ResultStorage
 public class S3Service {
 
     private final ContextLogger logger;

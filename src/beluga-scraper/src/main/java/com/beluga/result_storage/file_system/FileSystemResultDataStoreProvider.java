@@ -3,7 +3,7 @@ package com.beluga.result_storage.file_system;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextLogger;
 import com.beluga.result_storage.ResultDataStoreProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.beluga.result_storage.config.conditionals.annotation.IsFileSystemResultStorage;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,10 +15,7 @@ import java.nio.file.Path;
 import static com.beluga.logging.ContextKeys.FILE_NAME;
 
 @Service
-@ConditionalOnProperty(
-		name = "beluga.result-storage.type",
-		havingValue = "FILE_SYSTEM"
-)
+@IsFileSystemResultStorage
 public class FileSystemResultDataStoreProvider extends ResultDataStoreProvider {
 	
 	public FileSystemResultDataStoreProvider(final ContextLogger logger) {
