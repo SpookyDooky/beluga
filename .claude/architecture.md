@@ -347,7 +347,7 @@ beluga
 ├── persistence            PersistenceProperties  @HasCorrectPersistenceStore @HasOnlyOnePersistenceStore
 │   ├── type               SQLITE | POSTGRESQL
 │   └── postgresql         url, username, password (@NotBlank)
-├── result-storage         ResultStorageProperties
+├── result-storage         ResultStorageProperties  @HasCorrectResultStorage
 │   ├── type               FILE_SYSTEM | S3
 │   └── s3                 host, access-key, secret-key, bucket, region (@NotNull), prefix
 └── jobs[]                 JobProperties          (saved at startup by `JobRegistrar`, not started)
@@ -680,7 +680,8 @@ for both backends.
 1. Subclass `ResultDataStoreProvider` and gate it with a new `@Is<Type>ResultStorage` annotation and condition in
    `result_storage/config/conditionals`, following `@IsS3ResultStorage`.
 2. Add the enum value to `DataStoreType`, a prefix branch to `NamespaceFactory`, and properties to
-   `ResultStorageProperties`.
+   `ResultStorageProperties`, plus a `switch` case in `HasCorrectResultStorageValidator`. The compiler enforces the
+   last one.
 3. Extend `ResultStorageBackendConfigurationTest`.
 
 ### Add a new event or listener

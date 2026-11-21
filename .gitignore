@@ -39,3 +39,4 @@ compose/start-compose.sh
 compose/data
 compose/config
 compose/postgres-data
+graphify-out

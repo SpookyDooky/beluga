@@ -2,7 +2,6 @@ package com.beluga.result_storage.s3.service;
 
 import com.beluga.logging.ContextLogger;
 import com.beluga.result_storage.config.conditionals.annotation.IsS3ResultStorage;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -20,7 +19,7 @@ public class S3Service {
     private final S3Client s3Client;
 
     public S3Service(final ContextLogger logger,
-                     @Qualifier("results-s3client") final S3Client s3Client) {
+                     final S3Client s3Client) {
         this.logger = logger;
         this.s3Client = s3Client;
     }
