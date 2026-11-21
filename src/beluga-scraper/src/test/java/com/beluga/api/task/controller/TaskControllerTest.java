@@ -109,12 +109,12 @@ class TaskControllerTest {
 		final URL newUrl = Instancio.create(URL.class);
 		final URL existingUrl = Instancio.create(URL.class);
 		when(taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
-				Set.of(newUrl, existingUrl),
+				Set.of(newUrl.toExternalForm(), existingUrl.toExternalForm()),
 				jobDefinitionId
-		)).thenReturn(Set.of(existingUrl));
-		
+		)).thenReturn(Set.of(existingUrl.toExternalForm()));
+
 		final List<TaskDefinition> newTaskDefinitions = List.of(mock(TaskDefinition.class));
-		when(taskDefinitionMapperService.map(Set.of(newUrl))).thenReturn(newTaskDefinitions);
+		when(taskDefinitionMapperService.map(List.of(newUrl))).thenReturn(newTaskDefinitions);
 		
 		final JobDefinition jobDefinition = mock();
 		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
@@ -124,18 +124,43 @@ class TaskControllerTest {
 		when(readTaskDefinitionDtoMapper.map(newTaskDefinitions.getFirst())).thenReturn(expected.getFirst());
 		
 		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
-				.set(field(UpdateTaskDto::getUrls), Set.of(newUrl, existingUrl))
+				.set(field(UpdateTaskDto::getUrls), List.of(newUrl, existingUrl))
 				.create();
 		
 		final List<ReadTaskDefinitionDto> result = taskController.updateTasks(jobDefinitionId, updateTaskDto);
 		
-		verify(taskDefinitionService).setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(jobDefinitionId, Set.of(existingUrl));
+		verify(taskDefinitionService).setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(jobDefinitionId, Set.of(existingUrl.toExternalForm()));
 		verify(jobDefinition).addTaskDefinitions(newTaskDefinitions);
 		verify(jobDefinitionService).save(jobDefinition);
-		
+
 		assertEquals(expected, result);
 	}
-	
+
+	@Test
+	void shouldIgnoreDuplicateUrlsWhenUpdatingTasks() {
+		final Long jobDefinitionId = 123L;
+
+		final URL url = Instancio.create(URL.class);
+		when(taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
+				Set.of(url.toExternalForm()),
+				jobDefinitionId
+		)).thenReturn(Set.of());
+
+		final List<TaskDefinition> newTaskDefinitions = List.of(mock(TaskDefinition.class));
+		when(taskDefinitionMapperService.map(List.of(url))).thenReturn(newTaskDefinitions);
+
+		final JobDefinition jobDefinition = mock();
+		when(jobDefinitionService.getById(jobDefinitionId)).thenReturn(jobDefinition);
+
+		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
+				.set(field(UpdateTaskDto::getUrls), List.of(url, url))
+				.create();
+
+		taskController.updateTasks(jobDefinitionId, updateTaskDto);
+
+		verify(jobDefinition).addTaskDefinitions(newTaskDefinitions);
+	}
+
 	@Test
 	void shouldUpdateTasksWithPatch() {
 		final Long jobId = 123L;

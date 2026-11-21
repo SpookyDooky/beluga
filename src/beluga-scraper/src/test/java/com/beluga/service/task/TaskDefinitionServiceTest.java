@@ -8,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -28,13 +26,12 @@ class TaskDefinitionServiceTest {
 	private TaskDefinitionService taskDefinitionService;
 	
 	@Test
-	void shouldFindAllActiveTaskDefinitionUrlsByJobDefinitionId() throws Exception {
+	void shouldFindAllActiveTaskDefinitionUrlsByJobDefinitionId() {
 		final Long jobDefinitionId = 123L;
-		final String stringUrl = "http://localhost:1234";
-		when(taskDefinitionRepository.findAllActiveTaskDefinitionUrlsByJobDefinitionId(jobDefinitionId)).thenReturn(Set.of(stringUrl));
-		final Set<URL> expected = Set.of(URI.create(stringUrl).toURL());
-		
-		final Set<URL> result = taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId);
+		final Set<String> expected = Set.of("http://localhost:1234");
+		when(taskDefinitionRepository.findAllActiveTaskDefinitionUrlsByJobDefinitionId(jobDefinitionId)).thenReturn(expected);
+
+		final Set<String> result = taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId);
 		
 		assertEquals(expected, result);
 	}
@@ -51,13 +48,12 @@ class TaskDefinitionServiceTest {
 	}
 	
 	@Test
-	void shouldGetAllActiveUrlsByJobDefinitionIdAndUrlIn() throws Exception{
+	void shouldGetAllActiveUrlsByJobDefinitionIdAndUrlIn() {
 		final Long jobDefinitionId = 123L;
-		final String stringUrl = "http://localhost:1234";
-		final Set<URL> expected = Set.of(URI.create(stringUrl).toURL());
-		when(taskDefinitionRepository.getAllActiveUrlsByJobDefinitionIdAndInUrls(jobDefinitionId, expected)).thenReturn(Set.of(stringUrl));
-		
-		final Set<URL> result = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(expected, jobDefinitionId);
+		final Set<String> expected = Set.of("http://localhost:1234");
+		when(taskDefinitionRepository.getAllActiveUrlsByJobDefinitionIdAndInUrls(jobDefinitionId, expected)).thenReturn(expected);
+
+		final Set<String> result = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(expected, jobDefinitionId);
 		
 		assertEquals(expected, result);
 	}
@@ -65,7 +61,7 @@ class TaskDefinitionServiceTest {
 	@Test
 	void shouldSetAllToInactiveByJobDefinitionIdAndUrlNotInUrls() {
 		final Long jobDefinitionId = 123L;
-		final Set<URL> urls = Set.of();
+		final Set<String> urls = Set.of();
 		
 		taskDefinitionService.setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(jobDefinitionId, urls);
 		

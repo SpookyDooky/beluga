@@ -18,9 +18,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.instancio.Select.field;
@@ -120,6 +119,24 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		).andExpect(status().isOk());
 	}
 	
+	@TestTemplate
+	void shouldKeepDistinctUrlsThatResolveToTheSameAddress() throws Exception {
+		final WriteJobDefinitionDto writeJobDefinitionDto = Instancio.create(WriteJobDefinitionDto.class);
+		Thread.sleep(250);
+		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
+
+		final String content = "{\"urls\": [\"http://127.0.0.1/products\", \"http://[::ffff:127.0.0.1]/products\"]}";
+
+		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
+				.content(content)
+				.contentType(APPLICATION_JSON)
+		).andExpect(status().isOk());
+
+		mvc.perform(get("/jobs/" + jobDefinition.getId() + "/tasks"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(2));
+	}
+
 	ReadJobDefinitionDto createJob(final WriteJobDefinitionDto writeJobDefinitionDto) throws Exception {
 		final MvcResult result = mvc.perform(post("/jobs")
 				.content(objectMapper.writeValueAsString(writeJobDefinitionDto))
@@ -153,8 +170,8 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		).andExpect(status().isOk());
 		
 		final PatchTaskDto patchTaskDto = Instancio.of(PatchTaskDto.class)
-				.set(field(PatchTaskDto::getAdd), Set.of())
-				.set(field(PatchTaskDto::getRemove), new HashSet<>(updateTaskDto.getUrls()))
+				.set(field(PatchTaskDto::getAdd), List.of())
+				.set(field(PatchTaskDto::getRemove), new ArrayList<>(updateTaskDto.getUrls()))
 				.create();
 		
 		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -173,8 +190,8 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		Thread.sleep(250);
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
 		final PatchTaskDto patchTaskDto = Instancio.of(PatchTaskDto.class)
-				.set(field(PatchTaskDto::getAdd), Set.of(URI.create("http://some.host.com").toURL()))
-				.set(field(PatchTaskDto::getRemove), Set.of())
+				.set(field(PatchTaskDto::getAdd), List.of(URI.create("http://some.host.com").toURL()))
+				.set(field(PatchTaskDto::getRemove), List.of())
 				.create();
 		
 		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -206,8 +223,8 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		
 		final URL someUrl = URI.create("https://some.host.com").toURL();
 		final PatchTaskDto patchTask1 = Instancio.of(PatchTaskDto.class)
-				.set(field(PatchTaskDto::getAdd), Set.of(someUrl))
-				.set(field(PatchTaskDto::getRemove), Set.of())
+				.set(field(PatchTaskDto::getAdd), List.of(someUrl))
+				.set(field(PatchTaskDto::getRemove), List.of())
 				.create();
 		
 		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -217,8 +234,8 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 				.andExpect(jsonPath("$.length()").value(1));
 		
 		final PatchTaskDto patchTask2 = Instancio.of(PatchTaskDto.class)
-				.set(field(PatchTaskDto::getAdd), Set.of(someUrl))
-				.set(field(PatchTaskDto::getRemove), Set.of())
+				.set(field(PatchTaskDto::getAdd), List.of(someUrl))
+				.set(field(PatchTaskDto::getRemove), List.of())
 				.create();
 		
 		mvc.perform(patch("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -245,7 +262,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		final URL someUrl = URI.create("https://some.host.com").toURL();
 		
 		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
-				.set(field(UpdateTaskDto::getUrls), Set.of(someUrl))
+				.set(field(UpdateTaskDto::getUrls), List.of(someUrl))
 				.create();
 		
 		final MvcResult addFirstResult = mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")
@@ -282,7 +299,7 @@ public class TaskControllerIntegrationTest extends BaseIntegrationTest {
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
 
 		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
-				.set(field(UpdateTaskDto::getUrls), new HashSet<>())
+				.set(field(UpdateTaskDto::getUrls), new ArrayList<>())
 				.create();
 		updateTaskDto.getUrls().add(null);
 

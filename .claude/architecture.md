@@ -192,8 +192,8 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 - **`JobExecution.setTasks` appends**; it does not replace.
 - **Soft delete:** removing a task sets `TaskDefinition.active=false`. Rows are never deleted, because `TaskExecution`
   references them.
-- **Deduplication** applies only among *active* tasks, and it is enforced **only in application code** (`Set<URL>`
-  semantics plus active-URL filters). No DB constraint backs it, so concurrent PUT/PATCH requests can insert duplicates.
+- **Deduplication** applies only among *active* tasks, and it is enforced **only in application code** (exact
+  `toExternalForm()` strings plus active-URL filters). No DB constraint backs it, so concurrent PUT/PATCH requests can insert duplicates.
   See `docs/system_guarantees/task_deduplication.md`.
 - **`ResultFile`** stores `namespace` and `key` separately. Its resource identifier is `namespace + "/" + key`. Retrieval
   uses the stored values, so it doesn't depend on the current configuration.
@@ -592,6 +592,12 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
 - **Rate limiting is per job, not per host.** Each running job gets its own `JitterRateLimiter(tasksPerSecond)`, so
   several jobs that target the same site add up their rates. This is intended. Per-host limiting is a possible future
   feature, not a missing one; don't flag it as a defect.
+- **Task URLs are `java.net.URL`, but are never compared as `URL`s.** Don't put a `URL` in a `Set` or `Map` key, and
+  don't compare two with `equals`: `URL.equals` and `hashCode` resolve the host over DNS, so distinct URLs on the same
+  IP are merged and every comparison blocks on a lookup. Compare `toExternalForm()` strings, the same form Hibernate
+  stores and the native queries compare. The request DTOs use `List<URL>` for the same reason, because Jackson would
+  fill a `Set<URL>` by hashing. `java.net.URI` was tried and rejected: it is stricter than `URL` and rejects hosts with
+  underscores, non-ASCII hosts and unencoded spaces, and Hibernate has no built-in mapping for it.
 - **The MDC is cleared on every async task** (`CustomAsyncTaskExecutor`), so context never leaks between pooled tasks.
   Re-establish it with `logger.with(...)`.
 - **Only SQLite scans `com.beluga.persistence.sqlite.converter` (`InstantConverter`).** SQLite has no timestamp type, so

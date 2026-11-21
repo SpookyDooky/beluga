@@ -92,10 +92,12 @@ public class JobDefinition {
 	}
 	
 	public void setTaskDefinitionsInactiveByUrl(final Collection<URL> urls) {
-		final Set<URL> urlSet = new HashSet<>(urls);
+		final Set<String> urlSet = urls.stream()
+				.map(URL::toExternalForm)
+				.collect(Collectors.toSet());
 		
 		taskDefinitions.stream()
-				.filter(taskDefinition -> urlSet.contains(taskDefinition.getUrl()))
+				.filter(taskDefinition -> urlSet.contains(taskDefinition.getUrl().toExternalForm()))
 				.forEach(taskDefinition -> taskDefinition.setActive(false));
 	}
 	

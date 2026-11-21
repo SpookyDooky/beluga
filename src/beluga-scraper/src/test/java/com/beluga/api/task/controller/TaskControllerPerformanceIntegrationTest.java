@@ -37,7 +37,7 @@ public class TaskControllerPerformanceIntegrationTest extends BaseIntegrationTes
 		final ReadJobDefinitionDto jobDefinition = createJob(writeJobDefinitionDto);
 		
 		final UpdateTaskDto updateTaskDto = Instancio.of(UpdateTaskDto.class)
-				.set(field(UpdateTaskDto::getUrls), Instancio.ofSet(URL.class).size(10_000).create())
+				.set(field(UpdateTaskDto::getUrls), Instancio.ofList(URL.class).size(10_000).create())
 				.create();
 		
 		mvc.perform(put("/jobs/" + jobDefinition.getId() + "/tasks")

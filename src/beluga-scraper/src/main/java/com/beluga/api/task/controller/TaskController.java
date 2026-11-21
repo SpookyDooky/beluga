@@ -19,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URL;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.beluga.logging.ContextKeys.JOB_ID;
@@ -78,7 +79,7 @@ public class TaskController {
 		try (final CloseableContext context = logger.with(JOB_ID, jobDefinitionId.toString())) {
 			context.put(TASK_ID, taskId.toString());
 			logger.info("Retrieving task.");
-
+			
 			final TaskDefinition taskDefinition = jobDefinitionService.getById(jobDefinitionId)
 					.getTaskDefinitionById(taskId);
 			
@@ -92,21 +93,28 @@ public class TaskController {
 	                                               @RequestBody @Valid final UpdateTaskDto tasks) {
 		try (final CloseableContext ignored = logger.with(JOB_ID, jobDefinitionId.toString())) {
 			logger.info("Updating tasks for job.");
-			final Set<URL> existingActiveUrls = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
-					tasks.getUrls(),
+
+			final Map<String, URL> requestedUrls = new LinkedHashMap<>();
+			tasks.getUrls().forEach(url -> requestedUrls.putIfAbsent(url.toExternalForm(), url));
+			
+			final Set<String> existingActiveUrls = taskDefinitionService.getAllActiveUrlsByJobDefinitionIdAndUrlIn(
+					requestedUrls.keySet(),
 					jobDefinitionId
 			);
 			taskDefinitionService.setAllToInactiveByJobDefinitionIdAndUrlNotInUrls(jobDefinitionId, existingActiveUrls);
 			
-			final Set<URL> newUrls = new HashSet<>(tasks.getUrls());
-			newUrls.removeAll(existingActiveUrls);
+			final List<URL> newUrls = requestedUrls.entrySet()
+					.stream()
+					.filter(entry -> !existingActiveUrls.contains(entry.getKey()))
+					.map(Map.Entry::getValue)
+					.toList();
 			
 			final List<TaskDefinition> taskDefinitions = taskDefinitionMapperService.map(newUrls);
 			final JobDefinition jobDefinition = jobDefinitionService.getById(jobDefinitionId);
 			jobDefinition.addTaskDefinitions(taskDefinitions);
-
+			
 			jobDefinitionService.save(jobDefinition);
-
+			
 			return jobDefinition.getActiveTaskDefinitions()
 					.stream()
 					.map(taskDefinitionDtoMapper::map)

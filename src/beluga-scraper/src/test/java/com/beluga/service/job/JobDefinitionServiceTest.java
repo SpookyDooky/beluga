@@ -150,7 +150,7 @@ class JobDefinitionServiceTest {
 		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
 		
 		final URL existingUrl = URI.create("http://localhost:1234").toURL();
-		final Set<URL> existingUrls = Set.of(existingUrl);
+		final Set<String> existingUrls = Set.of(existingUrl.toExternalForm());
 		when(taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId)).thenReturn(existingUrls);
 		
 		final URL newUrl = URI.create("http://localhost:12345").toURL();
@@ -170,7 +170,29 @@ class JobDefinitionServiceTest {
 		verify(jobDefinition).addTaskDefinitions(List.of(newTask));
 		verify(repository).save(jobDefinition);
 	}
-	
+
+	@Test
+	void shouldSkipDuplicateUrlsWhenAddingTaskDefinitionsById() throws Exception {
+		final Long jobDefinitionId = 123L;
+		final JobDefinition jobDefinition = mock();
+		when(repository.findById(jobDefinitionId)).thenReturn(Optional.of(jobDefinition));
+		when(taskDefinitionService.getActiveUrlsByJobDefinitionId(jobDefinitionId)).thenReturn(Set.of());
+
+		final TaskDefinition firstTask = Instancio.of(TaskDefinition.class)
+				.set(field(TaskDefinition::getUrl), URI.create("http://localhost:1234").toURL())
+				.create();
+		final TaskDefinition duplicateTask = Instancio.of(TaskDefinition.class)
+				.set(field(TaskDefinition::getUrl), URI.create("http://localhost:1234").toURL())
+				.create();
+
+		jobDefinitionService.addTaskDefinitionsById(
+				List.of(firstTask, duplicateTask),
+				jobDefinitionId
+		);
+
+		verify(jobDefinition).addTaskDefinitions(List.of(firstTask));
+	}
+
 	@Test
 	void shouldGetActiveTaskDefinitionsById() {
 		final Long id = 123L;
