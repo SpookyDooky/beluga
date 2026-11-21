@@ -31,8 +31,8 @@ changes.
 
 Beluga is a general-purpose web scraping engine: a Spring Boot 4.1 / Java 21 service.
 
-- **Users** define *jobs* through a REST API. YAML `beluga.jobs` exists, but jobs from it are never loaded; see
-  [§6](#6-known-defects).
+- **Users** define *jobs* through a REST API, or in YAML under `beluga.jobs`. `JobRegistry` loads the YAML jobs at
+  startup, replaces any job with the same name, and starts them ([§4](#4-data-flow)).
 - **A job** is a scraping configuration (an item selector plus extraction rules) and a set of URLs called *tasks*.
 - **Starting a job** creates an *execution*. Every active task URL is fetched with jsoup at a rate-limited pace, and the
   configured data points are extracted from each item on the page.
@@ -116,7 +116,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `model/job_definition/**` | Definition entities: `JobDefinition`, `ScrapingDefinition`, `ExecutionDefinition`, the `ExtractionDefinition` hierarchy, `ExtractionType`. |
 | `model/` (other) | `JobExecution`, `ResultFile`, `JobStatus`, `CompressionType`; `model/event/storable` (payloads). |
 | `execution/model/job`, `execution/model/task` | **Runtime** snapshots `Job`, `Task`, `ScrapingConfiguration` and the runtime `ExtractionConfiguration` hierarchy. **Note:** the JPA entities `TaskDefinition` and `TaskExecution` and the enum `TaskStatus` also live in `execution/model/task`. |
-| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery). |
+| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery), `JobRegistry` (loads and starts YAML jobs). |
 | `execution/service/task` | `JobTaskQueue`. |
 | `execution/service/worker` | `Worker` (one task per async call); `rate_limiting/JitterRateLimiter`. |
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |
@@ -127,7 +127,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
 | `properties` | `@ConfigurationProperties("beluga")` tree ([§3.6](#36-configuration-properties)). |
 | `mapper` | MapStruct mappers: definitions ↔ DTOs/properties, and definitions → runtime snapshots. |
-| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, currently unused). |
+| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, used by `JobRegistry`). |
 | `async` | `CustomAsyncTaskExecutor` (clears the MDC per task). |
 | `util` | `TimingService` (UUID-keyed stopwatches). |
 
@@ -350,7 +350,7 @@ beluga
 ├── result-storage         ResultStorageProperties
 │   ├── type               FILE_SYSTEM | S3
 │   └── s3                 host, access-key, secret-key, bucket, region (@NotNull), prefix
-└── jobs[]                 JobProperties          (bound and validated, but NEVER loaded; see §6)
+└── jobs[]                 JobProperties          (loaded and started at startup by `JobRegistry`)
     ├── name               @NotBlank
     ├── url                urls[] | url-file      (urls wins when non-empty)
     ├── execution          tasks-per-second (int, default 1)
@@ -476,6 +476,16 @@ Kept URLs keep their ids.
 in PLANNED or ACTIVE, using `JobService.createActiveJob`. That includes its PLANNED, PAUSED and ACTIVE tasks, so tasks
 that were in flight are scraped again. PAUSED executions are left alone. A job with no tasks still runs, so that it
 reaches COMPLETED.
+
+**YAML jobs.** `JobRegistry.registerJobs` (`@Scheduled(initialDelay = 0)`, on the scheduling thread) handles each
+`beluga.jobs` entry:
+
+1. Map it to a `JobDefinition` with `JobDefinitionMapper.map(JobProperties)`.
+2. If a job with that name exists, delete it with `deleteByName`. This cascades to its executions and result file
+   rows, and the job gets a new id.
+3. Save it, create an execution with `JobService.createJobByJobDefinitionId`, and call `JobExecutorService.execute`.
+
+It runs at the same time as startup recovery, and nothing orders the two.
 
 ### 4.3 Execution (event-driven)
 
