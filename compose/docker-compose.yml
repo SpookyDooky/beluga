@@ -2,7 +2,7 @@ version: '3'
 
 services:
   silo:
-    image: docker.io/pgsty/silo:9.9
+    image: docker.io/pgsty/silo:RELEASE.2026-11-12T00-00-00Z
     container_name: silo
     ports:
       - "9000:9000"

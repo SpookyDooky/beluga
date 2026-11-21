@@ -126,7 +126,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
 | `properties` | `@ConfigurationProperties("beluga")` tree ([§3.6](#36-configuration-properties)). |
 | `mapper` | MapStruct mappers: definitions ↔ DTOs/properties, and definitions → runtime snapshots. |
-| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, currently unused). |
+| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean). |
 | `async` | `CustomAsyncTaskExecutor` (clears the MDC per task). |
 | `util` | `TimingService` (UUID-keyed stopwatches). |
 
