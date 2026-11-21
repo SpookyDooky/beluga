@@ -9,8 +9,8 @@ changes.
 - Paths are relative to `src/beluga-scraper/src/main/java/com/beluga/` unless stated otherwise. For example, `execution/`
   means `src/beluga-scraper/src/main/java/com/beluga/execution/`.
 - Statements are verified against the code unless marked **(inferred)**.
-- [Decisions & constraints](#5-decisions--constraints) lists deliberate choices; keep them.
-  [Known defects](#6-known-defects) lists real bugs; fix them, never preserve them. Do not confuse the two.
+- [Decisions & constraints](#5-decisions--constraints) lists deliberate choices; keep them. Behaviour described as a bug
+  elsewhere in this file is a bug: fix it, never preserve it.
 - Last verified against the code on 2026-11-14.
 
 ## Contents
@@ -20,10 +20,8 @@ changes.
 3. [Key modules](#3-key-modules)
 4. [Data flow](#4-data-flow)
 5. [Decisions & constraints](#5-decisions--constraints)
-6. [Known defects](#6-known-defects)
-7. [Dead code](#7-dead-code)
-8. [Testing architecture](#8-testing-architecture)
-9. [Change recipes](#9-change-recipes)
+6. [Testing architecture](#6-testing-architecture)
+7. [Change recipes](#7-change-recipes)
 
 ---
 
@@ -31,8 +29,9 @@ changes.
 
 Beluga is a general-purpose web scraping engine: a Spring Boot 4.1 / Java 21 service.
 
-- **Users** define *jobs* through a REST API, or in YAML under `beluga.jobs`. `JobRegistry` loads the YAML jobs at
-  startup, replaces any job with the same name, and starts them ([§4](#4-data-flow)).
+- **Users** define *jobs* through a REST API, or in YAML under `beluga.jobs`. `JobRegistrar` saves the YAML jobs at
+  startup and replaces any job with the same name. It does not start them; starting a job is always a manual action
+  ([§4](#4-data-flow)).
 - **A job** is a scraping configuration (an item selector plus extraction rules) and a set of URLs called *tasks*.
 - **Starting a job** creates an *execution*. Every active task URL is fetched with jsoup at a rate-limited pace, and the
   configured data points are extracted from each item on the page.
@@ -116,7 +115,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `model/job_definition/**` | Definition entities: `JobDefinition`, `ScrapingDefinition`, `ExecutionDefinition`, the `ExtractionDefinition` hierarchy, `ExtractionType`. |
 | `model/` (other) | `JobExecution`, `ResultFile`, `JobStatus`, `CompressionType`; `model/event/storable` (payloads). |
 | `execution/model/job`, `execution/model/task` | **Runtime** snapshots `Job`, `Task`, `ScrapingConfiguration` and the runtime `ExtractionConfiguration` hierarchy. **Note:** the JPA entities `TaskDefinition` and `TaskExecution` and the enum `TaskStatus` also live in `execution/model/task`. |
-| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery), `JobRegistry` (loads and starts YAML jobs). |
+| `execution/service/job` | `JobExecutorService` (queue, dispatch and completion), `JobEventHandler` (job status), `JobScheduler` (restart recovery), `JobRegistrar` (saves YAML jobs at startup). |
 | `execution/service/task` | `JobTaskQueue`. |
 | `execution/service/worker` | `Worker` (one task per async call); `rate_limiting/JitterRateLimiter`. |
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |
@@ -127,7 +126,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
 | `properties` | `@ConfigurationProperties("beluga")` tree ([§3.6](#36-configuration-properties)). |
 | `mapper` | MapStruct mappers: definitions ↔ DTOs/properties, and definitions → runtime snapshots. |
-| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, used by `JobRegistry`). |
+| `config` | `AsyncConfig` (`@EnableAsync`, `taskExecutor` bean), `SchedulingConfig` (`@EnableScheduling`, currently unused). |
 | `async` | `CustomAsyncTaskExecutor` (clears the MDC per task). |
 | `util` | `TimingService` (UUID-keyed stopwatches). |
 
@@ -194,8 +193,8 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 - **Soft delete:** removing a task sets `TaskDefinition.active=false`. Rows are never deleted, because `TaskExecution`
   references them.
 - **Deduplication** applies only among *active* tasks, and it is enforced **only in application code** (`Set<URL>`
-  semantics plus active-URL filters). No DB constraint backs it. See `docs/system_guarantees/task_deduplication.md` and
-  [§6](#6-known-defects).
+  semantics plus active-URL filters). No DB constraint backs it, so concurrent PUT/PATCH requests can insert duplicates.
+  See `docs/system_guarantees/task_deduplication.md`.
 - **`ResultFile`** stores `namespace` and `key` separately. Its resource identifier is `namespace + "/" + key`. Retrieval
   uses the stored values, so it doesn't depend on the current configuration.
 - **Extraction ids on update:** `PUT /jobs/{id}` **replaces** the extraction list (`ScrapingDefinitionMapper.update`
@@ -350,7 +349,7 @@ beluga
 ├── result-storage         ResultStorageProperties
 │   ├── type               FILE_SYSTEM | S3
 │   └── s3                 host, access-key, secret-key, bucket, region (@NotNull), prefix
-└── jobs[]                 JobProperties          (loaded and started at startup by `JobRegistry`)
+└── jobs[]                 JobProperties          (saved at startup by `JobRegistrar`, not started)
     ├── name               @NotBlank
     ├── url                urls[] | url-file      (urls wins when non-empty)
     ├── execution          tasks-per-second (int, default 1)
@@ -470,22 +469,25 @@ Kept URLs keep their ids.
 3. A `TransactionSynchronization.afterCommit` calls `JobExecutorService.execute(job)`, so the async thread sees the
    committed rows.
 
-**Resume** calls `execute` **inside** the transaction, not `afterCommit`; see [§6](#6-known-defects).
+**Resume** calls `execute` **inside** the transaction, not `afterCommit`. This is a bug: the async thread can read
+uncommitted state.
 
 **Startup recovery.** `JobScheduler.startOutstandingJobs` (`@Async`, on `ApplicationReadyEvent`) re-runs every execution
 in PLANNED or ACTIVE, using `JobService.createActiveJob`. That includes its PLANNED, PAUSED and ACTIVE tasks, so tasks
 that were in flight are scraped again. PAUSED executions are left alone. A job with no tasks still runs, so that it
 reaches COMPLETED.
 
-**YAML jobs.** `JobRegistry.registerJobs` (`@Scheduled(initialDelay = 0)`, on the scheduling thread) handles each
-`beluga.jobs` entry:
+**YAML jobs.** `JobRegistrar` is an `ApplicationRunner`, so Spring runs it on the main thread before it publishes
+`ApplicationReadyEvent`. It therefore always finishes before startup recovery begins, and an exception stops startup.
+For each `beluga.jobs` entry it:
 
-1. Map it to a `JobDefinition` with `JobDefinitionMapper.map(JobProperties)`.
-2. If a job with that name exists, delete it with `deleteByName`. This cascades to its executions and result file
-   rows, and the job gets a new id.
-3. Save it, create an execution with `JobService.createJobByJobDefinitionId`, and call `JobExecutorService.execute`.
+1. Maps the entry to a `JobDefinition` with `JobDefinitionMapper.map(JobProperties)`.
+2. Deletes any job with the same name with `deleteByName`. This cascades to its executions and result file rows, and
+   the job gets a new id.
+3. Saves the new definition.
 
-It runs at the same time as startup recovery, and nothing orders the two.
+It never creates an execution or starts the job. The delete and the save run in separate transactions, so a failed
+save leaves the job deleted.
 
 ### 4.3 Execution (event-driven)
 
@@ -556,7 +558,8 @@ order across `@Async` listeners is not guaranteed.
 - **`JitterRateLimiter`:** Guava `RateLimiter.create(tasksPerSecond)`.
   - After each permit it sleeps a random jitter in `[min(2000, 0.3·base), min(5000, 0.7·base))` ms, where
     `base = 1000 / rate`.
-  - With 5 % probability it adds a further sleep; see [§6](#6-known-defects).
+  - With 5 % probability it adds a further sleep of the value `acquire()` returned. That value is in seconds but is
+    used as milliseconds, so the sleep is almost always 0 ms. This is a bug.
   - The average rate stays about `tasksPerSecond`; only the phase shifts **(inferred)**.
 - **Shutdown:** not handled. There is no `@PreDestroy`, `SmartLifecycle` or `ContextClosedEvent`. In-flight runs are
   lost, and recovery happens on the next startup through `JobScheduler`.
@@ -631,7 +634,8 @@ These look odd but are deliberate. **Don't "fix" them** without discussing it fi
     failure threshold also skips the other variant.
   - They need Docker and a writable `/app/db`; with FILE_SYSTEM storage they also write to `/app/data`.
 - **HTTP stubs:** OkHttp `mockwebserver3`, not `com.sun.net.httpserver`.
-- **Gap:** nothing exercises S3 end to end. Defects A1 and A2 would have been caught by a test against MinIO.
+- **S3:** `S3ResultDataStoreProviderIntegrationTest` saves and retrieves through the real S3 beans against MinIO
+  (Testcontainers). It loads only the S3 beans plus the `s3` test profile, not persistence.
 
 ---
 
@@ -682,4 +686,6 @@ for both backends.
 
 ### Change execution flow or in-memory state
 
-Keep [the invariants](#architectural-invariants). Review E4–E7 first, because they involve the same state.
+Keep [the invariants](#architectural-invariants). The in-memory run state in `JobExecutorService` (`jobIdJobMap`,
+`jobActiveTasks`, `interruptedJobs`) and `JobTaskQueue` is shared by the dispatch loop, worker events and stop, pause
+and resume requests, so check every change against all of them.

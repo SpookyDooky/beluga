@@ -11,6 +11,13 @@ Each configured URL becomes an individual scraping task during execution.
 This way of configuring jobs is mainly offered for ease of use, there is also a complete REST API 
 for managing jobs which is more suited for a production environment. See the [Jobs API](../api_specs/job_api.yaml).
 
+Jobs configured here are saved when the application starts, but they are not started automatically. Start a job
+through the [Execution API](../api_specs/execution_api.yaml) with `POST /jobs/{jobId}/start`.
+
+A job is identified by its name. If a job with the same name already exists, including one created through the REST
+API, it is replaced on every startup. This lets you change a job by editing its configuration here, without renaming
+it. Replacing a job also removes the records of its previous executions, and the job gets a new id.
+
 # Contents
 
 * [Configuration](#configuration)
@@ -50,7 +57,7 @@ for managing jobs which is more suited for a production environment. See the [Jo
 - **Type:** string
 - **Required:** true
 - **Description:** The name of the job
-- **Constraints:** Must be unique across all jobs
+- **Constraints:** Must be unique across all jobs. An existing job with the same name is replaced at startup.
 
 ## Urls
 Configure either `urls` or `url-file`. When `urls` contains at least one URL, `url-file` is ignored.
