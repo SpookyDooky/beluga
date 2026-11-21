@@ -1,8 +1,11 @@
 package com.beluga.api.job.validation.validator;
 
 import com.beluga.api.job.dto.write.WriteScrapingConfigurationDto;
+import com.beluga.api.job.dto.write.extraction_configuration.WriteExtractionConfigurationDto;
+import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionDataPointConfigurationDto;
+import com.beluga.api.job.dto.write.extraction_configuration.html.WriteHtmlExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.image.WriteImageExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.text.WriteTextExtractionConfigurationDto;
 import jakarta.validation.ConstraintViolation;
@@ -14,10 +17,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -123,6 +129,51 @@ class ValidFieldNamesValidatorTest {
                 .singleElement()
                 .extracting(ConstraintViolation::getMessage)
                 .isEqualTo("Field name 'product' conflicts with nested field name 'product.price'.");
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void shouldValidateFieldNameOfEachExtractionConfiguration(final WriteExtractionConfigurationDto dataPoint) {
+        final WriteScrapingConfigurationDto scrapingConfiguration = Instancio.of(WriteScrapingConfigurationDto.class)
+                .set(field(WriteScrapingConfigurationDto::getDataPoints), List.of(
+                        dataPoint,
+                        Instancio.of(WriteTextExtractionConfigurationDto.class)
+                                .set(field(WriteTextExtractionConfigurationDto::getField), "product.price")
+                                .create()
+                ))
+                .create();
+
+        final Set<ConstraintViolation<WriteScrapingConfigurationDto>> violations = validator.validate(scrapingConfiguration);
+
+        assertThat(violations)
+                .singleElement()
+                .extracting(ConstraintViolation::getMessage)
+                .isEqualTo("Field name 'product' conflicts with nested field name 'product.price'.");
+    }
+
+    /**
+     * One data point per extraction type that has a field name, each using the field name {@code product}. Image
+     * extraction has no field name and is covered by {@link #shouldBeValidWhenFieldNamesDoNotConflict()}.
+     */
+    static Stream<Arguments> shouldValidateFieldNameOfEachExtractionConfiguration() {
+        return Stream.of(
+                Arguments.of(Instancio.of(WriteAttributeExtractionConfigurationDto.class)
+                        .set(field(WriteAttributeExtractionConfigurationDto::getField), "product")
+                        .create()),
+                Arguments.of(Instancio.of(WriteDescriptionListExtractionConfigurationDto.class)
+                        .set(field(WriteDescriptionListExtractionConfigurationDto::getDataPoints), List.of(
+                                Instancio.of(WriteDescriptionListExtractionDataPointConfigurationDto.class)
+                                        .set(field(WriteDescriptionListExtractionDataPointConfigurationDto::getField), "product")
+                                        .create()
+                        ))
+                        .create()),
+                Arguments.of(Instancio.of(WriteHtmlExtractionConfigurationDto.class)
+                        .set(field(WriteHtmlExtractionConfigurationDto::getField), "product")
+                        .create()),
+                Arguments.of(Instancio.of(WriteTextExtractionConfigurationDto.class)
+                        .set(field(WriteTextExtractionConfigurationDto::getField), "product")
+                        .create())
+        );
     }
 
     @ParameterizedTest

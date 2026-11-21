@@ -5,6 +5,7 @@ import com.beluga.api.job.dto.write.extraction_configuration.WriteExtractionConf
 import com.beluga.api.job.dto.write.extraction_configuration.attribute.WriteAttributeExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.description_list.WriteDescriptionListExtractionDataPointConfigurationDto;
+import com.beluga.api.job.dto.write.extraction_configuration.html.WriteHtmlExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.image.WriteImageExtractionConfigurationDto;
 import com.beluga.api.job.dto.write.extraction_configuration.text.WriteTextExtractionConfigurationDto;
 import com.beluga.api.job.validation.annotation.ValidFieldNames;
@@ -54,6 +55,7 @@ public class ValidFieldNamesValidator implements ConstraintValidator<ValidFieldN
             case WriteDescriptionListExtractionConfigurationDto descriptionList -> getFieldNames(descriptionList);
             case WriteImageExtractionConfigurationDto ignored -> Stream.empty();
             case WriteTextExtractionConfigurationDto text -> Stream.of(text.getField());
+            case WriteHtmlExtractionConfigurationDto html -> Stream.of(html.getField());
             default -> throw new IllegalArgumentException("Unsupported extraction configuration");
         };
     }
