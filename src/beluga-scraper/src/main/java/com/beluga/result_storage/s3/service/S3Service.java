@@ -67,9 +67,7 @@ public class S3Service {
                 .bucket(bucket)
                 .build();
 
-        final String getObjectResponse = s3Client.getObjectAsBytes(getObjectRequest)
-                .toString();
-
-        return getObjectResponse.getBytes();
+        return s3Client.getObjectAsBytes(getObjectRequest)
+                .asByteArray();
     }
 }

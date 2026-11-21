@@ -61,14 +61,13 @@ public class JobController {
     @GetMapping("/{id}")
     @Transactional
     public ResponseEntity<ReadJobDefinitionDto> get(@PathVariable("id") final Long id) {
-        try (final CloseableContext ignored = logger.with(JOB_ID)) {
+        try (final CloseableContext ignored = logger.with(JOB_ID, id.toString())) {
             logger.info("Retrieving job.");
 
             return jobDefinitionService.findById(id)
                     .map(jobDefinitionMapper::map)
                     .map(ResponseEntity::ok)
                     .orElseGet(() -> ResponseEntity.notFound().build());
-
         }
     }
 
