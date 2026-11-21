@@ -13,11 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -55,52 +51,30 @@ class JobControllerTest {
 	@Test
 	void shouldGetJob() {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
-		when(jobDefinitionService.findById(jobDefinition.getId())).thenReturn(Optional.of(jobDefinition));
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
 		
 		final ReadJobDefinitionDto readJobDefinitionDto = mock();
 		when(jobDefinitionMapper.map(jobDefinition)).thenReturn(readJobDefinitionDto);
 		
-		final ResponseEntity<ReadJobDefinitionDto> result = jobController.get(jobDefinition.getId());
-		
-		assertSame(readJobDefinitionDto, result.getBody());
-	}
-	
-	@Test
-	void shouldGetJobReturnsNotFound() {
-		final Long id = 123L;
-		when(jobDefinitionService.findById(id)).thenReturn(Optional.empty());
-		
-		final ResponseEntity<ReadJobDefinitionDto> result = jobController.get(id);
-		
-		assertEquals(404, result.getStatusCode().value());
+		final ReadJobDefinitionDto result = jobController.get(jobDefinition.getId());
+
+		assertSame(readJobDefinitionDto, result);
 	}
 	
 	@Test
 	void shouldUpdate() {
 		final JobDefinition jobDefinition = Instancio.create(JobDefinition.class);
-		when(jobDefinitionService.findById(jobDefinition.getId())).thenReturn(Optional.of(jobDefinition));
+		when(jobDefinitionService.getById(jobDefinition.getId())).thenReturn(jobDefinition);
 		
 		final ReadJobDefinitionDto readJobDefinitionDto = mock();
 		when(jobDefinitionMapper.map(jobDefinition)).thenReturn(readJobDefinitionDto);
 		
 		final WriteJobDefinitionDto writeJobDefinitionDto = mock();
-		final ResponseEntity<ReadJobDefinitionDto> result = jobController.update(jobDefinition.getId(), writeJobDefinitionDto);
+		final ReadJobDefinitionDto result = jobController.update(jobDefinition.getId(), writeJobDefinitionDto);
 		
 		verify(jobDefinitionMapper).update(writeJobDefinitionDto, jobDefinition);
 		verify(jobDefinitionService).save(jobDefinition);
 		
-		assertSame(readJobDefinitionDto, result.getBody());
-	}
-	
-	@Test
-	void shouldUpdateReturnsNotFound() {
-		final Long id = 123L;
-		when(jobDefinitionService.findById(id)).thenReturn(Optional.empty());
-
-		final WriteJobDefinitionDto writeJobDefinitionDto = mock();
-
-		final ResponseEntity<ReadJobDefinitionDto> result = jobController.update(id, writeJobDefinitionDto);
-		
-		assertEquals(404, result.getStatusCode().value());
+		assertSame(readJobDefinitionDto, result);
 	}
 }
