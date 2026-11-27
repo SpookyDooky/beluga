@@ -6,6 +6,7 @@ import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigu
 import com.beluga.properties.scraping.extraction_configuration.HtmlExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.ImageExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.TextExtractionConfigurationProperties;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.beluga.test_utils.TestReflectionUtility.assertAnnotationPresentOnField;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BelugaScraperPropertiesTest {
@@ -50,6 +52,11 @@ class BelugaScraperPropertiesTest {
 		).run(context -> {
 			assertThat(context).hasFailed();
 		});
+	}
+	
+	@Test
+	void shouldValidateInnerHttpProperties() {
+		assertAnnotationPresentOnField("http", BelugaScraperProperties.class, Valid.class);
 	}
 	
 	@Test
