@@ -547,8 +547,8 @@ order across `@Async` listeners is not guaranteed.
 | State | Type | Owner |
 | --- | --- | --- |
 | Per-job task queue | `ConcurrentHashMap<Long, ConcurrentLinkedQueue<Task>>` | `JobTaskQueue` |
-| Running jobs | `HashMap<Long, Job>` (**not thread-safe**) | `JobExecutorService.jobIdJobMap` |
-| Active-task counters | `HashMap<Long, AtomicInteger>` (map **not thread-safe**) | `JobExecutorService.jobActiveTasks` |
+| Running jobs | `ConcurrentHashMap<Long, Job>` | `JobExecutorService.jobIdJobMap` |
+| Active-task counters | `ConcurrentHashMap<Long, AtomicInteger>` | `JobExecutorService.jobActiveTasks` |
 | Interrupted jobs | concurrent key set | `JobExecutorService.interruptedJobs` |
 
 - **Single executor:** `AsyncConfig.taskExecutor` is a `ThreadPoolTaskExecutor` with core 256, **queue capacity 0** and

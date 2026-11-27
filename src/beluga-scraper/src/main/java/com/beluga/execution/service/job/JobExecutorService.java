@@ -17,7 +17,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,8 +38,8 @@ public class JobExecutorService {
 	private final Worker worker;
 	private final TaskExecutionService taskExecutionService;
 
-	private final Map<Long, Job> jobIdJobMap = new HashMap<>();
-	private final Map<Long, AtomicInteger> jobActiveTasks = new HashMap<>();
+	private final Map<Long, Job> jobIdJobMap = new ConcurrentHashMap<>();
+	private final Map<Long, AtomicInteger> jobActiveTasks = new ConcurrentHashMap<>();
 	private final Set<Long> interruptedJobs = ConcurrentHashMap.newKeySet();
 
 	public JobExecutorService(final ContextLogger logger,
