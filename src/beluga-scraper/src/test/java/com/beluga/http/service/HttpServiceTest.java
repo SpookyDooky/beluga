@@ -4,6 +4,7 @@ import com.beluga.activity_logging.activitiy.RequestActivity;
 import com.beluga.activity_logging.event.ActivityEvent;
 import com.beluga.http.model.HttpResult;
 import com.beluga.logging.ContextLogger;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.http.HttpProperties;
 import com.beluga.util.TimingService;
 import mockwebserver3.MockResponse;
@@ -35,6 +36,7 @@ import java.util.zip.GZIPOutputStream;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HttpServiceTest {
@@ -47,6 +49,8 @@ class HttpServiceTest {
 	private ContextLogger logger;
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
+	@Mock
+	private BelugaScraperProperties belugaScraperProperties;
 
 	@Captor
 	private ArgumentCaptor<ActivityEvent> activityEventCaptor;
@@ -63,8 +67,9 @@ class HttpServiceTest {
 				.set(field(HttpProperties::getTimeout), TIMEOUT)
 				.set(field(HttpProperties::getMaxBodySize), DataSize.ofBytes(MAX_BODY_SIZE))
 				.create();
+		when(belugaScraperProperties.getHttp()).thenReturn(httpProperties);
 
-		httpService = new HttpService(logger, applicationEventPublisher, new TimingService(), httpProperties);
+		httpService = new HttpService(logger, applicationEventPublisher, new TimingService(), belugaScraperProperties);
 	}
 
 	@AfterEach

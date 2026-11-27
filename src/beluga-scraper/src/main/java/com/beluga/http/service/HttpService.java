@@ -6,6 +6,7 @@ import com.beluga.http.model.HttpResult;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextKeys;
 import com.beluga.logging.ContextLogger;
+import com.beluga.properties.BelugaScraperProperties;
 import com.beluga.properties.http.HttpProperties;
 import com.beluga.util.TimingService;
 import org.jsoup.Connection.Method;
@@ -47,11 +48,11 @@ public class HttpService {
     public HttpService(final ContextLogger logger,
                        final ApplicationEventPublisher applicationEventPublisher,
                        final TimingService timingService,
-                       final HttpProperties httpProperties) {
+                       final BelugaScraperProperties belugaScraperProperties) {
         this.logger = logger;
         this.applicationEventPublisher = applicationEventPublisher;
         this.timingService = timingService;
-        this.httpProperties = httpProperties;
+        this.httpProperties = belugaScraperProperties.getHttp();
     }
 
     public Optional<HttpResult> get(final URL url) {
