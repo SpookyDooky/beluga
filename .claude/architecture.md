@@ -276,28 +276,32 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 ### 3.4 Scraping
 
 - **`HttpService.get(url)`** sends a GET with `Jsoup.connect(url).execute()` and returns `Optional<HttpResult>`
-  (status code, final URI after redirects, `Content-Type`, body bytes). jsoup's `Connection` does not leave
-  `HttpService`; callers only see `HttpResult`. Settings are constants for now (#237):
+  (status code, final URI after redirects, `Content-Type`, charset, body bytes). jsoup's `Connection` does not leave
+  `HttpService`; callers only see `HttpResult`.
+  - **Settings** come from `beluga.http.*` (`HttpProperties`, part of `BelugaScraperProperties`): `timeout`
+    (default 30 s) and `max-body-size` (default 10 MB). The `User-Agent: Beluga/1.0` is a constant; jsoup's default
+    pretends to be Chrome.
   - **`HttpService` sets `jsoup.useHttpClient=false`** in a static block. On jsoup's default JDK `HttpClient` transport
-    the timeout only covers the headers, so a stalled body blocks forever (verified). On `HttpURLConnection` the 30 s
+    the timeout only covers the headers, so a stalled body blocks forever (verified). On `HttpURLConnection` the
     timeout covers connecting and reading the complete response. Do not remove this.
-  - It follows redirects, sends `User-Agent: Beluga/1.0` (jsoup's default pretends to be Chrome) and
-    `Accept-Encoding: gzip`; the body is decompressed.
-  - `ignoreHttpErrors` and `ignoreContentType` are on: a result is returned for **every** status code and content type,
-    and callers decide what it means.
-  - Bodies over 10 MB (decompressed) are rejected. jsoup's `maxBodySize` **truncates silently**, so it is set one byte
-    above the maximum and a body of that length is rejected.
-  - `Optional.empty` means the server could not be reached or did not respond in time, the URL uses an unsupported
-    scheme, or the body was too large. Every case is logged.
-  - Every call publishes a `RequestActivity`, a trail of where the engine sent requests. `success` means a complete
-    response was received, whatever the status code.
+  - It follows redirects and sends `Accept-Encoding: gzip`; the body is decompressed.
+  - `ignoreContentType` is on, so every content type is returned (images included) and callers decide whether they can
+    use it. `ignoreHttpErrors` is **off**: jsoup throws for 4xx/5xx, so those return `Optional.empty`.
+  - Bodies over `max-body-size` (decompressed) are rejected. jsoup's `maxBodySize` **truncates silently**, so it is set
+    one byte above the maximum and a body longer than the maximum is rejected.
+  - `charset` is jsoup's `response.charset()`: the charset from `Content-Type`, or `null` when it is missing, empty,
+    invalid or not supported.
+  - `Optional.empty` means the server could not be reached or did not respond in time, it returned an error status,
+    the URL uses an unsupported scheme, or the body was too large. Every case is logged.
+  - Every call publishes one `RequestActivity`, a trail of where the engine sent requests, after the body has been
+    read. `success` is `true` for a successful response and `false` for an error status or a failed request.
 - **`ScrapingService.scrape(url, scrapingConfiguration)`:**
-  - An empty fetch, a non-2xx status, or an unsupported content type throws `IllegalStateException`, which makes the
-    task FAILED. Supported content types match what jsoup accepts when it fetches itself: `text/*`,
+  - An empty result or an unsupported content type throws `IllegalStateException`, which makes the task FAILED.
+    Error status codes arrive as an empty result. Supported content types match what jsoup accepts when it fetches itself: `text/*`,
     `application/xml`, `(application|text)/*+xml`, or no `Content-Type` at all.
-  - The body is parsed with `Jsoup.parse(bytes, charset, finalUri)`. The charset comes from `Content-Type`; when it
-    is missing or unsupported, jsoup detects it from the BOM or `<meta>`. The final URI is the base URI, which jsoup
-    uses to resolve `abs:` attributes against the page that was actually returned.
+  - The body is parsed with `Jsoup.parse(bytes, httpResult.getCharset(), finalUri)`. When the charset is `null`,
+    jsoup detects it from the BOM or `<meta>`. The final URI is the base URI, which jsoup uses to resolve `abs:`
+    attributes against the page that was actually returned.
   - Items are `document.body().select(itemSelector)`; only the body is searched.
   - Each item becomes one `Map<String,Object>`. Each extraction's map is `putAll`-ed into it, so **later fields with
     the same name overwrite earlier ones**. The API rejects duplicate, malformed and conflicting field names
@@ -361,6 +365,8 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 
 ```
 beluga
+├── http                   HttpProperties  timeout (Duration, default 30s), max-body-size (DataSize, default 10MB),
+│                          both @NotNull
 ├── persistence            PersistenceProperties  @HasCorrectPersistenceStore @HasOnlyOnePersistenceStore
 │   ├── type               SQLITE | POSTGRESQL
 │   └── postgresql         url, username, password (@NotBlank)
