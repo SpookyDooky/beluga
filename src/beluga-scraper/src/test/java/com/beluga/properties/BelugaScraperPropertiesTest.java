@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
@@ -59,6 +60,31 @@ class BelugaScraperPropertiesTest {
 		assertAnnotationPresentOnField("http", BelugaScraperProperties.class, Valid.class);
 	}
 	
+	@ParameterizedTest
+	@ValueSource(strings = {"0B", "2147483647B", "3GB"})
+	void shouldBeInvalidForMaxBodySizeOutOfRange(final String maxBodySize) {
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.max-body-size=" + maxBodySize
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasFailed();
+			assertThat(context.getStartupFailure()).rootCause().hasMessageContaining("http.maxBodySize");
+		});
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"1B", "10MB", "2147483646B"})
+	void shouldBeValidForMaxBodySizeInRange(final String maxBodySize) {
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.max-body-size=" + maxBodySize
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasNotFailed();
+		});
+	}
+
 	@Test
 	void shouldBindExtractionConfigurations() {
 		final List<String> properties = withPersistence(List.of(

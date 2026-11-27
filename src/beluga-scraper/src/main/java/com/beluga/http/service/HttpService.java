@@ -72,14 +72,14 @@ public class HttpService {
                     .method(httpMethod)
                     .userAgent(USER_AGENT)
                     .timeout((int) httpProperties.getTimeout().toMillis())
-                    .maxBodySize((int) httpProperties.getMaxBodySize().toBytes() + 1)
+                    .maxBodySize((int) httpProperties.getMaxBodySizeAsBytes() + 1)
                     .ignoreContentType(true)
                     .execute();
             final byte[] body = response.bodyAsBytes();
 
             publishRequestActivity(url, timingUuid, true);
 
-            if (body.length > httpProperties.getMaxBodySize().toBytes()) {
+            if (body.length > httpProperties.getMaxBodySizeAsBytes()) {
                 logger.error("The response body exceeds the maximum of " + MAX_BODY_SIZE + " bytes.");
                 return Optional.empty();
             }

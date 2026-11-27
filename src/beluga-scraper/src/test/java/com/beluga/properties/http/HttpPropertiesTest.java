@@ -1,5 +1,6 @@
 package com.beluga.properties.http;
 
+import com.beluga.properties.http.validation.ValidMaxBodySize;
 import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +26,11 @@ class HttpPropertiesTest {
 				"timeout",
 				"maxBodySize"
 		).map(Arguments::of);
+	}
+
+	@Test
+	void shouldHaveValidMaxBodySizeAnnotationOnMaxBodySize() {
+		assertAnnotationPresentOnField("maxBodySize", HttpProperties.class, ValidMaxBodySize.class);
 	}
 
 	@Test
