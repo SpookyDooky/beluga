@@ -1,43 +1,78 @@
 package com.beluga.http.model;
 
 import java.net.URI;
+import java.util.Arrays;
 
+/**
+ * The response to an HTTP request whose body has been read completely.
+ */
 public class HttpResult {
 
-    private int statusCode;
-    private URI uri;
-    private String contentType;
-    private byte[] body;
+    private final int statusCode;
+    private final URI uri;
+    private final String contentType;
+    private final byte[] body;
+
+    private HttpResult(final int statusCode,
+                       final URI uri,
+                       final String contentType,
+                       final byte[] body) {
+        this.statusCode = statusCode;
+        this.uri = uri;
+        this.contentType = contentType;
+        this.body = body;
+    }
+
+    /**
+     * Creates a {@link HttpResult}.
+     *
+     * @param statusCode  the HTTP status code of the response.
+     * @param uri         the final {@link URI} of the response, after following redirects.
+     * @param contentType the value of the Content-Type header, or null when the response did not include it.
+     * @param body        the response body, which is copied.
+     * @return the {@link HttpResult}.
+     * @throws IllegalArgumentException thrown when the uri or body is null.
+     */
+    public static HttpResult of(final int statusCode,
+                                final URI uri,
+                                final String contentType,
+                                final byte[] body) {
+        validateNotNull("uri", uri);
+        validateNotNull("body", body);
+
+        return new HttpResult(
+                statusCode,
+                uri,
+                contentType,
+                Arrays.copyOf(body, body.length)
+        );
+    }
+
+    private static void validateNotNull(final String propertyName,
+                                        final Object value) {
+        if (value == null) {
+            throw new IllegalArgumentException(propertyName + " must not be null.");
+        }
+    }
 
     public int getStatusCode() {
         return statusCode;
-    }
-
-    public void setStatusCode(final int statusCode) {
-        this.statusCode = statusCode;
     }
 
     public URI getUri() {
         return uri;
     }
 
-    public void setUri(final URI uri) {
-        this.uri = uri;
-    }
-
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(final String contentType) {
-        this.contentType = contentType;
-    }
-
+    /**
+     * Returns a copy of the body, so the {@link HttpResult} can not be changed through it.
+     *
+     * @return a copy of the response body.
+     */
     public byte[] getBody() {
-        return body;
-    }
-
-    public void setBody(final byte[] body) {
-        this.body = body;
+        return Arrays.copyOf(body, body.length);
     }
 }
