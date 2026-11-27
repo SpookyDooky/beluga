@@ -6,6 +6,8 @@ import com.beluga.http.model.HttpResult;
 import com.beluga.logging.CloseableContext;
 import com.beluga.logging.ContextKeys;
 import com.beluga.logging.ContextLogger;
+import com.beluga.properties.BelugaScraperProperties;
+import com.beluga.properties.http.HttpProperties;
 import com.beluga.util.TimingService;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -28,7 +30,6 @@ public class HttpService {
     /**
      * Covers connecting and reading the complete response.
      */
-    private static final int TIMEOUT_MILLIS = 30_000;
     private static final int MAX_BODY_SIZE = 10 * 1024 * 1024;
     private static final String USER_AGENT = "Beluga/1.0";
 
@@ -42,13 +43,16 @@ public class HttpService {
     private final ContextLogger logger;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimingService timingService;
+    private final HttpProperties httpProperties;
 
     public HttpService(final ContextLogger logger,
                        final ApplicationEventPublisher applicationEventPublisher,
-                       final TimingService timingService) {
+                       final TimingService timingService,
+                       final BelugaScraperProperties belugaScraperProperties) {
         this.logger = logger;
         this.applicationEventPublisher = applicationEventPublisher;
         this.timingService = timingService;
+        this.httpProperties = belugaScraperProperties.getHttp();
     }
 
     public Optional<HttpResult> get(final URL url) {
@@ -68,15 +72,15 @@ public class HttpService {
             final Response response = Jsoup.connect(url.toString())
                     .method(httpMethod)
                     .userAgent(USER_AGENT)
-                    .timeout(TIMEOUT_MILLIS)
-                    .maxBodySize(MAX_BODY_SIZE + 1)
+                    .timeout((int) httpProperties.getTimeout().toMillis())
+                    .maxBodySize((int) httpProperties.getMaxBodySizeAsBytes() + 1)
                     .ignoreContentType(true)
                     .execute();
             final byte[] body = response.bodyAsBytes();
 
             publishRequestActivity(url, timingUuid, true);
 
-            if (body.length > MAX_BODY_SIZE) {
+            if (body.length > httpProperties.getMaxBodySizeAsBytes()) {
                 logger.error("The response body exceeds the maximum of " + MAX_BODY_SIZE + " bytes.");
                 return Optional.empty();
             }

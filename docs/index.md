@@ -9,6 +9,7 @@ files and a REST API.
 ### Configuration
 Learn how to configure the scraping engine and its available options.
 - [Configuration](/docs/configuration/configuration.md)
+- [HTTP](/docs/configuration/http.md)
 - [Jobs](/docs/configuration/jobs.md)
 - [Persistence](/docs/configuration/peristence.md)
 - [Result storage](/docs/configuration/result_storage.md)
