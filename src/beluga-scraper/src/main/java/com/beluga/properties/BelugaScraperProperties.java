@@ -1,6 +1,7 @@
 package com.beluga.properties;
 
 import com.beluga.properties.datastore.ResultStorageProperties;
+import com.beluga.properties.http.HttpProperties;
 import com.beluga.properties.persistence.PersistenceProperties;
 import com.beluga.properties.scraping.JobProperties;
 import jakarta.validation.Valid;
@@ -13,16 +14,27 @@ import java.util.List;
 @ConfigurationProperties("beluga")
 @Validated
 public class BelugaScraperProperties {
-	
+
+	@Valid
+	private HttpProperties http = new HttpProperties();
+
 	@NotNull
 	@Valid
 	private PersistenceProperties persistence;
-	
+
 	@Valid
 	private ResultStorageProperties resultStorage = new ResultStorageProperties();
 	
 	private List<@NotNull @Valid JobProperties> jobs;
-	
+
+	public HttpProperties getHttp() {
+		return http;
+	}
+
+	public void setHttp(final HttpProperties http) {
+		this.http = http;
+	}
+
 	public PersistenceProperties getPersistence() {
 		return persistence;
 	}
