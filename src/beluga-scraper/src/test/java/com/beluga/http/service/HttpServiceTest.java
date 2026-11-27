@@ -4,11 +4,13 @@ import com.beluga.activity_logging.activitiy.RequestActivity;
 import com.beluga.activity_logging.event.ActivityEvent;
 import com.beluga.http.model.HttpResult;
 import com.beluga.logging.ContextLogger;
+import com.beluga.properties.http.HttpProperties;
 import com.beluga.util.TimingService;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
 import okio.Buffer;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +22,17 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.util.unit.DataSize;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
@@ -34,7 +40,8 @@ import static org.mockito.Mockito.verify;
 class HttpServiceTest {
 
 	private static final String PAGE = "<html><head><title>Test page</title></head><body><p>content</p></body></html>";
-	private static final int MAX_BODY_SIZE = 10 * 1024 * 1024;
+	private static final int MAX_BODY_SIZE = 100;
+	private static final Duration TIMEOUT = Duration.ofSeconds(1);
 
 	@Mock
 	private ContextLogger logger;
@@ -52,7 +59,12 @@ class HttpServiceTest {
 		server = new MockWebServer();
 		server.start();
 
-		httpService = new HttpService(logger, applicationEventPublisher, new TimingService());
+		final HttpProperties httpProperties = Instancio.of(HttpProperties.class)
+				.set(field(HttpProperties::getTimeout), TIMEOUT)
+				.set(field(HttpProperties::getMaxBodySize), DataSize.ofBytes(MAX_BODY_SIZE))
+				.create();
+
+		httpService = new HttpService(logger, applicationEventPublisher, new TimingService(), httpProperties);
 	}
 
 	@AfterEach
@@ -186,7 +198,7 @@ class HttpServiceTest {
 	@Test
 	void shouldReturnEmptyWhenChunkedBodyExceedsMaximumBodySize() {
 		server.enqueue(new MockResponse.Builder()
-				.chunkedBody("a".repeat(MAX_BODY_SIZE + 1), 1024 * 1024)
+				.chunkedBody("a".repeat(MAX_BODY_SIZE + 1), 10)
 				.build());
 		final URL url = server.url("/large").url();
 
@@ -199,7 +211,7 @@ class HttpServiceTest {
 	@Test
 	void shouldReturnResultWhenBodyHasMaximumBodySize() {
 		server.enqueue(new MockResponse.Builder()
-				.chunkedBody("a".repeat(MAX_BODY_SIZE), 1024 * 1024)
+				.chunkedBody("a".repeat(MAX_BODY_SIZE), 10)
 				.build());
 		final URL url = server.url("/large").url();
 
@@ -207,6 +219,34 @@ class HttpServiceTest {
 
 		assertTrue(httpResult.isPresent());
 		assertEquals(MAX_BODY_SIZE, httpResult.get().getBody().length);
+	}
+
+	@Test
+	void shouldReturnEmptyWhenBodyIsNotReceivedWithinTimeout() {
+		server.enqueue(new MockResponse.Builder()
+				.body(PAGE)
+				.bodyDelay(TIMEOUT.toMillis() * 3, TimeUnit.MILLISECONDS)
+				.build());
+		final URL url = server.url("/slow").url();
+
+		final Optional<HttpResult> httpResult = httpService.get(url);
+
+		assertTrue(httpResult.isEmpty());
+		assertRequestActivityPublished(url, false);
+	}
+
+	@Test
+	void shouldReturnEmptyWhenBodyIsNotCompleteWithinTimeout() {
+		server.enqueue(new MockResponse.Builder()
+				.body("a".repeat(20))
+				.throttleBody(1, 200, TimeUnit.MILLISECONDS)
+				.build());
+		final URL url = server.url("/trickle").url();
+
+		final Optional<HttpResult> httpResult = httpService.get(url);
+
+		assertTrue(httpResult.isEmpty());
+		assertRequestActivityPublished(url, false);
 	}
 
 	@Test
