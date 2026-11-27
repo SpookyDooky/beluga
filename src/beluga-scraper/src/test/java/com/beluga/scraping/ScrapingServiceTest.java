@@ -7,21 +7,24 @@ import com.beluga.execution.model.task.extraction_configuration.description_list
 import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionDataPointConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.html.HtmlExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
-import com.beluga.http.HttpService;
+import com.beluga.http.model.HttpResult;
+import com.beluga.http.service.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
 import org.instancio.Instancio;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -31,12 +34,14 @@ import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ScrapingServiceTest {
+
+    private static final String PAGE = "<html><body><div class=\"main_element\"><p class=\"some_text\">text</p></div></body></html>";
 
     private static final URL URL;
 
@@ -72,19 +77,23 @@ class ScrapingServiceTest {
     }
 
     void mockDocumentResponse(final String responseFile) {
-        final String fileContent = readFile(responseFile);
-        final Element element = Jsoup.parse(fileContent);
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), "text/html; charset=UTF-8", "UTF-8", readFile(responseFile));
 
-        final Document document = mock();
-        when(document.body()).thenReturn(element);
-
-        when(httpService.retrievePageAsDocument(URL)).thenReturn(Optional.of(document));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
     }
 
-    String readFile(final String path) {
+    byte[] readFile(final String path) {
         try {
-            return Files.readString(Path.of(path));
+            return Files.readAllBytes(Path.of(path));
         } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    URI toUri(final URL url) {
+        try {
+            return url.toURI();
+        } catch (final URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
@@ -208,5 +217,112 @@ class ScrapingServiceTest {
         final ScrapingResult scrapingResult = scrapingService.scrape(URL, scrapingConfiguration);
 
         assertEquals("text", scrapingResult.getResult().getFirst().get("text"));
+    }
+
+    @Test
+    void shouldThrowWhenPageCouldNotBeFetched() {
+        when(httpService.get(URL)).thenReturn(Optional.empty());
+
+        final ScrapingConfiguration scrapingConfiguration = Instancio.create(ScrapingConfiguration.class);
+
+        assertThrows(IllegalStateException.class, () -> scrapingService.scrape(URL, scrapingConfiguration));
+    }
+
+    @Test
+    void shouldThrowWhenContentTypeIsNotSupported() {
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), "application/json", null, "{}".getBytes(StandardCharsets.UTF_8));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final ScrapingConfiguration scrapingConfiguration = Instancio.create(ScrapingConfiguration.class);
+
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> scrapingService.scrape(URL, scrapingConfiguration));
+        assertTrue(exception.getMessage().contains("application/json"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "text/html",
+            "TEXT/HTML; charset=UTF-8",
+            "text/plain",
+            "application/xhtml+xml",
+            "application/xml"
+    })
+    void shouldScrapeSupportedContentType(final String contentType) {
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), contentType, null, PAGE.getBytes(StandardCharsets.UTF_8));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final TextExtractionConfiguration extractionConfiguration = Instancio.of(TextExtractionConfiguration.class)
+                .set(field(TextExtractionConfiguration::getSelector), "p.some_text")
+                .set(field(TextExtractionConfiguration::getField), "text")
+                .create();
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, createScrapingConfiguration(extractionConfiguration));
+
+        assertEquals("text", scrapingResult.getResult().getFirst().get("text"));
+    }
+
+    @Test
+    void shouldScrapeWhenContentTypeIsMissing() {
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), null, null, PAGE.getBytes(StandardCharsets.UTF_8));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final TextExtractionConfiguration extractionConfiguration = Instancio.of(TextExtractionConfiguration.class)
+                .set(field(TextExtractionConfiguration::getSelector), "p.some_text")
+                .set(field(TextExtractionConfiguration::getField), "text")
+                .create();
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, createScrapingConfiguration(extractionConfiguration));
+
+        assertEquals("text", scrapingResult.getResult().getFirst().get("text"));
+    }
+
+    @Test
+    void shouldUseCharsetOfHttpResult() {
+        final String page = "<html><body><div class=\"main_element\"><p class=\"some_text\">café</p></div></body></html>";
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), "text/html; charset=ISO-8859-1", "ISO-8859-1", page.getBytes(StandardCharsets.ISO_8859_1));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final TextExtractionConfiguration extractionConfiguration = Instancio.of(TextExtractionConfiguration.class)
+                .set(field(TextExtractionConfiguration::getSelector), "p.some_text")
+                .set(field(TextExtractionConfiguration::getField), "text")
+                .create();
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, createScrapingConfiguration(extractionConfiguration));
+
+        assertEquals("café", scrapingResult.getResult().getFirst().get("text"));
+    }
+
+    @Test
+    void shouldDetectCharsetFromPageWhenHttpResultHasNoCharset() {
+        final String page = "<html><head><meta charset=\"ISO-8859-1\"></head>"
+                + "<body><div class=\"main_element\"><p class=\"some_text\">café</p></div></body></html>";
+        final HttpResult httpResult = HttpResult.of(200, toUri(URL), "text/html", null, page.getBytes(StandardCharsets.ISO_8859_1));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final TextExtractionConfiguration extractionConfiguration = Instancio.of(TextExtractionConfiguration.class)
+                .set(field(TextExtractionConfiguration::getSelector), "p.some_text")
+                .set(field(TextExtractionConfiguration::getField), "text")
+                .create();
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, createScrapingConfiguration(extractionConfiguration));
+
+        assertEquals("café", scrapingResult.getResult().getFirst().get("text"));
+    }
+
+    @Test
+    void shouldResolveRelativeUrlsAgainstFinalUri() {
+        final String page = "<html><body><div class=\"main_element\"><a class=\"link\" href=\"image.png\">link</a></div></body></html>";
+        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/final/page"), "text/html", null, page.getBytes(StandardCharsets.UTF_8));
+        when(httpService.get(URL)).thenReturn(Optional.of(httpResult));
+
+        final AttributeExtractionConfiguration extractionConfiguration = Instancio.of(AttributeExtractionConfiguration.class)
+                .set(field(AttributeExtractionConfiguration::getSelector), "a.link")
+                .set(field(AttributeExtractionConfiguration::getField), "link")
+                .set(field(AttributeExtractionConfiguration::getAttribute), "abs:href")
+                .create();
+
+        final ScrapingResult scrapingResult = scrapingService.scrape(URL, createScrapingConfiguration(extractionConfiguration));
+
+        assertEquals("https://example.com/final/image.png", scrapingResult.getResult().getFirst().get("link"));
     }
 }

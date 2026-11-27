@@ -15,4 +15,5 @@ public class ContextKeys {
 	public static final String JOB_NAME = "jobName";
 	public static final String PAGE = "page";
 	public static final String PAGE_SIZE = "pageSize";
+	public static final String HTTP_METHOD = "httpMethod";
 }

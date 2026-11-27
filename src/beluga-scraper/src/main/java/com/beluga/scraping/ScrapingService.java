@@ -8,22 +8,30 @@ import com.beluga.execution.model.task.extraction_configuration.description_list
 import com.beluga.execution.model.task.extraction_configuration.html.HtmlExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.image.ImageExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
-import com.beluga.http.HttpService;
+import com.beluga.http.model.HttpResult;
+import com.beluga.http.service.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 public class ScrapingService {
+
+    private static final Pattern XML_CONTENT_TYPE = Pattern.compile("(application|text)/\\w*\\+?xml.*", Pattern.CASE_INSENSITIVE);
 
     private final Logger logger = LogManager.getLogger();
 
@@ -35,8 +43,11 @@ public class ScrapingService {
 
     public ScrapingResult scrape(final URL url,
                                  final ScrapingConfiguration scrapingProperties) {
-        final Document document = httpService.retrievePageAsDocument(url)
+        final HttpResult httpResult = httpService.get(url)
                 .orElseThrow(() -> new IllegalStateException("Failed to retrieve page " + url.toString() + "."));
+
+        validateIsScrapable(url, httpResult);
+        final Document document = parse(httpResult);
 
         final List<Element> elements = selectElements(document, scrapingProperties.getItemSelector());
         logger.info("Found " + elements.size() + " in document");
@@ -49,6 +60,38 @@ public class ScrapingService {
                 document.toString(),
                 result
         );
+    }
+
+    /**
+     * The accepted content types are the same as jsoup accepts when it fetches a page itself: text, XML, or no content type at all.
+     *
+     * @param url        the url of the page.
+     * @param httpResult the response for the page.
+     * @throws IllegalStateException when the content type is not supported.
+     */
+    private void validateIsScrapable(final URL url,
+                                     final HttpResult httpResult) {
+        final String contentType = httpResult.getContentType();
+        if (contentType != null && !isParsableContentType(contentType)) {
+            throw new IllegalStateException("Failed to retrieve page " + url + ": unsupported content type " + contentType + ".");
+        }
+    }
+
+    private boolean isParsableContentType(final String contentType) {
+        return contentType.toLowerCase(Locale.ROOT).startsWith("text/")
+                || XML_CONTENT_TYPE.matcher(contentType).matches();
+    }
+
+    private Document parse(final HttpResult httpResult) {
+        try {
+            return Jsoup.parse(
+                    new ByteArrayInputStream(httpResult.getBody()),
+                    httpResult.getCharset(),
+                    httpResult.getUri().toString()
+            );
+        } catch (final IOException e) {
+            throw new IllegalStateException("Failed to parse page " + httpResult.getUri() + ".", e);
+        }
     }
 
     private List<Element> selectElements(final Document document,
@@ -100,7 +143,8 @@ public class ScrapingService {
 
     /**
      * Extracts the selected element as raw HTML.
-     * @param element the elements to extract the data from.
+     *
+     * @param element                 the elements to extract the data from.
      * @param extractionConfiguration the configuration containing information about the values to extract data for.
      * @return the raw HTML stored under its configured field.
      */
@@ -115,7 +159,8 @@ public class ScrapingService {
 
     /**
      * Extracts data from a description list for matching dt values.
-     * @param element the elements to extract the data from.
+     *
+     * @param element                 the elements to extract the data from.
      * @param extractionConfiguration the configuration containing information about the values to extract data for.
      * @return the extracted data from the description list.
      */
@@ -176,7 +221,7 @@ public class ScrapingService {
     /**
      * Extracts text data from {@link Elements}
      *
-     * @param element the elements to extract the data from.
+     * @param element                 the elements to extract the data from.
      * @param extractionConfiguration the configuration of how to extract the text.
      * @return extracted text stored under its respective field.
      */
