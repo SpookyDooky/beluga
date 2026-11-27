@@ -7,7 +7,7 @@ import com.beluga.execution.model.task.extraction_configuration.description_list
 import com.beluga.execution.model.task.extraction_configuration.description_list.DescriptionListExtractionDataPointConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.html.HtmlExtractionConfiguration;
 import com.beluga.execution.model.task.extraction_configuration.text.TextExtractionConfiguration;
-import com.beluga.http.HttpService;
+import com.beluga.http.service.HttpService;
 import com.beluga.scraping.model.ScrapingResult;
 import org.instancio.Instancio;
 import org.jsoup.Jsoup;

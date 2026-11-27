@@ -1,4 +1,4 @@
-package com.beluga.http;
+package com.beluga.http.service;
 
 import com.beluga.activity_logging.activitiy.RequestActivity;
 import com.beluga.activity_logging.event.ActivityEvent;
