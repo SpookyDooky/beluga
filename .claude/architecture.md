@@ -33,7 +33,7 @@ Beluga is a general-purpose web scraping engine: a Spring Boot 4.1 / Java 21 ser
   startup and replaces any job with the same name. It does not start them; starting a job is always a manual action
   ([§4](#4-data-flow)).
 - **A job** is a scraping configuration (an item selector plus extraction rules) and a set of URLs called *tasks*.
-- **Starting a job** creates an *execution*. Every active task URL is fetched with jsoup at a rate-limited pace, and the
+- **Starting a job** creates an *execution*. Every active task URL is fetched and parsed with jsoup at a rate-limited pace, and the
   configured data points are extracted from each item on the page.
 - **Results** (`data.json` and `source.html` per task) are written to the file system or S3-compatible storage.
 - **Run state** (queues and counters) lives **in memory in a single instance**.
@@ -62,7 +62,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | Concern | Choice |
 | --- | --- |
 | Framework | Spring Boot 4.1.1 (web MVC, data JPA, validation, Flyway), Java 21 |
-| HTML fetching/parsing | jsoup |
+| HTML fetching/parsing | jsoup (fetching on its `HttpURLConnection` transport) |
 | Mapping | MapStruct (componentModel `spring`) |
 | JSON | Jackson 3 (`tools.jackson`), built with `JsonMapper.builder().findAndAddModules()` |
 | Persistence | Hibernate, with `hibernate-community-dialects` for SQLite; Flyway migrations |
@@ -120,7 +120,7 @@ calls ([§4.3](#43-execution-event-driven)).
 | `execution/service/worker` | `Worker` (one task per async call); `rate_limiting/JitterRateLimiter`. |
 | `execution/event/**` | Job, task and task-result events ([§4.4](#44-event-catalogue)). |
 | `scraping` | `ScrapingService` (extraction) and `model/ScrapingResult`. |
-| `http` | `HttpService`: jsoup fetch plus `RequestActivity` events. |
+| `http` | `service/HttpService`: HTTP fetch with jsoup plus `RequestActivity` events. `model/HttpResult`: the response (status, final URI, content type, body). |
 | `result_storage` | `ResultStorageService`, `ResultDataStoreProvider` (abstract), `NamespaceFactory`, `json/` (JSON plus dotted-key nesting), `file_system/`, `s3/`, `config/conditionals` (`@IsFileSystemResultStorage`, `@IsS3ResultStorage`). |
 | `activity_logging` | Activity events and the `activity_log` table. The subpackage is spelled **`activitiy`**; don't "fix" it piecemeal. |
 | `persistence` | `PersistenceConfig` (`@EnableJpaRepositories`), `sqlite/` and `postgresql/` backend configs, `config/conditionals` (`@IsSqlite`, `@IsPostgreSql`), `repository/`. |
@@ -275,12 +275,29 @@ ActivityLog {timestamp, type, context: JSON}   (standalone)
 
 ### 3.4 Scraping
 
-- **`HttpService.retrievePageAsDocument`** calls `Jsoup.connect(url).timeout(30_000).get()`. There is no custom user
-  agent, headers or `ignoreHttpErrors`, so non-2xx responses and non-HTML responses throw **(inferred from jsoup
-  defaults)**. Exceptions are logged and become `Optional.empty`. Every request publishes a `RequestActivity` with its
-  duration and success flag.
+- **`HttpService.get(url)`** sends a GET with `Jsoup.connect(url).execute()` and returns `Optional<HttpResult>`
+  (status code, final URI after redirects, `Content-Type`, body bytes). jsoup's `Connection` does not leave
+  `HttpService`; callers only see `HttpResult`. Settings are constants for now (#237):
+  - **`HttpService` sets `jsoup.useHttpClient=false`** in a static block. On jsoup's default JDK `HttpClient` transport
+    the timeout only covers the headers, so a stalled body blocks forever (verified). On `HttpURLConnection` the 30 s
+    timeout covers connecting and reading the complete response. Do not remove this.
+  - It follows redirects, sends `User-Agent: Beluga/1.0` (jsoup's default pretends to be Chrome) and
+    `Accept-Encoding: gzip`; the body is decompressed.
+  - `ignoreHttpErrors` and `ignoreContentType` are on: a result is returned for **every** status code and content type,
+    and callers decide what it means.
+  - Bodies over 10 MB (decompressed) are rejected. jsoup's `maxBodySize` **truncates silently**, so it is set one byte
+    above the maximum and a body of that length is rejected.
+  - `Optional.empty` means the server could not be reached or did not respond in time, the URL uses an unsupported
+    scheme, or the body was too large. Every case is logged.
+  - Every call publishes a `RequestActivity`, a trail of where the engine sent requests. `success` means a complete
+    response was received, whatever the status code.
 - **`ScrapingService.scrape(url, scrapingConfiguration)`:**
-  - An empty fetch throws `IllegalStateException`, which makes the task FAILED.
+  - An empty fetch, a non-2xx status, or an unsupported content type throws `IllegalStateException`, which makes the
+    task FAILED. Supported content types match what jsoup accepts when it fetches itself: `text/*`,
+    `application/xml`, `(application|text)/*+xml`, or no `Content-Type` at all.
+  - The body is parsed with `Jsoup.parse(bytes, charset, finalUri)`. The charset comes from `Content-Type`; when it
+    is missing or unsupported, jsoup detects it from the BOM or `<meta>`. The final URI is the base URI, which jsoup
+    uses to resolve `abs:` attributes against the page that was actually returned.
   - Items are `document.body().select(itemSelector)`; only the body is searched.
   - Each item becomes one `Map<String,Object>`. Each extraction's map is `putAll`-ed into it, so **later fields with
     the same name overwrite earlier ones**. The API rejects duplicate, malformed and conflicting field names

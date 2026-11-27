@@ -11,15 +11,18 @@ public class HttpResult {
     private final int statusCode;
     private final URI uri;
     private final String contentType;
+    private final String charset;
     private final byte[] body;
 
     private HttpResult(final int statusCode,
                        final URI uri,
                        final String contentType,
+                       final String charset,
                        final byte[] body) {
         this.statusCode = statusCode;
         this.uri = uri;
         this.contentType = contentType;
+        this.charset = charset;
         this.body = body;
     }
 
@@ -29,6 +32,7 @@ public class HttpResult {
      * @param statusCode  the HTTP status code of the response.
      * @param uri         the final {@link URI} of the response, after following redirects.
      * @param contentType the value of the Content-Type header, or null when the response did not include it.
+     * @param charset     the charset from the Content-Type header, or null when it is missing or not supported.
      * @param body        the response body, which is copied.
      * @return the {@link HttpResult}.
      * @throws IllegalArgumentException thrown when the uri or body is null.
@@ -36,6 +40,7 @@ public class HttpResult {
     public static HttpResult of(final int statusCode,
                                 final URI uri,
                                 final String contentType,
+                                final String charset,
                                 final byte[] body) {
         validateNotNull("uri", uri);
         validateNotNull("body", body);
@@ -44,6 +49,7 @@ public class HttpResult {
                 statusCode,
                 uri,
                 contentType,
+                charset,
                 Arrays.copyOf(body, body.length)
         );
     }
@@ -65,6 +71,10 @@ public class HttpResult {
 
     public String getContentType() {
         return contentType;
+    }
+
+    public String getCharset() {
+        return charset;
     }
 
     /**

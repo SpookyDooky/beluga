@@ -14,25 +14,27 @@ class HttpResultTest {
         final URI uri = URI.create("https://example.com/page");
         final byte[] body = "<html></html>".getBytes(StandardCharsets.UTF_8);
 
-        final HttpResult httpResult = HttpResult.of(200, uri, "text/html; charset=UTF-8", body);
+        final HttpResult httpResult = HttpResult.of(200, uri, "text/html; charset=UTF-8", "UTF-8", body);
 
         assertEquals(200, httpResult.getStatusCode());
         assertEquals(uri, httpResult.getUri());
         assertEquals("text/html; charset=UTF-8", httpResult.getContentType());
+        assertEquals("UTF-8", httpResult.getCharset());
         assertArrayEquals(body, httpResult.getBody());
     }
 
     @Test
-    void shouldCreateHttpResultWithoutContentType() {
-        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/page"), null, new byte[0]);
+    void shouldCreateHttpResultWithoutContentTypeAndCharset() {
+        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/page"), null, null, new byte[0]);
 
         assertNull(httpResult.getContentType());
+        assertNull(httpResult.getCharset());
     }
 
     @Test
     void shouldNotChangeBodyWhenOriginalArrayIsModified() {
         final byte[] body = {1, 2, 3};
-        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/image.png"), "image/png", body);
+        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/image.png"), "image/png", null, body);
 
         body[0] = 9;
 
@@ -41,7 +43,7 @@ class HttpResultTest {
 
     @Test
     void shouldNotChangeBodyWhenReturnedArrayIsModified() {
-        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/image.png"), "image/png", new byte[]{1, 2, 3});
+        final HttpResult httpResult = HttpResult.of(200, URI.create("https://example.com/image.png"), "image/png", null, new byte[]{1, 2, 3});
 
         final byte[] returnedBody = httpResult.getBody();
         returnedBody[0] = 9;
@@ -51,11 +53,11 @@ class HttpResultTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionWhenUriIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> HttpResult.of(200, null, "text/html", new byte[0]));
+        assertThrows(IllegalArgumentException.class, () -> HttpResult.of(200, null, "text/html", null, new byte[0]));
     }
 
     @Test
     void shouldThrowIllegalArgumentExceptionWhenBodyIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> HttpResult.of(200, URI.create("https://example.com/page"), "text/html", null));
+        assertThrows(IllegalArgumentException.class, () -> HttpResult.of(200, URI.create("https://example.com/page"), "text/html", null, null));
     }
 }
