@@ -1,6 +1,7 @@
 package com.beluga.http.user_agent.provider;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides user-agents in using round-robin.
@@ -8,6 +9,7 @@ import java.util.List;
 public class RoundRobinUserAgentProvider extends UserAgentProvider {
 
     private final List<String> userAgents;
+    private final AtomicInteger counter = new AtomicInteger();
 
     public RoundRobinUserAgentProvider(final List<String> userAgents) {
         this.userAgents = userAgents;
@@ -15,6 +17,6 @@ public class RoundRobinUserAgentProvider extends UserAgentProvider {
 
     @Override
     public String getUserAgent() {
-        return "";
+        return userAgents.get(Math.floorMod(counter.getAndIncrement(), userAgents.size()));
     }
 }
