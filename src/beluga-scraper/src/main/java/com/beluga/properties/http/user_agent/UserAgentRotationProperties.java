@@ -1,13 +1,17 @@
 package com.beluga.properties.http.user_agent;
 
+import com.beluga.properties.http.user_agent.validation.ValidUserAgentFile;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 
 import static com.beluga.properties.http.user_agent.UserAgentRotationStrategy.ROUND_ROBIN;
 
+@Validated
 public class UserAgentRotationProperties {
 
     @NotBlank
+    @ValidUserAgentFile
     private String file;
     @NotNull
     private UserAgentRotationStrategy strategy = ROUND_ROBIN;

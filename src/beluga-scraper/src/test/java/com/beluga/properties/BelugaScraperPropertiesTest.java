@@ -1,5 +1,6 @@
 package com.beluga.properties;
 
+import com.beluga.properties.http.user_agent.UserAgentRotationStrategy;
 import com.beluga.properties.scraping.extraction_configuration.AttributeExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.DescriptionListExtractionConfigurationProperties;
 import com.beluga.properties.scraping.extraction_configuration.ExtractionConfigurationProperties;
@@ -8,6 +9,7 @@ import com.beluga.properties.scraping.extraction_configuration.ImageExtractionCo
 import com.beluga.properties.scraping.extraction_configuration.TextExtractionConfigurationProperties;
 import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +17,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,7 +38,10 @@ class BelugaScraperPropertiesTest {
 	
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(TestConfig.class);
-	
+
+	@TempDir
+	private Path directory;
+
 	@Test
 	void shouldBeValidated() {
 		contextRunner.withPropertyValues(
@@ -82,6 +90,74 @@ class BelugaScraperPropertiesTest {
 
 		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
 			assertThat(context).hasNotFailed();
+		});
+	}
+
+	@Test
+	void shouldBeValidForUserAgentRotationFile() throws IOException {
+		final Path file = Files.writeString(directory.resolve("user-agents.txt"), "Agent/1.0\n");
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.user-agent.rotation.file=" + file
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasNotFailed();
+		});
+	}
+
+	@Test
+	void shouldBeInvalidForUserAgentValueAndRotation() throws IOException {
+		final Path file = Files.writeString(directory.resolve("user-agents.txt"), "Agent/1.0\n");
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.user-agent.value=Agent/1.0",
+				"beluga.http.user-agent.rotation.file=" + file
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasFailed();
+			assertThat(context.getStartupFailure()).rootCause()
+					.hasMessageContaining("Only one of value and rotation can be configured for the user agent");
+		});
+	}
+
+	@Test
+	void shouldBeInvalidForMissingUserAgentRotationFile() {
+		final Path file = directory.resolve("missing.txt");
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.user-agent.rotation.file=" + file
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasFailed();
+			assertThat(context.getStartupFailure()).rootCause().hasMessageContaining("http.userAgent.rotation.file");
+		});
+	}
+
+	@Test
+	void shouldBeInvalidForEmptyUserAgentRotationFile() throws IOException {
+		final Path file = Files.createFile(directory.resolve("user-agents.txt"));
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.user-agent.rotation.file=" + file
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasFailed();
+			assertThat(context.getStartupFailure()).rootCause().hasMessageContaining("http.userAgent.rotation.file");
+		});
+	}
+
+	@Test
+	void shouldBindUserAgentRotationStrategy() throws IOException {
+		final Path file = Files.writeString(directory.resolve("user-agents.txt"), "Agent/1.0\n");
+		final List<String> properties = withPersistence(List.of(
+				"beluga.http.user-agent.rotation.file=" + file,
+				"beluga.http.user-agent.rotation.strategy=random"
+		));
+
+		contextRunner.withPropertyValues(properties.toArray(new String[0])).run(context -> {
+			assertThat(context).hasNotFailed();
+			assertThat(context.getBean(BelugaScraperProperties.class).getHttp().getUserAgent().getRotation().getStrategy())
+					.isEqualTo(UserAgentRotationStrategy.RANDOM);
 		});
 	}
 

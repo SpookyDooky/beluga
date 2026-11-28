@@ -1,9 +1,11 @@
 package com.beluga.properties.http.user_agent;
 
+import com.beluga.properties.http.user_agent.validation.HasOnlyOneUserAgentSource;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
+@HasOnlyOneUserAgentSource
 public class UserAgentProperties {
 
     private String value;
