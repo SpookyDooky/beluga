@@ -1,6 +1,8 @@
 package com.beluga.properties.http;
 
+import com.beluga.properties.http.user_agent.UserAgentProperties;
 import com.beluga.properties.http.validation.ValidMaxBodySize;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,9 @@ public class HttpProperties {
     @NotNull
     @ValidMaxBodySize
     private DataSize maxBodySize = DataSize.of(10, MEGABYTES);
+
+    @Valid
+    private UserAgentProperties userAgent;
 
     public Duration getTimeout() {
         return timeout;
@@ -37,5 +42,13 @@ public class HttpProperties {
 
     public void setMaxBodySize(final DataSize maxBodySize) {
         this.maxBodySize = maxBodySize;
+    }
+
+    public UserAgentProperties getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(final UserAgentProperties userAgent) {
+        this.userAgent = userAgent;
     }
 }
